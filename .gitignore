@@ -11,3 +11,5 @@ coverage
 Dockerfile.local
 tmp
 temp
+*.tsbuildinfo
+**/*.tsbuildinfo

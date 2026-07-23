@@ -35,6 +35,14 @@ Sprint 0 completed successfully with `pnpm typecheck`, `pnpm lint`, `pnpm test`,
 - Docker was unavailable in the recorded environment, so PostgreSQL and Redis could not be started locally.
 - A persistent local `.env` was not created. API validation correctly rejects missing required configuration.
 
+## Post-Sprint 0 — Engineering Foundation Finalization
+
+- **Status:** Completed.
+- **Goal:** Make long-term AI-assisted development repeatable through repository entry points, project memory, workflow rules, terminology, version state, and validation history.
+- **Completed work:** Updated `README.md`, `MASTER_CODEX_PROMPT.md`, `AI_CONTEXT.md`, and `ENGINEERING_WORKFLOW.md`; added AI bootstrap/rules, glossary, project version, and validation history documents.
+- **Validation:** Verified all relative internal Markdown links and confirmed Prettier formatting for updated Markdown files.
+- **Scope note:** Documentation and engineering workflow only; no application, runtime, Docker, CI, dependency, or API behavior changes.
+
 ## Future Sprint Log Entries
 
 Use this format for each future sprint:

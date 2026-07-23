@@ -12,6 +12,20 @@
 
 Do not redesign documented architecture or infer requirements absent from the active sprint request and official documentation.
 
+## Project-State Reading Map
+
+This file is the entry point for repository memory. Read the linked documents in this order before implementation:
+
+1. [AI_BOOTSTRAP.md](AI_BOOTSTRAP.md) — concise onboarding rules.
+2. [SESSION_HANDOFF.md](SESSION_HANDOFF.md) — immediate session state and next action.
+3. [KNOWN_ISSUES.md](KNOWN_ISSUES.md) — active constraints and blockers.
+4. [ENGINEERING_WORKFLOW.md](ENGINEERING_WORKFLOW.md) — required engineering process.
+5. [AI_RULES.md](AI_RULES.md) — permanent non-negotiable rules.
+6. [PROJECT_VERSION.md](PROJECT_VERSION.md) — repository/version dashboard.
+7. [VALIDATION_HISTORY.md](VALIDATION_HISTORY.md) — historical validation evidence.
+8. [ROADMAP_STATUS.md](ROADMAP_STATUS.md) — approved delivery sequence.
+9. [ARCHITECTURE_DECISIONS.md](ARCHITECTURE_DECISIONS.md) and [PROJECT_GLOSSARY.md](PROJECT_GLOSSARY.md) — decisions and terminology.
+
 ## Architecture Summary
 
 ```mermaid

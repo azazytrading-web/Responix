@@ -6,10 +6,10 @@ Update this file at the end of every AI or engineering session. Keep it concise,
 
 | Field              | Value                                                            |
 | ------------------ | ---------------------------------------------------------------- |
-| Session date       | 2026-07-23                                                       |
+| Session date       | 2026-07-24                                                       |
 | Current branch     | Unknown — Git metadata was not usable in the recorded workspace. |
 | Current sprint     | Sprint 0 approved; Sprint 1 has not started.                     |
-| Current task       | Create persistent engineering memory documentation.              |
+| Current task       | Finalize the post-Sprint 0 engineering foundation documentation. |
 | Repository version | `0.0.0`                                                          |
 
 ### Completed Work
@@ -18,15 +18,19 @@ Update this file at the end of every AI or engineering session. Keep it concise,
 - Performed runtime verification of Dashboard and API with temporary local API configuration.
 - Fixed Nest build output regeneration and aligned API health route with Docker Compose.
 - Created the `docs/project-state/` memory system.
+- Added the mandatory AI bootstrap, permanent AI rules, glossary, project version dashboard, validation history, and repository workflow entry points.
 
 ### Files Modified
 
+- `README.md` and `MASTER_CODEX_PROMPT.md` — mandatory AI session bootstrap references.
+- `docs/project-state/AI_BOOTSTRAP.md`, `AI_RULES.md`, `PROJECT_GLOSSARY.md`, `PROJECT_VERSION.md`, and `VALIDATION_HISTORY.md` — engineering foundation documentation.
 - `apps/api/tsconfig.build.json` — disable stale incremental output reuse after Nest cleans `dist`.
 - `apps/api/src/main.ts` — add the `api` route prefix, making health available at `/api/v1/health`.
 - `docs/project-state/*` — persistent project memory documentation.
 
 ### Validation Results
 
+- Documentation — internal relative links passed and updated Markdown passed Prettier formatting.
 - `pnpm typecheck` — passed during Sprint 0 validation.
 - `pnpm lint` — passed during Sprint 0 validation.
 - `pnpm test` — passed during Sprint 0 validation.

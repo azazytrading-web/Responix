@@ -83,6 +83,40 @@ When Git metadata and remote configuration are available:
 - Environmental blockers are documented separately from repository defects.
 - Handoff documentation is current.
 
+## Definition of Ready
+
+Work may begin only when the sprint request is approved, its named official documents have been read, affected modules and validation are known, and required environment prerequisites are either available or explicitly recorded as blockers.
+
+## Validation Recovery
+
+1. Preserve the failing output and identify the root cause.
+2. Fix the root cause without disabling rules, tests, or checks.
+3. Re-run the failed command, then the full validation pipeline before handoff.
+4. Record the failure and resolution in `DEVELOPMENT_LOG.md`, `VALIDATION_HISTORY.md`, and `SESSION_HANDOFF.md` when material.
+
+## Repository Recovery
+
+1. Inspect Git metadata, status, and recent history when available.
+2. Preserve user changes; never use destructive reset or checkout commands without explicit authorization.
+3. Restore dependencies or generated artifacts only through the documented workspace commands.
+4. If repository metadata is missing or invalid, record it in `KNOWN_ISSUES.md` and obtain project-owner direction before branch or release work.
+
+## Release Workflow
+
+1. Confirm the release scope, Definition of Done, and complete validation evidence.
+2. Review the exact diff; exclude generated files, local configuration, and secrets.
+3. Create a release commit and pull request through the configured Git workflow.
+4. Create an annotated Git tag only after merge approval.
+5. Publish a GitHub Release only after the tag and release notes are confirmed.
+
+### Git Tag Workflow
+
+Use semantic tags when a release process is approved, for example `v0.1.0`. Verify the target commit, validation evidence, and release notes before creating or pushing a tag.
+
+### GitHub Release Workflow
+
+Use the approved tag as the release target. Include scope, validation commands/results, known limitations, migration notes, and rollback considerations. Do not publish a release from unverified local state.
+
 ## Emergency Recovery After an Interrupted AI Session
 
 1. Do not restart completed sprint work.

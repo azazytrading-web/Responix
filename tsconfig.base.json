@@ -1,0 +1,28 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "isolatedModules": true,
+    "resolveJsonModule": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "noUncheckedIndexedAccess": true,
+    "noImplicitOverride": true,
+    "noFallthroughCasesInSwitch": true,
+    "declaration": true,
+    "sourceMap": true,
+    "baseUrl": ".",
+    "paths": {
+      "@responix/config/*": ["packages/config/src/*"],
+      "@responix/database": ["packages/database/src/index.ts"],
+      "@responix/types": ["packages/types/src/index.ts"],
+      "@responix/ui": ["packages/ui/src/index.ts"],
+      "@responix/utils": ["packages/utils/src/index.ts"]
+    }
+  }
+}

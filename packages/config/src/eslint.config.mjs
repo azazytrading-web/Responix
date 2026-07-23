@@ -3,12 +3,10 @@ import nextPlugin from "@next/eslint-plugin-next";
 import path from "node:path";
 import tseslint from "typescript-eslint";
 
-const isApiPackage = process.cwd().endsWith(
-  `${path.sep}apps${path.sep}api`
-);
-const isDashboardPackage = process.cwd().endsWith(
-  `${path.sep}apps${path.sep}dashboard`
-);
+const isApiPackage = process.cwd().endsWith(`${path.sep}apps${path.sep}api`);
+const isDashboardPackage = process
+  .cwd()
+  .endsWith(`${path.sep}apps${path.sep}dashboard`);
 
 export const baseConfig = [
   {
@@ -18,13 +16,13 @@ export const baseConfig = [
       "**/dist/**",
       "**/coverage/**",
       "**/.turbo/**",
-      "**/next-env.d.ts"
-    ]
+      "**/next-env.d.ts",
+    ],
   },
   eslint.configs.recommended,
   ...tseslint.configs.recommendedTypeChecked.map((config) => ({
     ...config,
-    files: ["**/*.{ts,tsx}"]
+    files: ["**/*.{ts,tsx}"],
   })),
   {
     files: ["**/*.{ts,tsx}"],
@@ -33,8 +31,8 @@ export const baseConfig = [
         projectService: isApiPackage
           ? { allowDefaultProject: ["jest.config.ts"] }
           : true,
-        tsconfigRootDir: process.cwd()
-      }
+        tsconfigRootDir: process.cwd(),
+      },
     },
     rules: {
       "@typescript-eslint/no-explicit-any": "error",
@@ -43,21 +41,21 @@ export const baseConfig = [
       "@typescript-eslint/consistent-type-imports": [
         "error",
         {
-          "prefer": "type-imports"
-        }
-      ]
-    }
+          prefer: "type-imports",
+        },
+      ],
+    },
   },
   {
     files: isDashboardPackage
       ? ["**/*.{ts,tsx}"]
       : ["apps/dashboard/**/*.{ts,tsx}"],
     plugins: {
-      "@next/next": nextPlugin
+      "@next/next": nextPlugin,
     },
     rules: {
       ...nextPlugin.configs.recommended.rules,
-      ...nextPlugin.configs["core-web-vitals"].rules
-    }
-  }
+      ...nextPlugin.configs["core-web-vitals"].rules,
+    },
+  },
 ];

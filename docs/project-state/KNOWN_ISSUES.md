@@ -2,27 +2,33 @@
 
 Status meanings: **Resolved** is fixed in the repository; **Pending** requires action before the related capability is complete; **Planned** belongs to a future documented phase.
 
+## Resolved During Sprint 1
+
+| Issue                                          | Resolution                                                                                |
+| ---------------------------------------------- | ----------------------------------------------------------------------------------------- |
+| Git metadata and remote availability           | Confirmed on `feature/sprint-1-foundation`; branch and history checks work normally.      |
+| Sprint 1 source audit and workspace validation | Completed with install, typecheck, lint, test, build, and Markdown formatting evidence.   |
+| Windows parallel-worker resource exhaustion    | Validation tasks and Next static generation use constrained concurrency.                  |
+| Windows standalone symlink creation            | Dashboard emits standalone output on Linux/Docker and standard `.next` output on Windows. |
+| Windows Jest worker spawning                   | API Jest runs in-band.                                                                    |
+
 ## Environment Issues
 
 | Status  | Issue                                                               | Impact                                                             | Next action                                                                                                                                  |
 | ------- | ------------------------------------------------------------------- | ------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------- |
 | Pending | No persistent local `.env` was present during runtime verification. | Root `pnpm dev` API startup rejects required configuration values. | Create an uncommitted local `.env` from `.env.example` with valid local values, or use temporary process variables for limited verification. |
-| Pending | Git tooling reported that the workspace is not a Git repository.    | Branch, status, commit, and history checks cannot be relied upon.  | Verify repository initialization and `.git` metadata before the next implementation sprint.                                                  |
 
 ## Windows Issues
 
-| Status   | Issue                                                                                | Impact                                         | Next action                                                                                                          |
-| -------- | ------------------------------------------------------------------------------------ | ---------------------------------------------- | -------------------------------------------------------------------------------------------------------------------- |
-| Resolved | Parallel workspace validation and Next worker processes exhausted local resources.   | OOM/process failures during checks and builds. | Root validation tasks and Next build use one worker. Reassess only with evidence from a higher-capacity environment. |
-| Resolved | Windows denied symlink creation while Next generated standalone tracing output.      | Local standalone build packaging failed.       | Dashboard emits standalone output on Linux/Docker only; Windows keeps standard `.next` output.                       |
-| Resolved | Jest worker processes failed to spawn (`EPERM`) in the recorded Windows environment. | API test process could not start workers.      | API Jest command uses `--runInBand`.                                                                                 |
+| Status  | Issue                                                                          | Impact                                        | Next action                                                                                  |
+| ------- | ------------------------------------------------------------------------------ | --------------------------------------------- | -------------------------------------------------------------------------------------------- |
+| Pending | The restricted local shell denies Node child-process creation (`spawn EPERM`). | Next build cannot complete inside that shell. | Run build outside the restricted shell; the unrestricted Windows build passed on 2026-07-24. |
 
 ## Linux Differences
 
-| Status   | Difference                                                              | Consequence                                                                                 |
-| -------- | ----------------------------------------------------------------------- | ------------------------------------------------------------------------------------------- |
-| Resolved | Dashboard standalone output is enabled outside Windows.                 | Docker/Linux builds retain the standalone artifact expected by `apps/dashboard/Dockerfile`. |
-| Pending  | Docker/Linux runtime has not been executed in the recorded environment. | Compose service health still needs verification on a Docker-capable host.                   |
+| Status  | Difference                                                              | Consequence                                                               |
+| ------- | ----------------------------------------------------------------------- | ------------------------------------------------------------------------- |
+| Pending | Docker/Linux runtime has not been executed in the recorded environment. | Compose service health still needs verification on a Docker-capable host. |
 
 ## Docker Requirements
 
@@ -34,11 +40,12 @@ Status meanings: **Resolved** is fixed in the repository; **Pending** requires a
 
 ## Future Improvements
 
-| Status  | Item                                                            | Notes                                                                                                          |
-| ------- | --------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------- |
-| Planned | Replace deprecated Turbo `--parallel` development invocation.   | Turbo emits a deprecation warning and recommends persistent task relationships in `turbo.json`.                |
-| Planned | Address Next’s non-fatal ESLint plugin-detection build warning. | Workspace lint passes; investigate only with relevant Next/ESLint configuration scope.                         |
-| Planned | Add feature-specific automated tests.                           | Current foundation package test commands primarily run TypeScript validation; API Jest reports no tests found. |
+| Status  | Item                                                                    | Notes                                                                                                          |
+| ------- | ----------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------- |
+| Planned | Replace deprecated Turbo `--parallel` development invocation.           | Turbo emits a deprecation warning and recommends persistent task relationships in `turbo.json`.                |
+| Planned | Address Next’s non-fatal ESLint plugin-detection build warning.         | Workspace lint passes; investigate only with relevant Next/ESLint configuration scope.                         |
+| Planned | Add feature-specific automated tests.                                   | Current foundation package test commands primarily run TypeScript validation; API Jest reports no tests found. |
+| Planned | Use Redis-backed throttler storage before horizontally scaling the API. | The configured global throttler is process-local; Redis is already available for the future shared store.      |
 
 ## Technical Debt
 
@@ -49,14 +56,13 @@ Status meanings: **Resolved** is fixed in the repository; **Pending** requires a
 
 ## Open Questions
 
-| Status  | Question                                                 | Required source                                 |
-| ------- | -------------------------------------------------------- | ----------------------------------------------- |
-| Pending | Which official documents define Sprint 1 scope?          | The approved Sprint 1 request.                  |
-| Pending | What Git remote/branch policy applies to this workspace? | Repository metadata or project owner direction. |
+| Status  | Question                                        | Required source                |
+| ------- | ----------------------------------------------- | ------------------------------ |
+| Pending | Which official documents define Sprint 2 scope? | The approved Sprint 2 request. |
 
 ## Current Blockers
 
-| Status  | Blocker                                           | Scope                                                     |
-| ------- | ------------------------------------------------- | --------------------------------------------------------- |
-| Pending | Docker unavailable locally.                       | PostgreSQL, Redis, and Compose runtime verification only. |
-| Pending | Valid persistent local configuration unavailable. | Standard root `pnpm dev` API startup only.                |
+| Status  | Blocker                                                 | Scope                                                                     |
+| ------- | ------------------------------------------------------- | ------------------------------------------------------------------------- |
+| Pending | Docker unavailable locally (`docker` is not on `PATH`). | PostgreSQL, Redis, API, Dashboard, and Compose runtime verification only. |
+| Pending | Valid persistent local configuration unavailable.       | Standard root `pnpm dev` API startup only.                                |

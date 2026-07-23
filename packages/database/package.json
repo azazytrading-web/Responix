@@ -15,6 +15,8 @@
     "build": "prisma generate && tsc -p tsconfig.json",
     "db:generate": "prisma generate",
     "db:migrate": "prisma migrate dev",
+    "db:deploy": "prisma migrate deploy",
+    "db:reset": "prisma migrate reset",
     "db:studio": "prisma studio",
     "lint": "eslint .",
     "typecheck": "tsc -p tsconfig.json --noEmit",

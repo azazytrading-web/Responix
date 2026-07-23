@@ -17,6 +17,8 @@
     "test": "turbo run test --concurrency=1",
     "db:generate": "pnpm --filter @responix/database db:generate",
     "db:migrate": "pnpm --filter @responix/database db:migrate",
+    "db:deploy": "pnpm --filter @responix/database db:deploy",
+    "db:reset": "pnpm --filter @responix/database db:reset",
     "db:studio": "pnpm --filter @responix/database db:studio"
   },
   "devDependencies": {

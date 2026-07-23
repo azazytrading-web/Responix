@@ -6,7 +6,7 @@
 | ----------------- | ----------------------------------------------------------------------------------- |
 | Project name      | Responix                                                                            |
 | Goal              | Enterprise multi-tenant AI customer-engagement platform.                            |
-| Version           | `0.0.0` private workspace package.                                                  |
+| Version           | `0.0.0` private, unreleased workspace package.                                      |
 | Development model | Sprint-based and core-first.                                                        |
 | Source of truth   | `MASTER_CODEX_PROMPT.md` and relevant files in `Official Technical Documentation/`. |
 
@@ -39,17 +39,17 @@ flowchart TB
   Config --> API
 ```
 
-| Area                    | Current technology                               |
-| ----------------------- | ------------------------------------------------ |
-| Language                | Strict TypeScript                                |
-| Workspace               | pnpm 9 workspaces and Turborepo                  |
-| Dashboard               | Next.js 15, React 19, Tailwind CSS               |
-| API                     | NestJS 11, Swagger/OpenAPI, Terminus             |
-| Data                    | Prisma 6, PostgreSQL with pgvector               |
-| Cache and queues        | Redis; BullMQ is installed in the API foundation |
-| Object storage contract | Cloudflare R2 environment variables              |
-| Local orchestration     | Docker Compose                                   |
-| Quality                 | ESLint 9, Prettier 3, TypeScript                 |
+| Area                    | Current technology                                                        |
+| ----------------------- | ------------------------------------------------------------------------- |
+| Language                | Strict TypeScript                                                         |
+| Workspace               | pnpm 9 workspaces and Turborepo                                           |
+| Dashboard               | Next.js 15, React 19, Tailwind CSS                                        |
+| API                     | NestJS 11, Swagger/OpenAPI, Terminus, Pino; rate limiting and compression |
+| Data                    | Prisma 6, PostgreSQL with pgvector                                        |
+| Cache and queues        | Redis; BullMQ is installed in the API foundation                          |
+| Object storage contract | Cloudflare R2 environment variables                                       |
+| Local orchestration     | Docker Compose                                                            |
+| Quality                 | ESLint 9, Prettier 3, TypeScript                                          |
 
 ## Repository Structure
 
@@ -67,15 +67,15 @@ The current Prisma foundation contains `Workspace`, `User`, and `AuditLog` model
 
 ## Completed Sprints, Current Sprint, and Validation
 
-| Item             | State                                                                           |
-| ---------------- | ------------------------------------------------------------------------------- |
-| Completed sprint | Sprint 0 — Foundation                                                           |
-| Current sprint   | No Sprint 1 implementation has started.                                         |
-| Product features | Not implemented; Sprint 0 excluded business features.                           |
-| Validation       | `pnpm typecheck`, `pnpm lint`, `pnpm test`, and `pnpm build` passed.            |
-| Runtime          | Dashboard/API startup and hot reload verified with temporary API configuration. |
+| Item             | State                                                                                                                     |
+| ---------------- | ------------------------------------------------------------------------------------------------------------------------- |
+| Completed sprint | Sprint 1 — Infrastructure Finalization.                                                                                   |
+| Current sprint   | Sprint 2 — Database; current and not yet implemented.                                                                     |
+| Product features | Not implemented; Sprint 0 and Sprint 1 excluded business features.                                                        |
+| Validation       | Sprint 1 `pnpm install`, `pnpm typecheck`, `pnpm lint`, `pnpm test`, and `pnpm build` passed.                             |
+| Runtime          | Dashboard/API startup and hot reload were verified during Sprint 0; Sprint 1 Compose verification is environment-limited. |
 
-Sprint 0 delivered the monorepo, API and Dashboard foundations, shared packages, Prisma/pgvector assets, Redis/Compose configuration, R2 configuration contract, and `GET /api/v1/health`.
+Sprint 1 finalized reproducible Docker dependency layers, production-only API runtime dependencies, Compose health checks, Prisma deploy/reset workflows and foundation-table migration, CI Turbo caching, API structured logging/rate limiting/compression/trust-proxy configuration, and Dashboard browser security headers. It did not add product features. ADR-012 records the production HTTP baseline decision.
 
 ## Development Rules and Coding Rules
 
@@ -88,20 +88,20 @@ Sprint 0 delivered the monorepo, API and Dashboard foundations, shared packages,
 
 ## Current Runtime Status
 
-| Component            | Verified state                                                             |
-| -------------------- | -------------------------------------------------------------------------- |
-| Dashboard            | HTTP 200 at `http://localhost:3000`.                                       |
-| API                  | Nest started with temporary process-only configuration.                    |
-| Health endpoint      | HTTP 200 at `http://localhost:4000/api/v1/health`, returning `status: ok`. |
-| API hot reload       | Nest incremental compilation and restart verified.                         |
-| Dashboard hot reload | Next recompilation verified after a metadata-only source touch.            |
+| Component            | Verified state                                                            |
+| -------------------- | ------------------------------------------------------------------------- |
+| Dashboard            | Sprint 0: HTTP 200 at `http://localhost:3000`; no Sprint 1 container run. |
+| API                  | Sprint 0: Nest started with temporary process-only configuration.         |
+| Health endpoint      | Sprint 0: HTTP 200 at `/api/v1/health`, returning `status: ok`.           |
+| API hot reload       | Sprint 0: Nest incremental compilation and restart verified.              |
+| Dashboard hot reload | Sprint 0: Next recompilation verified after a metadata-only source touch. |
 
 ## Infrastructure, Docker, Database, and Redis Status
 
 Docker Compose defines PostgreSQL, Redis, API, and Dashboard. In the recorded Windows environment, `docker` was unavailable on `PATH`, so `docker compose up -d` could not run. PostgreSQL port 5432 and Redis port 6379 were unavailable. This is an environment limitation, not a repository failure.
 
-- **Docker:** Compose assets exist; runtime execution is pending on a Docker-capable host.
-- **Database:** Prisma generation and schema/migrations are present; no running PostgreSQL instance was verified.
+- **Docker:** Compose assets and health checks are present; runtime execution is pending on a Docker-capable host.
+- **Database:** Prisma generation, pgvector, and formal foundation-table migration are present; no running PostgreSQL instance was verified.
 - **Redis:** Compose configuration is present; no running Redis instance was verified.
 - **Local command when Docker is available:** `docker compose up -d`, followed by `docker compose ps`.
 
@@ -125,7 +125,7 @@ Before every commit or review handoff, run:
 - Use focused branches: `feature/<scope>`, `fix/<scope>`, `docs/<scope>`, or `chore/<scope>`.
 - Use Conventional Commit-style messages, such as `feat(api): add workspace authentication`.
 - Do not mix generated files, secrets, or unrelated refactoring into a focused change.
-- Current limitation: `git status` reported this workspace was not a Git repository during Sprint 0 tooling. Verify `.git` metadata before relying on branch or commit commands.
+- Current branch: `feature/sprint-1-foundation`; remote origin is configured. Do not commit without explicit user approval.
 
 ## How Future AI Sessions Should Continue
 
@@ -137,4 +137,4 @@ Before every commit or review handoff, run:
 
 ## Current Repository Health
 
-Sprint 0 workspace validation passed. Dashboard and API runtime behavior were verified with valid temporary configuration. Complete infrastructure runtime verification remains blocked only by unavailable Docker, PostgreSQL, Redis, and persistent local configuration in the recorded Windows environment.
+Sprint 1 is complete: workspace validation and project-memory closeout passed. The unrestricted Windows environment completed the full production build. Compose runtime verification remains pending only because Docker, PostgreSQL, Redis, and persistent local configuration are unavailable in the recorded environment. Sprint 2 is current but has not started.

@@ -1,67 +1,41 @@
 # Session Handoff
 
-Update this file at the end of every AI or engineering session. Keep it concise, factual, and linked to validation evidence.
-
 ## Latest Handoff
 
-| Field              | Value                                                            |
-| ------------------ | ---------------------------------------------------------------- |
-| Session date       | 2026-07-24                                                       |
-| Current branch     | Unknown — Git metadata was not usable in the recorded workspace. |
-| Current sprint     | Sprint 0 approved; Sprint 1 has not started.                     |
-| Current task       | Finalize the post-Sprint 0 engineering foundation documentation. |
-| Repository version | `0.0.0`                                                          |
+| Field              | Value                                                                                                                            |
+| ------------------ | -------------------------------------------------------------------------------------------------------------------------------- |
+| Session date       | 2026-07-24                                                                                                                       |
+| Current branch     | `feature/sprint-1-foundation`                                                                                                    |
+| Completed sprint   | Sprint 1 — Infrastructure Finalization                                                                                           |
+| Current sprint     | Sprint 2 — Database; current and not yet implemented                                                                             |
+| Repository version | `0.0.0` private, unreleased workspace package                                                                                    |
+| Repository health  | Source/configuration audit complete; all workspace validation and formatting checks pass; changes remain unstaged by instruction |
 
-### Completed Work
+## Completed Sprint 1 Work
 
-- Completed and approved Sprint 0 validation.
-- Performed runtime verification of Dashboard and API with temporary local API configuration.
-- Fixed Nest build output regeneration and aligned API health route with Docker Compose.
-- Created the `docs/project-state/` memory system.
-- Added the mandatory AI bootstrap, permanent AI rules, glossary, project version dashboard, validation history, and repository workflow entry points.
+- Hardened Docker build reproducibility, build context, layer caching, and API production-image dependencies.
+- Added Compose health checks, Prisma deploy/reset scripts and foundation-table migration, CI Turbo caching, API structured logging/rate limiting/compression/proxy trust, and Dashboard security headers.
+- Recorded ADR-012 and synchronized project memory, validation history, roadmap, and current version state.
 
-### Files Modified
+## Validation Status
 
-- `README.md` and `MASTER_CODEX_PROMPT.md` — mandatory AI session bootstrap references.
-- `docs/project-state/AI_BOOTSTRAP.md`, `AI_RULES.md`, `PROJECT_GLOSSARY.md`, `PROJECT_VERSION.md`, and `VALIDATION_HISTORY.md` — engineering foundation documentation.
-- `apps/api/tsconfig.build.json` — disable stale incremental output reuse after Nest cleans `dist`.
-- `apps/api/src/main.ts` — add the `api` route prefix, making health available at `/api/v1/health`.
-- `docs/project-state/*` — persistent project memory documentation.
+| Check                     | Result                                         |
+| ------------------------- | ---------------------------------------------- |
+| `pnpm install`            | Passed                                         |
+| `pnpm typecheck`          | Passed                                         |
+| `pnpm lint`               | Passed                                         |
+| `pnpm test`               | Passed                                         |
+| `pnpm build`              | Passed in the unrestricted Windows environment |
+| `pnpm format`             | Passed                                         |
+| Git diff whitespace check | Passed                                         |
 
-### Validation Results
+## Runtime and Known Blockers
 
-- Documentation — internal relative links passed and updated Markdown passed Prettier formatting.
-- `pnpm typecheck` — passed during Sprint 0 validation.
-- `pnpm lint` — passed during Sprint 0 validation.
-- `pnpm test` — passed during Sprint 0 validation.
-- `pnpm build` — passed during Sprint 0 validation.
-- Dashboard — HTTP 200 at `http://localhost:3000` during runtime verification.
-- API — HTTP 200 at `http://localhost:4000/api/v1/health` with temporary process-only configuration.
-- Hot reload — verified for Nest and Next.
+- Docker is not installed or not on `PATH`; Compose, PostgreSQL, Redis, API/Dashboard container health, and Docker/Linux image execution remain unverified.
+- No persistent local `.env` exists; do not commit one. Use an uncommitted valid configuration only when runtime verification is authorized.
+- The restricted Windows shell blocks Node child-process creation with `spawn EPERM`; the unrestricted Windows build passed, proving this is environmental.
+- API throttling is process-local until a future horizontally scaled deployment introduces Redis-backed throttler storage.
 
-### Pending Tasks
+## Recommended First Task
 
-- Obtain an explicit Sprint 1 request and read only the official documentation it names.
-- Verify Docker Compose, PostgreSQL, Redis, and API container health on a Docker-capable machine.
-- Verify Git metadata/remote before branch or commit operations.
-
-### Known Problems
-
-- Docker is unavailable in the recorded Windows environment.
-- No persistent local `.env` is present; API configuration validation correctly rejects missing values.
-- Turbo development command warns that `--parallel` is deprecated.
-- Next production build emits a non-fatal ESLint plugin-detection warning.
-
-### Recommended Next Action
-
-Do not start Sprint 1 until its approved scope and required official documents are supplied. First verify local Docker availability and Git metadata if the next task needs either.
-
-### Warnings and Notes for Next Engineer
-
-- Read `AI_CONTEXT.md`, `KNOWN_ISSUES.md`, `ROADMAP_STATUS.md`, and this file before work.
-- Do not persist temporary runtime values or commit `.env` files.
-- Treat Docker/Redis/PostgreSQL absence as an environment limitation, not a reason to alter application behavior.
-
-## Template for the Next Session
-
-Use these editable sections: session date, current branch, current sprint, current task, completed work, files modified, validation results, pending tasks, known problems, recommended next action, and warnings for the next engineer.
+Read the approved Sprint 2 request and its explicitly named official documentation. Do not implement Sprint 2 until its scope, affected data modules, migration plan, and validation requirements are established. When a Docker-capable host is available, separately run the outstanding Compose verification.

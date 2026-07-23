@@ -21,7 +21,7 @@ When Git metadata is available, inspect latest commits and status before creatin
 | Documentation | `docs/<scope>`    | `docs/project-memory`    |
 | Maintenance   | `chore/<scope>`   | `chore/turbo-workflow`   |
 
-Current workspace note: Git tooling previously reported that the directory was not a repository. Resolve that environment/repository state before relying on Git commands.
+Current workspace note: Git metadata and the configured remote were confirmed on `feature/sprint-1-foundation`. Still inspect status and recent history before branch or release work.
 
 ## Implementing Work
 

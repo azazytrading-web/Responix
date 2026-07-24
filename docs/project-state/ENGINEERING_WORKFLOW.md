@@ -1,5 +1,9 @@
 # Engineering Workflow
 
+> Current project state (2026-07-25): Sprint 4 is complete and Sprint 5 — AI Engine is the active sprint. The workflow below is unchanged.
+
+> Sprint 4 closeout (2026-07-25): the workflow is unchanged. Its full validation sequence passed for the Workspace & Multi-Tenant Core; Docker-based runtime verification remains contingent on Docker being available locally.
+
 This workflow supplements official project documentation. If it conflicts with an approved sprint request or official document, the official source takes precedence.
 
 ## Starting a New Session
@@ -21,7 +25,7 @@ When Git metadata is available, inspect latest commits and status before creatin
 | Documentation | `docs/<scope>`    | `docs/project-memory`    |
 | Maintenance   | `chore/<scope>`   | `chore/turbo-workflow`   |
 
-Current workspace note: Git tooling previously reported that the directory was not a repository. Resolve that environment/repository state before relying on Git commands.
+Current workspace note: Git metadata and the configured remote were confirmed on `feature/sprint-1-foundation`. Still inspect status and recent history before branch or release work.
 
 ## Implementing Work
 

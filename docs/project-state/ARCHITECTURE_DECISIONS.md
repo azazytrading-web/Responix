@@ -1,6 +1,6 @@
 # Architecture Decisions
 
-This ADR register records decisions established by the repository and Sprint 0. Official technical documentation remains authoritative.
+This ADR register records accepted decisions established by the repository through Sprint 1. Official technical documentation remains authoritative.
 
 ## ADR-001 — Enterprise Modular Monorepo
 
@@ -78,3 +78,10 @@ This ADR register records decisions established by the repository and Sprint 0. 
 - **Context:** Local Windows standalone tracing failed on symlink creation and parallel static workers exhausted resources.
 - **Decision:** Limit Next build CPUs to one and enable standalone output on non-Windows platforms only.
 - **Consequences:** Docker/Linux retains the standalone artifact expected by the Dockerfile; Windows builds are slower and use standard `.next` output.
+
+## ADR-012 — Production HTTP Baseline
+
+- **Status:** Accepted
+- **Context:** The API had Helmet, CORS, validation, and health routing but did not activate its installed Pino logger or provide compression, request IDs, proxy-aware configuration, or rate limiting.
+- **Decision:** Activate Pino request/error/startup logging; generate or safely propagate request IDs; enable a configurable process-local global throttler; make compression enabled by default; and trust one proxy only when `TRUST_PROXY=true` is explicitly set.
+- **Consequences:** The health endpoint stays observable without throttling, reverse-proxy deployments must set `TRUST_PROXY=true` only behind a controlled proxy, and horizontally scaled API deployments must replace process-local throttling with Redis-backed storage.

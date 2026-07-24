@@ -1,62 +1,24 @@
-# Known Issues and Constraints
+# Known Issues
 
-Status meanings: **Resolved** is fixed in the repository; **Pending** requires action before the related capability is complete; **Planned** belongs to a future documented phase.
+## Active External Environment Limitations
 
-## Environment Issues
+| Status  | Limitation                                                 | Impact                                                                                                                 | Resolution                                         |
+| ------- | ---------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------- |
+| Pending | Docker is unavailable locally (`docker` is not on `PATH`). | `docker compose up --build` cannot start PostgreSQL, Redis, API, or Dashboard; Compose health verification is pending. | Run Compose verification on a Docker-capable host. |
 
-| Status  | Issue                                                               | Impact                                                             | Next action                                                                                                                                  |
-| ------- | ------------------------------------------------------------------- | ------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------- |
-| Pending | No persistent local `.env` was present during runtime verification. | Root `pnpm dev` API startup rejects required configuration values. | Create an uncommitted local `.env` from `.env.example` with valid local values, or use temporary process variables for limited verification. |
-| Pending | Git tooling reported that the workspace is not a Git repository.    | Branch, status, commit, and history checks cannot be relied upon.  | Verify repository initialization and `.git` metadata before the next implementation sprint.                                                  |
+There are no known Sprint 4 repository defects or unresolved Sprint 4 implementation issues.
 
-## Windows Issues
+## Resolved Sprint 4 Issues
 
-| Status   | Issue                                                                                | Impact                                         | Next action                                                                                                          |
-| -------- | ------------------------------------------------------------------------------------ | ---------------------------------------------- | -------------------------------------------------------------------------------------------------------------------- |
-| Resolved | Parallel workspace validation and Next worker processes exhausted local resources.   | OOM/process failures during checks and builds. | Root validation tasks and Next build use one worker. Reassess only with evidence from a higher-capacity environment. |
-| Resolved | Windows denied symlink creation while Next generated standalone tracing output.      | Local standalone build packaging failed.       | Dashboard emits standalone output on Linux/Docker only; Windows keeps standard `.next` output.                       |
-| Resolved | Jest worker processes failed to spawn (`EPERM`) in the recorded Windows environment. | API test process could not start workers.      | API Jest command uses `--runInBand`.                                                                                 |
+| Status   | Issue                        | Resolution                                                                                                                             |
+| -------- | ---------------------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
+| Resolved | Tenant ambiguity             | `WorkspaceMembership` is authoritative for tenant membership, role, and permissions; `User.workspaceId` is not used for authorization. |
+| Resolved | Cross-workspace access paths | Tenant context, guards, and workspace-scoped repositories require validated active membership.                                         |
+| Resolved | Membership lifecycle gaps    | Explicit invitation and membership state transitions, ownership invariants, quota checks, and session revocation are implemented.      |
+| Resolved | Workspace lifecycle gaps     | Create, update, archive, suspend, restore, and soft-delete controls are implemented with audit records and transaction safety.         |
+| Resolved | API consistency gaps         | DTO validation, domain errors, explicit REST operations, and repository/service/controller consistency were completed.                 |
+| Resolved | Sprint 4 validation          | Install, Prisma validation/generation, typecheck, lint, tests, and production build passed.                                            |
 
-## Linux Differences
+## Deferred Environment Verification
 
-| Status   | Difference                                                              | Consequence                                                                                 |
-| -------- | ----------------------------------------------------------------------- | ------------------------------------------------------------------------------------------- |
-| Resolved | Dashboard standalone output is enabled outside Windows.                 | Docker/Linux builds retain the standalone artifact expected by `apps/dashboard/Dockerfile`. |
-| Pending  | Docker/Linux runtime has not been executed in the recorded environment. | Compose service health still needs verification on a Docker-capable host.                   |
-
-## Docker Requirements
-
-| Status  | Requirement                                                                    | Consequence                                                                  |
-| ------- | ------------------------------------------------------------------------------ | ---------------------------------------------------------------------------- |
-| Pending | Docker must be installed and available on `PATH`.                              | `docker compose up -d` could not run in the recorded environment.            |
-| Pending | PostgreSQL and Redis must be running for complete infrastructure verification. | Ports 5432 and 6379 were unavailable locally.                                |
-| Pending | API Docker service requires a valid `.env` file.                               | The Compose API service cannot obtain its required configuration without it. |
-
-## Future Improvements
-
-| Status  | Item                                                            | Notes                                                                                                          |
-| ------- | --------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------- |
-| Planned | Replace deprecated Turbo `--parallel` development invocation.   | Turbo emits a deprecation warning and recommends persistent task relationships in `turbo.json`.                |
-| Planned | Address Next’s non-fatal ESLint plugin-detection build warning. | Workspace lint passes; investigate only with relevant Next/ESLint configuration scope.                         |
-| Planned | Add feature-specific automated tests.                           | Current foundation package test commands primarily run TypeScript validation; API Jest reports no tests found. |
-
-## Technical Debt
-
-| Status  | Item                                                     | Notes                                                                           |
-| ------- | -------------------------------------------------------- | ------------------------------------------------------------------------------- |
-| Planned | Expand the Prisma schema to documented platform modules. | Only foundation models exist; add modules only in their planned sprint.         |
-| Planned | Add production deployment validation.                    | Docker assets exist but have not been verified in a Docker-capable environment. |
-
-## Open Questions
-
-| Status  | Question                                                 | Required source                                 |
-| ------- | -------------------------------------------------------- | ----------------------------------------------- |
-| Pending | Which official documents define Sprint 1 scope?          | The approved Sprint 1 request.                  |
-| Pending | What Git remote/branch policy applies to this workspace? | Repository metadata or project owner direction. |
-
-## Current Blockers
-
-| Status  | Blocker                                           | Scope                                                     |
-| ------- | ------------------------------------------------- | --------------------------------------------------------- |
-| Pending | Docker unavailable locally.                       | PostgreSQL, Redis, and Compose runtime verification only. |
-| Pending | Valid persistent local configuration unavailable. | Standard root `pnpm dev` API startup only.                |
+Once Docker is available, run `docker compose up --build`, confirm `docker compose ps`, verify PostgreSQL and Redis health, then verify API, Dashboard, and the health endpoint. This is environment verification only and does not require changes to the completed Sprint 4 scope.

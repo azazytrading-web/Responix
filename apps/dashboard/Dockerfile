@@ -5,13 +5,13 @@ RUN corepack enable
 WORKDIR /app
 
 FROM base AS installer
-COPY package.json pnpm-workspace.yaml turbo.json tsconfig.base.json ./
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml turbo.json tsconfig.base.json ./
 COPY apps/dashboard/package.json apps/dashboard/package.json
 COPY packages/config/package.json packages/config/package.json
 COPY packages/types/package.json packages/types/package.json
 COPY packages/ui/package.json packages/ui/package.json
 COPY packages/utils/package.json packages/utils/package.json
-RUN pnpm install --filter @responix/dashboard... --frozen-lockfile=false
+RUN pnpm install --filter @responix/dashboard... --frozen-lockfile
 
 FROM installer AS builder
 COPY apps/dashboard apps/dashboard

@@ -3,6 +3,10 @@ import type { CanActivate, ExecutionContext } from "@nestjs/common";
 import { Reflector } from "@nestjs/core";
 import { JwtService } from "@nestjs/jwt";
 import { ConfigService } from "@nestjs/config";
+import type { TenantRequest } from "../tenant/tenant-context.service";
+import type { AuthClaims } from "./auth.types";
+import { SKIP_TENANT_CONTEXT } from "../tenant/tenant.metadata";
+import { PermissionDeniedException } from "../../common/domain-errors";
 export const IS_PUBLIC = "isPublic";
 export const Public = () => SetMetadata(IS_PUBLIC, true);
 export const Permissions = (...permissions: string[]) => SetMetadata("permissions", permissions);
@@ -16,7 +20,7 @@ export class JwtAuthGuard implements CanActivate {
   async canActivate(context: ExecutionContext) {
     const request = context
       .switchToHttp()
-      .getRequest<{ headers: { authorization?: string }; user?: unknown }>();
+      .getRequest<{ headers: { authorization?: string }; user?: AuthClaims }>();
     const required = this.reflector.getAllAndOverride<boolean>(IS_PUBLIC, [
       context.getHandler(),
       context.getClass()
@@ -25,7 +29,7 @@ export class JwtAuthGuard implements CanActivate {
     const token = request.headers.authorization?.replace(/^Bearer\s+/i, "");
     if (!token) throw new UnauthorizedException();
     try {
-      request.user = await this.jwt.verifyAsync(token, {
+      request.user = await this.jwt.verifyAsync<AuthClaims>(token, {
         secret: this.config.getOrThrow("JWT_ACCESS_SECRET")
       });
       return true;
@@ -38,13 +42,26 @@ export class JwtAuthGuard implements CanActivate {
 export class PermissionsGuard implements CanActivate {
   constructor(private readonly reflector: Reflector) {}
 
-  canActivate(context: ExecutionContext) {
+  canActivate(context: ExecutionContext): boolean {
     const required =
       this.reflector.getAllAndOverride<string[]>("permissions", [
         context.getHandler(),
         context.getClass()
       ]) ?? [];
-    const user = context.switchToHttp().getRequest<{ user?: { permissions?: string[] } }>().user;
-    return required.every((permission) => user?.permissions?.includes(permission));
+    const isPublic = this.reflector.getAllAndOverride<boolean>(IS_PUBLIC, [
+      context.getHandler(),
+      context.getClass()
+    ]);
+    const skipTenantContext = this.reflector.getAllAndOverride<boolean>(SKIP_TENANT_CONTEXT, [
+      context.getHandler(),
+      context.getClass()
+    ]);
+    if (isPublic || skipTenantContext || required.length === 0) return true;
+
+    const request = context.switchToHttp().getRequest<TenantRequest>();
+    if (!required.every((permission) => request.tenantContext?.permissions.includes(permission))) {
+      throw new PermissionDeniedException();
+    }
+    return true;
   }
 }

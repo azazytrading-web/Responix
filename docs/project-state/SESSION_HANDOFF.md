@@ -1,56 +1,27 @@
 # Session Handoff
 
-## Latest Handoff
+## Current Repository State — 2026-07-25
 
-| Field              | Value                                                                                                      |
-| ------------------ | ---------------------------------------------------------------------------------------------------------- |
-| Session date       | 2026-07-24                                                                                                 |
-| Current branch     | `feature/sprint-1-foundation`                                                                              |
-| Completed sprint   | Sprint 2 Ã¢â‚¬â€ Database Foundation                                                                       |
-| Current sprint     | Sprint 3 Ã¢â‚¬â€ Authentication; current and not yet implemented                                           |
-| Repository version | `0.0.0` private, unreleased workspace package                                                              |
-| Repository health  | Database foundation complete; required workspace validation passed; changes remain unstaged by instruction |
+| Field               | Value                                                                                   |
+| ------------------- | --------------------------------------------------------------------------------------- |
+| Current branch      | `feature/sprint-1-foundation`                                                           |
+| Current version     | `0.4.0` private, unreleased                                                             |
+| Completed sprint    | Sprint 4 — Workspace & Multi-Tenant Core                                                |
+| Current sprint      | Sprint 5 — AI Engine                                                                    |
+| Repository health   | Core Platform Complete; full repository validation passes                               |
+| Validation          | Install, Prisma validate/generate, typecheck, lint, tests, and build passed             |
+| Working-tree policy | Sprint changes are intentionally unstaged; do not commit, tag, or push without approval |
 
-## Completed Sprint 1 Work (Historical)
+## Completed Sprint 4 Scope
 
-- Hardened Docker build reproducibility, build context, layer caching, and API production-image dependencies.
-- Added Compose health checks, Prisma deploy/reset scripts and foundation-table migration, CI Turbo caching, API structured logging/rate limiting/compression/proxy trust, and Dashboard security headers.
-- Recorded ADR-012 and synchronized project memory, validation history, roadmap, and current version state.
+- Authoritative workspace membership, tenant context, tenant/membership guards, and membership-derived RBAC.
+- Workspace lifecycle, membership lifecycle, invitation lifecycle, audit records, transaction safety, and workspace-scoped repository hardening.
+- DTOs, domain-error consistency, endpoint quality review, and automated API test coverage.
 
-## Validation Status
+## Known External Blocker
 
-| Check                     | Result                                         |
-| ------------------------- | ---------------------------------------------- |
-| `pnpm install`            | Passed                                         |
-| `pnpm typecheck`          | Passed                                         |
-| `pnpm lint`               | Passed                                         |
-| `pnpm test`               | Passed                                         |
-| `pnpm build`              | Passed in the unrestricted Windows environment |
-| `pnpm format`             | Passed                                         |
-| Git diff whitespace check | Passed                                         |
+Docker is unavailable locally (`docker` is not on `PATH`). Compose verification for PostgreSQL, Redis, API, Dashboard, and health endpoints remains pending on a Docker-capable host. This is not a repository defect.
 
-## Runtime and Known Blockers
+## Recommended Next Action
 
-- Docker is not installed or not on `PATH`; Compose, PostgreSQL, Redis, API/Dashboard container health, and Docker/Linux image execution remain unverified.
-- No persistent local `.env` exists; do not commit one. Use an uncommitted valid configuration only when runtime verification is authorized.
-- The restricted Windows shell blocks Node child-process creation with `spawn EPERM`; the unrestricted Windows build passed, proving this is environmental.
-- API throttling is process-local until a future horizontally scaled deployment introduces Redis-backed throttler storage.
-
-## Recommended First Task
-
-Read the approved Sprint 2 request and its explicitly named official documentation. Do not implement Sprint 2 until its scope, affected data modules, migration plan, and validation requirements are established. When a Docker-capable host is available, separately run the outstanding Compose verification.
-
-## Sprint 2 Closeout
-
-- Complete schema: 26 models, 21 enums, 38 foreign-key relations, pgvector HNSW index, production migration, and idempotent mandatory seed data.
-- Validation passed: install, Prisma validate/generate, seed typecheck, typecheck, lint, test, and build.
-- Only blocker: Docker is unavailable locally, so Compose, PostgreSQL/Redis, and live migration/seed verification remain pending.
-- **Recommended first task:** Read the approved Sprint 3 request and only its named official documentation before implementing authentication.
-
-## Sprint 3 Closeout
-
-- **Completed sprint:** Sprint 3 — Identity, Authentication & Multi-Tenant Foundation.
-- **Repository health:** Full validation passed twice, including production build.
-- **Known blocker:** Docker remains unavailable for live migration/session runtime verification only.
-- **Next sprint:** Sprint 4 — Core Backend.
-- **Recommended first task:** Read the approved Sprint 4 request and named official specifications before implementation.
+Perform an engineering review before Sprint 5. Then read the approved Sprint 5 scope and only its named official documentation, inspect the unstaged working tree, and begin no work outside that approved scope.

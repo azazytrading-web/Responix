@@ -7,7 +7,11 @@ import { LoggerModule } from "nestjs-pino";
 import { ConfigModule } from "../config/config.module";
 import { HealthModule } from "../modules/health/health.module";
 import { AuthModule } from "../modules/auth/auth.module";
-import { JwtAuthGuard } from "../modules/auth/auth.guard";
+import { JwtAuthGuard, PermissionsGuard } from "../modules/auth/auth.guard";
+import { WorkspaceModule } from "../modules/workspace/workspace.module";
+import { MembershipGuard } from "../modules/tenant/membership.guard";
+import { TenantGuard } from "../modules/tenant/tenant.guard";
+import { TenantModule } from "../modules/tenant/tenant.module";
 
 @Module({
   imports: [
@@ -41,7 +45,9 @@ import { JwtAuthGuard } from "../modules/auth/auth.guard";
       })
     }),
     HealthModule,
-    AuthModule
+    TenantModule,
+    AuthModule,
+    WorkspaceModule
   ],
   providers: [
     {
@@ -50,7 +56,19 @@ import { JwtAuthGuard } from "../modules/auth/auth.guard";
     },
     {
       provide: APP_GUARD,
-      useClass: JwtAuthGuard
+      useExisting: JwtAuthGuard
+    },
+    {
+      provide: APP_GUARD,
+      useExisting: TenantGuard
+    },
+    {
+      provide: APP_GUARD,
+      useExisting: MembershipGuard
+    },
+    {
+      provide: APP_GUARD,
+      useExisting: PermissionsGuard
     }
   ]
 })

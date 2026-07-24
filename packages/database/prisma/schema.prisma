@@ -7,59 +7,784 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Workspace {
-  id        String    @id @default(uuid()) @db.Uuid
-  name      String
-  slug      String    @unique
-  status    String    @default("active")
-  timezone  String    @default("UTC")
-  language  String    @default("en")
-  createdAt DateTime  @default(now()) @map("created_at")
-  updatedAt DateTime  @updatedAt @map("updated_at")
-  deletedAt DateTime? @map("deleted_at")
+enum WorkspaceStatus {
+  ACTIVE
+  SUSPENDED
+  ARCHIVED
+}
 
-  users     User[]
-  auditLogs AuditLog[]
+enum UserStatus {
+  INVITED
+  ACTIVE
+  SUSPENDED
+}
+
+enum ConversationChannel {
+  WHATSAPP
+  EMAIL
+  WEB
+  SMS
+  API
+}
+
+enum ConversationStatus {
+  OPEN
+  PENDING
+  CLOSED
+}
+
+enum ConversationPriority {
+  LOW
+  NORMAL
+  HIGH
+  URGENT
+}
+
+enum SenderType {
+  CUSTOMER
+  USER
+  AGENT
+  SYSTEM
+}
+
+enum MessageType {
+  TEXT
+  IMAGE
+  AUDIO
+  VIDEO
+  FILE
+  TEMPLATE
+}
+
+enum MessageStatus {
+  QUEUED
+  SENT
+  DELIVERED
+  READ
+  FAILED
+}
+
+enum AgentStatus {
+  DRAFT
+  ACTIVE
+  DISABLED
+}
+
+enum ProviderStatus {
+  ACTIVE
+  DISABLED
+  UNHEALTHY
+}
+
+enum ModelStatus {
+  ACTIVE
+  DISABLED
+  DEPRECATED
+}
+
+enum KnowledgeStatus {
+  DRAFT
+  INDEXING
+  READY
+  FAILED
+  ARCHIVED
+}
+
+enum UploadStatus {
+  PENDING
+  UPLOADED
+  FAILED
+}
+
+enum IndexingStatus {
+  PENDING
+  PROCESSING
+  COMPLETED
+  FAILED
+}
+
+enum WorkflowStatus {
+  DRAFT
+  ACTIVE
+  PAUSED
+  ARCHIVED
+}
+
+enum ExecutionStatus {
+  PENDING
+  RUNNING
+  COMPLETED
+  FAILED
+  CANCELLED
+}
+
+enum BillingCycle {
+  MONTHLY
+  YEARLY
+}
+
+enum SubscriptionStatus {
+  TRIAL
+  ACTIVE
+  PAST_DUE
+  CANCELLED
+  EXPIRED
+}
+
+enum PaymentStatus {
+  PENDING
+  SUCCEEDED
+  FAILED
+  REFUNDED
+}
+
+enum ApiKeyStatus {
+  ACTIVE
+  REVOKED
+  EXPIRED
+}
+
+enum NotificationPriority {
+  LOW
+  NORMAL
+  HIGH
+  URGENT
+}
+
+model Workspace {
+  id                  String          @id @default(uuid()) @db.Uuid
+  name                String
+  slug                String          @unique
+  companyName         String?         @map("company_name")
+  ownerId             String?         @map("owner_user_id") @db.Uuid
+  logoUrl             String?         @map("logo_url")
+  primaryColor        String?         @map("primary_color")
+  secondaryColor      String?         @map("secondary_color")
+  country             String?
+  language            String          @default("en")
+  timezone            String          @default("UTC")
+  currency            String          @default("USD")
+  subscriptionId      String?         @map("subscription_id") @db.Uuid
+  planId              String?         @map("plan_id") @db.Uuid
+  status              WorkspaceStatus @default(ACTIVE)
+  maxUsers            Int             @default(0) @map("max_users")
+  maxAgents           Int             @default(0) @map("max_agents")
+  maxMessages         Int             @default(0) @map("max_messages")
+  maxStorage          BigInt          @default(0) @map("max_storage")
+  maxTokens           Int             @default(0) @map("max_tokens")
+  currentStorageUsage BigInt          @default(0) @map("current_storage_usage")
+  currentTokenUsage   Int             @default(0) @map("current_token_usage")
+  aiEnabled           Boolean         @default(true) @map("ai_enabled")
+  whatsappEnabled     Boolean         @default(false) @map("whatsapp_enabled")
+  emailEnabled        Boolean         @default(false) @map("email_enabled")
+  apiEnabled          Boolean         @default(false) @map("api_enabled")
+  createdAt           DateTime        @default(now()) @map("created_at")
+  updatedAt           DateTime        @updatedAt @map("updated_at")
+  deletedAt           DateTime?       @map("deleted_at")
+
+  owner              User?               @relation("WorkspaceOwner", fields: [ownerId], references: [id], onDelete: SetNull)
+  activeSubscription Subscription?       @relation("WorkspaceActiveSubscription", fields: [subscriptionId], references: [id], onDelete: SetNull)
+  plan               Plan?               @relation("WorkspacePlan", fields: [planId], references: [id], onDelete: SetNull)
+  users              User[]              @relation("WorkspaceUsers")
+  roles              Role[]
+  customers          Customer[]
+  conversations      Conversation[]
+  messages           Message[]
+  agents             AiAgent[]
+  knowledgeBases     KnowledgeBase[]
+  knowledgeDocuments KnowledgeDocument[]
+  workflows          Workflow[]
+  subscriptions      Subscription[]      @relation("WorkspaceSubscriptions")
+  payments           Payment[]
+  apiKeys            ApiKey[]
+  auditLogs          AuditLog[]
+  notifications      Notification[]
+  usageStatistics    UsageStatistic[]
+  featureFlags       FeatureFlag[]
 
   @@index([status])
+  @@index([createdAt])
   @@map("workspaces")
 }
 
 model User {
-  id           String    @id @default(uuid()) @db.Uuid
-  workspaceId  String    @map("workspace_id") @db.Uuid
-  email        String
+  id            String     @id @default(uuid()) @db.Uuid
+  workspaceId   String     @map("workspace_id") @db.Uuid
+  firstName     String?    @map("first_name")
+  lastName      String?    @map("last_name")
+  fullName      String     @map("full_name")
+  email         String
+  passwordHash  String     @map("password_hash")
+  phone         String?
+  avatar        String?
+  roleId        String?    @map("role_id") @db.Uuid
+  departmentId  String?    @map("department_id") @db.Uuid
+  status        UserStatus @default(INVITED)
+  language      String     @default("en")
+  timezone      String     @default("UTC")
+  lastLoginAt   DateTime?  @map("last_login")
+  emailVerified Boolean    @default(false) @map("email_verified")
+  mfaEnabled    Boolean    @default(false) @map("mfa_enabled")
+  createdAt     DateTime   @default(now()) @map("created_at")
+  updatedAt     DateTime   @updatedAt @map("updated_at")
+  deletedAt     DateTime?  @map("deleted_at")
+
+  workspace             Workspace           @relation("WorkspaceUsers", fields: [workspaceId], references: [id], onDelete: Restrict)
+  role                  Role?               @relation(fields: [roleId], references: [id], onDelete: SetNull)
+  ownedWorkspaces       Workspace[]         @relation("WorkspaceOwner")
+  assignedCustomers     Customer[]          @relation("CustomerAssignee")
+  assignedConversations Conversation[]      @relation("ConversationAssignee")
+  uploadedDocuments     KnowledgeDocument[] @relation("DocumentUploader")
+  auditLogs             AuditLog[]
+  notifications         Notification[]
+
+  @@unique([workspaceId, email])
+  @@index([workspaceId, status])
+  @@index([email])
+  @@index([phone])
+  @@map("users")
+}
+
+model Role {
+  id          String    @id @default(uuid()) @db.Uuid
+  workspaceId String?   @map("workspace_id") @db.Uuid
+  name        String
+  description String?
+  priority    Int       @default(0)
+  systemRole  Boolean   @default(false) @map("system_role")
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
+  deletedAt   DateTime? @map("deleted_at")
+
+  workspace       Workspace?       @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  users           User[]
+  rolePermissions RolePermission[]
+
+  @@unique([workspaceId, name])
+  @@index([workspaceId, priority])
+  @@map("roles")
+}
+
+model Permission {
+  id          String   @id @default(uuid()) @db.Uuid
+  code        String   @unique
+  description String?
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  rolePermissions RolePermission[]
+
+  @@map("permissions")
+}
+
+model RolePermission {
+  id           String   @id @default(uuid()) @db.Uuid
+  roleId       String   @map("role_id") @db.Uuid
+  permissionId String   @map("permission_id") @db.Uuid
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+
+  role       Role       @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  permission Permission @relation(fields: [permissionId], references: [id], onDelete: Cascade)
+
+  @@unique([roleId, permissionId])
+  @@index([permissionId])
+  @@map("role_permissions")
+}
+
+model Customer {
+  id              String    @id @default(uuid()) @db.Uuid
+  workspaceId     String    @map("workspace_id") @db.Uuid
+  fullName        String    @map("full_name")
+  firstName       String?   @map("first_name")
+  lastName        String?   @map("last_name")
+  phone           String?
+  email           String?
+  country         String?
+  city            String?
+  language        String?   @default("en")
+  gender          String?
+  birthDate       DateTime? @map("birth_date") @db.Date
+  notes           String?
+  leadScore       Int       @default(0) @map("lead_score")
+  pipelineStageId String?   @map("pipeline_stage_id") @db.Uuid
+  assignedUserId  String?   @map("assigned_user_id") @db.Uuid
+  aiSummary       String?   @map("ai_summary")
+  sentimentScore  Decimal?  @map("sentiment_score") @db.Decimal(5, 2)
+  tags            String[]  @default([])
+  createdAt       DateTime  @default(now()) @map("created_at")
+  updatedAt       DateTime  @updatedAt @map("updated_at")
+  deletedAt       DateTime? @map("deleted_at")
+
+  workspace     Workspace      @relation(fields: [workspaceId], references: [id], onDelete: Restrict)
+  assignedUser  User?          @relation("CustomerAssignee", fields: [assignedUserId], references: [id], onDelete: SetNull)
+  conversations Conversation[]
+  messages      Message[]
+  workflowRuns  WorkflowRun[]
+
+  @@index([workspaceId, createdAt])
+  @@index([workspaceId, phone])
+  @@index([workspaceId, email])
+  @@index([assignedUserId])
+  @@map("customers")
+}
+
+model Conversation {
+  id              String               @id @default(uuid()) @db.Uuid
+  workspaceId     String               @map("workspace_id") @db.Uuid
+  customerId      String               @map("customer_id") @db.Uuid
+  assignedUserId  String?              @map("assigned_user_id") @db.Uuid
+  assignedAgentId String?              @map("assigned_agent_id") @db.Uuid
+  channel         ConversationChannel
+  status          ConversationStatus   @default(OPEN)
+  priority        ConversationPriority @default(NORMAL)
+  language        String?              @default("en")
+  startedAt       DateTime             @default(now()) @map("started_at")
+  closedAt        DateTime?            @map("closed_at")
+  totalMessages   Int                  @default(0) @map("total_messages")
+  aiMessages      Int                  @default(0) @map("ai_messages")
+  humanMessages   Int                  @default(0) @map("human_messages")
+  totalTokens     Int                  @default(0) @map("total_tokens")
+  totalCost       Decimal              @default(0) @map("total_cost") @db.Decimal(14, 6)
+  sentiment       String?
+  summary         String?
+  createdAt       DateTime             @default(now()) @map("created_at")
+  updatedAt       DateTime             @updatedAt @map("updated_at")
+  deletedAt       DateTime?            @map("deleted_at")
+
+  workspace     Workspace     @relation(fields: [workspaceId], references: [id], onDelete: Restrict)
+  customer      Customer      @relation(fields: [customerId], references: [id], onDelete: Restrict)
+  assignedUser  User?         @relation("ConversationAssignee", fields: [assignedUserId], references: [id], onDelete: SetNull)
+  assignedAgent AiAgent?      @relation("ConversationAgent", fields: [assignedAgentId], references: [id], onDelete: SetNull)
+  messages      Message[]
+  workflowRuns  WorkflowRun[]
+
+  @@index([workspaceId, status])
+  @@index([workspaceId, createdAt])
+  @@index([customerId, workspaceId])
+  @@index([assignedUserId])
+  @@index([assignedAgentId])
+  @@map("conversations")
+}
+
+model Message {
+  id                String        @id @default(uuid()) @db.Uuid
+  conversationId    String        @map("conversation_id") @db.Uuid
+  customerId        String        @map("customer_id") @db.Uuid
+  workspaceId       String        @map("workspace_id") @db.Uuid
+  senderType        SenderType    @map("sender_type")
+  senderId          String?       @map("sender_id") @db.Uuid
+  messageType       MessageType   @map("message_type")
+  content           String?
+  translatedContent String?       @map("translated_content")
+  attachmentUrl     String?       @map("attachment_url")
+  modelUsed         String?       @map("model_used")
+  tokens            Int           @default(0)
+  cost              Decimal       @default(0) @db.Decimal(14, 6)
+  latency           Int?
+  confidence        Decimal?      @db.Decimal(5, 2)
+  status            MessageStatus @default(QUEUED)
+  createdAt         DateTime      @default(now()) @map("created_at")
+  updatedAt         DateTime      @updatedAt @map("updated_at")
+  deletedAt         DateTime?     @map("deleted_at")
+
+  conversation Conversation @relation(fields: [conversationId], references: [id], onDelete: Restrict)
+  customer     Customer     @relation(fields: [customerId], references: [id], onDelete: Restrict)
+  workspace    Workspace    @relation(fields: [workspaceId], references: [id], onDelete: Restrict)
+
+  @@index([conversationId, createdAt])
+  @@index([customerId])
+  @@index([workspaceId, createdAt])
+  @@index([status])
+  @@map("messages")
+}
+
+model AiProvider {
+  id                 String         @id @default(uuid()) @db.Uuid
+  providerName       String         @unique @map("provider_name")
+  apiBaseUrl         String?        @map("api_base_url")
+  authenticationType String?        @map("authentication_type")
+  status             ProviderStatus @default(ACTIVE)
+  priority           Int            @default(0)
+  averageLatency     Int?           @map("average_latency")
+  healthScore        Decimal?       @map("health_score") @db.Decimal(5, 2)
+  dailyCost          Decimal        @default(0) @map("daily_cost") @db.Decimal(14, 6)
+  monthlyCost        Decimal        @default(0) @map("monthly_cost") @db.Decimal(14, 6)
+  createdAt          DateTime       @default(now()) @map("created_at")
+  updatedAt          DateTime       @updatedAt @map("updated_at")
+
+  models AiModel[]
+  agents AiAgent[]
+
+  @@index([status, priority])
+  @@map("ai_providers")
+}
+
+model AiModel {
+  id                String      @id @default(uuid()) @db.Uuid
+  providerId        String      @map("provider_id") @db.Uuid
+  modelName         String      @map("model_name")
+  displayName       String      @map("display_name")
+  contextWindow     Int         @map("context_window")
+  inputCost         Decimal     @default(0) @map("input_cost") @db.Decimal(14, 6)
+  outputCost        Decimal     @default(0) @map("output_cost") @db.Decimal(14, 6)
+  supportsVision    Boolean     @default(false) @map("supports_vision")
+  supportsAudio     Boolean     @default(false) @map("supports_audio")
+  supportsTools     Boolean     @default(false) @map("supports_tools")
+  supportsReasoning Boolean     @default(false) @map("supports_reasoning")
+  supportsStreaming Boolean     @default(false) @map("supports_streaming")
+  maxOutputTokens   Int?        @map("max_output_tokens")
+  status            ModelStatus @default(ACTIVE)
+  priority          Int         @default(0)
+  createdAt         DateTime    @default(now()) @map("created_at")
+  updatedAt         DateTime    @updatedAt @map("updated_at")
+
+  provider AiProvider @relation(fields: [providerId], references: [id], onDelete: Restrict)
+  agents   AiAgent[]
+
+  @@unique([providerId, modelName])
+  @@index([providerId, status])
+  @@map("ai_models")
+}
+
+model AiAgent {
+  id               String      @id @default(uuid()) @db.Uuid
+  workspaceId      String      @map("workspace_id") @db.Uuid
+  name             String
+  description      String?
+  avatar           String?
+  personality      String?
+  prompt           String
+  modelId          String      @map("model_id") @db.Uuid
+  providerId       String      @map("provider_id") @db.Uuid
+  temperature      Decimal     @default(0.7) @db.Decimal(3, 2)
+  maxTokens        Int         @map("max_tokens")
+  topP             Decimal?    @map("top_p") @db.Decimal(3, 2)
+  memoryEnabled    Boolean     @default(false) @map("memory_enabled")
+  knowledgeEnabled Boolean     @default(false) @map("knowledge_enabled")
+  toolsEnabled     Boolean     @default(false) @map("tools_enabled")
+  fallbackEnabled  Boolean     @default(false) @map("fallback_enabled")
+  status           AgentStatus @default(DRAFT)
+  version          Int         @default(1)
+  createdAt        DateTime    @default(now()) @map("created_at")
+  updatedAt        DateTime    @updatedAt @map("updated_at")
+  deletedAt        DateTime?   @map("deleted_at")
+
+  workspace     Workspace      @relation(fields: [workspaceId], references: [id], onDelete: Restrict)
+  model         AiModel        @relation(fields: [modelId], references: [id], onDelete: Restrict)
+  provider      AiProvider     @relation(fields: [providerId], references: [id], onDelete: Restrict)
+  conversations Conversation[] @relation("ConversationAgent")
+
+  @@unique([workspaceId, name])
+  @@index([workspaceId, status])
+  @@index([modelId])
+  @@index([providerId])
+  @@map("ai_agents")
+}
+
+model KnowledgeBase {
+  id              String          @id @default(uuid()) @db.Uuid
+  workspaceId     String          @map("workspace_id") @db.Uuid
+  name            String
+  description     String?
+  totalDocuments  Int             @default(0) @map("total_documents")
+  totalChunks     Int             @default(0) @map("total_chunks")
+  totalEmbeddings Int             @default(0) @map("total_embeddings")
+  embeddingModel  String?         @map("embedding_model")
+  vectorDatabase  String          @default("pgvector") @map("vector_database")
+  status          KnowledgeStatus @default(DRAFT)
+  createdAt       DateTime        @default(now()) @map("created_at")
+  updatedAt       DateTime        @updatedAt @map("updated_at")
+  deletedAt       DateTime?       @map("deleted_at")
+
+  workspace Workspace           @relation(fields: [workspaceId], references: [id], onDelete: Restrict)
+  documents KnowledgeDocument[]
+
+  @@unique([workspaceId, name])
+  @@index([workspaceId, status])
+  @@map("knowledge_bases")
+}
+
+model KnowledgeDocument {
+  id              String         @id @default(uuid()) @db.Uuid
+  knowledgeBaseId String         @map("knowledge_base_id") @db.Uuid
+  workspaceId     String         @map("workspace_id") @db.Uuid
+  fileName        String         @map("file_name")
+  originalName    String         @map("original_name")
+  mimeType        String         @map("mime_type")
+  fileSize        BigInt         @map("file_size")
+  totalPages      Int?           @map("total_pages")
+  totalChunks     Int            @default(0) @map("total_chunks")
+  indexingStatus  IndexingStatus @default(PENDING) @map("indexing_status")
+  uploadStatus    UploadStatus   @default(PENDING) @map("upload_status")
+  uploadedById    String?        @map("uploaded_by") @db.Uuid
+  createdAt       DateTime       @default(now()) @map("created_at")
+  updatedAt       DateTime       @updatedAt @map("updated_at")
+  deletedAt       DateTime?      @map("deleted_at")
+
+  knowledgeBase KnowledgeBase @relation(fields: [knowledgeBaseId], references: [id], onDelete: Restrict)
+  workspace     Workspace     @relation(fields: [workspaceId], references: [id], onDelete: Restrict)
+  uploadedBy    User?         @relation("DocumentUploader", fields: [uploadedById], references: [id], onDelete: SetNull)
+  embeddings    Embedding[]
+
+  @@index([workspaceId, createdAt])
+  @@index([knowledgeBaseId, indexingStatus])
+  @@index([uploadStatus])
+  @@map("knowledge_documents")
+}
+
+model Embedding {
+  id             String                       @id @default(uuid()) @db.Uuid
+  documentId     String                       @map("document_id") @db.Uuid
+  chunkNumber    Int                          @map("chunk_number")
+  chunkText      String                       @map("chunk_text")
+  vectorId       String                       @unique @map("vector_id")
+  vector         Unsupported("vector(1536)")?
+  embeddingModel String                       @map("embedding_model")
+  tokenCount     Int                          @default(0) @map("token_count")
+  metadata       Json?
+  createdAt      DateTime                     @default(now()) @map("created_at")
+  updatedAt      DateTime                     @updatedAt @map("updated_at")
+
+  document KnowledgeDocument @relation(fields: [documentId], references: [id], onDelete: Restrict)
+
+  @@unique([documentId, chunkNumber])
+  @@index([embeddingModel])
+  @@map("embeddings")
+}
+
+model Workflow {
+  id           String         @id @default(uuid()) @db.Uuid
+  workspaceId  String         @map("workspace_id") @db.Uuid
   name         String
-  passwordHash String    @map("password_hash")
-  status       String    @default("active")
+  description  String?
+  version      Int            @default(1)
+  status       WorkflowStatus @default(DRAFT)
+  triggerType  String         @map("trigger_type")
+  workflowJson Json           @map("workflow_json")
+  publishedAt  DateTime?      @map("published_at")
+  createdById  String?        @map("created_by") @db.Uuid
+  createdAt    DateTime       @default(now()) @map("created_at")
+  updatedAt    DateTime       @updatedAt @map("updated_at")
+  deletedAt    DateTime?      @map("deleted_at")
+
+  workspace Workspace     @relation(fields: [workspaceId], references: [id], onDelete: Restrict)
+  runs      WorkflowRun[]
+
+  @@unique([workspaceId, name, version])
+  @@index([workspaceId, status])
+  @@index([createdById])
+  @@map("workflows")
+}
+
+model WorkflowRun {
+  id              String          @id @default(uuid()) @db.Uuid
+  workflowId      String          @map("workflow_id") @db.Uuid
+  customerId      String?         @map("customer_id") @db.Uuid
+  conversationId  String?         @map("conversation_id") @db.Uuid
+  executionTime   Int?            @map("execution_time")
+  executionStatus ExecutionStatus @default(PENDING) @map("execution_status")
+  errorMessage    String?         @map("error_message")
+  startedAt       DateTime?       @map("started_at")
+  finishedAt      DateTime?       @map("finished_at")
+  createdAt       DateTime        @default(now()) @map("created_at")
+  updatedAt       DateTime        @updatedAt @map("updated_at")
+
+  workflow     Workflow      @relation(fields: [workflowId], references: [id], onDelete: Restrict)
+  customer     Customer?     @relation(fields: [customerId], references: [id], onDelete: SetNull)
+  conversation Conversation? @relation(fields: [conversationId], references: [id], onDelete: SetNull)
+
+  @@index([workflowId, createdAt])
+  @@index([customerId])
+  @@index([conversationId])
+  @@index([executionStatus])
+  @@map("workflow_runs")
+}
+
+model Plan {
+  id           String    @id @default(uuid()) @db.Uuid
+  name         String    @unique
+  monthlyPrice Decimal   @map("monthly_price") @db.Decimal(14, 2)
+  yearlyPrice  Decimal   @map("yearly_price") @db.Decimal(14, 2)
+  maxUsers     Int       @default(0) @map("max_users")
+  maxAgents    Int       @default(0) @map("max_agents")
+  maxMessages  Int       @default(0) @map("max_messages")
+  maxStorage   BigInt    @default(0) @map("max_storage")
+  maxTokens    Int       @default(0) @map("max_tokens")
+  featuresJson Json      @map("features_json")
+  active       Boolean   @default(true)
   createdAt    DateTime  @default(now()) @map("created_at")
   updatedAt    DateTime  @updatedAt @map("updated_at")
   deletedAt    DateTime? @map("deleted_at")
 
-  workspace Workspace @relation(fields: [workspaceId], references: [id])
+  activeForWorkspaces Workspace[]    @relation("WorkspacePlan")
+  subscriptions       Subscription[]
 
-  @@unique([workspaceId, email])
-  @@index([workspaceId])
-  @@index([email])
-  @@index([status])
-  @@map("users")
+  @@index([active])
+  @@map("plans")
+}
+
+model Subscription {
+  id           String             @id @default(uuid()) @db.Uuid
+  workspaceId  String             @map("workspace_id") @db.Uuid
+  planId       String             @map("plan_id") @db.Uuid
+  billingCycle BillingCycle       @map("billing_cycle")
+  status       SubscriptionStatus @default(TRIAL)
+  startedAt    DateTime           @map("started_at")
+  expiresAt    DateTime?          @map("expires_at")
+  autoRenew    Boolean            @default(false) @map("auto_renew")
+  nextPayment  DateTime?          @map("next_payment")
+  createdAt    DateTime           @default(now()) @map("created_at")
+  updatedAt    DateTime           @updatedAt @map("updated_at")
+  deletedAt    DateTime?          @map("deleted_at")
+
+  workspace           Workspace   @relation("WorkspaceSubscriptions", fields: [workspaceId], references: [id], onDelete: Restrict)
+  plan                Plan        @relation(fields: [planId], references: [id], onDelete: Restrict)
+  activeForWorkspaces Workspace[] @relation("WorkspaceActiveSubscription")
+
+  @@index([workspaceId, status])
+  @@index([planId])
+  @@map("subscriptions")
+}
+
+model Payment {
+  id              String        @id @default(uuid()) @db.Uuid
+  workspaceId     String        @map("workspace_id") @db.Uuid
+  invoiceId       String?       @map("invoice_id") @db.Uuid
+  paymentProvider String        @map("payment_provider")
+  amount          Decimal       @db.Decimal(14, 2)
+  currency        String        @default("USD")
+  paymentStatus   PaymentStatus @default(PENDING) @map("payment_status")
+  transactionId   String?       @unique @map("transaction_id")
+  paidAt          DateTime?     @map("paid_at")
+  createdAt       DateTime      @default(now()) @map("created_at")
+  updatedAt       DateTime      @updatedAt @map("updated_at")
+
+  workspace Workspace @relation(fields: [workspaceId], references: [id], onDelete: Restrict)
+
+  @@index([workspaceId, createdAt])
+  @@index([paymentStatus])
+  @@map("payments")
+}
+
+model ApiKey {
+  id              String       @id @default(uuid()) @db.Uuid
+  workspaceId     String       @map("workspace_id") @db.Uuid
+  name            String
+  apiKeyHash      String       @unique @map("api_key_hash")
+  permissionsJson Json         @map("permissions_json")
+  lastUsedAt      DateTime?    @map("last_used_at")
+  expiresAt       DateTime?    @map("expires_at")
+  status          ApiKeyStatus @default(ACTIVE)
+  createdAt       DateTime     @default(now()) @map("created_at")
+  updatedAt       DateTime     @updatedAt @map("updated_at")
+  deletedAt       DateTime?    @map("deleted_at")
+
+  workspace Workspace @relation(fields: [workspaceId], references: [id], onDelete: Restrict)
+
+  @@unique([workspaceId, name])
+  @@index([workspaceId, status])
+  @@map("api_keys")
 }
 
 model AuditLog {
   id          String   @id @default(uuid()) @db.Uuid
   workspaceId String?  @map("workspace_id") @db.Uuid
-  actorId     String?  @map("actor_id") @db.Uuid
+  userId      String?  @map("user_id") @db.Uuid
   action      String
   entityType  String   @map("entity_type")
   entityId    String?  @map("entity_id")
-  ipAddress   String?  @map("ip_address")
+  oldValues   Json?    @map("old_values")
+  newValues   Json?    @map("new_values")
   metadata    Json?
+  ipAddress   String?  @map("ip_address")
+  userAgent   String?  @map("user_agent")
   createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
 
-  workspace Workspace? @relation(fields: [workspaceId], references: [id])
+  workspace Workspace? @relation(fields: [workspaceId], references: [id], onDelete: SetNull)
+  user      User?      @relation(fields: [userId], references: [id], onDelete: SetNull)
 
   @@index([workspaceId, createdAt])
-  @@index([actorId])
+  @@index([userId])
   @@index([action])
   @@map("audit_logs")
+}
+
+model Notification {
+  id          String               @id @default(uuid()) @db.Uuid
+  workspaceId String               @map("workspace_id") @db.Uuid
+  userId      String?              @map("user_id") @db.Uuid
+  type        String
+  title       String
+  body        String
+  priority    NotificationPriority @default(NORMAL)
+  readAt      DateTime?            @map("read_at")
+  createdAt   DateTime             @default(now()) @map("created_at")
+  updatedAt   DateTime             @updatedAt @map("updated_at")
+  deletedAt   DateTime?            @map("deleted_at")
+
+  workspace Workspace @relation(fields: [workspaceId], references: [id], onDelete: Restrict)
+  user      User?     @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([workspaceId, createdAt])
+  @@index([userId, readAt])
+  @@map("notifications")
+}
+
+model UsageStatistic {
+  id              String   @id @default(uuid()) @db.Uuid
+  workspaceId     String   @map("workspace_id") @db.Uuid
+  date            DateTime @db.Date
+  totalMessages   Int      @default(0) @map("total_messages")
+  totalAiRequests Int      @default(0) @map("total_ai_requests")
+  totalTokens     Int      @default(0) @map("total_tokens")
+  totalCost       Decimal  @default(0) @map("total_cost") @db.Decimal(14, 6)
+  storageUsage    BigInt   @default(0) @map("storage_usage")
+  apiCalls        Int      @default(0) @map("api_calls")
+  createdAt       DateTime @default(now()) @map("created_at")
+  updatedAt       DateTime @updatedAt @map("updated_at")
+
+  workspace Workspace @relation(fields: [workspaceId], references: [id], onDelete: Restrict)
+
+  @@unique([workspaceId, date])
+  @@index([date])
+  @@map("usage_statistics")
+}
+
+model FeatureFlag {
+  id          String    @id @default(uuid()) @db.Uuid
+  workspaceId String?   @map("workspace_id") @db.Uuid
+  featureName String    @unique @map("feature_name")
+  enabled     Boolean   @default(false)
+  enabledAt   DateTime? @map("enabled_at")
+  expiresAt   DateTime? @map("expires_at")
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
+
+  workspace Workspace? @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+
+  @@index([workspaceId])
+  @@map("feature_flags")
+}
+
+model SystemSetting {
+  id        String   @id @default(uuid()) @db.Uuid
+  key       String   @unique
+  value     Json
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("system_settings")
+}
+
+model Channel {
+  id          String   @id @default(uuid()) @db.Uuid
+  name        String   @unique
+  displayName String   @map("display_name")
+  enabled     Boolean  @default(true)
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  @@map("channels")
 }

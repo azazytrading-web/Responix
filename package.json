@@ -15,10 +15,12 @@
     "format:write": "prettier --write .",
     "typecheck": "turbo run typecheck --concurrency=1",
     "test": "turbo run test --concurrency=1",
+    "prisma": "pnpm --dir packages/database exec prisma",
     "db:generate": "pnpm --filter @responix/database db:generate",
     "db:migrate": "pnpm --filter @responix/database db:migrate",
     "db:deploy": "pnpm --filter @responix/database db:deploy",
     "db:reset": "pnpm --filter @responix/database db:reset",
+    "db:seed": "pnpm --filter @responix/database db:seed",
     "db:studio": "pnpm --filter @responix/database db:studio"
   },
   "devDependencies": {

@@ -12,11 +12,13 @@
     }
   },
   "scripts": {
-    "build": "prisma generate && tsc -p tsconfig.json",
+    "build": "prisma generate && tsc -p tsconfig.build.json",
     "db:generate": "prisma generate",
+    "db:validate": "prisma validate",
     "db:migrate": "prisma migrate dev",
     "db:deploy": "prisma migrate deploy",
     "db:reset": "prisma migrate reset",
+    "db:seed": "prisma db seed",
     "db:studio": "prisma studio",
     "lint": "eslint .",
     "typecheck": "tsc -p tsconfig.json --noEmit",
@@ -27,7 +29,9 @@
   },
   "devDependencies": {
     "@responix/config": "workspace:*",
+    "@types/node": "^22.10.7",
     "prisma": "^6.2.1",
+    "tsx": "^4.23.1",
     "typescript": "^5.7.3"
   }
 }

@@ -16,15 +16,15 @@ Do not redesign documented architecture or infer requirements absent from the ac
 
 This file is the entry point for repository memory. Read the linked documents in this order before implementation:
 
-1. [AI_BOOTSTRAP.md](AI_BOOTSTRAP.md) — concise onboarding rules.
-2. [SESSION_HANDOFF.md](SESSION_HANDOFF.md) — immediate session state and next action.
-3. [KNOWN_ISSUES.md](KNOWN_ISSUES.md) — active constraints and blockers.
-4. [ENGINEERING_WORKFLOW.md](ENGINEERING_WORKFLOW.md) — required engineering process.
-5. [AI_RULES.md](AI_RULES.md) — permanent non-negotiable rules.
-6. [PROJECT_VERSION.md](PROJECT_VERSION.md) — repository/version dashboard.
-7. [VALIDATION_HISTORY.md](VALIDATION_HISTORY.md) — historical validation evidence.
-8. [ROADMAP_STATUS.md](ROADMAP_STATUS.md) — approved delivery sequence.
-9. [ARCHITECTURE_DECISIONS.md](ARCHITECTURE_DECISIONS.md) and [PROJECT_GLOSSARY.md](PROJECT_GLOSSARY.md) — decisions and terminology.
+1. [AI_BOOTSTRAP.md](AI_BOOTSTRAP.md) Ã¢â‚¬â€ concise onboarding rules.
+2. [SESSION_HANDOFF.md](SESSION_HANDOFF.md) Ã¢â‚¬â€ immediate session state and next action.
+3. [KNOWN_ISSUES.md](KNOWN_ISSUES.md) Ã¢â‚¬â€ active constraints and blockers.
+4. [ENGINEERING_WORKFLOW.md](ENGINEERING_WORKFLOW.md) Ã¢â‚¬â€ required engineering process.
+5. [AI_RULES.md](AI_RULES.md) Ã¢â‚¬â€ permanent non-negotiable rules.
+6. [PROJECT_VERSION.md](PROJECT_VERSION.md) Ã¢â‚¬â€ repository/version dashboard.
+7. [VALIDATION_HISTORY.md](VALIDATION_HISTORY.md) Ã¢â‚¬â€ historical validation evidence.
+8. [ROADMAP_STATUS.md](ROADMAP_STATUS.md) Ã¢â‚¬â€ approved delivery sequence.
+9. [ARCHITECTURE_DECISIONS.md](ARCHITECTURE_DECISIONS.md) and [PROJECT_GLOSSARY.md](PROJECT_GLOSSARY.md) Ã¢â‚¬â€ decisions and terminology.
 
 ## Architecture Summary
 
@@ -69,10 +69,10 @@ The current Prisma foundation contains `Workspace`, `User`, and `AuditLog` model
 
 | Item             | State                                                                                                                     |
 | ---------------- | ------------------------------------------------------------------------------------------------------------------------- |
-| Completed sprint | Sprint 1 — Infrastructure Finalization.                                                                                   |
-| Current sprint   | Sprint 2 — Database; current and not yet implemented.                                                                     |
-| Product features | Not implemented; Sprint 0 and Sprint 1 excluded business features.                                                        |
-| Validation       | Sprint 1 `pnpm install`, `pnpm typecheck`, `pnpm lint`, `pnpm test`, and `pnpm build` passed.                             |
+| Completed sprint | Sprint 2 — Database Foundation.                                                                                           |
+| Current sprint   | Sprint 3 — Authentication; current and not yet implemented.                                                               |
+| Product features | Not implemented; Sprint 2 implemented data infrastructure only.                                                           |
+| Validation       | Sprint 2 install, Prisma validate/generate, seed typecheck, typecheck, lint, test, and build passed.                      |
 | Runtime          | Dashboard/API startup and hot reload were verified during Sprint 0; Sprint 1 Compose verification is environment-limited. |
 
 Sprint 1 finalized reproducible Docker dependency layers, production-only API runtime dependencies, Compose health checks, Prisma deploy/reset workflows and foundation-table migration, CI Turbo caching, API structured logging/rate limiting/compression/trust-proxy configuration, and Dashboard browser security headers. It did not add product features. ADR-012 records the production HTTP baseline decision.
@@ -118,7 +118,7 @@ A sprint is done when its approved scope is implemented, required tests/validati
 
 Before every commit or review handoff, run:
 
-`pnpm typecheck` · `pnpm lint` · `pnpm test` · `pnpm build`
+`pnpm typecheck` Ã‚Â· `pnpm lint` Ã‚Â· `pnpm test` Ã‚Â· `pnpm build`
 
 ## Branch Strategy and Commit Strategy
 
@@ -138,3 +138,7 @@ Before every commit or review handoff, run:
 ## Current Repository Health
 
 Sprint 1 is complete: workspace validation and project-memory closeout passed. The unrestricted Windows environment completed the full production build. Compose runtime verification remains pending only because Docker, PostgreSQL, Redis, and persistent local configuration are unavailable in the recorded environment. Sprint 2 is current but has not started.
+
+## Sprint 2 State Update
+
+Sprint 2 â€” Database Foundation is complete. The Prisma package now contains the complete documented schema (26 models, 21 enums, 38 foreign-key relations), production migration, pgvector HNSW index, and idempotent mandatory seed data. Install, Prisma validate/generate, seed typecheck, typecheck, lint, test, and build passed. Sprint 3 â€” Authentication is current. Docker is the only remaining environment blocker for Compose, PostgreSQL/Redis, and live migration/seed verification.

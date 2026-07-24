@@ -43,7 +43,7 @@ Status meanings: **Resolved** is fixed in the repository; **Pending** requires a
 | Status  | Item                                                                    | Notes                                                                                                          |
 | ------- | ----------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------- |
 | Planned | Replace deprecated Turbo `--parallel` development invocation.           | Turbo emits a deprecation warning and recommends persistent task relationships in `turbo.json`.                |
-| Planned | Address Next’s non-fatal ESLint plugin-detection build warning.         | Workspace lint passes; investigate only with relevant Next/ESLint configuration scope.                         |
+| Planned | Address NextÃ¢â‚¬â„¢s non-fatal ESLint plugin-detection build warning.  | Workspace lint passes; investigate only with relevant Next/ESLint configuration scope.                         |
 | Planned | Add feature-specific automated tests.                                   | Current foundation package test commands primarily run TypeScript validation; API Jest reports no tests found. |
 | Planned | Use Redis-backed throttler storage before horizontally scaling the API. | The configured global throttler is process-local; Redis is already available for the future shared store.      |
 
@@ -62,7 +62,17 @@ Status meanings: **Resolved** is fixed in the repository; **Pending** requires a
 
 ## Current Blockers
 
-| Status  | Blocker                                                 | Scope                                                                     |
-| ------- | ------------------------------------------------------- | ------------------------------------------------------------------------- |
-| Pending | Docker unavailable locally (`docker` is not on `PATH`). | PostgreSQL, Redis, API, Dashboard, and Compose runtime verification only. |
-| Pending | Valid persistent local configuration unavailable.       | Standard root `pnpm dev` API startup only.                                |
+| Status  | Blocker                                           | Scope                                      |
+| ------- | ------------------------------------------------- | ------------------------------------------ |
+| Pending |                                                   | Pending                                    | Docker unavailable locally (`docker` is not on `PATH`). | PostgreSQL, Redis, migration/seed application, API, Dashboard, and Compose runtime verification only. |
+| Pending | Valid persistent local configuration unavailable. | Standard root `pnpm dev` API startup only. |
+
+## Sprint 2 Resolution Update
+
+| Status   | Issue                                   | Resolution                                                                                                 |
+| -------- | --------------------------------------- | ---------------------------------------------------------------------------------------------------------- |
+| Resolved | Complete documented database foundation | Prisma schema, migration, pgvector indexing, and mandatory bootstrap seed data are complete and validated. |
+
+## Current Blocker Update
+
+Docker unavailable locally (`docker` is not on `PATH`) is the only remaining environment blocker. It prevents Compose, PostgreSQL/Redis, and live migration/seed verification; it is not a repository defect.

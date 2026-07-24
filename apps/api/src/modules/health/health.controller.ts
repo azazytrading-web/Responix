@@ -3,6 +3,7 @@ import { ApiOkResponse, ApiTags } from "@nestjs/swagger";
 import { HealthCheck, HealthCheckService } from "@nestjs/terminus";
 import { SkipThrottle } from "@nestjs/throttler";
 import { HealthService } from "./health.service";
+import { Public } from "../auth/auth.guard";
 
 @ApiTags("System")
 @SkipThrottle()
@@ -14,6 +15,7 @@ export class HealthController {
   ) {}
 
   @Get()
+  @Public()
   @Version("1")
   @HealthCheck()
   @ApiOkResponse({ description: "Service health status" })

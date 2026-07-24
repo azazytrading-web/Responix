@@ -6,6 +6,8 @@ import { randomUUID } from "node:crypto";
 import { LoggerModule } from "nestjs-pino";
 import { ConfigModule } from "../config/config.module";
 import { HealthModule } from "../modules/health/health.module";
+import { AuthModule } from "../modules/auth/auth.module";
+import { JwtAuthGuard } from "../modules/auth/auth.guard";
 
 @Module({
   imports: [
@@ -38,12 +40,17 @@ import { HealthModule } from "../modules/health/health.module";
         ]
       })
     }),
-    HealthModule
+    HealthModule,
+    AuthModule
   ],
   providers: [
     {
       provide: APP_GUARD,
       useClass: ThrottlerGuard
+    },
+    {
+      provide: APP_GUARD,
+      useClass: JwtAuthGuard
     }
   ]
 })

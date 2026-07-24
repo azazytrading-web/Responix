@@ -40,12 +40,12 @@ Status meanings: **Resolved** is fixed in the repository; **Pending** requires a
 
 ## Future Improvements
 
-| Status  | Item                                                                    | Notes                                                                                                          |
-| ------- | ----------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------- |
-| Planned | Replace deprecated Turbo `--parallel` development invocation.           | Turbo emits a deprecation warning and recommends persistent task relationships in `turbo.json`.                |
-| Planned | Address NextÃ¢â‚¬â„¢s non-fatal ESLint plugin-detection build warning.  | Workspace lint passes; investigate only with relevant Next/ESLint configuration scope.                         |
-| Planned | Add feature-specific automated tests.                                   | Current foundation package test commands primarily run TypeScript validation; API Jest reports no tests found. |
-| Planned | Use Redis-backed throttler storage before horizontally scaling the API. | The configured global throttler is process-local; Redis is already available for the future shared store.      |
+| Status  | Item                                                                             | Notes                                                                                                          |
+| ------- | -------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------- |
+| Planned | Replace deprecated Turbo `--parallel` development invocation.                    | Turbo emits a deprecation warning and recommends persistent task relationships in `turbo.json`.                |
+| Planned | Address NextÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢s non-fatal ESLint plugin-detection build warning. | Workspace lint passes; investigate only with relevant Next/ESLint configuration scope.                         |
+| Planned | Add feature-specific automated tests.                                            | Current foundation package test commands primarily run TypeScript validation; API Jest reports no tests found. |
+| Planned | Use Redis-backed throttler storage before horizontally scaling the API.          | The configured global throttler is process-local; Redis is already available for the future shared store.      |
 
 ## Technical Debt
 
@@ -76,3 +76,10 @@ Status meanings: **Resolved** is fixed in the repository; **Pending** requires a
 ## Current Blocker Update
 
 Docker unavailable locally (`docker` is not on `PATH`) is the only remaining environment blocker. It prevents Compose, PostgreSQL/Redis, and live migration/seed verification; it is not a repository defect.
+
+## Sprint 3 Resolution Update
+
+| Status   | Issue                                               | Resolution                                                                                                                                            |
+| -------- | --------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Resolved | Windows Next production-build worker memory failure | Dashboard build now uses `cross-env NODE_OPTIONS=--max-old-space-size=4096`, which propagates the heap limit to Next workers; two full builds passed. |
+| Resolved | Authentication foundation                           | JWT, sessions, Argon2id, RBAC, guards, decorators, migration, and auth tests are implemented and validated.                                           |

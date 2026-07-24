@@ -10,7 +10,7 @@
     "declaration": false,
     "removeComments": true,
     "incremental": true,
-    "types": ["node"]
+    "types": ["node", "jest"]
   },
   "include": ["src/**/*.ts"]
 }

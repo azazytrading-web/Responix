@@ -31,6 +31,7 @@ type ProviderRecord = {
     supportsTools: boolean;
     supportsReasoning: boolean;
     supportsStreaming: boolean;
+    supportsJson: boolean;
     maxOutputTokens: number | null;
   }>;
 };
@@ -77,6 +78,7 @@ export class RoutingRepository {
             supportsTools: true,
             supportsReasoning: true,
             supportsStreaming: true,
+            supportsJson: true,
             maxOutputTokens: true
           }
         }
@@ -145,6 +147,7 @@ export class RoutingRepository {
         supportsTools: model.supportsTools,
         supportsReasoning: model.supportsReasoning,
         supportsStreaming: model.supportsStreaming,
+        supportsJson: model.supportsJson,
         ...(model.maxOutputTokens === null ? {} : { maxOutputTokens: model.maxOutputTokens })
       },
       latestHealth

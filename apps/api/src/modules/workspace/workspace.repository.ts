@@ -1,6 +1,73 @@
 import { Injectable } from "@nestjs/common";
 import { type WorkspaceStatus } from "@prisma/client";
 import { PrismaService } from "../../database/prisma.service";
+import type { SafeInvitation, SafeMembership, SafeRole, SafeUser } from "./workspace.types";
+
+const safeUserSelect = {
+  id: true,
+  workspaceId: true,
+  firstName: true,
+  lastName: true,
+  fullName: true,
+  email: true,
+  phone: true,
+  avatar: true,
+  roleId: true,
+  departmentId: true,
+  status: true,
+  language: true,
+  timezone: true,
+  lastLoginAt: true,
+  emailVerified: true,
+  mfaEnabled: true,
+  createdAt: true,
+  updatedAt: true
+} as const;
+
+const safeRoleSelect = {
+  id: true,
+  workspaceId: true,
+  name: true,
+  description: true,
+  priority: true,
+  systemRole: true,
+  createdAt: true,
+  updatedAt: true
+} as const;
+
+const safeMembershipScalarsSelect = {
+  id: true,
+  workspaceId: true,
+  userId: true,
+  roleId: true,
+  status: true,
+  invitedAt: true,
+  acceptedAt: true,
+  suspendedAt: true,
+  removedAt: true,
+  createdAt: true,
+  updatedAt: true
+} as const;
+
+const safeMembershipSelect = {
+  ...safeMembershipScalarsSelect,
+  user: { select: safeUserSelect },
+  role: { select: safeRoleSelect }
+} as const;
+
+const safeInvitationScalarsSelect = {
+  id: true,
+  workspaceId: true,
+  membershipId: true,
+  targetUserId: true,
+  invitedByUserId: true,
+  expiresAt: true,
+  acceptedAt: true,
+  rejectedAt: true,
+  revokedAt: true,
+  createdAt: true,
+  updatedAt: true
+} as const;
 
 type AuditEntry = {
   workspaceId: string;
@@ -28,25 +95,28 @@ export class WorkspaceRepository {
     });
   }
 
-  findRole(workspaceId: string, roleId: string) {
+  findRole(workspaceId: string, roleId: string): Promise<SafeRole | null> {
     return this.prisma.role.findFirst({
       where: {
         id: roleId,
         deletedAt: null,
         OR: [{ workspaceId }, { workspaceId: null }]
-      }
+      },
+      select: safeRoleSelect
     });
   }
 
-  findOwnerRole() {
+  findOwnerRole(): Promise<SafeRole | null> {
     return this.prisma.role.findFirst({
-      where: { workspaceId: null, name: "Owner", deletedAt: null }
+      where: { workspaceId: null, name: "Owner", deletedAt: null },
+      select: safeRoleSelect
     });
   }
 
-  findUser(userId: string) {
+  findUser(userId: string): Promise<SafeUser | null> {
     return this.prisma.user.findFirst({
-      where: { id: userId, deletedAt: null, status: "ACTIVE" }
+      where: { id: userId, deletedAt: null, status: "ACTIVE" },
+      select: safeUserSelect
     });
   }
 
@@ -159,12 +229,16 @@ export class WorkspaceRepository {
     });
   }
 
-  async members(workspaceId: string, page: number, limit: number) {
+  async members(
+    workspaceId: string,
+    page: number,
+    limit: number
+  ): Promise<{ data: SafeMembership[]; total: number }> {
     const where = { workspaceId, status: { not: "REMOVED" } as const };
     const [data, total] = await this.prisma.$transaction([
       this.prisma.workspaceMembership.findMany({
         where,
-        include: { user: true, role: true },
+        select: safeMembershipSelect,
         orderBy: { createdAt: "asc" },
         skip: (page - 1) * limit,
         take: limit
@@ -182,7 +256,7 @@ export class WorkspaceRepository {
     tokenHash: string;
     expiresAt: Date;
     audit: AuditEntry;
-  }) {
+  }): Promise<SafeMembership> {
     return this.prisma.$transaction(async (transaction) => {
       const membership = await transaction.workspaceMembership.create({
         data: {
@@ -191,7 +265,7 @@ export class WorkspaceRepository {
           roleId: data.roleId,
           status: "INVITED"
         },
-        include: { role: true, user: true }
+        select: safeMembershipSelect
       });
       await transaction.workspaceInvitation.create({
         data: {
@@ -208,24 +282,30 @@ export class WorkspaceRepository {
     });
   }
 
-  membership(workspaceId: string, userId: string) {
+  membership(workspaceId: string, userId: string): Promise<SafeMembership | null> {
     return this.prisma.workspaceMembership.findFirst({
       where: { workspaceId, userId, status: "ACTIVE" },
-      include: { role: true }
+      select: {
+        ...safeMembershipScalarsSelect,
+        role: { select: safeRoleSelect }
+      }
     });
   }
 
-  membershipByUser(workspaceId: string, userId: string) {
+  membershipByUser(workspaceId: string, userId: string): Promise<SafeMembership | null> {
     return this.prisma.workspaceMembership.findFirst({
       where: { workspaceId, userId },
-      include: { role: true }
+      select: {
+        ...safeMembershipScalarsSelect,
+        role: { select: safeRoleSelect }
+      }
     });
   }
 
-  memberById(workspaceId: string, id: string) {
+  memberById(workspaceId: string, id: string): Promise<SafeMembership | null> {
     return this.prisma.workspaceMembership.findFirst({
       where: { id, workspaceId },
-      include: { role: true, user: true }
+      select: safeMembershipSelect
     });
   }
 
@@ -245,10 +325,14 @@ export class WorkspaceRepository {
     });
   }
 
-  createMembership(workspaceId: string, userId: string, roleId: string) {
+  createMembership(
+    workspaceId: string,
+    userId: string,
+    roleId: string
+  ): Promise<SafeMembership> {
     return this.prisma.workspaceMembership.create({
       data: { workspaceId, userId, roleId, status: "INVITED" },
-      include: { role: true, user: true }
+      select: safeMembershipSelect
     });
   }
 
@@ -263,12 +347,12 @@ export class WorkspaceRepository {
       removedAt?: Date | null;
     },
     options: { revokeSessions?: boolean; audit: AuditEntry }
-  ) {
+  ): Promise<SafeMembership> {
     return this.prisma.$transaction(async (transaction) => {
       const membership = await transaction.workspaceMembership.update({
         where: { id_workspaceId: { id, workspaceId } },
         data,
-        include: { role: true, user: true }
+        select: safeMembershipSelect
       });
       if (options.revokeSessions) {
         await transaction.session.updateMany({
@@ -281,7 +365,7 @@ export class WorkspaceRepository {
     });
   }
 
-  findPendingInvitation(membershipId: string) {
+  findPendingInvitation(membershipId: string): Promise<SafeInvitation | null> {
     return this.prisma.workspaceInvitation.findFirst({
       where: {
         membershipId,
@@ -289,7 +373,8 @@ export class WorkspaceRepository {
         acceptedAt: null,
         rejectedAt: null,
         revokedAt: null
-      }
+      },
+      select: safeInvitationScalarsSelect
     });
   }
 
@@ -300,15 +385,47 @@ export class WorkspaceRepository {
     invitedByUserId: string;
     tokenHash: string;
     expiresAt: Date;
-  }) {
-    return this.prisma.workspaceInvitation.create({ data });
+  }): Promise<SafeInvitation> {
+    return this.prisma.workspaceInvitation.create({
+      data,
+      select: safeInvitationScalarsSelect
+    });
   }
 
-  findInvitation(tokenHash: string) {
-    return this.prisma.workspaceInvitation.findUnique({
+  async findInvitation(tokenHash: string): Promise<SafeInvitation | null> {
+    const invitation = await this.prisma.workspaceInvitation.findUnique({
       where: { tokenHash },
-      include: { membership: { include: { role: true } }, workspace: true }
+      select: {
+        ...safeInvitationScalarsSelect,
+        membership: {
+          select: {
+            ...safeMembershipScalarsSelect,
+            role: { select: safeRoleSelect }
+          }
+        },
+        workspace: { select: { status: true, deletedAt: true } }
+      }
     });
+    return invitation
+      ? {
+          id: invitation.id,
+          workspaceId: invitation.workspaceId,
+          membershipId: invitation.membershipId,
+          targetUserId: invitation.targetUserId,
+          invitedByUserId: invitation.invitedByUserId,
+          expiresAt: invitation.expiresAt,
+          acceptedAt: invitation.acceptedAt,
+          rejectedAt: invitation.rejectedAt,
+          revokedAt: invitation.revokedAt,
+          createdAt: invitation.createdAt,
+          updatedAt: invitation.updatedAt,
+          membership: invitation.membership,
+          workspace: {
+            status: invitation.workspace.status,
+            isDeleted: invitation.workspace.deletedAt !== null
+          }
+        }
+      : null;
   }
 
   acceptInvitation(
@@ -316,16 +433,17 @@ export class WorkspaceRepository {
     workspaceId: string,
     membershipId: string,
     audit: AuditEntry
-  ) {
+  ): Promise<{ invitation: SafeInvitation; membership: SafeMembership }> {
     return this.prisma.$transaction(async (transaction) => {
       const invitation = await transaction.workspaceInvitation.update({
         where: { id: invitationId },
-        data: { acceptedAt: new Date() }
+        data: { acceptedAt: new Date() },
+        select: safeInvitationScalarsSelect
       });
       const membership = await transaction.workspaceMembership.update({
         where: { id_workspaceId: { id: membershipId, workspaceId } },
         data: { status: "ACTIVE", acceptedAt: new Date(), suspendedAt: null, removedAt: null },
-        include: { role: true, user: true }
+        select: safeMembershipSelect
       });
       await transaction.auditLog.create({ data: audit });
       return { invitation, membership };
@@ -337,16 +455,17 @@ export class WorkspaceRepository {
     workspaceId: string,
     membershipId: string,
     audit: AuditEntry
-  ) {
+  ): Promise<{ invitation: SafeInvitation; membership: SafeMembership }> {
     return this.prisma.$transaction(async (transaction) => {
       const invitation = await transaction.workspaceInvitation.update({
         where: { id: invitationId },
-        data: { rejectedAt: new Date() }
+        data: { rejectedAt: new Date() },
+        select: safeInvitationScalarsSelect
       });
       const membership = await transaction.workspaceMembership.update({
         where: { id_workspaceId: { id: membershipId, workspaceId } },
         data: { status: "REMOVED", removedAt: new Date() },
-        include: { role: true, user: true }
+        select: safeMembershipSelect
       });
       await transaction.auditLog.create({ data: audit });
       return { invitation, membership };
@@ -358,16 +477,17 @@ export class WorkspaceRepository {
     workspaceId: string,
     membershipId: string,
     audit: AuditEntry
-  ) {
+  ): Promise<{ invitation: SafeInvitation; membership: SafeMembership }> {
     return this.prisma.$transaction(async (transaction) => {
       const invitation = await transaction.workspaceInvitation.update({
         where: { id: invitationId },
-        data: { revokedAt: new Date() }
+        data: { revokedAt: new Date() },
+        select: safeInvitationScalarsSelect
       });
       const membership = await transaction.workspaceMembership.update({
         where: { id_workspaceId: { id: membershipId, workspaceId } },
         data: { status: "REMOVED", removedAt: new Date() },
-        include: { role: true, user: true }
+        select: safeMembershipSelect
       });
       await transaction.auditLog.create({ data: audit });
       return { invitation, membership };

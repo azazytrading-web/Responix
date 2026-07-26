@@ -1,3 +1,4 @@
+import { AiContractError } from "../contracts";
 import type { AiRequestContract, ProviderExecutionResult } from "../contracts";
 import { CostNormalizerService } from "./cost-normalizer.service";
 import { ErrorNormalizerService } from "./error-normalizer.service";
@@ -74,8 +75,42 @@ function createHarness(options: {
       workspaceId: "workspace-id",
       status: "PENDING"
     }),
+    stageSuccess: jest.fn().mockResolvedValue("recovery-id"),
+    stageFailure: jest.fn().mockResolvedValue("recovery-id"),
     complete: jest.fn().mockResolvedValue(undefined),
+    failWithRuntime: jest.fn().mockResolvedValue(undefined),
     fail: jest.fn().mockResolvedValue(undefined)
+  };
+  const reservation = {
+    id: "reservation-id",
+    workspaceId: "workspace-id",
+    requestId: "request-id",
+    ownerToken: "11111111-1111-4111-8111-111111111111",
+    status: "ACTIVE",
+    estimate: {
+      inputTokens: 2,
+      outputTokens: 10,
+      totalTokens: 12,
+      estimatedCost: "0.000120"
+    },
+    queuedAt: new Date(),
+    activatedAt: new Date(),
+    leaseExpiresAt: new Date(Date.now() + 60_000),
+    queueWaitMs: 0,
+    reservedAt: Date.now()
+  };
+  const runtime = {
+    begin: jest.fn().mockResolvedValue(reservation),
+    validateModel: jest.fn(),
+    withLease: jest.fn(
+      async (
+        _reservation: unknown,
+        operation: (signal: AbortSignal) => Promise<ProviderExecutionResult>
+      ) => operation(new AbortController().signal)
+    ),
+    recordSuccess: jest.fn().mockResolvedValue(undefined),
+    recordFailure: jest.fn().mockResolvedValue(undefined),
+    release: jest.fn().mockResolvedValue(undefined)
   };
   const service = new InvocationOrchestratorService(
     routing as never,
@@ -88,9 +123,10 @@ function createHarness(options: {
     new ErrorNormalizerService(),
     {
       getOrThrow: jest.fn().mockReturnValue(options.timeoutMs ?? 1_000)
-    } as never
+    } as never,
+    runtime as never
   );
-  return { service, routing, providers, credentials, repository, invoke };
+  return { service, routing, providers, credentials, repository, invoke, runtime };
 }
 
 describe("InvocationOrchestratorService", () => {
@@ -109,6 +145,11 @@ describe("InvocationOrchestratorService", () => {
     );
     expect(harness.repository.complete).toHaveBeenCalledTimes(1);
     expect(harness.repository.fail).not.toHaveBeenCalled();
+    expect(harness.runtime.begin).toHaveBeenCalledWith(command);
+    expect(harness.runtime.validateModel).toHaveBeenCalledTimes(1);
+    expect(harness.runtime.recordFailure).not.toHaveBeenCalled();
+    expect(harness.runtime.release).not.toHaveBeenCalled();
+    expect(JSON.stringify(harness.invoke.mock.calls)).toContain('"maxOutputTokens":10');
     expect(JSON.stringify(response)).not.toContain("provider-secret");
     expect(JSON.stringify(harness.repository.complete.mock.calls)).not.toContain("provider-secret");
   });
@@ -117,11 +158,101 @@ describe("InvocationOrchestratorService", () => {
     const harness = createHarness({ neverResolve: true, timeoutMs: 5 });
 
     await expect(harness.service.invoke(command)).rejects.toThrow("AI provider request timed out");
-    expect(harness.repository.fail).toHaveBeenCalledWith("invocation-id", "workspace-id", {
-      code: "PROVIDER_UNAVAILABLE",
-      message: "AI provider request timed out",
-      status: "FAILED"
-    });
+    expect(harness.repository.failWithRuntime).toHaveBeenCalledTimes(1);
     expect(harness.repository.complete).not.toHaveBeenCalled();
+    expect(JSON.stringify(harness.repository.failWithRuntime.mock.calls)).toContain(
+      '"id":"reservation-id"'
+    );
+    expect(JSON.stringify(harness.repository.failWithRuntime.mock.calls)).toContain(
+      '"timeoutReason":"AI provider request timed out"'
+    );
+    expect(harness.runtime.release).not.toHaveBeenCalled();
+  });
+
+  it("rejects before routing and provider execution when pre-flight protection fails", async () => {
+    const harness = createHarness({});
+    harness.runtime.begin.mockRejectedValue(
+      new AiContractError("RATE_LIMITED", "AI runtime quota exceeded")
+    );
+
+    await expect(harness.service.invoke(command)).rejects.toThrow(
+      "AI runtime quota exceeded"
+    );
+
+    expect(harness.routing.route).not.toHaveBeenCalled();
+    expect(harness.providers.create).not.toHaveBeenCalled();
+    expect(harness.credentials.useCredential).not.toHaveBeenCalled();
+    expect(harness.invoke).not.toHaveBeenCalled();
+    expect(harness.repository.start).not.toHaveBeenCalled();
+  });
+
+  it("retains ownership when durable failure finalization is deferred", async () => {
+    const harness = createHarness({ neverResolve: true, timeoutMs: 5 });
+    harness.repository.failWithRuntime.mockRejectedValue(
+      new Error("persistence unavailable")
+    );
+
+    await expect(harness.service.invoke(command)).rejects.toThrow(
+      "persistence unavailable"
+    );
+
+    expect(harness.repository.failWithRuntime).toHaveBeenCalledTimes(2);
+    expect(harness.runtime.release).not.toHaveBeenCalled();
+  });
+
+  it("rejects provider output that exceeds the reserved maximum", async () => {
+    const harness = createHarness({
+      providerResult: {
+        content: "Oversized",
+        usage: { inputTokens: 10, outputTokens: 11, cachedTokens: 0 }
+      }
+    });
+
+    await expect(harness.service.invoke(command)).rejects.toThrow(
+      "AI provider output exceeded the reserved token limit"
+    );
+
+    expect(harness.repository.failWithRuntime).toHaveBeenCalledTimes(1);
+    expect(harness.repository.complete).not.toHaveBeenCalled();
+  });
+
+  it("does not release or finalize the reservation before provider completion", async () => {
+    const harness = createHarness({});
+    let resolveProvider!: (result: ProviderExecutionResult) => void;
+    harness.invoke.mockImplementation(
+      () =>
+        new Promise<ProviderExecutionResult>((resolve) => {
+          resolveProvider = resolve;
+        })
+    );
+
+    const invocation = harness.service.invoke(command);
+    await new Promise((resolve) => setImmediate(resolve));
+
+    expect(harness.runtime.recordFailure).not.toHaveBeenCalled();
+    expect(harness.runtime.release).not.toHaveBeenCalled();
+
+    resolveProvider({
+      content: "Response",
+      usage: { inputTokens: 1, outputTokens: 1, cachedTokens: 0 }
+    });
+    await expect(invocation).resolves.toMatchObject({ content: "Response" });
+    expect(harness.repository.complete).toHaveBeenCalledTimes(1);
+    expect(harness.runtime.release).not.toHaveBeenCalled();
+  });
+
+  it("recovers a transient atomic completion failure through idempotent replay", async () => {
+    const harness = createHarness({});
+    harness.repository.complete
+      .mockRejectedValueOnce(new Error("commit acknowledgement lost"))
+      .mockResolvedValueOnce(undefined);
+
+    await expect(harness.service.invoke(command)).resolves.toMatchObject({
+      content: "Response"
+    });
+
+    expect(harness.repository.complete).toHaveBeenCalledTimes(2);
+    expect(harness.runtime.recordFailure).not.toHaveBeenCalled();
+    expect(harness.runtime.release).not.toHaveBeenCalled();
   });
 });

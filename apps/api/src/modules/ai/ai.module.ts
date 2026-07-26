@@ -32,6 +32,17 @@ import { PriorityEngine } from "./router/priority.engine";
 import { RoutingRepository } from "./router/routing.repository";
 import { RoutingService } from "./router/routing.service";
 import { ProviderCredentialCryptoService } from "./security/provider-credential-crypto.service";
+import { ProviderDestinationPolicy } from "./security/provider-destination-policy.service";
+import { ProviderDnsResolver } from "./security/provider-dns-resolver.service";
+import { ProviderHttpClient } from "./security/provider-http-client.service";
+import { RuntimeProtectionRepository } from "./runtime/runtime-protection.repository";
+import { CostEstimator } from "./runtime/cost-estimator.service";
+import { QuotaService } from "./runtime/quota.service";
+import { CapabilityValidator } from "./runtime/capability-validator.service";
+import { ReservationService } from "./runtime/reservation.service";
+import { AccountingService } from "./runtime/accounting.service";
+import { RuntimeProtectionService } from "./runtime/runtime-protection.service";
+import { RuntimeRecoveryService } from "./runtime/runtime-recovery.service";
 
 @Module({
   imports: [TenantModule],
@@ -47,6 +58,17 @@ import { ProviderCredentialCryptoService } from "./security/provider-credential-
     CredentialRepository,
     ProviderConfigurationRepository,
     ProviderCredentialCryptoService,
+    ProviderDnsResolver,
+    ProviderDestinationPolicy,
+    ProviderHttpClient,
+    RuntimeProtectionRepository,
+    CostEstimator,
+    QuotaService,
+    CapabilityValidator,
+    ReservationService,
+    AccountingService,
+    RuntimeProtectionService,
+    RuntimeRecoveryService,
     ProviderCredentialService,
     ProviderDiscoveryService,
     ProviderRegistry,

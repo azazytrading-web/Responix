@@ -25,6 +25,7 @@ export function routingCandidate(overrides: Partial<RoutingCandidate> = {}): Rou
       supportsTools: true,
       supportsReasoning: false,
       supportsStreaming: true,
+      supportsJson: false,
       maxOutputTokens: 4_096
     },
     latestHealth: {

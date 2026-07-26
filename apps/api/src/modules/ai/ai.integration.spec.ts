@@ -14,6 +14,7 @@ import { InvocationService } from "./invocation/invocation.service";
 import { RequestNormalizerService } from "./invocation/request-normalizer.service";
 import { ResponseNormalizerService } from "./invocation/response-normalizer.service";
 import { UsageNormalizerService } from "./invocation/usage-normalizer.service";
+import { RuntimeProtectionService } from "./runtime/runtime-protection.service";
 import { CredentialRepository } from "./providers/credential.repository";
 import type { AiProviderAdapter } from "./providers/provider-adapter.interface";
 import { ProviderCredentialService } from "./providers/provider-credential.service";
@@ -112,7 +113,8 @@ describe("AI module production integration", () => {
             supportsAudio: false,
             supportsTools: false,
             supportsReasoning: false,
-            supportsStreaming: false
+            supportsStreaming: false,
+            supportsJson: false
           }
         })
       ])
@@ -139,7 +141,10 @@ describe("AI module production integration", () => {
       workspaceId,
       status: "PENDING"
     }),
+    stageSuccess: jest.fn().mockResolvedValue("recovery-id"),
+    stageFailure: jest.fn().mockResolvedValue("recovery-id"),
     complete: jest.fn().mockResolvedValue(undefined),
+    failWithRuntime: jest.fn().mockResolvedValue(undefined),
     fail: jest.fn().mockResolvedValue(undefined)
   };
   const adapterInvoke = jest.fn(
@@ -166,6 +171,38 @@ describe("AI module production integration", () => {
   const adapter: AiProviderAdapter = {
     providerName: "TestProvider",
     invoke: adapterInvoke
+  };
+  const runtimeProtection = {
+    begin: jest.fn().mockImplementation((request: { requestId: string; workspaceId: string }) =>
+      Promise.resolve({
+        id: "reservation-id",
+        workspaceId: request.workspaceId,
+        requestId: request.requestId,
+        ownerToken: "11111111-1111-4111-8111-111111111111",
+        status: "ACTIVE",
+        estimate: {
+          inputTokens: 2,
+          outputTokens: 10,
+          totalTokens: 12,
+          estimatedCost: "0.000120"
+        },
+        queuedAt: new Date(),
+        activatedAt: new Date(),
+        leaseExpiresAt: new Date(Date.now() + 60_000),
+        queueWaitMs: 0,
+        reservedAt: Date.now()
+      })
+    ),
+    validateModel: jest.fn(),
+    withLease: jest.fn(
+      async (
+        _reservation: unknown,
+        operation: (signal: AbortSignal) => Promise<ProviderExecutionResult>
+      ) => operation(new AbortController().signal)
+    ),
+    recordSuccess: jest.fn().mockResolvedValue(undefined),
+    recordFailure: jest.fn().mockResolvedValue(undefined),
+    release: jest.fn().mockResolvedValue(undefined)
   };
 
   beforeAll(async () => {
@@ -195,6 +232,7 @@ describe("AI module production integration", () => {
         { provide: CredentialRepository, useValue: credentialRepository },
         { provide: ProviderCredentialCryptoService, useValue: crypto },
         { provide: InvocationRepository, useValue: invocationRepository },
+        { provide: RuntimeProtectionService, useValue: runtimeProtection },
         { provide: AI_PROVIDER_ADAPTERS, useValue: [adapter] },
         {
           provide: TenantContextService,
@@ -256,6 +294,9 @@ describe("AI module production integration", () => {
       status: "PENDING"
     });
     invocationRepository.complete.mockResolvedValue(undefined);
+    invocationRepository.stageSuccess.mockResolvedValue("recovery-id");
+    invocationRepository.stageFailure.mockResolvedValue("recovery-id");
+    invocationRepository.failWithRuntime.mockResolvedValue(undefined);
     invocationRepository.fail.mockResolvedValue(undefined);
   });
 
@@ -325,7 +366,7 @@ describe("AI module production integration", () => {
     expect(serialized).not.toContain("providerPayload");
     expect(JSON.stringify(log.mock.calls)).not.toContain("plaintext-provider-secret");
     expect(JSON.stringify(log.mock.calls)).not.toContain("providerPayload");
-    expect(invocationRepository.fail).toHaveBeenCalledTimes(1);
+    expect(invocationRepository.failWithRuntime).toHaveBeenCalledTimes(1);
     expect(invocationRepository.complete).not.toHaveBeenCalled();
     log.mockRestore();
   });
@@ -346,7 +387,7 @@ describe("AI module production integration", () => {
     expect(response.status).toBe(503);
     expect(serialized).toContain("AI provider request timed out");
     expect(serialized).not.toContain("plaintext-provider-secret");
-    expect(invocationRepository.fail).toHaveBeenCalledTimes(1);
+    expect(invocationRepository.failWithRuntime).toHaveBeenCalledTimes(1);
   });
 
   it("requires authentication and exposes guarded Swagger operations", async () => {

@@ -21,6 +21,7 @@ const providerSelection = {
       supportsTools: true,
       supportsReasoning: true,
       supportsStreaming: true,
+      supportsJson: true,
       maxOutputTokens: true,
       status: true,
       priority: true
@@ -52,6 +53,7 @@ type ProviderRecord = {
     supportsTools: boolean;
     supportsReasoning: boolean;
     supportsStreaming: boolean;
+    supportsJson: boolean;
     maxOutputTokens: number | null;
     status: WorkspaceProvider["models"][number]["status"];
     priority: number;
@@ -144,6 +146,7 @@ export class ProviderRepository {
         supportsTools: model.supportsTools,
         supportsReasoning: model.supportsReasoning,
         supportsStreaming: model.supportsStreaming,
+        supportsJson: model.supportsJson,
         ...(model.maxOutputTokens === null ? {} : { maxOutputTokens: model.maxOutputTokens }),
         status: model.status,
         priority: model.priority

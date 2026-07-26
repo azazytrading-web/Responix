@@ -186,6 +186,30 @@ enum AiCacheStatus {
   EXPIRED
 }
 
+enum AiRuntimeReservationStatus {
+  QUEUED
+  ACTIVE
+  RELEASED
+}
+
+enum AiRuntimeExecutionStatus {
+  SUCCEEDED
+  FAILED
+  TIMED_OUT
+  CANCELLED
+  REJECTED
+}
+
+enum AiRuntimeFinalizationKind {
+  SUCCESS
+  FAILURE
+}
+
+enum AiRuntimeFinalizationStatus {
+  PENDING
+  COMPLETED
+}
+
 model Workspace {
   id                  String          @id @default(uuid()) @db.Uuid
   name                String
@@ -248,6 +272,10 @@ model Workspace {
   aiMemoryRecords          AiMemoryRecord[]
   aiRoutingMetadata        AiRoutingMetadata[]
   aiCacheMetadata          AiCacheMetadata[]
+  aiRuntimeLimit           AiWorkspaceRuntimeLimit?
+  aiRuntimeReservations    AiRuntimeReservation[]
+  aiRuntimeAccounting      AiRuntimeAccounting[]
+  aiRuntimeFinalizations   AiRuntimeFinalization[]
 
   @@index([status])
   @@index([createdAt])
@@ -547,6 +575,7 @@ model AiProvider {
   costRecords    AiCostRecord[]
   routingRecords AiRoutingMetadata[]
   cacheMetadata  AiCacheMetadata[]
+  runtimeAccounting AiRuntimeAccounting[]
 
   @@index([status, priority])
   @@map("ai_providers")
@@ -565,6 +594,7 @@ model AiModel {
   supportsTools     Boolean     @default(false) @map("supports_tools")
   supportsReasoning Boolean     @default(false) @map("supports_reasoning")
   supportsStreaming Boolean     @default(false) @map("supports_streaming")
+  supportsJson      Boolean     @default(false) @map("supports_json")
   maxOutputTokens   Int?        @map("max_output_tokens")
   status            ModelStatus @default(ACTIVE)
   priority          Int         @default(0)
@@ -578,6 +608,7 @@ model AiModel {
   costRecords    AiCostRecord[]
   routingRecords AiRoutingMetadata[]
   cacheMetadata  AiCacheMetadata[]
+  runtimeAccounting AiRuntimeAccounting[]
 
   @@unique([providerId, modelName])
   @@index([providerId, status])
@@ -715,6 +746,8 @@ model AiInvocationLog {
   usageRecord    AiUsageRecord?
   costRecord     AiCostRecord?
   routingMetadata AiRoutingMetadata?
+  runtimeAccounting AiRuntimeAccounting?
+  runtimeFinalization AiRuntimeFinalization?
 
   @@index([workspaceId, createdAt])
   @@index([workspaceId, status, createdAt])
@@ -771,6 +804,115 @@ model AiCostRecord {
   @@index([providerId, recordedAt])
   @@index([modelId, recordedAt])
   @@map("ai_cost_records")
+}
+
+model AiWorkspaceRuntimeLimit {
+  id                       String   @id @default(uuid()) @db.Uuid
+  workspaceId              String   @unique @map("workspace_id") @db.Uuid
+  dailyRequestLimit        Int?     @map("daily_request_limit")
+  monthlyRequestLimit      Int?     @map("monthly_request_limit")
+  dailyTokenLimit          Int?     @map("daily_token_limit")
+  monthlyTokenLimit        Int?     @map("monthly_token_limit")
+  dailyCostLimit           Decimal? @map("daily_cost_limit") @db.Decimal(14, 6)
+  monthlyCostLimit         Decimal? @map("monthly_cost_limit") @db.Decimal(14, 6)
+  maxConcurrentInvocations Int?     @map("max_concurrent_invocations")
+  maxQueueDepth            Int?     @map("max_queue_depth")
+  maxContextTokens         Int?     @map("max_context_tokens")
+  maxOutputTokens          Int?     @map("max_output_tokens")
+  createdAt                DateTime @default(now()) @map("created_at")
+  updatedAt                DateTime @updatedAt @map("updated_at")
+
+  workspace Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+
+  @@map("ai_workspace_runtime_limits")
+}
+
+model AiRuntimeReservation {
+  id                    String                     @id @default(uuid()) @db.Uuid
+  workspaceId           String                     @map("workspace_id") @db.Uuid
+  requestId             String                     @unique @map("request_id")
+  ownerToken            String                     @map("owner_token") @db.Uuid
+  status                AiRuntimeReservationStatus @default(QUEUED)
+  estimatedInputTokens  Int                        @map("estimated_input_tokens")
+  estimatedOutputTokens Int                        @map("estimated_output_tokens")
+  estimatedTotalTokens  Int                        @map("estimated_total_tokens")
+  estimatedCost         Decimal                    @map("estimated_cost") @db.Decimal(14, 6)
+  queuedAt              DateTime                   @default(now()) @map("queued_at")
+  activatedAt           DateTime?                  @map("activated_at")
+  heartbeatAt           DateTime?                  @map("heartbeat_at")
+  releasedAt            DateTime?                  @map("released_at")
+  expiresAt             DateTime                   @map("expires_at")
+  createdAt             DateTime                   @default(now()) @map("created_at")
+  updatedAt             DateTime                   @updatedAt @map("updated_at")
+
+  workspace Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+
+  @@index([workspaceId, status, createdAt])
+  @@index([expiresAt, status])
+  @@index([workspaceId, id, ownerToken, status])
+  @@map("ai_runtime_reservations")
+}
+
+model AiRuntimeAccounting {
+  id                     String                   @id @default(uuid()) @db.Uuid
+  workspaceId            String                   @map("workspace_id") @db.Uuid
+  invocationId           String?                  @unique @map("invocation_id") @db.Uuid
+  providerId             String?                  @map("provider_id") @db.Uuid
+  modelId                String?                  @map("model_id") @db.Uuid
+  requestId              String                   @unique @map("request_id")
+  estimatedInputTokens   Int                      @map("estimated_input_tokens")
+  estimatedOutputTokens  Int                      @map("estimated_output_tokens")
+  estimatedTotalTokens   Int                      @map("estimated_total_tokens")
+  estimatedCost          Decimal                  @map("estimated_cost") @db.Decimal(14, 6)
+  actualPromptTokens     Int                      @default(0) @map("actual_prompt_tokens")
+  actualCompletionTokens Int                      @default(0) @map("actual_completion_tokens")
+  actualCachedTokens     Int                      @default(0) @map("actual_cached_tokens")
+  actualTotalTokens      Int                      @default(0) @map("actual_total_tokens")
+  actualCost             Decimal                  @default(0) @map("actual_cost") @db.Decimal(14, 6)
+  retryCount             Int                      @default(0) @map("retry_count")
+  queueWaitMs            Int                      @default(0) @map("queue_wait_ms")
+  reservationMs          Int                      @default(0) @map("reservation_ms")
+  executionDurationMs    Int                      @default(0) @map("execution_duration_ms")
+  providerDurationMs     Int                      @default(0) @map("provider_duration_ms")
+  status                 AiRuntimeExecutionStatus
+  failureReason          String?                  @map("failure_reason")
+  timeoutReason          String?                  @map("timeout_reason")
+  cancelled              Boolean                  @default(false)
+  recordedAt             DateTime                 @default(now()) @map("recorded_at")
+  createdAt              DateTime                 @default(now()) @map("created_at")
+  updatedAt              DateTime                 @updatedAt @map("updated_at")
+
+  workspace  Workspace        @relation(fields: [workspaceId], references: [id], onDelete: Restrict)
+  invocation AiInvocationLog? @relation(fields: [invocationId], references: [id], onDelete: SetNull)
+  provider   AiProvider?      @relation(fields: [providerId], references: [id], onDelete: SetNull)
+  model      AiModel?         @relation(fields: [modelId], references: [id], onDelete: SetNull)
+
+  @@index([workspaceId, recordedAt, status])
+  @@index([providerId, recordedAt])
+  @@index([modelId, recordedAt])
+  @@map("ai_runtime_accounting")
+}
+
+model AiRuntimeFinalization {
+  id           String                      @id @default(uuid()) @db.Uuid
+  workspaceId  String                      @map("workspace_id") @db.Uuid
+  invocationId String                      @unique @map("invocation_id") @db.Uuid
+  requestId    String                      @unique @map("request_id")
+  kind         AiRuntimeFinalizationKind
+  status       AiRuntimeFinalizationStatus @default(PENDING)
+  payload      Json
+  attempts     Int                         @default(0)
+  lastError    String?                     @map("last_error")
+  completedAt  DateTime?                   @map("completed_at")
+  createdAt    DateTime                    @default(now()) @map("created_at")
+  updatedAt    DateTime                    @updatedAt @map("updated_at")
+
+  workspace  Workspace       @relation(fields: [workspaceId], references: [id], onDelete: Restrict)
+  invocation AiInvocationLog @relation(fields: [invocationId], references: [id], onDelete: Cascade)
+
+  @@index([status, createdAt])
+  @@index([workspaceId, status, createdAt])
+  @@map("ai_runtime_finalizations")
 }
 
 model AiPromptTemplate {

@@ -16,6 +16,7 @@ export interface ProviderExecutionRequest {
   modelName: string;
   apiBaseUrl: string | null;
   messages: NormalizedInvocationRequest["messages"];
+  maxOutputTokens: number;
   signal: AbortSignal;
 }
 

@@ -31,4 +31,28 @@ describe("AiHttpExceptionFilter", () => {
     expect(JSON.stringify(json.mock.calls)).not.toContain("provider-secret");
     expect(JSON.stringify(json.mock.calls)).not.toContain("internal-stack");
   });
+
+  it("redacts provider secret canaries from HTTP failures", () => {
+    const json = jest.fn();
+    const status = jest.fn().mockReturnValue({ json });
+    const host = {
+      switchToHttp: () => ({
+        getRequest: () => ({ id: "request-id" }),
+        getResponse: () => ({ status })
+      })
+    };
+
+    new AiHttpExceptionFilter().catch(
+      new AiContractError(
+        "PROVIDER_UNAVAILABLE",
+        "Provider failed secret=FORTRESS_PROVIDER_CANARY"
+      ),
+      host as never
+    );
+
+    const calls = json.mock.calls as unknown[][];
+    expect(JSON.stringify(calls[0]?.[0])).not.toContain(
+      "FORTRESS_PROVIDER_CANARY"
+    );
+  });
 });

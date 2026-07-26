@@ -1,6 +1,6 @@
 import { Module } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
-import { APP_GUARD } from "@nestjs/core";
+import { APP_FILTER, APP_GUARD } from "@nestjs/core";
 import { ThrottlerGuard, ThrottlerModule } from "@nestjs/throttler";
 import { randomUUID } from "node:crypto";
 import { LoggerModule } from "nestjs-pino";
@@ -14,6 +14,8 @@ import { MembershipGuard } from "../modules/tenant/membership.guard";
 import { TenantGuard } from "../modules/tenant/tenant.guard";
 import { TenantModule } from "../modules/tenant/tenant.module";
 import { AiModule } from "../modules/ai/ai.module";
+import { SecretRedactionExceptionFilter } from "../common/secret-redaction-exception.filter";
+import { redactLogArguments } from "../common/secret-redaction";
 
 @Module({
   imports: [
@@ -22,6 +24,22 @@ import { AiModule } from "../modules/ai/ai.module";
     LoggerModule.forRoot({
       pinoHttp: {
         level: process.env.LOG_LEVEL ?? "info",
+        redact: {
+          paths: [
+            "req.headers.authorization",
+            "req.headers.cookie",
+            "res.headers.set-cookie"
+          ],
+          censor: "[REDACTED]"
+        },
+        hooks: {
+          logMethod(arguments_, method) {
+            method.apply(
+              this,
+              redactLogArguments(arguments_) as Parameters<typeof method>
+            );
+          }
+        },
         genReqId: (request, response) => {
           const suppliedRequestId = request.headers["x-request-id"];
           const requestId =
@@ -54,6 +72,10 @@ import { AiModule } from "../modules/ai/ai.module";
     AiModule
   ],
   providers: [
+    {
+      provide: APP_FILTER,
+      useClass: SecretRedactionExceptionFilter
+    },
     {
       provide: APP_GUARD,
       useClass: ThrottlerGuard

@@ -7,5 +7,6 @@ export interface AiModelCapabilityContract {
   supportsTools: boolean;
   supportsReasoning: boolean;
   supportsStreaming: boolean;
+  supportsJson: boolean;
   maxOutputTokens?: number;
 }

@@ -434,7 +434,7 @@ export class WorkspaceService {
       throw new InvalidMembershipTransitionException();
     }
     this.assertOwnerRoleAssignment(actor.role?.name, member.role.name);
-    return member;
+    return { ...member, role: member.role };
   }
 
   private async requireInvitation(token: string, userId: string) {
@@ -446,12 +446,18 @@ export class WorkspaceService {
       invitation.acceptedAt ||
       invitation.rejectedAt ||
       invitation.revokedAt ||
+      !invitation.membership ||
+      !invitation.workspace ||
       invitation.workspace.status !== "ACTIVE" ||
-      invitation.workspace.deletedAt
+      invitation.workspace.isDeleted
     ) {
       throw new InvalidInvitationException();
     }
-    return invitation;
+    return {
+      ...invitation,
+      membership: invitation.membership,
+      workspace: invitation.workspace
+    };
   }
 
   private async assertOwnerCanBeChanged(workspaceId: string, roleName: string) {

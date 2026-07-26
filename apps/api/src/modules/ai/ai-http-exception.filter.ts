@@ -1,6 +1,7 @@
 import { ArgumentsHost, Catch, HttpStatus } from "@nestjs/common";
 import type { ExceptionFilter } from "@nestjs/common";
 import { AiContractError } from "./contracts";
+import { redactSecrets } from "../../common/secret-redaction";
 
 interface HttpResponse {
   status(code: number): { json(body: unknown): unknown };
@@ -29,11 +30,13 @@ export class AiHttpExceptionFilter implements ExceptionFilter<AiContractError> {
     const response = http.getResponse<HttpResponse>();
     const statusCode = statusByCode[exception.code];
 
-    response.status(statusCode).json({
-      statusCode,
-      code: exception.code,
-      message: exception.message,
-      requestId: request.id
-    });
+    response.status(statusCode).json(
+      redactSecrets({
+        statusCode,
+        code: exception.code,
+        message: exception.message,
+        requestId: request.id
+      })
+    );
   }
 }

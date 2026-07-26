@@ -23,6 +23,13 @@ import {
   UpdateMemberRoleDto,
   UpdateWorkspaceDto
 } from "./dto/workspace.dto";
+import {
+  InvitationResponseDto,
+  MemberListResponseDto,
+  SafeMembershipResponseDto,
+  WorkspaceCreationResponseDto,
+  WorkspaceResponseDto
+} from "./dto/workspace-response.dto";
 import { WorkspaceService } from "./workspace.service";
 
 @Controller("workspaces")
@@ -32,146 +39,181 @@ export class WorkspaceController {
   @Permissions("workspace.create")
   @Post()
   @Version("1")
-  create(@CurrentUser() user: { id: string }, @Body() dto: CreateWorkspaceDto) {
-    return this.service.create(user.id, dto);
+  async create(@CurrentUser() user: { id: string }, @Body() dto: CreateWorkspaceDto) {
+    return WorkspaceCreationResponseDto.from(await this.service.create(user.id, dto));
   }
 
   @Permissions("workspace.read")
   @Get("current")
   @Version("1")
-  get(@CurrentWorkspace() workspace: { id: string }, @CurrentUser() user: { id: string }) {
-    return this.service.workspace(workspace.id, user.id);
+  async get(@CurrentWorkspace() workspace: { id: string }, @CurrentUser() user: { id: string }) {
+    return WorkspaceResponseDto.from(await this.service.workspace(workspace.id, user.id));
   }
 
   @Permissions("workspace.update")
   @Patch("current")
   @Version("1")
-  update(
+  async update(
     @CurrentWorkspace() workspace: { id: string },
     @CurrentUser() user: { id: string },
     @Body() dto: UpdateWorkspaceDto
   ) {
-    return this.service.update(workspace.id, user.id, dto);
+    return WorkspaceResponseDto.from(await this.service.update(workspace.id, user.id, dto));
   }
 
   @Permissions("workspace.update")
   @Post("current/suspend")
   @Version("1")
-  suspend(@CurrentWorkspace() workspace: { id: string }, @CurrentUser() user: { id: string }) {
-    return this.service.suspendWorkspace(workspace.id, user.id);
+  async suspend(
+    @CurrentWorkspace() workspace: { id: string },
+    @CurrentUser() user: { id: string }
+  ) {
+    return WorkspaceResponseDto.from(await this.service.suspendWorkspace(workspace.id, user.id));
   }
 
   @Permissions("workspace.update")
   @Post("current/archive")
   @Version("1")
-  archive(@CurrentWorkspace() workspace: { id: string }, @CurrentUser() user: { id: string }) {
-    return this.service.archiveWorkspace(workspace.id, user.id);
+  async archive(
+    @CurrentWorkspace() workspace: { id: string },
+    @CurrentUser() user: { id: string }
+  ) {
+    return WorkspaceResponseDto.from(await this.service.archiveWorkspace(workspace.id, user.id));
   }
 
   @AllowInactiveWorkspace()
   @Permissions("workspace.update")
   @Post("current/restore")
   @Version("1")
-  restore(@CurrentWorkspace() workspace: { id: string }, @CurrentUser() user: { id: string }) {
-    return this.service.restoreWorkspace(workspace.id, user.id);
+  async restore(
+    @CurrentWorkspace() workspace: { id: string },
+    @CurrentUser() user: { id: string }
+  ) {
+    return WorkspaceResponseDto.from(await this.service.restoreWorkspace(workspace.id, user.id));
   }
 
   @Permissions("workspace.update")
   @Delete("current")
   @Version("1")
-  softDelete(@CurrentWorkspace() workspace: { id: string }, @CurrentUser() user: { id: string }) {
-    return this.service.softDeleteWorkspace(workspace.id, user.id);
+  async softDelete(
+    @CurrentWorkspace() workspace: { id: string },
+    @CurrentUser() user: { id: string }
+  ) {
+    return WorkspaceResponseDto.from(
+      await this.service.softDeleteWorkspace(workspace.id, user.id)
+    );
   }
 
   @Permissions("workspace.members.read")
   @Get("current/members")
   @Version("1")
-  members(
+  async members(
     @CurrentWorkspace() workspace: { id: string },
     @CurrentUser() user: { id: string },
     @Query() query: ListMembersQueryDto
   ) {
-    return this.service.members(workspace.id, user.id, query);
+    return MemberListResponseDto.from(await this.service.members(workspace.id, user.id, query));
   }
 
   @Permissions("workspace.members.manage")
   @Post("current/members")
   @Version("1")
-  invite(
+  async invite(
     @CurrentWorkspace() workspace: { id: string },
     @CurrentUser() user: { id: string },
     @Body() dto: InviteMemberDto
   ) {
-    return this.service.invite(workspace.id, user.id, dto.userId, dto.roleId);
+    return InvitationResponseDto.from(
+      await this.service.invite(workspace.id, user.id, dto.userId, dto.roleId)
+    );
   }
 
   @SkipTenantContext()
   @Post("invitations/accept")
   @Version("1")
-  accept(@Req() request: { user?: AuthClaims }, @Body() dto: InvitationTokenDto) {
-    return this.service.acceptInvitation(dto.token, request.user!.sub);
+  async accept(@Req() request: { user?: AuthClaims }, @Body() dto: InvitationTokenDto) {
+    return SafeMembershipResponseDto.from(
+      await this.service.acceptInvitation(dto.token, request.user!.sub)
+    );
   }
 
   @SkipTenantContext()
   @Post("invitations/reject")
   @Version("1")
-  reject(@Req() request: { user?: AuthClaims }, @Body() dto: InvitationTokenDto) {
-    return this.service.rejectInvitation(dto.token, request.user!.sub);
+  async reject(@Req() request: { user?: AuthClaims }, @Body() dto: InvitationTokenDto) {
+    return SafeMembershipResponseDto.from(
+      await this.service.rejectInvitation(dto.token, request.user!.sub)
+    );
   }
 
   @Permissions("workspace.members.manage")
   @Delete("current/members/:membershipId/invitation")
   @Version("1")
-  revokeInvitation(
+  async revokeInvitation(
     @CurrentWorkspace() workspace: { id: string },
     @CurrentUser() user: { id: string },
     @Param() params: MembershipIdParamDto
   ) {
-    return this.service.revokeInvitation(workspace.id, user.id, params.membershipId);
+    return SafeMembershipResponseDto.from(
+      await this.service.revokeInvitation(workspace.id, user.id, params.membershipId)
+    );
   }
 
   @Permissions("workspace.members.manage")
   @Delete("current/members/:membershipId")
   @Version("1")
-  remove(
+  async remove(
     @CurrentWorkspace() workspace: { id: string },
     @CurrentUser() user: { id: string },
     @Param() params: MembershipIdParamDto
   ) {
-    return this.service.removeMember(workspace.id, user.id, params.membershipId);
+    return SafeMembershipResponseDto.from(
+      await this.service.removeMember(workspace.id, user.id, params.membershipId)
+    );
   }
 
   @Permissions("workspace.members.manage")
   @Post("current/members/:membershipId/suspend")
   @Version("1")
-  suspendMember(
+  async suspendMember(
     @CurrentWorkspace() workspace: { id: string },
     @CurrentUser() user: { id: string },
     @Param() params: MembershipIdParamDto
   ) {
-    return this.service.suspendMember(workspace.id, user.id, params.membershipId);
+    return SafeMembershipResponseDto.from(
+      await this.service.suspendMember(workspace.id, user.id, params.membershipId)
+    );
   }
 
   @Permissions("workspace.members.manage")
   @Post("current/members/:membershipId/restore")
   @Version("1")
-  restoreMember(
+  async restoreMember(
     @CurrentWorkspace() workspace: { id: string },
     @CurrentUser() user: { id: string },
     @Param() params: MembershipIdParamDto
   ) {
-    return this.service.restoreMember(workspace.id, user.id, params.membershipId);
+    return SafeMembershipResponseDto.from(
+      await this.service.restoreMember(workspace.id, user.id, params.membershipId)
+    );
   }
 
   @Permissions("workspace.members.manage")
   @Patch("current/members/:membershipId/role")
   @Version("1")
-  updateMemberRole(
+  async updateMemberRole(
     @CurrentWorkspace() workspace: { id: string },
     @CurrentUser() user: { id: string },
     @Param() params: MembershipIdParamDto,
     @Body() dto: UpdateMemberRoleDto
   ) {
-    return this.service.updateMemberRole(workspace.id, user.id, params.membershipId, dto.roleId);
+    return SafeMembershipResponseDto.from(
+      await this.service.updateMemberRole(
+        workspace.id,
+        user.id,
+        params.membershipId,
+        dto.roleId
+      )
+    );
   }
 }

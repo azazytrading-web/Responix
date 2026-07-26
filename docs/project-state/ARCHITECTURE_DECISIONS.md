@@ -85,3 +85,24 @@ This ADR register records accepted decisions established by the repository throu
 - **Context:** The API had Helmet, CORS, validation, and health routing but did not activate its installed Pino logger or provide compression, request IDs, proxy-aware configuration, or rate limiting.
 - **Decision:** Activate Pino request/error/startup logging; generate or safely propagate request IDs; enable a configurable process-local global throttler; make compression enabled by default; and trust one proxy only when `TRUST_PROXY=true` is explicitly set.
 - **Consequences:** The health endpoint stays observable without throttling, reverse-proxy deployments must set `TRUST_PROXY=true` only behind a controlled proxy, and horizontally scaled API deployments must replace process-local throttling with Redis-backed storage.
+
+## ADR-013 - AI Provider and Credential Boundaries
+
+- **Status:** Accepted
+- **Context:** Sprint 5 requires provider implementations to remain replaceable while tenant credentials stay isolated from discovery and orchestration code.
+- **Decision:** Register provider adapters through Nest injection tokens and a provider registry; resolve persisted providers through a workspace-aware factory; isolate Prisma access in mapped repositories; and expose decrypted credentials only through an immediate-use callback owned by the credential service.
+- **Consequences:** Provider discovery never returns credential material, repositories do not expose Prisma entities, adapters are selected by persisted provider name, and future provider use must occur inside the credential callback without logging or retaining the secret.
+
+## ADR-014 - Deterministic Provider-Neutral Routing
+
+- **Status:** Accepted
+- **Context:** Provider/model selection must be tenant-safe and repeatable without coupling routing to provider execution.
+- **Decision:** Build workspace-scoped candidate snapshots from persisted configuration, active credential presence, model capabilities, and latest provider health; filter eligibility before ordering by provider, model, and credential priority with stable identifier tie-breakers; and return ordered fallbacks without invoking adapters.
+- **Consequences:** Identical candidate state produces identical routing decisions, unhealthy or ineligible candidates are excluded, and provider invocation remains outside the routing module.
+
+## ADR-015 - AI HTTP Boundary
+
+- **Status:** Accepted
+- **Context:** The completed provider, routing, and invocation foundations require an external API without weakening tenant, credential, or provider-neutral boundaries.
+- **Decision:** Expose only provider discovery, routing resolution, and synchronous invocation through versioned Nest controllers; accept runtime-validated DTOs without tenant identifiers; derive invocation request IDs from the existing HTTP request-ID flow; reuse global JWT, tenant, membership, and permission guards; serialize explicit response DTOs; and map internal AI errors through an AI-scoped exception filter.
+- **Consequences:** Controllers remain thin, authenticated tenant context stays authoritative, provider configuration and secrets are excluded from HTTP responses, and no provider-specific endpoint or new business behavior is introduced.

@@ -1,5 +1,51 @@
 # Development Log
 
+## Sprint 5B Package 5 - Final Validation and Production Hardening - 2026-07-26
+
+- **Status:** Completed; Sprint 5B implementation is finalized.
+- **Integration:** Added a Nest HTTP integration suite across provider discovery/registry/factory, routing, credential callback execution, invocation lifecycle, normalization, persistence, DTO serialization, and HTTP error handling.
+- **Security:** Verified forged tenant identifiers cannot execute, authenticated workspace context remains authoritative, and encrypted/plaintext credentials and provider payloads do not enter responses, persistence calls, or structured error logs.
+- **Failure handling:** Verified normalized provider failures, timeout responses, pending lifecycle failure closure, and existing transaction rollback behavior.
+- **HTTP hardening:** Verified authentication, request-ID propagation, Swagger paths/security, and corrected POST routing/invocation responses to the documented HTTP 200 status.
+- **Runtime:** Added the Docker-capable production verification checklist without adding runtime dependencies or real provider credentials.
+- **Scope control:** No feature, API, routing, provider, schema, migration, dashboard, streaming, memory, RAG, tool, cache, job, or scheduler behavior was added.
+
+## Sprint 5B Package 4 - HTTP/API Boundary - 2026-07-26
+
+- **Status:** Completed; Sprint 5 remains current.
+- **HTTP surface:** Added guarded API v1 endpoints for provider discovery, routing resolution, and synchronous invocation only.
+- **Runtime contracts:** Added class-validator request DTOs and explicit response DTO mappings for provider, routing, usage, cost, and invocation output.
+- **Authorization:** Reused the global JWT, tenant, membership, and permission guards with existing `ai.configure` and `ai.invoke` permissions.
+- **Security:** Request workspace and membership identifiers are not accepted; request IDs come from the existing Pino flow; provider configuration, payloads, credentials, secrets, Prisma entities, and internal exception metadata are not serialized.
+- **Documentation:** Added Swagger summaries, descriptions, request and response schemas, authorization, request-ID headers, and stable error responses.
+- **Testing:** Added four API-boundary suites covering thin delegation, request-ID propagation, runtime validation, serialization allowlists, and safe error mapping. The API suite passes 30 suites and 69 tests.
+- **Validation:** Prisma validate/generate, `pnpm typecheck`, `pnpm lint`, `pnpm test`, and `pnpm build` passed.
+- **Scope control:** No dashboard, prompt, memory, RAG, streaming, caching, tools, jobs, schedulers, schema, migration, provider logic, routing behavior, or repository behavior was added.
+
+## Sprint 5B Package 2 - Routing Foundation - 2026-07-25
+
+- **Status:** Completed; Sprint 5 remains current.
+- **Persistence boundary:** Added workspace-scoped candidate and routing-metadata reads covering provider configuration, models, active credential presence, and latest provider health.
+- **Decision pipeline:** Added capability, health, eligibility, priority, and fallback components with stable identifier tie-breaking.
+- **Routing:** Added a provider-neutral routing service that returns the selected provider/model, decision factors, candidate ranks, and ordered fallbacks.
+- **Isolation:** Configuration, credentials, health, and routing metadata are filtered by workspace; eligibility rejects candidates outside the requested workspace.
+- **Scope control:** No provider invocation, prompt construction, memory, RAG, tools, streaming, controller, DTO, Swagger, dashboard, or HTTP behavior was added.
+- **Testing:** Added six routing suites covering capability matching, health filtering, eligibility, priority, fallbacks, workspace isolation, repository mapping, and deterministic decisions. The API suite passes 18 suites and 44 tests.
+- **Validation:** Prisma validate/generate, `pnpm typecheck`, `pnpm lint`, `pnpm test`, and `pnpm build` passed.
+- **Runtime limitation:** Docker remains unavailable locally; Package 2 introduced no endpoint or database migration.
+
+## Sprint 5B Package 1 - Provider Foundation - 2026-07-25
+
+- **Status:** Completed; Sprint 5 remains current.
+- **Provider boundary:** Added typed Nest injection tokens, provider adapter contract, OpenAI adapter skeleton, registry, and workspace-aware factory.
+- **Persistence boundary:** Added workspace-scoped provider, credential, and provider-configuration repositories that map Prisma results to internal domain types.
+- **Credential security:** Added metadata-only credential retrieval and callback-scoped decryption immediately before provider use; encrypted and plaintext secrets are not returned by discovery APIs.
+- **Discovery:** Added workspace-aware provider/model discovery with tenant configuration filtering.
+- **Scope control:** No routing, prompts, memory, knowledge injection, invocation, streaming, tools, usage, cost, health evaluation, controller, DTO, Swagger, dashboard, or HTTP behavior was added.
+- **Testing:** Added six AI suites covering repositories, registry, factory, and the credential decryption boundary. The API suite now passes 12 suites and 31 tests.
+- **Validation:** `pnpm install --no-offline`, Prisma validate/generate, `pnpm typecheck`, `pnpm lint`, `pnpm test`, and `pnpm build` passed.
+- **Runtime limitation:** Docker remains unavailable locally; no new runtime endpoint or database migration was introduced by Package 1.
+
 ## Sprint 4 — Workspace & Multi-Tenant Core — 2026-07-25
 
 - **Status:** Completed; Sprint 5 — AI Engine is current.

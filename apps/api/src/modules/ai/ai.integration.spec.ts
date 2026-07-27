@@ -33,6 +33,7 @@ import { routingCandidate } from "./router/routing.test-fixtures";
 import { ProviderCredentialCryptoService } from "./security/provider-credential-crypto.service";
 import { TenantContextService } from "../tenant/tenant-context.service";
 import { PermissionsGuard } from "../auth/auth.guard";
+import { PermissionResolutionService } from "../platform-control/permission-resolution.service";
 import { AiContractError } from "./contracts";
 import type { ProviderExecutionResult } from "./contracts";
 
@@ -53,7 +54,9 @@ class IntegrationAuthenticationGuard implements CanActivate {
     }
     request.tenantContext = {
       workspace: { id: workspaceId },
+      user: { id: "aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa" },
       membership: { id: membershipId, status: "ACTIVE" },
+      role: { id: "bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb", name: "Integration" },
       permissions: ["ai.configure", "ai.invoke"]
     };
     return true;
@@ -227,6 +230,7 @@ describe("AI module production integration", () => {
         InvocationOrchestratorService,
         InvocationService,
         PermissionsGuard,
+        { provide: PermissionResolutionService, useValue: { resolve: jest.fn().mockResolvedValue(["ai.configure", "ai.invoke"]) } },
         { provide: ProviderRepository, useValue: providerRepository },
         { provide: RoutingRepository, useValue: routingRepository },
         { provide: CredentialRepository, useValue: credentialRepository },

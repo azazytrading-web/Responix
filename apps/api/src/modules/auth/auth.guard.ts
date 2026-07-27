@@ -7,6 +7,7 @@ import type { TenantRequest } from "../tenant/tenant-context.service";
 import type { AuthClaims } from "./auth.types";
 import { SKIP_TENANT_CONTEXT } from "../tenant/tenant.metadata";
 import { PermissionDeniedException } from "../../common/domain-errors";
+import { PermissionResolutionService } from "../platform-control/permission-resolution.service";
 export const IS_PUBLIC = "isPublic";
 export const Public = () => SetMetadata(IS_PUBLIC, true);
 export const Permissions = (...permissions: string[]) => SetMetadata("permissions", permissions);
@@ -40,9 +41,12 @@ export class JwtAuthGuard implements CanActivate {
 }
 @Injectable()
 export class PermissionsGuard implements CanActivate {
-  constructor(private readonly reflector: Reflector) {}
+  constructor(
+    private readonly reflector: Reflector,
+    private readonly permissions: PermissionResolutionService
+  ) {}
 
-  canActivate(context: ExecutionContext): boolean {
+  async canActivate(context: ExecutionContext): Promise<boolean> {
     const required =
       this.reflector.getAllAndOverride<string[]>("permissions", [
         context.getHandler(),
@@ -59,7 +63,15 @@ export class PermissionsGuard implements CanActivate {
     if (isPublic || skipTenantContext || required.length === 0) return true;
 
     const request = context.switchToHttp().getRequest<TenantRequest>();
-    if (!required.every((permission) => request.tenantContext?.permissions.includes(permission))) {
+    const tenant = request.tenantContext;
+    if (!tenant) throw new PermissionDeniedException();
+    const resolved = await this.permissions.resolve({
+      workspaceId: tenant.workspace.id,
+      userId: tenant.user.id,
+      roleId: tenant.role.id,
+      roleName: tenant.role.name
+    });
+    if (!required.every((permission) => resolved.includes(permission))) {
       throw new PermissionDeniedException();
     }
     return true;

@@ -12,6 +12,14 @@
 | Validation          | Prisma validate/generate, typecheck, lint, 74 API tests, and build passed       |
 | Working-tree policy | Sprint changes are intentionally unstaged; do not commit, tag, or push without approval |
 
+## Sprint 06 Phase 1 Scope
+
+- Shared renderer-neutral platform contract DTOs live in `@responix/types`.
+- Contracts cover dashboards, widgets, forms, navigation, themes, white-labeling, permissions/visibility, features, plugins, and future OpenAPI metadata.
+- `PlatformExtensionRegistry` is the sole extension point for future widget and field metadata kinds.
+- No frontend, API endpoint, database model, rendering, action execution, or business behavior is included.
+- Prisma validation/generation, typecheck, tests, and build passed; full lint remained unverified after local ESLint workers stalled without diagnostics.
+
 ## Completed Sprint 4 Scope
 
 - Authoritative workspace membership, tenant context, tenant/membership guards, and membership-derived RBAC.

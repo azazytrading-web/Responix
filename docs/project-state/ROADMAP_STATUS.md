@@ -21,4 +21,4 @@
 
 ## Current Direction
 
-Sprint 5 is the only active implementation scope. Sprint 5B Packages 1 through 5 are complete. Provider, routing, invocation, HTTP, integration, security, tenant-isolation, and production-validation foundations are finalized. No additional AI feature scope is authorized. Docker-based Compose verification remains an external environment task.
+Sprint 06 Phase 1 is the active implementation scope. It establishes shared platform contracts only; it does not authorize dashboard rendering, plugins, new business behavior, or public endpoints. Docker-based Compose verification remains an external environment task.

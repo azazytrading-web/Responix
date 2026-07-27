@@ -41,3 +41,5 @@ export interface WorkspaceContext {
   roles: string[];
   permissions: string[];
 }
+
+export * from "./platform/index.js";

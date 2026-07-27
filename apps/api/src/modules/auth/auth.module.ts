@@ -5,9 +5,10 @@ import { AuthRepository } from "./auth.repository";
 import { AuthService } from "./auth.service";
 import { JwtAuthGuard, PermissionsGuard } from "./auth.guard";
 import { TenantModule } from "../tenant/tenant.module";
+import { PlatformControlModule } from "../platform-control/platform-control.module";
 
 @Module({
-  imports: [JwtModule.register({}), TenantModule],
+  imports: [JwtModule.register({}), TenantModule, PlatformControlModule],
   controllers: [AuthController],
   providers: [AuthRepository, AuthService, JwtAuthGuard, PermissionsGuard],
   exports: [JwtAuthGuard, PermissionsGuard]

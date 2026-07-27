@@ -14,6 +14,7 @@ import { MembershipGuard } from "../modules/tenant/membership.guard";
 import { TenantGuard } from "../modules/tenant/tenant.guard";
 import { TenantModule } from "../modules/tenant/tenant.module";
 import { AiModule } from "../modules/ai/ai.module";
+import { PlatformControlModule } from "../modules/platform-control/platform-control.module";
 import { SecretRedactionExceptionFilter } from "../common/secret-redaction-exception.filter";
 import { redactLogArguments } from "../common/secret-redaction";
 
@@ -69,7 +70,8 @@ import { redactLogArguments } from "../common/secret-redaction";
     TenantModule,
     AuthModule,
     WorkspaceModule,
-    AiModule
+    AiModule,
+    PlatformControlModule
   ],
   providers: [
     {

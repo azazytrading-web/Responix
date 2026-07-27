@@ -106,3 +106,10 @@ This ADR register records accepted decisions established by the repository throu
 - **Context:** The completed provider, routing, and invocation foundations require an external API without weakening tenant, credential, or provider-neutral boundaries.
 - **Decision:** Expose only provider discovery, routing resolution, and synchronous invocation through versioned Nest controllers; accept runtime-validated DTOs without tenant identifiers; derive invocation request IDs from the existing HTTP request-ID flow; reuse global JWT, tenant, membership, and permission guards; serialize explicit response DTOs; and map internal AI errors through an AI-scoped exception filter.
 - **Consequences:** Controllers remain thin, authenticated tenant context stays authoritative, provider configuration and secrets are excluded from HTTP responses, and no provider-specific endpoint or new business behavior is introduced.
+
+## ADR-016 - Renderer-Neutral Platform Contracts
+
+- **Status:** Accepted
+- **Context:** Future dashboards, studios, plugins, and API documentation need a common description of visible platform capabilities without coupling the backend to a frontend framework.
+- **Decision:** Place versioned, JSON-compatible platform DTO contracts and a small extension registry in `@responix/types`. Keep rendering, action execution, data loading, authorization enforcement, OpenAPI publication, and persistence outside these contracts.
+- **Consequences:** Consumers share one typed metadata vocabulary, custom widget and field kinds require explicit registration, and existing Nest guards remain the authorization authority.

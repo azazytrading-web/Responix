@@ -32,16 +32,17 @@ describe("authentication guards", () => {
     await expect(guard.canActivate(context)).rejects.toBeInstanceOf(UnauthorizedException);
   });
 
-  it("allows only required permissions", () => {
+  it("allows requests without declared permissions", async () => {
     const context = {
       getHandler: () => function handler() {},
       getClass: () => class TestController {},
       switchToHttp: () => ({ getRequest: () => ({ user: { permissions: ["users.view"] } }) })
     } as never;
-    expect(
-      new PermissionsGuard({
-        getAllAndOverride: jest.fn().mockReturnValue([])
-      } as never).canActivate(context)
-    ).toBe(true);
+    await expect(
+      new PermissionsGuard(
+        { getAllAndOverride: jest.fn().mockReturnValue([]) } as never,
+        { resolve: jest.fn() } as never
+      ).canActivate(context)
+    ).resolves.toBe(true);
   });
 });

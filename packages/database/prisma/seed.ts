@@ -11,7 +11,9 @@ const permissions = [
   "ai.invoke",
   "ai.logs.read",
   "knowledge.upload",
-  "reports.export"
+  "reports.export",
+  "platform.read",
+  "platform.configure"
 ];
 
 const roles = [
@@ -42,7 +44,7 @@ async function seed(): Promise<void> {
   }
 
   const aiPermissions = await prisma.permission.findMany({
-    where: { code: { in: ["ai.configure", "ai.invoke", "ai.logs.read"] } }
+    where: { code: { in: ["ai.configure", "ai.invoke", "ai.logs.read", "platform.read", "platform.configure"] } }
   });
   const aiAdministrators = await prisma.role.findMany({
     where: { workspaceId: null, name: { in: ["Owner", "Administrator"] } }
@@ -69,11 +71,13 @@ async function seed(): Promise<void> {
   });
 
   for (const featureName of ["ai", "knowledge", "workflows"]) {
-    await prisma.featureFlag.upsert({
-      where: { featureName },
-      update: {},
-      create: { featureName, enabled: false }
+    const existingFeature = await prisma.featureFlag.findFirst({
+      where: { workspaceId: null, featureName },
+      select: { id: true }
     });
+    if (!existingFeature) {
+      await prisma.featureFlag.create({ data: { workspaceId: null, featureName, enabled: false } });
+    }
   }
 
   await prisma.systemSetting.upsert({

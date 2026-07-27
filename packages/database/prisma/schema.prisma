@@ -186,6 +186,12 @@ enum AiCacheStatus {
   EXPIRED
 }
 
+enum StudioProjectStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}
+
 enum AiRuntimeReservationStatus {
   QUEUED
   ACTIVE
@@ -294,6 +300,7 @@ model Workspace {
   aiRuntimeReservations    AiRuntimeReservation[]
   aiRuntimeAccounting      AiRuntimeAccounting[]
   aiRuntimeFinalizations   AiRuntimeFinalization[]
+  studioProjects           StudioProject[]
 
   @@index([status])
   @@index([createdAt])
@@ -644,6 +651,46 @@ model AiModel {
   @@unique([providerId, modelName])
   @@index([providerId, status])
   @@map("ai_models")
+}
+
+model StudioProject {
+  id          String              @id @default(uuid()) @db.Uuid
+  workspaceId String              @map("workspace_id") @db.Uuid
+  name        String
+  slug        String
+  description String?
+  status      StudioProjectStatus @default(DRAFT)
+  draft       Json                @default("{}")
+  revision    Int                 @default(0)
+  createdById String              @map("created_by") @db.Uuid
+  updatedById String              @map("updated_by") @db.Uuid
+  createdAt   DateTime            @default(now()) @map("created_at")
+  updatedAt   DateTime            @updatedAt @map("updated_at")
+  archivedAt  DateTime?           @map("archived_at")
+
+  workspace Workspace              @relation(fields: [workspaceId], references: [id], onDelete: Restrict)
+  revisions StudioProjectRevision[]
+
+  @@unique([workspaceId, slug])
+  @@index([workspaceId, status, updatedAt])
+  @@map("studio_projects")
+}
+
+model StudioProjectRevision {
+  id             String        @id @default(uuid()) @db.Uuid
+  projectId      String        @map("project_id") @db.Uuid
+  revision       Int
+  snapshot       Json
+  changeSummary  String?       @map("change_summary")
+  createdById    String        @map("created_by") @db.Uuid
+  createdAt      DateTime      @default(now()) @map("created_at")
+  publishedAt    DateTime?     @map("published_at")
+
+  project StudioProject @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  @@unique([projectId, revision])
+  @@index([projectId, publishedAt])
+  @@map("studio_project_revisions")
 }
 
 model AiAgent {

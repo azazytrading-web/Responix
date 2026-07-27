@@ -13,7 +13,12 @@ const permissions = [
   "knowledge.upload",
   "reports.export",
   "platform.read",
-  "platform.configure"
+  "platform.configure",
+  "studio.project.read",
+  "studio.project.write",
+  "studio.project.publish",
+  "studio.project.rollback",
+  "studio.project.archive"
 ];
 
 const roles = [
@@ -44,7 +49,7 @@ async function seed(): Promise<void> {
   }
 
   const aiPermissions = await prisma.permission.findMany({
-    where: { code: { in: ["ai.configure", "ai.invoke", "ai.logs.read", "platform.read", "platform.configure"] } }
+    where: { code: { in: ["ai.configure", "ai.invoke", "ai.logs.read", "platform.read", "platform.configure", "studio.project.read", "studio.project.write", "studio.project.publish", "studio.project.rollback", "studio.project.archive"] } }
   });
   const aiAdministrators = await prisma.role.findMany({
     where: { workspaceId: null, name: { in: ["Owner", "Administrator"] } }

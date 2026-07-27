@@ -15,6 +15,8 @@ import { TenantGuard } from "../modules/tenant/tenant.guard";
 import { TenantModule } from "../modules/tenant/tenant.module";
 import { AiModule } from "../modules/ai/ai.module";
 import { PlatformControlModule } from "../modules/platform-control/platform-control.module";
+import { DashboardRuntimeModule } from "../modules/dashboard-runtime/dashboard-runtime.module";
+import { StudioProjectModule } from "../modules/studio-project/studio-project.module";
 import { SecretRedactionExceptionFilter } from "../common/secret-redaction-exception.filter";
 import { redactLogArguments } from "../common/secret-redaction";
 
@@ -71,7 +73,9 @@ import { redactLogArguments } from "../common/secret-redaction";
     AuthModule,
     WorkspaceModule,
     AiModule,
-    PlatformControlModule
+    PlatformControlModule,
+    DashboardRuntimeModule,
+    StudioProjectModule
   ],
   providers: [
     {

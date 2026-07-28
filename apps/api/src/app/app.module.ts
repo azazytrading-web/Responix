@@ -24,6 +24,9 @@ import { ToolRegistryModule } from "../modules/tool-registry/tool-registry.modul
 import { WorkflowEngineModule } from "../modules/workflow-engine/workflow-engine.module";
 import { RuntimeOrchestrationModule } from "../modules/runtime-orchestration/runtime-orchestration.module";
 import { ExecutionKernelModule } from "../modules/execution-kernel/execution-kernel.module";
+import { AgentRuntimeModule } from "../modules/agent-runtime/agent-runtime.module";
+import { PromptCompilerModule } from "../modules/prompt-compiler/prompt-compiler.module";
+import { ProviderRuntimeModule } from "../modules/provider-runtime/provider-runtime.module";
 import { SecretRedactionExceptionFilter } from "../common/secret-redaction-exception.filter";
 import { redactLogArguments } from "../common/secret-redaction";
 
@@ -89,7 +92,10 @@ import { redactLogArguments } from "../common/secret-redaction";
     ToolRegistryModule,
     WorkflowEngineModule,
     RuntimeOrchestrationModule,
-    ExecutionKernelModule
+    ExecutionKernelModule,
+    AgentRuntimeModule,
+    PromptCompilerModule,
+    ProviderRuntimeModule
   ],
   providers: [
     {

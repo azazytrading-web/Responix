@@ -285,6 +285,20 @@ enum ExecutionLogLevel {
   ERROR
 }
 
+enum AgentRuntimeStatus {
+  PREPARED
+  VALIDATED
+  REJECTED
+  SNAPSHOTTED
+}
+
+enum ProviderRuntimeStatus {
+  PREPARED
+  VALIDATED
+  REJECTED
+  SNAPSHOTTED
+}
+
 enum BillingCycle {
   MONTHLY
   YEARLY
@@ -450,6 +464,12 @@ model Workspace {
   executionSteps       ExecutionStep[]
   executionEvents      ExecutionEvent[]
   executionLogs        ExecutionLog[]
+  agentRuntimePreparations AgentRuntimePreparation[]
+  agentRuntimeSnapshots    AgentRuntimeSnapshot[]
+  agentRuntimeConversations AgentRuntimeConversation[]
+  compiledPrompts          CompiledPrompt[]
+  providerRuntimeRequests  ProviderRuntimeRequest[]
+  providerRequestSnapshots ProviderRequestSnapshot[]
   subscriptions      Subscription[]      @relation("WorkspaceSubscriptions")
   payments           Payment[]
   apiKeys            ApiKey[]
@@ -2707,6 +2727,211 @@ model ExecutionLog {
   @@index([runId, createdAt], map: "execution_logs_run_created_idx")
   @@index([correlationId, createdAt], map: "execution_logs_correlation_created_idx")
   @@map("execution_logs")
+}
+
+model AgentRuntimePreparation {
+  id                        String             @id @default(uuid()) @db.Uuid
+  workspaceId               String             @map("workspace_id") @db.Uuid
+  actorId                   String             @map("actor_id") @db.Uuid
+  agentId                   String             @map("agent_id") @db.Uuid
+  agentVersionId            String             @map("agent_version_id") @db.Uuid
+  providerId                String             @map("provider_id") @db.Uuid
+  modelId                   String             @map("model_id") @db.Uuid
+  providerConfigurationId   String             @map("provider_configuration_id") @db.Uuid
+  executionProfileId        String             @map("execution_profile_id") @db.Uuid
+  executionProfileVersionId String             @map("execution_profile_version_id") @db.Uuid
+  executionRequestId        String             @map("execution_request_id") @db.Uuid
+  executionRunId            String?            @map("execution_run_id") @db.Uuid
+  conversationId            String?            @map("conversation_id") @db.Uuid
+  status                    AgentRuntimeStatus @default(PREPARED)
+  locale                    String
+  timezone                  String
+  correlationId             String             @map("correlation_id")
+  executionId               String             @map("execution_id")
+  traceId                   String             @map("trace_id")
+  preparationInput          Json               @map("preparation_input")
+  runtimeContext            Json               @map("runtime_context")
+  promptStructure           Json               @map("prompt_structure")
+  runtimeVariables          Json               @map("runtime_variables")
+  validationResult          Json               @map("validation_result")
+  executionConfiguration    Json               @map("execution_configuration")
+  runtimeMetadata           Json               @default("{}") @map("runtime_metadata")
+  createdAt                 DateTime           @default(now()) @map("created_at")
+  updatedAt                 DateTime           @updatedAt @map("updated_at")
+  validatedAt               DateTime?          @map("validated_at")
+
+  workspace           Workspace                 @relation(fields: [workspaceId], references: [id], onDelete: Restrict)
+  conversationContext AgentRuntimeConversation?
+  snapshot            AgentRuntimeSnapshot?
+
+  @@index([workspaceId, status, createdAt], map: "agent_runtime_preparations_workspace_status_idx")
+  @@index([workspaceId, agentId, createdAt], map: "agent_runtime_preparations_workspace_agent_idx")
+  @@index([workspaceId, conversationId, createdAt], map: "agent_runtime_preparations_workspace_conversation_idx")
+  @@index([executionRequestId], map: "agent_runtime_preparations_request_idx")
+  @@index([executionRunId], map: "agent_runtime_preparations_run_idx")
+  @@map("agent_runtime_preparations")
+}
+
+model AgentRuntimeConversation {
+  id                      String   @id @default(uuid()) @db.Uuid
+  workspaceId             String   @map("workspace_id") @db.Uuid
+  runtimeId               String   @unique @map("runtime_id") @db.Uuid
+  conversationId          String?  @map("conversation_id") @db.Uuid
+  parentExecutionRunId    String?  @map("parent_execution_run_id") @db.Uuid
+  historyReferences       Json     @default("[]") @map("history_references")
+  memoryReferences        Json     @default("[]") @map("memory_references")
+  participantMetadata     Json     @default("{}") @map("participant_metadata")
+  tokenAccountingMetadata Json     @default("{}") @map("token_accounting_metadata")
+  createdAt               DateTime @default(now()) @map("created_at")
+
+  workspace Workspace                @relation(fields: [workspaceId], references: [id], onDelete: Restrict)
+  runtime   AgentRuntimePreparation @relation(fields: [runtimeId], references: [id], onDelete: Restrict)
+
+  @@index([workspaceId, conversationId, createdAt], map: "agent_runtime_conversations_workspace_conversation_idx")
+  @@index([parentExecutionRunId], map: "agent_runtime_conversations_parent_run_idx")
+  @@map("agent_runtime_conversations")
+}
+
+model AgentRuntimeSnapshot {
+  id                        String   @id @default(uuid()) @db.Uuid
+  workspaceId               String   @map("workspace_id") @db.Uuid
+  runtimeId                 String   @unique @map("runtime_id") @db.Uuid
+  createdById               String   @map("created_by") @db.Uuid
+  agentId                   String   @map("agent_id") @db.Uuid
+  agentVersionId            String   @map("agent_version_id") @db.Uuid
+  providerId                String   @map("provider_id") @db.Uuid
+  modelId                   String   @map("model_id") @db.Uuid
+  providerConfigurationId   String   @map("provider_configuration_id") @db.Uuid
+  executionProfileId        String   @map("execution_profile_id") @db.Uuid
+  executionProfileVersionId String   @map("execution_profile_version_id") @db.Uuid
+  executionRequestId        String   @map("execution_request_id") @db.Uuid
+  executionRunId            String?  @map("execution_run_id") @db.Uuid
+  conversationId            String?  @map("conversation_id") @db.Uuid
+  correlationId             String   @map("correlation_id")
+  executionId               String   @map("execution_id")
+  traceId                   String   @map("trace_id")
+  runtimeContext            Json     @map("runtime_context")
+  promptReferences          Json     @map("prompt_references")
+  promptStructure           Json     @map("prompt_structure")
+  runtimeVariables          Json     @map("runtime_variables")
+  runtimeMetadata           Json     @default("{}") @map("runtime_metadata")
+  executionConfiguration    Json     @map("execution_configuration")
+  contentHash               String   @map("content_hash")
+  createdAt                 DateTime @default(now()) @map("created_at")
+
+  workspace Workspace               @relation(fields: [workspaceId], references: [id], onDelete: Restrict)
+  runtime   AgentRuntimePreparation @relation(fields: [runtimeId], references: [id], onDelete: Restrict)
+
+  @@index([workspaceId, agentId, createdAt], map: "agent_runtime_snapshots_workspace_agent_idx")
+  @@index([workspaceId, contentHash], map: "agent_runtime_snapshots_workspace_hash_idx")
+  @@map("agent_runtime_snapshots")
+}
+
+model CompiledPrompt {
+  id                     String   @id @default(uuid()) @db.Uuid
+  workspaceId            String   @map("workspace_id") @db.Uuid
+  createdById            String   @map("created_by") @db.Uuid
+  promptId               String   @map("prompt_id") @db.Uuid
+  promptVersionId        String   @map("prompt_version_id") @db.Uuid
+  agentVersionId         String?  @map("agent_version_id") @db.Uuid
+  agentRuntimeSnapshotId String?  @map("agent_runtime_snapshot_id") @db.Uuid
+  executionRequestId     String?  @map("execution_request_id") @db.Uuid
+  conversationId         String?  @map("conversation_id") @db.Uuid
+  compilerVersion        String   @map("compiler_version")
+  compiledPackage        Json     @map("compiled_package")
+  resolvedPrompt         Json     @map("resolved_prompt")
+  variableMap            Json     @map("variable_map")
+  variableMetadata       Json     @map("variable_metadata")
+  promptMetadata         Json     @map("prompt_metadata")
+  diagnostics            Json     @default("[]")
+  dependencyMap          Json     @default("{}") @map("dependency_map")
+  placeholders           String[] @default([])
+  hash                   String
+  checksum               String
+  sizeBytes              Int      @map("size_bytes")
+  compiledAt             DateTime @map("compiled_at")
+  createdAt              DateTime @default(now()) @map("created_at")
+
+  workspace Workspace @relation(fields: [workspaceId], references: [id], onDelete: Restrict)
+
+  @@index([workspaceId, compiledAt], map: "compiled_prompts_workspace_compiled_idx")
+  @@index([workspaceId, promptId, compiledAt], map: "compiled_prompts_workspace_prompt_idx")
+  @@index([workspaceId, promptVersionId], map: "compiled_prompts_workspace_prompt_version_idx")
+  @@index([workspaceId, agentVersionId], map: "compiled_prompts_workspace_agent_version_idx")
+  @@index([workspaceId, hash], map: "compiled_prompts_workspace_hash_idx")
+  @@map("compiled_prompts")
+}
+
+model ProviderRuntimeRequest {
+  id                        String                @id @default(uuid()) @db.Uuid
+  workspaceId               String                @map("workspace_id") @db.Uuid
+  createdById               String                @map("created_by") @db.Uuid
+  compiledPromptId          String                @map("compiled_prompt_id") @db.Uuid
+  agentRuntimeSnapshotId    String                @map("agent_runtime_snapshot_id") @db.Uuid
+  providerId                String                @map("provider_id") @db.Uuid
+  providerConfigurationId   String                @map("provider_configuration_id") @db.Uuid
+  modelId                   String                @map("model_id") @db.Uuid
+  executionProfileId        String                @map("execution_profile_id") @db.Uuid
+  executionProfileVersionId String                @map("execution_profile_version_id") @db.Uuid
+  executionRequestId        String                @map("execution_request_id") @db.Uuid
+  executionRunId            String?               @map("execution_run_id") @db.Uuid
+  conversationId            String?               @map("conversation_id") @db.Uuid
+  providerType              String                @map("provider_type")
+  providerVersion           String                @map("provider_version")
+  modelVersion              String                @map("model_version")
+  status                    ProviderRuntimeStatus @default(PREPARED)
+  preparationInput          Json                  @map("preparation_input")
+  preparedRequest           Json                  @map("prepared_request")
+  capabilityMetadata        Json                  @map("capability_metadata")
+  validationResult          Json                  @map("validation_result")
+  requestHash               String                @map("request_hash")
+  checksum                  String
+  latestSnapshotRevision    Int                   @default(0) @map("latest_snapshot_revision")
+  validatedAt               DateTime?             @map("validated_at")
+  createdAt                 DateTime              @default(now()) @map("created_at")
+  updatedAt                 DateTime              @updatedAt @map("updated_at")
+
+  workspace Workspace                 @relation(fields: [workspaceId], references: [id], onDelete: Restrict)
+  snapshots ProviderRequestSnapshot[]
+
+  @@index([workspaceId, status, createdAt], map: "provider_runtime_requests_workspace_status_idx")
+  @@index([workspaceId, providerId, modelId, createdAt], map: "provider_runtime_requests_provider_model_idx")
+  @@index([workspaceId, executionRequestId], map: "provider_runtime_requests_execution_idx")
+  @@index([workspaceId, requestHash], map: "provider_runtime_requests_hash_idx")
+  @@map("provider_runtime_requests")
+}
+
+model ProviderRequestSnapshot {
+  id                        String   @id @default(uuid()) @db.Uuid
+  workspaceId               String   @map("workspace_id") @db.Uuid
+  requestId                 String   @map("request_id") @db.Uuid
+  revision                  Int
+  createdById               String   @map("created_by") @db.Uuid
+  compiledPromptId          String   @map("compiled_prompt_id") @db.Uuid
+  agentRuntimeSnapshotId    String   @map("agent_runtime_snapshot_id") @db.Uuid
+  providerId                String   @map("provider_id") @db.Uuid
+  providerConfigurationId   String   @map("provider_configuration_id") @db.Uuid
+  modelId                   String   @map("model_id") @db.Uuid
+  executionProfileId        String   @map("execution_profile_id") @db.Uuid
+  executionProfileVersionId String   @map("execution_profile_version_id") @db.Uuid
+  providerType              String   @map("provider_type")
+  providerVersion           String   @map("provider_version")
+  modelVersion              String   @map("model_version")
+  requestPackage            Json     @map("request_package")
+  capabilityMetadata        Json     @map("capability_metadata")
+  validationResult          Json     @map("validation_result")
+  requestHash               String   @map("request_hash")
+  checksum                  String
+  createdAt                 DateTime @default(now()) @map("created_at")
+
+  workspace Workspace              @relation(fields: [workspaceId], references: [id], onDelete: Restrict)
+  request   ProviderRuntimeRequest @relation(fields: [requestId], references: [id], onDelete: Restrict)
+
+  @@unique([requestId, revision], map: "provider_request_snapshots_request_revision_key")
+  @@index([workspaceId, createdAt], map: "provider_request_snapshots_workspace_created_idx")
+  @@index([workspaceId, providerId, modelId], map: "provider_request_snapshots_provider_model_idx")
+  @@index([workspaceId, requestHash], map: "provider_request_snapshots_hash_idx")
+  @@map("provider_request_snapshots")
 }
 
 model Plan {

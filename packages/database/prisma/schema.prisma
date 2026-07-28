@@ -208,6 +208,27 @@ enum WorkflowNodeType {
   CUSTOM
 }
 
+enum RuntimeOrchestrationStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}
+
+enum ExecutionProfileVisibility {
+  PRIVATE
+  WORKSPACE
+}
+
+enum ExecutionBindingTarget {
+  WORKFLOW
+  AGENT
+  PROMPT
+  KNOWLEDGE
+  TOOL
+  PROVIDER
+  WORKSPACE
+}
+
 enum ExecutionStatus {
   PENDING
   RUNNING
@@ -372,6 +393,10 @@ model Workspace {
   workflows            Workflow[]
   workflowCategories   WorkflowCategory[]
   workflowTags         WorkflowTag[]
+  executionProfiles    ExecutionProfile[]
+  queueDefinitions     QueueDefinition[]
+  executionPriorities  ExecutionPriorityLevel[]
+  executionTags        ExecutionTag[]
   subscriptions      Subscription[]      @relation("WorkspaceSubscriptions")
   payments           Payment[]
   apiKeys            ApiKey[]
@@ -2164,6 +2189,345 @@ model WorkflowRun {
   @@index([conversationId])
   @@index([executionStatus])
   @@map("workflow_runs")
+}
+
+model QueueDefinition {
+  id          String   @id @default(uuid()) @db.Uuid
+  workspaceId String   @map("workspace_id") @db.Uuid
+  name        String
+  slug        String
+  description String?
+  metadata    Json     @default("{}")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  workspace Workspace          @relation(fields: [workspaceId], references: [id], onDelete: Restrict)
+  profiles  ExecutionProfile[]
+
+  @@unique([workspaceId, name])
+  @@unique([workspaceId, slug])
+  @@map("queue_definitions")
+}
+
+model ExecutionPriorityLevel {
+  id          String   @id @default(uuid()) @db.Uuid
+  workspaceId String   @map("workspace_id") @db.Uuid
+  name        String
+  slug        String
+  value       Int
+  description String?
+  metadata    Json     @default("{}")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  workspace Workspace          @relation(fields: [workspaceId], references: [id], onDelete: Restrict)
+  profiles  ExecutionProfile[]
+
+  @@unique([workspaceId, name])
+  @@unique([workspaceId, slug])
+  @@unique([workspaceId, value])
+  @@map("execution_priority_levels")
+}
+
+model ExecutionProfile {
+  id                String                     @id @default(uuid()) @db.Uuid
+  workspaceId       String                     @map("workspace_id") @db.Uuid
+  queueDefinitionId String?                    @map("queue_definition_id") @db.Uuid
+  priorityLevelId   String?                    @map("priority_level_id") @db.Uuid
+  name              String
+  slug              String
+  description       String?
+  status            RuntimeOrchestrationStatus @default(DRAFT)
+  visibility        ExecutionProfileVisibility @default(WORKSPACE)
+  revision          Int                        @default(0)
+  metadata          Json                       @default("{}")
+  createdById       String                     @map("created_by") @db.Uuid
+  updatedById       String                     @map("updated_by") @db.Uuid
+  createdAt         DateTime                   @default(now()) @map("created_at")
+  updatedAt         DateTime                   @updatedAt @map("updated_at")
+  publishedAt       DateTime?                  @map("published_at")
+  archivedAt        DateTime?                  @map("archived_at")
+  deletedAt         DateTime?                  @map("deleted_at")
+
+  workspace       Workspace                   @relation(fields: [workspaceId], references: [id], onDelete: Restrict)
+  queueDefinition QueueDefinition?            @relation(fields: [queueDefinitionId], references: [id], onDelete: Restrict)
+  priorityLevel   ExecutionPriorityLevel?      @relation(fields: [priorityLevelId], references: [id], onDelete: Restrict)
+  policy          ExecutionPolicy?
+  limits          ExecutionLimit?
+  timeouts        ExecutionTimeout?
+  retryPolicy     ExecutionRetryPolicy?
+  failurePolicy   ExecutionFailurePolicy?
+  fallbackPolicy  ExecutionFallbackPolicy?
+  concurrency     ExecutionConcurrencyPolicy?
+  contexts        ExecutionContext[]
+  variables       ExecutionVariable[]
+  inputs          ExecutionInput[]
+  outputs         ExecutionOutput[]
+  bindings        ExecutionBinding[]
+  dependencies    ExecutionDependency[]
+  labels          ExecutionLabel[]
+  tagLinks        ExecutionTagAssignment[]
+  notes           ExecutionNote[]
+  versions        ExecutionProfileVersion[]
+
+  @@unique([workspaceId, name])
+  @@unique([workspaceId, slug])
+  @@index([workspaceId, status, visibility, deletedAt])
+  @@index([queueDefinitionId])
+  @@index([priorityLevelId])
+  @@map("execution_profiles")
+}
+
+model ExecutionPolicy {
+  id         String   @id @default(uuid()) @db.Uuid
+  profileId  String   @unique @map("profile_id") @db.Uuid
+  config     Json     @default("{}")
+  metadata   Json     @default("{}")
+  createdAt  DateTime @default(now()) @map("created_at")
+  updatedAt  DateTime @updatedAt @map("updated_at")
+  profile ExecutionProfile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  @@map("execution_policies")
+}
+
+model ExecutionLimit {
+  id              String   @id @default(uuid()) @db.Uuid
+  profileId       String   @unique @map("profile_id") @db.Uuid
+  maxSteps        Int?     @map("max_steps")
+  maxTokens       Int?     @map("max_tokens")
+  maxCostMinor    Int?     @map("max_cost_minor")
+  maxPayloadBytes Int?     @map("max_payload_bytes")
+  metadata        Json     @default("{}")
+  createdAt       DateTime @default(now()) @map("created_at")
+  updatedAt       DateTime @updatedAt @map("updated_at")
+  profile ExecutionProfile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  @@map("execution_limits")
+}
+
+model ExecutionTimeout {
+  id        String   @id @default(uuid()) @db.Uuid
+  profileId String   @unique @map("profile_id") @db.Uuid
+  totalMs   Int      @map("total_ms")
+  stepMs    Int?     @map("step_ms")
+  idleMs    Int?     @map("idle_ms")
+  metadata  Json     @default("{}")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  profile ExecutionProfile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  @@map("execution_timeouts")
+}
+
+model ExecutionRetryPolicy {
+  id             String   @id @default(uuid()) @db.Uuid
+  profileId      String   @unique @map("profile_id") @db.Uuid
+  maxAttempts    Int      @default(1) @map("max_attempts")
+  initialDelayMs Int      @default(0) @map("initial_delay_ms")
+  maxDelayMs     Int      @default(0) @map("max_delay_ms")
+  multiplier     Decimal  @default(1) @db.Decimal(6, 3)
+  jitter         Boolean  @default(false)
+  retryOn        String[] @default([]) @map("retry_on")
+  metadata       Json     @default("{}")
+  createdAt      DateTime @default(now()) @map("created_at")
+  updatedAt      DateTime @updatedAt @map("updated_at")
+  profile ExecutionProfile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  @@map("execution_retry_policies")
+}
+
+model ExecutionFailurePolicy {
+  id         String   @id @default(uuid()) @db.Uuid
+  profileId  String   @unique @map("profile_id") @db.Uuid
+  strategy   String
+  config     Json     @default("{}")
+  metadata   Json     @default("{}")
+  createdAt  DateTime @default(now()) @map("created_at")
+  updatedAt  DateTime @updatedAt @map("updated_at")
+  profile ExecutionProfile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  @@map("execution_failure_policies")
+}
+
+model ExecutionFallbackPolicy {
+  id                 String                  @id @default(uuid()) @db.Uuid
+  profileId          String                  @unique @map("profile_id") @db.Uuid
+  strategy           String
+  targetType         ExecutionBindingTarget? @map("target_type")
+  targetReferenceId  String?                 @map("target_reference_id") @db.Uuid
+  config             Json                    @default("{}")
+  metadata           Json                    @default("{}")
+  createdAt          DateTime                @default(now()) @map("created_at")
+  updatedAt          DateTime                @updatedAt @map("updated_at")
+  profile ExecutionProfile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  @@index([targetReferenceId])
+  @@map("execution_fallback_policies")
+}
+
+model ExecutionConcurrencyPolicy {
+  id          String   @id @default(uuid()) @db.Uuid
+  profileId   String   @unique @map("profile_id") @db.Uuid
+  maxParallel Int      @default(1) @map("max_parallel")
+  maxQueued   Int      @default(0) @map("max_queued")
+  strategy    String
+  keyTemplate String?  @map("key_template")
+  metadata    Json     @default("{}")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+  profile ExecutionProfile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  @@map("execution_concurrency_policies")
+}
+
+model ExecutionContext {
+  id         String   @id @default(uuid()) @db.Uuid
+  profileId  String   @map("profile_id") @db.Uuid
+  name       String
+  schema     Json     @default("{}")
+  value      Json?
+  metadata   Json     @default("{}")
+  sortOrder  Int      @default(0) @map("sort_order")
+  createdAt  DateTime @default(now()) @map("created_at")
+  updatedAt  DateTime @updatedAt @map("updated_at")
+  profile ExecutionProfile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  @@unique([profileId, name])
+  @@map("execution_contexts")
+}
+
+model ExecutionVariable {
+  id           String   @id @default(uuid()) @db.Uuid
+  profileId    String   @map("profile_id") @db.Uuid
+  name         String
+  schema       Json     @default("{}")
+  defaultValue Json?    @map("default_value")
+  required     Boolean  @default(false)
+  metadata     Json     @default("{}")
+  sortOrder    Int      @default(0) @map("sort_order")
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+  profile ExecutionProfile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  @@unique([profileId, name])
+  @@map("execution_variables")
+}
+
+model ExecutionInput {
+  id         String   @id @default(uuid()) @db.Uuid
+  profileId  String   @map("profile_id") @db.Uuid
+  name       String
+  schema     Json     @default("{}")
+  required   Boolean  @default(false)
+  metadata   Json     @default("{}")
+  sortOrder  Int      @default(0) @map("sort_order")
+  createdAt  DateTime @default(now()) @map("created_at")
+  updatedAt  DateTime @updatedAt @map("updated_at")
+  profile ExecutionProfile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  @@unique([profileId, name])
+  @@map("execution_inputs")
+}
+
+model ExecutionOutput {
+  id         String   @id @default(uuid()) @db.Uuid
+  profileId  String   @map("profile_id") @db.Uuid
+  name       String
+  schema     Json     @default("{}")
+  metadata   Json     @default("{}")
+  sortOrder  Int      @default(0) @map("sort_order")
+  createdAt  DateTime @default(now()) @map("created_at")
+  updatedAt  DateTime @updatedAt @map("updated_at")
+  profile ExecutionProfile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  @@unique([profileId, name])
+  @@map("execution_outputs")
+}
+
+model ExecutionBinding {
+  id          String                 @id @default(uuid()) @db.Uuid
+  profileId   String                 @map("profile_id") @db.Uuid
+  key         String
+  targetType  ExecutionBindingTarget @map("target_type")
+  referenceId String                 @map("reference_id") @db.Uuid
+  required    Boolean                @default(true)
+  config      Json                   @default("{}")
+  metadata    Json                   @default("{}")
+  sortOrder   Int                    @default(0) @map("sort_order")
+  createdAt   DateTime               @default(now()) @map("created_at")
+  updatedAt   DateTime               @updatedAt @map("updated_at")
+  profile ExecutionProfile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  @@unique([profileId, key])
+  @@index([referenceId])
+  @@map("execution_bindings")
+}
+
+model ExecutionDependency {
+  id                  String   @id @default(uuid()) @db.Uuid
+  profileId           String   @map("profile_id") @db.Uuid
+  bindingKey          String   @map("binding_key")
+  dependsOnBindingKey String   @map("depends_on_binding_key")
+  metadata            Json     @default("{}")
+  createdAt           DateTime @default(now()) @map("created_at")
+  updatedAt           DateTime @updatedAt @map("updated_at")
+  profile ExecutionProfile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  @@unique([profileId, bindingKey, dependsOnBindingKey], map: "execution_dependencies_profile_binding_dependency_key")
+  @@map("execution_dependencies")
+}
+
+model ExecutionLabel {
+  id         String   @id @default(uuid()) @db.Uuid
+  profileId  String   @map("profile_id") @db.Uuid
+  name       String
+  color      String?
+  metadata   Json     @default("{}")
+  createdAt  DateTime @default(now()) @map("created_at")
+  updatedAt  DateTime @updatedAt @map("updated_at")
+  profile ExecutionProfile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  @@unique([profileId, name])
+  @@map("execution_labels")
+}
+
+model ExecutionTag {
+  id          String   @id @default(uuid()) @db.Uuid
+  workspaceId String   @map("workspace_id") @db.Uuid
+  name        String
+  slug        String
+  metadata    Json     @default("{}")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+  workspace Workspace                @relation(fields: [workspaceId], references: [id], onDelete: Restrict)
+  profiles  ExecutionTagAssignment[]
+  @@unique([workspaceId, name])
+  @@unique([workspaceId, slug])
+  @@map("execution_tags")
+}
+
+model ExecutionTagAssignment {
+  profileId String   @map("profile_id") @db.Uuid
+  tagId     String   @map("tag_id") @db.Uuid
+  createdAt DateTime @default(now()) @map("created_at")
+  profile ExecutionProfile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  tag     ExecutionTag     @relation(fields: [tagId], references: [id], onDelete: Restrict)
+  @@id([profileId, tagId])
+  @@index([tagId])
+  @@map("execution_tag_assignments")
+}
+
+model ExecutionNote {
+  id         String   @id @default(uuid()) @db.Uuid
+  profileId  String   @map("profile_id") @db.Uuid
+  content    String
+  metadata   Json     @default("{}")
+  sortOrder  Int      @default(0) @map("sort_order")
+  createdAt  DateTime @default(now()) @map("created_at")
+  updatedAt  DateTime @updatedAt @map("updated_at")
+  profile ExecutionProfile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  @@map("execution_notes")
+}
+
+model ExecutionProfileVersion {
+  id            String   @id @default(uuid()) @db.Uuid
+  profileId     String   @map("profile_id") @db.Uuid
+  revision      Int
+  snapshot      Json
+  changeSummary String?  @map("change_summary")
+  createdById   String   @map("created_by") @db.Uuid
+  createdAt     DateTime @default(now()) @map("created_at")
+  publishedAt   DateTime @default(now()) @map("published_at")
+  profile ExecutionProfile @relation(fields: [profileId], references: [id], onDelete: Restrict)
+  @@unique([profileId, revision])
+  @@index([profileId, publishedAt])
+  @@map("execution_profile_versions")
 }
 
 model Plan {

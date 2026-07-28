@@ -22,6 +22,7 @@ import { AgentStudioModule } from "../modules/agent-studio/agent-studio.module";
 import { KnowledgeBaseModule } from "../modules/knowledge-base/knowledge-base.module";
 import { ToolRegistryModule } from "../modules/tool-registry/tool-registry.module";
 import { WorkflowEngineModule } from "../modules/workflow-engine/workflow-engine.module";
+import { RuntimeOrchestrationModule } from "../modules/runtime-orchestration/runtime-orchestration.module";
 import { SecretRedactionExceptionFilter } from "../common/secret-redaction-exception.filter";
 import { redactLogArguments } from "../common/secret-redaction";
 
@@ -85,7 +86,8 @@ import { redactLogArguments } from "../common/secret-redaction";
     AgentStudioModule,
     KnowledgeBaseModule,
     ToolRegistryModule,
-    WorkflowEngineModule
+    WorkflowEngineModule,
+    RuntimeOrchestrationModule
   ],
   providers: [
     {

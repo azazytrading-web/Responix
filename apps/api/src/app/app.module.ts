@@ -27,6 +27,7 @@ import { ExecutionKernelModule } from "../modules/execution-kernel/execution-ker
 import { AgentRuntimeModule } from "../modules/agent-runtime/agent-runtime.module";
 import { PromptCompilerModule } from "../modules/prompt-compiler/prompt-compiler.module";
 import { ProviderRuntimeModule } from "../modules/provider-runtime/provider-runtime.module";
+import { RetrievalRuntimeModule } from "../modules/retrieval-runtime/retrieval-runtime.module";
 import { SecretRedactionExceptionFilter } from "../common/secret-redaction-exception.filter";
 import { redactLogArguments } from "../common/secret-redaction";
 
@@ -95,7 +96,8 @@ import { redactLogArguments } from "../common/secret-redaction";
     ExecutionKernelModule,
     AgentRuntimeModule,
     PromptCompilerModule,
-    ProviderRuntimeModule
+    ProviderRuntimeModule,
+    RetrievalRuntimeModule
   ],
   providers: [
     {

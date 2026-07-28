@@ -299,6 +299,19 @@ enum ProviderRuntimeStatus {
   SNAPSHOTTED
 }
 
+enum RetrievalRuntimeStatus {
+  PREPARED
+  PUBLISHED
+  ARCHIVED
+  REJECTED
+}
+
+enum RetrievalDiagnosticSeverity {
+  ERROR
+  WARNING
+  INFO
+}
+
 enum BillingCycle {
   MONTHLY
   YEARLY
@@ -470,6 +483,8 @@ model Workspace {
   compiledPrompts          CompiledPrompt[]
   providerRuntimeRequests  ProviderRuntimeRequest[]
   providerRequestSnapshots ProviderRequestSnapshot[]
+  retrievalRuntimes        RetrievalRuntime[]
+  retrievalRuntimeSnapshots RetrievalRuntimeSnapshot[]
   subscriptions      Subscription[]      @relation("WorkspaceSubscriptions")
   payments           Payment[]
   apiKeys            ApiKey[]
@@ -2932,6 +2947,139 @@ model ProviderRequestSnapshot {
   @@index([workspaceId, providerId, modelId], map: "provider_request_snapshots_provider_model_idx")
   @@index([workspaceId, requestHash], map: "provider_request_snapshots_hash_idx")
   @@map("provider_request_snapshots")
+}
+
+model RetrievalRuntime {
+  id                     String                 @id @default(uuid()) @db.Uuid
+  workspaceId            String                 @map("workspace_id") @db.Uuid
+  createdById            String                 @map("created_by") @db.Uuid
+  knowledgeBaseId        String                 @map("knowledge_base_id") @db.Uuid
+  name                   String
+  language               String?
+  allowedMimeTypes       String[]               @default([]) @map("allowed_mime_types")
+  status                 RetrievalRuntimeStatus @default(PREPARED)
+  metadata               Json                   @default("{}")
+  retrievalPackage       Json                   @map("retrieval_package")
+  packageHash            String                 @map("package_hash")
+  checksum               String
+  latestSnapshotRevision Int                    @default(0) @map("latest_snapshot_revision")
+  archivedAt             DateTime?              @map("archived_at")
+  createdAt              DateTime               @default(now()) @map("created_at")
+  updatedAt              DateTime               @updatedAt @map("updated_at")
+
+  workspace   Workspace                    @relation(fields: [workspaceId], references: [id], onDelete: Restrict)
+  snapshots   RetrievalRuntimeSnapshot[]
+  sources     RetrievalRuntimeSource[]
+  collections RetrievalRuntimeCollection[]
+  filters     RetrievalRuntimeFilter[]
+  variables   RetrievalRuntimeVariable[]
+  diagnostics RetrievalRuntimeDiagnostic[]
+
+  @@index([workspaceId, status, createdAt], map: "retrieval_runtimes_workspace_status_idx")
+  @@index([workspaceId, knowledgeBaseId, createdAt], map: "retrieval_runtimes_workspace_space_idx")
+  @@index([workspaceId, packageHash], map: "retrieval_runtimes_workspace_hash_idx")
+  @@map("retrieval_runtimes")
+}
+
+model RetrievalRuntimeSnapshot {
+  id              String   @id @default(uuid()) @db.Uuid
+  workspaceId     String   @map("workspace_id") @db.Uuid
+  runtimeId       String   @map("runtime_id") @db.Uuid
+  revision        Int
+  createdById     String   @map("created_by") @db.Uuid
+  knowledgeBaseId String   @map("knowledge_base_id") @db.Uuid
+  retrievalPackage Json   @map("retrieval_package")
+  packageHash     String   @map("package_hash")
+  checksum        String
+  publishedAt     DateTime @default(now()) @map("published_at")
+  createdAt       DateTime @default(now()) @map("created_at")
+
+  workspace Workspace        @relation(fields: [workspaceId], references: [id], onDelete: Restrict)
+  runtime   RetrievalRuntime @relation(fields: [runtimeId], references: [id], onDelete: Restrict)
+
+  @@unique([runtimeId, revision], map: "retrieval_runtime_snapshots_runtime_revision_key")
+  @@index([workspaceId, publishedAt], map: "retrieval_runtime_snapshots_workspace_published_idx")
+  @@index([workspaceId, packageHash], map: "retrieval_runtime_snapshots_workspace_hash_idx")
+  @@map("retrieval_runtime_snapshots")
+}
+
+model RetrievalRuntimeSource {
+  id              String   @id @default(uuid()) @db.Uuid
+  runtimeId       String   @map("runtime_id") @db.Uuid
+  documentId      String   @map("document_id") @db.Uuid
+  versionId       String   @map("version_id") @db.Uuid
+  sourceType      KnowledgeSourceType @map("source_type")
+  mimeType        String   @map("mime_type")
+  language        String?
+  metadata        Json     @default("{}")
+  createdAt       DateTime @default(now()) @map("created_at")
+
+  runtime RetrievalRuntime @relation(fields: [runtimeId], references: [id], onDelete: Restrict)
+
+  @@unique([runtimeId, documentId], map: "retrieval_runtime_sources_runtime_document_key")
+  @@unique([runtimeId, versionId], map: "retrieval_runtime_sources_runtime_version_key")
+  @@index([runtimeId, sourceType, mimeType], map: "retrieval_runtime_sources_type_mime_idx")
+  @@map("retrieval_runtime_sources")
+}
+
+model RetrievalRuntimeCollection {
+  id           String   @id @default(uuid()) @db.Uuid
+  runtimeId    String   @map("runtime_id") @db.Uuid
+  collectionId String   @map("collection_id") @db.Uuid
+  metadata     Json     @default("{}")
+  createdAt    DateTime @default(now()) @map("created_at")
+
+  runtime RetrievalRuntime @relation(fields: [runtimeId], references: [id], onDelete: Restrict)
+
+  @@unique([runtimeId, collectionId], map: "retrieval_runtime_collections_runtime_collection_key")
+  @@map("retrieval_runtime_collections")
+}
+
+model RetrievalRuntimeFilter {
+  id        String   @id @default(uuid()) @db.Uuid
+  runtimeId String   @map("runtime_id") @db.Uuid
+  key       String
+  operator  String
+  value     Json
+  metadata  Json     @default("{}")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  runtime RetrievalRuntime @relation(fields: [runtimeId], references: [id], onDelete: Restrict)
+
+  @@unique([runtimeId, key, operator], map: "retrieval_runtime_filters_runtime_key_operator_key")
+  @@index([runtimeId, key], map: "retrieval_runtime_filters_key_idx")
+  @@map("retrieval_runtime_filters")
+}
+
+model RetrievalRuntimeVariable {
+  id        String   @id @default(uuid()) @db.Uuid
+  runtimeId String   @map("runtime_id") @db.Uuid
+  name      String
+  type      String
+  value     Json
+  metadata  Json     @default("{}")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  runtime RetrievalRuntime @relation(fields: [runtimeId], references: [id], onDelete: Restrict)
+
+  @@unique([runtimeId, name], map: "retrieval_runtime_variables_runtime_name_key")
+  @@map("retrieval_runtime_variables")
+}
+
+model RetrievalRuntimeDiagnostic {
+  id        String                      @id @default(uuid()) @db.Uuid
+  runtimeId String                      @map("runtime_id") @db.Uuid
+  severity  RetrievalDiagnosticSeverity
+  code      String
+  path      String
+  message   String
+  metadata  Json                        @default("{}")
+  createdAt DateTime                    @default(now()) @map("created_at")
+
+  runtime RetrievalRuntime @relation(fields: [runtimeId], references: [id], onDelete: Restrict)
+
+  @@index([runtimeId, severity, code], map: "retrieval_runtime_diagnostics_severity_code_idx")
+  @@map("retrieval_runtime_diagnostics")
 }
 
 model Plan {

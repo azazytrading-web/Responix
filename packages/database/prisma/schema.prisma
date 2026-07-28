@@ -237,6 +237,54 @@ enum ExecutionStatus {
   CANCELLED
 }
 
+enum ExecutionKernelStatus {
+  REQUESTED
+  QUEUED
+  STARTING
+  RUNNING
+  PAUSED
+  SUCCEEDED
+  FAILED
+  CANCELLED
+  TIMED_OUT
+}
+
+enum ExecutionStepStatus {
+  PENDING
+  RUNNING
+  SUCCEEDED
+  FAILED
+  CANCELLED
+  TIMED_OUT
+  SKIPPED
+}
+
+enum ExecutionSourceType {
+  PROFILE
+  WORKFLOW
+  AGENT
+  PROMPT
+  KNOWLEDGE
+  TOOL
+  PROVIDER
+  WORKSPACE
+  MANUAL
+  SYSTEM
+}
+
+enum ExecutionEventActorType {
+  USER
+  SYSTEM
+}
+
+enum ExecutionLogLevel {
+  TRACE
+  DEBUG
+  INFO
+  WARN
+  ERROR
+}
+
 enum BillingCycle {
   MONTHLY
   YEARLY
@@ -397,6 +445,11 @@ model Workspace {
   queueDefinitions     QueueDefinition[]
   executionPriorities  ExecutionPriorityLevel[]
   executionTags        ExecutionTag[]
+  executionRequests    ExecutionRequest[]
+  executionRuns        ExecutionRun[]
+  executionSteps       ExecutionStep[]
+  executionEvents      ExecutionEvent[]
+  executionLogs        ExecutionLog[]
   subscriptions      Subscription[]      @relation("WorkspaceSubscriptions")
   payments           Payment[]
   apiKeys            ApiKey[]
@@ -2528,6 +2581,132 @@ model ExecutionProfileVersion {
   @@unique([profileId, revision])
   @@index([profileId, publishedAt])
   @@map("execution_profile_versions")
+}
+
+model ExecutionRequest {
+  id                String              @id @default(uuid()) @db.Uuid
+  workspaceId       String              @map("workspace_id") @db.Uuid
+  requestedById     String              @map("requested_by") @db.Uuid
+  sourceType        ExecutionSourceType @map("source_type")
+  sourceReferenceId String?             @map("source_reference_id") @db.Uuid
+  metadata          Json                @default("{}")
+  correlationId     String              @map("correlation_id")
+  idempotencyKey    String              @map("idempotency_key")
+  payloadHash       String              @map("payload_hash")
+  priority          Int                 @default(0)
+  requestedAt       DateTime            @default(now()) @map("requested_at")
+  createdAt         DateTime            @default(now()) @map("created_at")
+
+  workspace Workspace      @relation(fields: [workspaceId], references: [id], onDelete: Restrict)
+  runs      ExecutionRun[]
+
+  @@unique([workspaceId, idempotencyKey], map: "execution_requests_workspace_idempotency_key")
+  @@index([workspaceId, correlationId, requestedAt], map: "execution_requests_workspace_correlation_idx")
+  @@index([workspaceId, sourceType, sourceReferenceId], map: "execution_requests_workspace_source_idx")
+  @@index([requestedById, requestedAt], map: "execution_requests_actor_requested_idx")
+  @@map("execution_requests")
+}
+
+model ExecutionRun {
+  id              String                @id @default(uuid()) @db.Uuid
+  workspaceId     String                @map("workspace_id") @db.Uuid
+  requestId       String                @map("request_id") @db.Uuid
+  parentRunId     String?               @map("parent_run_id") @db.Uuid
+  status          ExecutionKernelStatus @default(REQUESTED)
+  stateVersion    Int                   @default(0) @map("state_version")
+  eventSequence   Int                   @default(0) @map("event_sequence")
+  startedAt       DateTime?             @map("started_at")
+  endedAt         DateTime?             @map("ended_at")
+  durationMs      Int?                  @map("duration_ms")
+  failureCode     String?               @map("failure_code")
+  failureMessage  String?               @map("failure_message")
+  failureMetadata Json?                 @map("failure_metadata")
+  runtimeMetadata Json                  @default("{}") @map("runtime_metadata")
+  createdAt       DateTime              @default(now()) @map("created_at")
+  updatedAt       DateTime              @updatedAt @map("updated_at")
+
+  workspace Workspace        @relation(fields: [workspaceId], references: [id], onDelete: Restrict)
+  request   ExecutionRequest @relation(fields: [requestId], references: [id], onDelete: Restrict)
+  parent    ExecutionRun?    @relation("ExecutionRunHierarchy", fields: [parentRunId], references: [id], onDelete: Restrict)
+  children  ExecutionRun[]   @relation("ExecutionRunHierarchy")
+  steps     ExecutionStep[]
+  events    ExecutionEvent[]
+  logs      ExecutionLog[]
+
+  @@index([workspaceId, status, createdAt], map: "execution_runs_workspace_status_idx")
+  @@index([requestId, createdAt], map: "execution_runs_request_created_idx")
+  @@index([parentRunId], map: "execution_runs_parent_idx")
+  @@map("execution_runs")
+}
+
+model ExecutionStep {
+  id             String              @id @default(uuid()) @db.Uuid
+  workspaceId    String              @map("workspace_id") @db.Uuid
+  runId          String              @map("run_id") @db.Uuid
+  sequence       Int
+  stepType       String              @map("step_type")
+  name           String?
+  status         ExecutionStepStatus @default(PENDING)
+  inputMetadata  Json                @default("{}") @map("input_metadata")
+  outputMetadata Json                @default("{}") @map("output_metadata")
+  errorMetadata  Json                @default("{}") @map("error_metadata")
+  startedAt      DateTime?           @map("started_at")
+  endedAt        DateTime?           @map("ended_at")
+  durationMs     Int?                @map("duration_ms")
+  metadata       Json                @default("{}")
+  createdAt      DateTime            @default(now()) @map("created_at")
+
+  workspace Workspace    @relation(fields: [workspaceId], references: [id], onDelete: Restrict)
+  run       ExecutionRun @relation(fields: [runId], references: [id], onDelete: Restrict)
+  logs      ExecutionLog[]
+
+  @@unique([runId, sequence], map: "execution_steps_run_sequence_key")
+  @@index([workspaceId, status, createdAt], map: "execution_steps_workspace_status_idx")
+  @@map("execution_steps")
+}
+
+model ExecutionEvent {
+  id             String                   @id @default(uuid()) @db.Uuid
+  workspaceId    String                   @map("workspace_id") @db.Uuid
+  runId          String                   @map("run_id") @db.Uuid
+  sequence       Int
+  eventType      String                   @map("event_type")
+  previousStatus ExecutionKernelStatus?   @map("previous_status")
+  currentStatus  ExecutionKernelStatus?   @map("current_status")
+  message        String?
+  actorType      ExecutionEventActorType  @map("actor_type")
+  actorId        String?                  @map("actor_id") @db.Uuid
+  metadata       Json                     @default("{}")
+  occurredAt     DateTime                 @default(now()) @map("occurred_at")
+  createdAt      DateTime                 @default(now()) @map("created_at")
+
+  workspace Workspace    @relation(fields: [workspaceId], references: [id], onDelete: Restrict)
+  run       ExecutionRun @relation(fields: [runId], references: [id], onDelete: Restrict)
+
+  @@unique([runId, sequence], map: "execution_events_run_sequence_key")
+  @@index([workspaceId, eventType, occurredAt], map: "execution_events_workspace_type_idx")
+  @@map("execution_events")
+}
+
+model ExecutionLog {
+  id            String            @id @default(uuid()) @db.Uuid
+  workspaceId   String            @map("workspace_id") @db.Uuid
+  runId         String            @map("run_id") @db.Uuid
+  stepId        String?           @map("step_id") @db.Uuid
+  level         ExecutionLogLevel
+  message       String
+  correlationId String            @map("correlation_id")
+  metadata      Json              @default("{}")
+  createdAt     DateTime          @default(now()) @map("created_at")
+
+  workspace Workspace      @relation(fields: [workspaceId], references: [id], onDelete: Restrict)
+  run       ExecutionRun   @relation(fields: [runId], references: [id], onDelete: Restrict)
+  step      ExecutionStep? @relation(fields: [stepId], references: [id], onDelete: Restrict)
+
+  @@index([workspaceId, level, createdAt], map: "execution_logs_workspace_level_idx")
+  @@index([runId, createdAt], map: "execution_logs_run_created_idx")
+  @@index([correlationId, createdAt], map: "execution_logs_correlation_created_idx")
+  @@map("execution_logs")
 }
 
 model Plan {

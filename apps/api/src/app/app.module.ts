@@ -23,6 +23,7 @@ import { KnowledgeBaseModule } from "../modules/knowledge-base/knowledge-base.mo
 import { ToolRegistryModule } from "../modules/tool-registry/tool-registry.module";
 import { WorkflowEngineModule } from "../modules/workflow-engine/workflow-engine.module";
 import { RuntimeOrchestrationModule } from "../modules/runtime-orchestration/runtime-orchestration.module";
+import { ExecutionKernelModule } from "../modules/execution-kernel/execution-kernel.module";
 import { SecretRedactionExceptionFilter } from "../common/secret-redaction-exception.filter";
 import { redactLogArguments } from "../common/secret-redaction";
 
@@ -87,7 +88,8 @@ import { redactLogArguments } from "../common/secret-redaction";
     KnowledgeBaseModule,
     ToolRegistryModule,
     WorkflowEngineModule,
-    RuntimeOrchestrationModule
+    RuntimeOrchestrationModule,
+    ExecutionKernelModule
   ],
   providers: [
     {

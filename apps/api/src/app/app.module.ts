@@ -17,6 +17,8 @@ import { AiModule } from "../modules/ai/ai.module";
 import { PlatformControlModule } from "../modules/platform-control/platform-control.module";
 import { DashboardRuntimeModule } from "../modules/dashboard-runtime/dashboard-runtime.module";
 import { StudioProjectModule } from "../modules/studio-project/studio-project.module";
+import { PromptLibraryModule } from "../modules/prompt-library/prompt-library.module";
+import { AgentStudioModule } from "../modules/agent-studio/agent-studio.module";
 import { SecretRedactionExceptionFilter } from "../common/secret-redaction-exception.filter";
 import { redactLogArguments } from "../common/secret-redaction";
 
@@ -75,7 +77,9 @@ import { redactLogArguments } from "../common/secret-redaction";
     AiModule,
     PlatformControlModule,
     DashboardRuntimeModule,
-    StudioProjectModule
+    StudioProjectModule,
+    PromptLibraryModule,
+    AgentStudioModule
   ],
   providers: [
     {

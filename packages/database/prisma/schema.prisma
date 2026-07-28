@@ -75,6 +75,20 @@ enum AgentStatus {
   DRAFT
   ACTIVE
   DISABLED
+  PUBLISHED
+  ARCHIVED
+}
+
+enum AgentVisibility {
+  PRIVATE
+  WORKSPACE
+}
+
+enum AgentPromptRole {
+  SYSTEM
+  DEVELOPER
+  USER_TEMPLATE
+  LIBRARY
 }
 
 enum ProviderStatus {
@@ -301,6 +315,9 @@ model Workspace {
   aiRuntimeAccounting      AiRuntimeAccounting[]
   aiRuntimeFinalizations   AiRuntimeFinalization[]
   studioProjects           StudioProject[]
+  promptCategories         PromptCategory[]
+  promptTags               PromptTag[]
+  promptLibraryItems       PromptLibraryItem[]
 
   @@index([status])
   @@index([createdAt])
@@ -693,12 +710,91 @@ model StudioProjectRevision {
   @@map("studio_project_revisions")
 }
 
+model PromptCategory {
+  id          String   @id @default(uuid()) @db.Uuid
+  workspaceId String   @map("workspace_id") @db.Uuid
+  name        String
+  slug        String
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+  workspace   Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  prompts     PromptLibraryItem[]
+  @@unique([workspaceId, slug])
+  @@map("prompt_categories")
+}
+model PromptTag {
+  id          String   @id @default(uuid()) @db.Uuid
+  workspaceId String   @map("workspace_id") @db.Uuid
+  name        String
+  slug        String
+  createdAt   DateTime @default(now()) @map("created_at")
+  workspace   Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  assignments PromptTagAssignment[]
+  @@unique([workspaceId, slug])
+  @@map("prompt_tags")
+}
+model PromptLibraryItem {
+  id          String   @id @default(uuid()) @db.Uuid
+  workspaceId String   @map("workspace_id") @db.Uuid
+  categoryId  String?  @map("category_id") @db.Uuid
+  name        String
+  slug        String
+  description String?
+  status      StudioProjectStatus @default(DRAFT)
+  draft       Json     @default("{}")
+  variables   Json     @default("[]")
+  metadata    Json     @default("{}")
+  revision    Int      @default(0)
+  favorite    Boolean  @default(false)
+  createdById String   @map("created_by") @db.Uuid
+  updatedById String   @map("updated_by") @db.Uuid
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+  deletedAt   DateTime? @map("deleted_at")
+  workspace   Workspace @relation(fields: [workspaceId], references: [id], onDelete: Restrict)
+  category    PromptCategory? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  tags        PromptTagAssignment[]
+  versions    PromptLibraryVersion[]
+  agentBindings AgentPromptBinding[]
+  @@unique([workspaceId, slug])
+  @@index([workspaceId, status, deletedAt])
+  @@map("prompt_library_items")
+}
+model PromptTagAssignment {
+  promptId String @map("prompt_id") @db.Uuid
+  tagId String @map("tag_id") @db.Uuid
+  prompt PromptLibraryItem @relation(fields:[promptId], references:[id], onDelete:Cascade)
+  tag PromptTag @relation(fields:[tagId], references:[id], onDelete:Cascade)
+  @@id([promptId, tagId])
+  @@map("prompt_tag_assignments")
+}
+model PromptLibraryVersion {
+  id String @id @default(uuid()) @db.Uuid
+  promptId String @map("prompt_id") @db.Uuid
+  revision Int
+  snapshot Json
+  changeSummary String? @map("change_summary")
+  createdById String @map("created_by") @db.Uuid
+  createdAt DateTime @default(now()) @map("created_at")
+  publishedAt DateTime? @map("published_at")
+  prompt PromptLibraryItem @relation(fields:[promptId], references:[id], onDelete:Cascade)
+  agentBindings AgentPromptBinding[]
+  @@unique([promptId, revision])
+  @@index([promptId, publishedAt])
+  @@map("prompt_library_versions")
+}
+
 model AiAgent {
   id               String      @id @default(uuid()) @db.Uuid
   workspaceId      String      @map("workspace_id") @db.Uuid
   name             String
+  slug             String?
   description      String?
+  category         String?
   avatar           String?
+  avatarMetadata   Json        @default("{}") @map("avatar_metadata")
+  colorMetadata    Json        @default("{}") @map("color_metadata")
+  iconMetadata     Json        @default("{}") @map("icon_metadata")
   personality      String?
   prompt           String
   modelId          String      @map("model_id") @db.Uuid
@@ -706,28 +802,89 @@ model AiAgent {
   temperature      Decimal     @default(0.7) @db.Decimal(3, 2)
   maxTokens        Int         @map("max_tokens")
   topP             Decimal?    @map("top_p") @db.Decimal(3, 2)
+  stopSequences    String[]     @default([]) @map("stop_sequences")
+  streamingEnabled Boolean     @default(false) @map("streaming_enabled")
+  timeoutMs        Int         @default(30000) @map("timeout_ms")
+  retryPolicy      Json        @default("{}") @map("retry_policy")
+  fallbackStrategy Json        @default("{}") @map("fallback_strategy")
+  runtimeConfiguration Json    @default("{}") @map("runtime_configuration")
+  providerConfigurationId String? @map("provider_configuration_id") @db.Uuid
+  providerConfiguration Json   @default("{}") @map("provider_configuration")
+  modelConfiguration Json      @default("{}") @map("model_configuration")
+  capabilitiesMetadata Json    @default("{}") @map("capabilities_metadata")
   memoryEnabled    Boolean     @default(false) @map("memory_enabled")
   knowledgeEnabled Boolean     @default(false) @map("knowledge_enabled")
   toolsEnabled     Boolean     @default(false) @map("tools_enabled")
+  visionEnabled    Boolean     @default(false) @map("vision_enabled")
+  reasoningEnabled Boolean     @default(false) @map("reasoning_enabled")
+  voiceEnabled     Boolean     @default(false) @map("voice_enabled")
+  imageEnabled     Boolean     @default(false) @map("image_enabled")
+  moderationEnabled Boolean    @default(false) @map("moderation_enabled")
   fallbackEnabled  Boolean     @default(false) @map("fallback_enabled")
   status           AgentStatus @default(DRAFT)
-  version          Int         @default(1)
+  visibility       AgentVisibility @default(WORKSPACE)
+  version          Int         @default(0)
+  createdById      String?     @map("created_by") @db.Uuid
+  updatedById      String?     @map("updated_by") @db.Uuid
   createdAt        DateTime    @default(now()) @map("created_at")
   updatedAt        DateTime    @updatedAt @map("updated_at")
+  archivedAt       DateTime?   @map("archived_at")
   deletedAt        DateTime?   @map("deleted_at")
 
   workspace     Workspace      @relation(fields: [workspaceId], references: [id], onDelete: Restrict)
   model         AiModel        @relation(fields: [modelId], references: [id], onDelete: Restrict)
   provider      AiProvider     @relation(fields: [providerId], references: [id], onDelete: Restrict)
+  workspaceProviderConfiguration AiProviderConfiguration? @relation(fields: [providerConfigurationId], references: [id], onDelete: SetNull)
+  promptBindings AgentPromptBinding[]
+  versions      AiAgentVersion[]
   conversations Conversation[] @relation("ConversationAgent")
   invocations   AiInvocationLog[]
   memories      AiMemoryRecord[]
 
   @@unique([workspaceId, name])
+  @@unique([workspaceId, slug])
   @@index([workspaceId, status])
   @@index([modelId])
   @@index([providerId])
   @@map("ai_agents")
+}
+
+model AgentPromptBinding {
+  id                String          @id @default(uuid()) @db.Uuid
+  agentId           String          @map("agent_id") @db.Uuid
+  role              AgentPromptRole
+  promptId          String          @map("prompt_id") @db.Uuid
+  promptVersionId   String?         @map("prompt_version_id") @db.Uuid
+  variableMetadata  Json            @default("[]") @map("variable_metadata")
+  metadata          Json            @default("{}")
+  createdAt         DateTime        @default(now()) @map("created_at")
+  updatedAt         DateTime        @updatedAt @map("updated_at")
+
+  agent        AiAgent               @relation(fields: [agentId], references: [id], onDelete: Cascade)
+  prompt       PromptLibraryItem     @relation(fields: [promptId], references: [id], onDelete: Restrict)
+  promptVersion PromptLibraryVersion? @relation(fields: [promptVersionId], references: [id], onDelete: Restrict)
+
+  @@unique([agentId, role, promptId])
+  @@index([promptId])
+  @@index([promptVersionId])
+  @@map("agent_prompt_bindings")
+}
+
+model AiAgentVersion {
+  id            String   @id @default(uuid()) @db.Uuid
+  agentId       String   @map("agent_id") @db.Uuid
+  revision      Int
+  snapshot      Json
+  changeSummary String?  @map("change_summary")
+  createdById   String   @map("created_by") @db.Uuid
+  createdAt     DateTime @default(now()) @map("created_at")
+  publishedAt   DateTime @map("published_at")
+
+  agent AiAgent @relation(fields: [agentId], references: [id], onDelete: Cascade)
+
+  @@unique([agentId, revision])
+  @@index([agentId, publishedAt])
+  @@map("ai_agent_versions")
 }
 
 model AiProviderCredential {
@@ -767,6 +924,7 @@ model AiProviderConfiguration {
   createdAt   DateTime @default(now()) @map("created_at")
   updatedAt   DateTime @updatedAt @map("updated_at")
   deletedAt   DateTime? @map("deleted_at")
+  agents      AiAgent[]
 
   workspace Workspace  @relation(fields: [workspaceId], references: [id], onDelete: Restrict)
   provider  AiProvider @relation(fields: [providerId], references: [id], onDelete: Restrict)

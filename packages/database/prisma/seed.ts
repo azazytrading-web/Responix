@@ -30,7 +30,14 @@ const permissions = [
   "agent.studio.publish",
   "agent.studio.rollback",
   "agent.studio.archive",
-  "agent.studio.delete"
+  "agent.studio.delete",
+  "knowledge.base.read",
+  "knowledge.base.write",
+  "knowledge.base.publish",
+  "knowledge.base.rollback",
+  "knowledge.base.archive",
+  "knowledge.base.delete",
+  "knowledge.base.manage"
 ];
 
 const roles = [
@@ -61,7 +68,7 @@ async function seed(): Promise<void> {
   }
 
   const aiPermissions = await prisma.permission.findMany({
-    where: { code: { in: permissions.filter((code) => code.startsWith("ai.") || code.startsWith("platform.") || code.startsWith("studio.") || code.startsWith("prompt.") || code.startsWith("agent.")) } }
+    where: { code: { in: permissions.filter((code) => code.startsWith("ai.") || code.startsWith("platform.") || code.startsWith("studio.") || code.startsWith("prompt.") || code.startsWith("agent.") || code.startsWith("knowledge.")) } }
   });
   const aiAdministrators = await prisma.role.findMany({
     where: { workspaceId: null, name: { in: ["Owner", "Administrator"] } }

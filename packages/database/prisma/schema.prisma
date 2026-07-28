@@ -109,6 +109,15 @@ enum KnowledgeStatus {
   READY
   FAILED
   ARCHIVED
+  PUBLISHED
+}
+
+enum KnowledgeSourceType {
+  FILE
+  URL
+  TEXT
+  IMPORT
+  API
 }
 
 enum UploadStatus {
@@ -284,6 +293,11 @@ model Workspace {
   agents             AiAgent[]
   knowledgeBases     KnowledgeBase[]
   knowledgeDocuments KnowledgeDocument[]
+  knowledgeCollections KnowledgeCollection[]
+  knowledgeFolders     KnowledgeFolder[]
+  knowledgeCategories  KnowledgeCategory[]
+  knowledgeTags        KnowledgeTag[]
+  knowledgeChunks      KnowledgeChunkMetadata[]
   workflows          Workflow[]
   subscriptions      Subscription[]      @relation("WorkspaceSubscriptions")
   payments           Payment[]
@@ -1352,51 +1366,223 @@ model KnowledgeBase {
   id              String          @id @default(uuid()) @db.Uuid
   workspaceId     String          @map("workspace_id") @db.Uuid
   name            String
+  slug            String?
   description     String?
+  categoryId      String?         @map("category_id") @db.Uuid
+  metadata        Json            @default("{}")
   totalDocuments  Int             @default(0) @map("total_documents")
   totalChunks     Int             @default(0) @map("total_chunks")
   totalEmbeddings Int             @default(0) @map("total_embeddings")
   embeddingModel  String?         @map("embedding_model")
   vectorDatabase  String          @default("pgvector") @map("vector_database")
   status          KnowledgeStatus @default(DRAFT)
+  createdById     String?         @map("created_by") @db.Uuid
+  updatedById     String?         @map("updated_by") @db.Uuid
   createdAt       DateTime        @default(now()) @map("created_at")
   updatedAt       DateTime        @updatedAt @map("updated_at")
+  archivedAt      DateTime?       @map("archived_at")
   deletedAt       DateTime?       @map("deleted_at")
 
   workspace Workspace           @relation(fields: [workspaceId], references: [id], onDelete: Restrict)
   documents KnowledgeDocument[]
+  category  KnowledgeCategory?  @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  collections KnowledgeCollection[]
+  folders     KnowledgeFolder[]
 
   @@unique([workspaceId, name])
+  @@unique([workspaceId, slug])
   @@index([workspaceId, status])
   @@map("knowledge_bases")
+}
+
+model KnowledgeCollection {
+  id              String    @id @default(uuid()) @db.Uuid
+  workspaceId     String    @map("workspace_id") @db.Uuid
+  knowledgeBaseId String    @map("knowledge_base_id") @db.Uuid
+  name            String
+  slug            String
+  description     String?
+  metadata        Json      @default("{}")
+  createdById     String?   @map("created_by") @db.Uuid
+  updatedById     String?   @map("updated_by") @db.Uuid
+  createdAt       DateTime  @default(now()) @map("created_at")
+  updatedAt       DateTime  @updatedAt @map("updated_at")
+  deletedAt       DateTime? @map("deleted_at")
+
+  workspace     Workspace     @relation(fields: [workspaceId], references: [id], onDelete: Restrict)
+  knowledgeBase KnowledgeBase @relation(fields: [knowledgeBaseId], references: [id], onDelete: Restrict)
+  folders       KnowledgeFolder[]
+  documents     KnowledgeDocument[]
+
+  @@unique([knowledgeBaseId, slug])
+  @@index([workspaceId, knowledgeBaseId, deletedAt])
+  @@map("knowledge_collections")
+}
+
+model KnowledgeFolder {
+  id              String    @id @default(uuid()) @db.Uuid
+  workspaceId     String    @map("workspace_id") @db.Uuid
+  knowledgeBaseId String    @map("knowledge_base_id") @db.Uuid
+  collectionId    String?   @map("collection_id") @db.Uuid
+  parentId        String?   @map("parent_id") @db.Uuid
+  name            String
+  slug            String
+  metadata        Json      @default("{}")
+  createdById     String?   @map("created_by") @db.Uuid
+  updatedById     String?   @map("updated_by") @db.Uuid
+  createdAt       DateTime  @default(now()) @map("created_at")
+  updatedAt       DateTime  @updatedAt @map("updated_at")
+  deletedAt       DateTime? @map("deleted_at")
+
+  workspace     Workspace            @relation(fields: [workspaceId], references: [id], onDelete: Restrict)
+  knowledgeBase KnowledgeBase        @relation(fields: [knowledgeBaseId], references: [id], onDelete: Restrict)
+  collection    KnowledgeCollection? @relation(fields: [collectionId], references: [id], onDelete: Restrict)
+  parent        KnowledgeFolder?     @relation("KnowledgeFolderTree", fields: [parentId], references: [id], onDelete: Restrict)
+  children      KnowledgeFolder[]    @relation("KnowledgeFolderTree")
+  documents     KnowledgeDocument[]
+
+  @@index([workspaceId, knowledgeBaseId, collectionId, parentId])
+  @@map("knowledge_folders")
+}
+
+model KnowledgeCategory {
+  id          String   @id @default(uuid()) @db.Uuid
+  workspaceId String   @map("workspace_id") @db.Uuid
+  name        String
+  slug        String
+  metadata    Json     @default("{}")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  workspace Workspace           @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  spaces    KnowledgeBase[]
+  documents KnowledgeDocument[]
+
+  @@unique([workspaceId, slug])
+  @@map("knowledge_categories")
+}
+
+model KnowledgeTag {
+  id          String   @id @default(uuid()) @db.Uuid
+  workspaceId String   @map("workspace_id") @db.Uuid
+  name        String
+  slug        String
+  metadata    Json     @default("{}")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  workspace   Workspace                @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  assignments KnowledgeTagAssignment[]
+
+  @@unique([workspaceId, slug])
+  @@map("knowledge_tags")
 }
 
 model KnowledgeDocument {
   id              String         @id @default(uuid()) @db.Uuid
   knowledgeBaseId String         @map("knowledge_base_id") @db.Uuid
   workspaceId     String         @map("workspace_id") @db.Uuid
+  collectionId    String?        @map("collection_id") @db.Uuid
+  folderId        String?        @map("folder_id") @db.Uuid
+  categoryId      String?        @map("category_id") @db.Uuid
+  name            String?
+  slug            String?
+  description     String?
+  sourceType      KnowledgeSourceType @default(FILE) @map("source_type")
+  sourceMetadata  Json           @default("{}") @map("source_metadata")
+  fileMetadata    Json           @default("{}") @map("file_metadata")
+  urlMetadata     Json           @default("{}") @map("url_metadata")
   fileName        String         @map("file_name")
   originalName    String         @map("original_name")
   mimeType        String         @map("mime_type")
   fileSize        BigInt         @map("file_size")
+  language        String?
+  checksum        String?
+  parserMetadata  Json           @default("{}") @map("parser_metadata")
+  chunkStrategy   Json           @default("{}") @map("chunk_strategy")
+  embeddingStatusMetadata Json   @default("{}") @map("embedding_status_metadata")
+  syncMetadata    Json           @default("{}") @map("sync_metadata")
+  importMetadata  Json           @default("{}") @map("import_metadata")
+  metadata        Json           @default("{}")
+  status          KnowledgeStatus @default(DRAFT)
+  revision        Int            @default(0)
   totalPages      Int?           @map("total_pages")
   totalChunks     Int            @default(0) @map("total_chunks")
   indexingStatus  IndexingStatus @default(PENDING) @map("indexing_status")
   uploadStatus    UploadStatus   @default(PENDING) @map("upload_status")
   uploadedById    String?        @map("uploaded_by") @db.Uuid
+  createdById     String?        @map("created_by") @db.Uuid
+  updatedById     String?        @map("updated_by") @db.Uuid
   createdAt       DateTime       @default(now()) @map("created_at")
   updatedAt       DateTime       @updatedAt @map("updated_at")
+  archivedAt      DateTime?      @map("archived_at")
   deletedAt       DateTime?      @map("deleted_at")
 
   knowledgeBase KnowledgeBase @relation(fields: [knowledgeBaseId], references: [id], onDelete: Restrict)
   workspace     Workspace     @relation(fields: [workspaceId], references: [id], onDelete: Restrict)
+  collection    KnowledgeCollection? @relation(fields: [collectionId], references: [id], onDelete: Restrict)
+  folder        KnowledgeFolder? @relation(fields: [folderId], references: [id], onDelete: Restrict)
+  category      KnowledgeCategory? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
   uploadedBy    User?         @relation("DocumentUploader", fields: [uploadedById], references: [id], onDelete: SetNull)
   embeddings    Embedding[]
+  chunks        KnowledgeChunkMetadata[]
+  versions      KnowledgeVersion[]
+  tags          KnowledgeTagAssignment[]
 
+  @@unique([workspaceId, slug])
   @@index([workspaceId, createdAt])
   @@index([knowledgeBaseId, indexingStatus])
   @@index([uploadStatus])
   @@map("knowledge_documents")
+}
+
+model KnowledgeChunkMetadata {
+  id          String   @id @default(uuid()) @db.Uuid
+  workspaceId String   @map("workspace_id") @db.Uuid
+  documentId  String   @map("document_id") @db.Uuid
+  ordinal     Int
+  checksum    String?
+  tokenCount  Int?     @map("token_count")
+  characterCount Int?  @map("character_count")
+  strategyMetadata Json @default("{}") @map("strategy_metadata")
+  metadata    Json     @default("{}")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  workspace Workspace         @relation(fields: [workspaceId], references: [id], onDelete: Restrict)
+  document  KnowledgeDocument @relation(fields: [documentId], references: [id], onDelete: Cascade)
+
+  @@unique([documentId, ordinal])
+  @@index([workspaceId, documentId])
+  @@map("knowledge_chunk_metadata")
+}
+
+model KnowledgeVersion {
+  id            String   @id @default(uuid()) @db.Uuid
+  documentId    String   @map("document_id") @db.Uuid
+  revision      Int
+  snapshot      Json
+  changeSummary String?  @map("change_summary")
+  createdById   String   @map("created_by") @db.Uuid
+  createdAt     DateTime @default(now()) @map("created_at")
+  publishedAt   DateTime @map("published_at")
+
+  document KnowledgeDocument @relation(fields: [documentId], references: [id], onDelete: Cascade)
+
+  @@unique([documentId, revision])
+  @@index([documentId, publishedAt])
+  @@map("knowledge_versions")
+}
+
+model KnowledgeTagAssignment {
+  documentId String @map("document_id") @db.Uuid
+  tagId      String @map("tag_id") @db.Uuid
+
+  document KnowledgeDocument @relation(fields: [documentId], references: [id], onDelete: Cascade)
+  tag      KnowledgeTag      @relation(fields: [tagId], references: [id], onDelete: Cascade)
+
+  @@id([documentId, tagId])
+  @@map("knowledge_tag_assignments")
 }
 
 model Embedding {

@@ -19,6 +19,7 @@ import { DashboardRuntimeModule } from "../modules/dashboard-runtime/dashboard-r
 import { StudioProjectModule } from "../modules/studio-project/studio-project.module";
 import { PromptLibraryModule } from "../modules/prompt-library/prompt-library.module";
 import { AgentStudioModule } from "../modules/agent-studio/agent-studio.module";
+import { KnowledgeBaseModule } from "../modules/knowledge-base/knowledge-base.module";
 import { SecretRedactionExceptionFilter } from "../common/secret-redaction-exception.filter";
 import { redactLogArguments } from "../common/secret-redaction";
 
@@ -79,7 +80,8 @@ import { redactLogArguments } from "../common/secret-redaction";
     DashboardRuntimeModule,
     StudioProjectModule,
     PromptLibraryModule,
-    AgentStudioModule
+    AgentStudioModule,
+    KnowledgeBaseModule
   ],
   providers: [
     {

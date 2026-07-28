@@ -20,6 +20,8 @@ import { StudioProjectModule } from "../modules/studio-project/studio-project.mo
 import { PromptLibraryModule } from "../modules/prompt-library/prompt-library.module";
 import { AgentStudioModule } from "../modules/agent-studio/agent-studio.module";
 import { KnowledgeBaseModule } from "../modules/knowledge-base/knowledge-base.module";
+import { ToolRegistryModule } from "../modules/tool-registry/tool-registry.module";
+import { WorkflowEngineModule } from "../modules/workflow-engine/workflow-engine.module";
 import { SecretRedactionExceptionFilter } from "../common/secret-redaction-exception.filter";
 import { redactLogArguments } from "../common/secret-redaction";
 
@@ -81,7 +83,9 @@ import { redactLogArguments } from "../common/secret-redaction";
     StudioProjectModule,
     PromptLibraryModule,
     AgentStudioModule,
-    KnowledgeBaseModule
+    KnowledgeBaseModule,
+    ToolRegistryModule,
+    WorkflowEngineModule
   ],
   providers: [
     {

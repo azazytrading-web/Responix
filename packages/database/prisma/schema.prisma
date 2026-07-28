@@ -120,6 +120,48 @@ enum KnowledgeSourceType {
   API
 }
 
+enum ToolRegistryStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}
+
+enum ToolDefinitionType {
+  REST
+  WEBHOOK
+  OPENAPI
+  INTERNAL_SERVICE
+  FUNCTION
+  MCP
+}
+
+enum ToolVisibility {
+  PRIVATE
+  WORKSPACE
+}
+
+enum ToolAuthenticationType {
+  NONE
+  API_KEY
+  OAUTH2
+  BASIC
+  BEARER
+  CUSTOM
+}
+
+enum ToolParameterLocation {
+  PATH
+  QUERY
+  HEADER
+  BODY
+  COOKIE
+}
+
+enum ToolSchemaKind {
+  INPUT
+  OUTPUT
+}
+
 enum UploadStatus {
   PENDING
   UPLOADED
@@ -135,9 +177,35 @@ enum IndexingStatus {
 
 enum WorkflowStatus {
   DRAFT
+  PUBLISHED
   ACTIVE
   PAUSED
   ARCHIVED
+}
+
+enum WorkflowVisibility {
+  PRIVATE
+  WORKSPACE
+}
+
+enum WorkflowNodeType {
+  START
+  END
+  AGENT
+  PROMPT
+  KNOWLEDGE
+  TOOL
+  WEBHOOK
+  REST
+  CONDITION
+  DELAY
+  LOOP
+  MANUAL
+  DECISION
+  TRANSFORM
+  VARIABLE
+  SUBFLOW
+  CUSTOM
 }
 
 enum ExecutionStatus {
@@ -298,7 +366,12 @@ model Workspace {
   knowledgeCategories  KnowledgeCategory[]
   knowledgeTags        KnowledgeTag[]
   knowledgeChunks      KnowledgeChunkMetadata[]
-  workflows          Workflow[]
+  toolCategories       ToolCategory[]
+  toolGroups           ToolGroup[]
+  toolDefinitions      ToolDefinition[]
+  workflows            Workflow[]
+  workflowCategories   WorkflowCategory[]
+  workflowTags         WorkflowTag[]
   subscriptions      Subscription[]      @relation("WorkspaceSubscriptions")
   payments           Payment[]
   apiKeys            ApiKey[]
@@ -1585,6 +1658,170 @@ model KnowledgeTagAssignment {
   @@map("knowledge_tag_assignments")
 }
 
+model ToolCategory {
+  id          String   @id @default(uuid()) @db.Uuid
+  workspaceId String   @map("workspace_id") @db.Uuid
+  name        String
+  slug        String
+  description String?
+  metadata    Json     @default("{}")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  workspace Workspace        @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  groups    ToolGroup[]
+  tools     ToolDefinition[]
+
+  @@unique([workspaceId, slug])
+  @@map("tool_categories")
+}
+
+model ToolGroup {
+  id          String   @id @default(uuid()) @db.Uuid
+  workspaceId String   @map("workspace_id") @db.Uuid
+  categoryId  String?  @map("category_id") @db.Uuid
+  name        String
+  slug        String
+  description String?
+  metadata    Json     @default("{}")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  workspace Workspace     @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  category  ToolCategory? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  tools     ToolDefinition[]
+
+  @@unique([workspaceId, slug])
+  @@index([workspaceId, categoryId])
+  @@map("tool_groups")
+}
+
+model ToolDefinition {
+  id                     String                 @id @default(uuid()) @db.Uuid
+  workspaceId            String                 @map("workspace_id") @db.Uuid
+  categoryId             String?                @map("category_id") @db.Uuid
+  groupId                String?                @map("group_id") @db.Uuid
+  name                   String
+  slug                   String
+  description            String?
+  type                   ToolDefinitionType
+  status                 ToolRegistryStatus     @default(DRAFT)
+  visibility             ToolVisibility         @default(WORKSPACE)
+  authenticationType     ToolAuthenticationType @default(NONE) @map("authentication_type")
+  revision               Int                    @default(0)
+  metadata               Json                   @default("{}")
+  providerMetadata       Json                   @default("{}") @map("provider_metadata")
+  authenticationMetadata Json                   @default("{}") @map("authentication_metadata")
+  rateLimitMetadata      Json                   @default("{}") @map("rate_limit_metadata")
+  executionPolicyMetadata Json                  @default("{}") @map("execution_policy_metadata")
+  timeoutMetadata        Json                   @default("{}") @map("timeout_metadata")
+  retryPolicyMetadata    Json                   @default("{}") @map("retry_policy_metadata")
+  costMetadata           Json                   @default("{}") @map("cost_metadata")
+  compatibilityMetadata  Json                   @default("{}") @map("compatibility_metadata")
+  healthMetadata         Json                   @default("{}") @map("health_metadata")
+  mcpMetadata            Json                   @default("{}") @map("mcp_metadata")
+  createdById            String                 @map("created_by") @db.Uuid
+  updatedById            String                 @map("updated_by") @db.Uuid
+  createdAt              DateTime               @default(now()) @map("created_at")
+  updatedAt              DateTime               @updatedAt @map("updated_at")
+  archivedAt             DateTime?              @map("archived_at")
+  deletedAt              DateTime?              @map("deleted_at")
+
+  workspace    Workspace       @relation(fields: [workspaceId], references: [id], onDelete: Restrict)
+  category     ToolCategory?   @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  group        ToolGroup?      @relation(fields: [groupId], references: [id], onDelete: SetNull)
+  parameters   ToolParameter[]
+  schemas      ToolSchema[]
+  capabilities ToolCapability[]
+  permissions  ToolPermission[]
+  versions     ToolVersion[]
+
+  @@unique([workspaceId, slug])
+  @@index([workspaceId, status, visibility, deletedAt])
+  @@index([categoryId, groupId])
+  @@map("tool_definitions")
+}
+
+model ToolParameter {
+  id          String                @id @default(uuid()) @db.Uuid
+  toolId      String                @map("tool_id") @db.Uuid
+  name        String
+  location    ToolParameterLocation
+  required    Boolean               @default(false)
+  schema      Json
+  metadata    Json                  @default("{}")
+  sortOrder   Int                   @default(0) @map("sort_order")
+  createdAt   DateTime              @default(now()) @map("created_at")
+  updatedAt   DateTime              @updatedAt @map("updated_at")
+
+  tool ToolDefinition @relation(fields: [toolId], references: [id], onDelete: Cascade)
+
+  @@unique([toolId, name, location])
+  @@index([toolId, sortOrder])
+  @@map("tool_parameters")
+}
+
+model ToolSchema {
+  id        String         @id @default(uuid()) @db.Uuid
+  toolId    String         @map("tool_id") @db.Uuid
+  kind      ToolSchemaKind
+  schema    Json
+  metadata  Json           @default("{}")
+  createdAt DateTime       @default(now()) @map("created_at")
+  updatedAt DateTime       @updatedAt @map("updated_at")
+
+  tool ToolDefinition @relation(fields: [toolId], references: [id], onDelete: Cascade)
+
+  @@unique([toolId, kind])
+  @@map("tool_schemas")
+}
+
+model ToolCapability {
+  id        String   @id @default(uuid()) @db.Uuid
+  toolId    String   @map("tool_id") @db.Uuid
+  code      String
+  enabled   Boolean  @default(true)
+  metadata  Json     @default("{}")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  tool ToolDefinition @relation(fields: [toolId], references: [id], onDelete: Cascade)
+
+  @@unique([toolId, code])
+  @@map("tool_capabilities")
+}
+
+model ToolPermission {
+  id             String   @id @default(uuid()) @db.Uuid
+  toolId         String   @map("tool_id") @db.Uuid
+  permissionCode String   @map("permission_code")
+  metadata       Json     @default("{}")
+  createdAt      DateTime @default(now()) @map("created_at")
+  updatedAt      DateTime @updatedAt @map("updated_at")
+
+  tool ToolDefinition @relation(fields: [toolId], references: [id], onDelete: Cascade)
+
+  @@unique([toolId, permissionCode])
+  @@map("tool_permissions")
+}
+
+model ToolVersion {
+  id            String   @id @default(uuid()) @db.Uuid
+  toolId        String   @map("tool_id") @db.Uuid
+  revision      Int
+  snapshot      Json
+  changeSummary String?  @map("change_summary")
+  createdById   String   @map("created_by") @db.Uuid
+  createdAt     DateTime @default(now()) @map("created_at")
+  publishedAt   DateTime @map("published_at")
+
+  tool ToolDefinition @relation(fields: [toolId], references: [id], onDelete: Cascade)
+
+  @@unique([toolId, revision])
+  @@index([toolId, publishedAt])
+  @@map("tool_versions")
+}
+
 model Embedding {
   id             String                       @id @default(uuid()) @db.Uuid
   documentId     String                       @map("document_id") @db.Uuid
@@ -1606,27 +1843,303 @@ model Embedding {
 }
 
 model Workflow {
-  id           String         @id @default(uuid()) @db.Uuid
-  workspaceId  String         @map("workspace_id") @db.Uuid
-  name         String
-  description  String?
-  version      Int            @default(1)
-  status       WorkflowStatus @default(DRAFT)
-  triggerType  String         @map("trigger_type")
-  workflowJson Json           @map("workflow_json")
-  publishedAt  DateTime?      @map("published_at")
-  createdById  String?        @map("created_by") @db.Uuid
-  createdAt    DateTime       @default(now()) @map("created_at")
-  updatedAt    DateTime       @updatedAt @map("updated_at")
-  deletedAt    DateTime?      @map("deleted_at")
+  id          String             @id @default(uuid()) @db.Uuid
+  workspaceId String             @map("workspace_id") @db.Uuid
+  categoryId  String?            @map("category_id") @db.Uuid
+  name        String
+  slug        String
+  description String?
+  version     Int                @default(0)
+  status      WorkflowStatus     @default(DRAFT)
+  visibility  WorkflowVisibility @default(WORKSPACE)
+  triggerType String             @default("MANUAL") @map("trigger_type")
+  workflowJson Json              @default("{}") @map("workflow_json")
+  metadata    Json               @default("{}")
+  publishedAt DateTime?          @map("published_at")
+  createdById String?            @map("created_by") @db.Uuid
+  updatedById String?            @map("updated_by") @db.Uuid
+  createdAt   DateTime           @default(now()) @map("created_at")
+  updatedAt   DateTime           @updatedAt @map("updated_at")
+  archivedAt  DateTime?          @map("archived_at")
+  deletedAt   DateTime?          @map("deleted_at")
 
-  workspace Workspace     @relation(fields: [workspaceId], references: [id], onDelete: Restrict)
-  runs      WorkflowRun[]
+  workspace   Workspace             @relation(fields: [workspaceId], references: [id], onDelete: Restrict)
+  category    WorkflowCategory?     @relation(fields: [categoryId], references: [id], onDelete: Restrict)
+  runs        WorkflowRun[]
+  variables   WorkflowVariable[]
+  parameters  WorkflowParameter[]
+  inputs      WorkflowInput[]
+  outputs     WorkflowOutput[]
+  nodes       WorkflowNode[]
+  edges       WorkflowEdge[]
+  conditions  WorkflowCondition[]
+  branches    WorkflowBranch[]
+  labels      WorkflowLabel[]
+  tagLinks    WorkflowTagAssignment[]
+  notes       WorkflowNote[]
+  permissions WorkflowPermission[]
+  versions    WorkflowVersion[]
 
-  @@unique([workspaceId, name, version])
+  @@unique([workspaceId, slug])
   @@index([workspaceId, status])
+  @@index([workspaceId, categoryId])
   @@index([createdById])
   @@map("workflows")
+}
+
+model WorkflowCategory {
+  id          String   @id @default(uuid()) @db.Uuid
+  workspaceId String   @map("workspace_id") @db.Uuid
+  name        String
+  slug        String
+  description String?
+  metadata    Json     @default("{}")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  workspace Workspace  @relation(fields: [workspaceId], references: [id], onDelete: Restrict)
+  workflows Workflow[]
+
+  @@unique([workspaceId, slug])
+  @@index([workspaceId, name])
+  @@map("workflow_categories")
+}
+
+model WorkflowVariable {
+  id           String   @id @default(uuid()) @db.Uuid
+  workflowId   String   @map("workflow_id") @db.Uuid
+  name         String
+  schema       Json     @default("{}")
+  defaultValue Json?    @map("default_value")
+  required     Boolean  @default(false)
+  metadata     Json     @default("{}")
+  sortOrder    Int      @default(0) @map("sort_order")
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+
+  workflow Workflow @relation(fields: [workflowId], references: [id], onDelete: Cascade)
+
+  @@unique([workflowId, name])
+  @@map("workflow_variables")
+}
+
+model WorkflowParameter {
+  id         String   @id @default(uuid()) @db.Uuid
+  workflowId String   @map("workflow_id") @db.Uuid
+  name       String
+  schema     Json     @default("{}")
+  required   Boolean  @default(false)
+  metadata   Json     @default("{}")
+  sortOrder  Int      @default(0) @map("sort_order")
+  createdAt  DateTime @default(now()) @map("created_at")
+  updatedAt  DateTime @updatedAt @map("updated_at")
+
+  workflow Workflow @relation(fields: [workflowId], references: [id], onDelete: Cascade)
+
+  @@unique([workflowId, name])
+  @@map("workflow_parameters")
+}
+
+model WorkflowInput {
+  id         String   @id @default(uuid()) @db.Uuid
+  workflowId String   @map("workflow_id") @db.Uuid
+  name       String
+  schema     Json     @default("{}")
+  required   Boolean  @default(false)
+  metadata   Json     @default("{}")
+  sortOrder  Int      @default(0) @map("sort_order")
+  createdAt  DateTime @default(now()) @map("created_at")
+  updatedAt  DateTime @updatedAt @map("updated_at")
+
+  workflow Workflow @relation(fields: [workflowId], references: [id], onDelete: Cascade)
+
+  @@unique([workflowId, name])
+  @@map("workflow_inputs")
+}
+
+model WorkflowOutput {
+  id         String   @id @default(uuid()) @db.Uuid
+  workflowId String   @map("workflow_id") @db.Uuid
+  name       String
+  schema     Json     @default("{}")
+  metadata   Json     @default("{}")
+  sortOrder  Int      @default(0) @map("sort_order")
+  createdAt  DateTime @default(now()) @map("created_at")
+  updatedAt  DateTime @updatedAt @map("updated_at")
+
+  workflow Workflow @relation(fields: [workflowId], references: [id], onDelete: Cascade)
+
+  @@unique([workflowId, name])
+  @@map("workflow_outputs")
+}
+
+model WorkflowNode {
+  id            String           @id @default(uuid()) @db.Uuid
+  workflowId    String           @map("workflow_id") @db.Uuid
+  nodeKey       String           @map("node_key")
+  type          WorkflowNodeType
+  name          String?
+  referenceId   String?          @map("reference_id") @db.Uuid
+  configuration Json             @default("{}")
+  position      Json             @default("{}")
+  metadata      Json             @default("{}")
+  sortOrder     Int              @default(0) @map("sort_order")
+  createdAt     DateTime         @default(now()) @map("created_at")
+  updatedAt     DateTime         @updatedAt @map("updated_at")
+
+  workflow Workflow @relation(fields: [workflowId], references: [id], onDelete: Cascade)
+
+  @@unique([workflowId, nodeKey])
+  @@index([workflowId, type])
+  @@index([referenceId])
+  @@map("workflow_nodes")
+}
+
+model WorkflowEdge {
+  id            String   @id @default(uuid()) @db.Uuid
+  workflowId    String   @map("workflow_id") @db.Uuid
+  edgeKey       String   @map("edge_key")
+  sourceNodeKey String   @map("source_node_key")
+  targetNodeKey String   @map("target_node_key")
+  label         String?
+  metadata      Json     @default("{}")
+  sortOrder     Int      @default(0) @map("sort_order")
+  createdAt     DateTime @default(now()) @map("created_at")
+  updatedAt     DateTime @updatedAt @map("updated_at")
+
+  workflow Workflow @relation(fields: [workflowId], references: [id], onDelete: Cascade)
+
+  @@unique([workflowId, edgeKey])
+  @@index([workflowId, sourceNodeKey])
+  @@index([workflowId, targetNodeKey])
+  @@map("workflow_edges")
+}
+
+model WorkflowCondition {
+  id         String   @id @default(uuid()) @db.Uuid
+  workflowId String   @map("workflow_id") @db.Uuid
+  key        String
+  nodeKey    String?  @map("node_key")
+  edgeKey    String?  @map("edge_key")
+  expression Json
+  metadata   Json     @default("{}")
+  sortOrder  Int      @default(0) @map("sort_order")
+  createdAt  DateTime @default(now()) @map("created_at")
+  updatedAt  DateTime @updatedAt @map("updated_at")
+
+  workflow Workflow @relation(fields: [workflowId], references: [id], onDelete: Cascade)
+
+  @@unique([workflowId, key])
+  @@map("workflow_conditions")
+}
+
+model WorkflowBranch {
+  id            String   @id @default(uuid()) @db.Uuid
+  workflowId    String   @map("workflow_id") @db.Uuid
+  nodeKey       String   @map("node_key")
+  branchKey     String   @map("branch_key")
+  label         String?
+  condition     Json
+  targetNodeKey String   @map("target_node_key")
+  metadata      Json     @default("{}")
+  sortOrder     Int      @default(0) @map("sort_order")
+  createdAt     DateTime @default(now()) @map("created_at")
+  updatedAt     DateTime @updatedAt @map("updated_at")
+
+  workflow Workflow @relation(fields: [workflowId], references: [id], onDelete: Cascade)
+
+  @@unique([workflowId, nodeKey, branchKey])
+  @@map("workflow_branches")
+}
+
+model WorkflowLabel {
+  id         String   @id @default(uuid()) @db.Uuid
+  workflowId String   @map("workflow_id") @db.Uuid
+  name       String
+  color      String?
+  metadata   Json     @default("{}")
+  createdAt  DateTime @default(now()) @map("created_at")
+  updatedAt  DateTime @updatedAt @map("updated_at")
+
+  workflow Workflow @relation(fields: [workflowId], references: [id], onDelete: Cascade)
+
+  @@unique([workflowId, name])
+  @@map("workflow_labels")
+}
+
+model WorkflowTag {
+  id          String   @id @default(uuid()) @db.Uuid
+  workspaceId String   @map("workspace_id") @db.Uuid
+  name        String
+  slug        String
+  metadata    Json     @default("{}")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  workspace Workspace               @relation(fields: [workspaceId], references: [id], onDelete: Restrict)
+  workflows WorkflowTagAssignment[]
+
+  @@unique([workspaceId, slug])
+  @@index([workspaceId, name])
+  @@map("workflow_tags")
+}
+
+model WorkflowTagAssignment {
+  workflowId String   @map("workflow_id") @db.Uuid
+  tagId      String   @map("tag_id") @db.Uuid
+  createdAt  DateTime @default(now()) @map("created_at")
+
+  workflow Workflow  @relation(fields: [workflowId], references: [id], onDelete: Cascade)
+  tag      WorkflowTag @relation(fields: [tagId], references: [id], onDelete: Restrict)
+
+  @@id([workflowId, tagId])
+  @@index([tagId])
+  @@map("workflow_tag_assignments")
+}
+
+model WorkflowNote {
+  id         String   @id @default(uuid()) @db.Uuid
+  workflowId String   @map("workflow_id") @db.Uuid
+  content    String
+  metadata   Json     @default("{}")
+  sortOrder  Int      @default(0) @map("sort_order")
+  createdAt  DateTime @default(now()) @map("created_at")
+  updatedAt  DateTime @updatedAt @map("updated_at")
+
+  workflow Workflow @relation(fields: [workflowId], references: [id], onDelete: Cascade)
+
+  @@map("workflow_notes")
+}
+
+model WorkflowPermission {
+  id             String   @id @default(uuid()) @db.Uuid
+  workflowId     String   @map("workflow_id") @db.Uuid
+  permissionCode String   @map("permission_code")
+  metadata       Json     @default("{}")
+  createdAt      DateTime @default(now()) @map("created_at")
+  updatedAt      DateTime @updatedAt @map("updated_at")
+
+  workflow Workflow @relation(fields: [workflowId], references: [id], onDelete: Cascade)
+
+  @@unique([workflowId, permissionCode])
+  @@map("workflow_permissions")
+}
+
+model WorkflowVersion {
+  id            String   @id @default(uuid()) @db.Uuid
+  workflowId    String   @map("workflow_id") @db.Uuid
+  revision      Int
+  snapshot      Json
+  changeSummary String?  @map("change_summary")
+  createdById   String?  @map("created_by") @db.Uuid
+  createdAt     DateTime @default(now()) @map("created_at")
+  publishedAt   DateTime @default(now()) @map("published_at")
+
+  workflow Workflow @relation(fields: [workflowId], references: [id], onDelete: Restrict)
+
+  @@unique([workflowId, revision])
+  @@index([workflowId, publishedAt])
+  @@map("workflow_versions")
 }
 
 model WorkflowRun {

@@ -319,6 +319,13 @@ enum ConversationRuntimeStatus {
   DELETED
 }
 
+enum ExecutionPipelineStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+  DELETED
+}
+
 enum ConversationRuntimeStateType {
   INITIALIZED
   READY
@@ -526,6 +533,8 @@ model Workspace {
   retrievalRuntimeSnapshots RetrievalRuntimeSnapshot[]
   conversationRuntimes      ConversationRuntime[]
   conversationRuntimeSnapshots ConversationRuntimeSnapshot[]
+  executionPipelines           ExecutionPipeline[]
+  executionPipelineSnapshots   ExecutionPipelineSnapshot[]
   subscriptions      Subscription[]      @relation("WorkspaceSubscriptions")
   payments           Payment[]
   apiKeys            ApiKey[]
@@ -3350,6 +3359,187 @@ model ConversationRuntimeAuditMetadata {
   runtime ConversationRuntime @relation(fields: [runtimeId], references: [id], onDelete: Restrict)
   @@index([runtimeId, createdAt], map: "conversation_runtime_audit_metadata_runtime_created_idx")
   @@map("conversation_runtime_audit_metadata")
+}
+
+model ExecutionPipeline {
+  id                   String                  @id @default(uuid()) @db.Uuid
+  workspaceId          String                  @map("workspace_id") @db.Uuid
+  createdById          String                  @map("created_by") @db.Uuid
+  updatedById          String                  @map("updated_by") @db.Uuid
+  clonedFromId         String?                 @map("cloned_from_id") @db.Uuid
+  name                 String
+  status               ExecutionPipelineStatus @default(DRAFT)
+  revision             Int                     @default(0)
+  compatibilityVersion String                  @map("compatibility_version")
+  metadata             Json                    @default("{}")
+  plan                 Json
+  planHash             String                  @map("plan_hash")
+  checksum             String
+  publishedAt          DateTime?               @map("published_at")
+  archivedAt           DateTime?               @map("archived_at")
+  deletedAt            DateTime?               @map("deleted_at")
+  createdAt            DateTime                @default(now()) @map("created_at")
+  updatedAt            DateTime                @updatedAt @map("updated_at")
+  workspace    Workspace                   @relation(fields: [workspaceId], references: [id], onDelete: Restrict)
+  revisions    ExecutionPipelineRevision[]
+  snapshots    ExecutionPipelineSnapshot[]
+  nodes        PipelineNode[]
+  dependencies PipelineDependency[]
+  validations  PipelineValidation[]
+  audits       PipelineAudit[]
+  metadataItems PipelineMetadata[]
+  labels       PipelineLabel[]
+  tags         PipelineTag[]
+  variables    PipelineVariable[]
+  diagnostics  PipelineDiagnostic[]
+  @@unique([workspaceId, name], map: "execution_pipelines_workspace_name_key")
+  @@index([workspaceId, status, deletedAt, updatedAt], map: "execution_pipelines_workspace_status_idx")
+  @@index([workspaceId, planHash], map: "execution_pipelines_workspace_hash_idx")
+  @@map("execution_pipelines")
+}
+
+model ExecutionPipelineRevision {
+  id             String   @id @default(uuid()) @db.Uuid
+  pipelineId     String   @map("pipeline_id") @db.Uuid
+  revision       Int
+  sourceRevision Int?     @map("source_revision")
+  plan           Json
+  planHash       String   @map("plan_hash")
+  checksum       String
+  createdById    String   @map("created_by") @db.Uuid
+  createdAt      DateTime @default(now()) @map("created_at")
+  pipeline ExecutionPipeline @relation(fields: [pipelineId], references: [id], onDelete: Restrict)
+  @@unique([pipelineId, revision], map: "execution_pipeline_revisions_pipeline_revision_key")
+  @@index([pipelineId, createdAt], map: "execution_pipeline_revisions_pipeline_created_idx")
+  @@map("execution_pipeline_revisions")
+}
+
+model ExecutionPipelineSnapshot {
+  id          String   @id @default(uuid()) @db.Uuid
+  workspaceId String   @map("workspace_id") @db.Uuid
+  pipelineId  String   @map("pipeline_id") @db.Uuid
+  revision    Int
+  createdById String   @map("created_by") @db.Uuid
+  snapshot    Json
+  planHash    String   @map("plan_hash")
+  checksum    String
+  createdAt   DateTime @default(now()) @map("created_at")
+  workspace Workspace @relation(fields: [workspaceId], references: [id], onDelete: Restrict)
+  pipeline ExecutionPipeline @relation(fields: [pipelineId], references: [id], onDelete: Restrict)
+  @@unique([pipelineId, revision], map: "execution_pipeline_snapshots_pipeline_revision_key")
+  @@index([workspaceId, createdAt], map: "execution_pipeline_snapshots_workspace_created_idx")
+  @@map("execution_pipeline_snapshots")
+}
+
+model PipelineNode {
+  id         String   @id @default(uuid()) @db.Uuid
+  pipelineId String   @map("pipeline_id") @db.Uuid
+  nodeKey    String   @map("node_key")
+  stage      String
+  ordinal    Int
+  assetType  String?  @map("asset_type")
+  assetId    String?  @map("asset_id") @db.Uuid
+  metadata   Json     @default("{}")
+  createdAt  DateTime @default(now()) @map("created_at")
+  pipeline ExecutionPipeline @relation(fields: [pipelineId], references: [id], onDelete: Restrict)
+  @@unique([pipelineId, nodeKey], map: "pipeline_nodes_pipeline_key_key")
+  @@unique([pipelineId, stage], map: "pipeline_nodes_pipeline_stage_key")
+  @@map("pipeline_nodes")
+}
+
+model PipelineDependency {
+  id          String   @id @default(uuid()) @db.Uuid
+  pipelineId  String   @map("pipeline_id") @db.Uuid
+  dependencyKey String @map("dependency_key")
+  fromNodeKey String   @map("from_node_key")
+  toNodeKey   String   @map("to_node_key")
+  required    Boolean  @default(true)
+  metadata    Json     @default("{}")
+  createdAt   DateTime @default(now()) @map("created_at")
+  pipeline ExecutionPipeline @relation(fields: [pipelineId], references: [id], onDelete: Restrict)
+  @@unique([pipelineId, dependencyKey], map: "pipeline_dependencies_pipeline_key_key")
+  @@map("pipeline_dependencies")
+}
+
+model PipelineValidation {
+  id         String   @id @default(uuid()) @db.Uuid
+  pipelineId String   @map("pipeline_id") @db.Uuid
+  valid      Boolean
+  result     Json
+  createdAt  DateTime @default(now()) @map("created_at")
+  pipeline ExecutionPipeline @relation(fields: [pipelineId], references: [id], onDelete: Restrict)
+  @@index([pipelineId, createdAt], map: "pipeline_validations_pipeline_created_idx")
+  @@map("pipeline_validations")
+}
+
+model PipelineAudit {
+  id         String   @id @default(uuid()) @db.Uuid
+  pipelineId String   @map("pipeline_id") @db.Uuid
+  actorId    String   @map("actor_id") @db.Uuid
+  eventType  String   @map("event_type")
+  metadata   Json     @default("{}")
+  createdAt  DateTime @default(now()) @map("created_at")
+  pipeline ExecutionPipeline @relation(fields: [pipelineId], references: [id], onDelete: Restrict)
+  @@index([pipelineId, createdAt], map: "pipeline_audits_pipeline_created_idx")
+  @@map("pipeline_audits")
+}
+
+model PipelineMetadata {
+  id         String   @id @default(uuid()) @db.Uuid
+  pipelineId String   @map("pipeline_id") @db.Uuid
+  key        String
+  value      Json
+  createdAt  DateTime @default(now()) @map("created_at")
+  pipeline ExecutionPipeline @relation(fields: [pipelineId], references: [id], onDelete: Restrict)
+  @@unique([pipelineId, key], map: "pipeline_metadata_pipeline_key_key")
+  @@map("pipeline_metadata")
+}
+
+model PipelineLabel {
+  id String @id @default(uuid()) @db.Uuid
+  pipelineId String @map("pipeline_id") @db.Uuid
+  value String
+  createdAt DateTime @default(now()) @map("created_at")
+  pipeline ExecutionPipeline @relation(fields: [pipelineId], references: [id], onDelete: Restrict)
+  @@unique([pipelineId, value], map: "pipeline_labels_pipeline_value_key")
+  @@map("pipeline_labels")
+}
+
+model PipelineTag {
+  id String @id @default(uuid()) @db.Uuid
+  pipelineId String @map("pipeline_id") @db.Uuid
+  value String
+  createdAt DateTime @default(now()) @map("created_at")
+  pipeline ExecutionPipeline @relation(fields: [pipelineId], references: [id], onDelete: Restrict)
+  @@unique([pipelineId, value], map: "pipeline_tags_pipeline_value_key")
+  @@map("pipeline_tags")
+}
+
+model PipelineVariable {
+  id String @id @default(uuid()) @db.Uuid
+  pipelineId String @map("pipeline_id") @db.Uuid
+  name String
+  type String
+  value Json
+  required Boolean @default(false)
+  createdAt DateTime @default(now()) @map("created_at")
+  pipeline ExecutionPipeline @relation(fields: [pipelineId], references: [id], onDelete: Restrict)
+  @@unique([pipelineId, name], map: "pipeline_variables_pipeline_name_key")
+  @@map("pipeline_variables")
+}
+
+model PipelineDiagnostic {
+  id String @id @default(uuid()) @db.Uuid
+  pipelineId String @map("pipeline_id") @db.Uuid
+  severity String
+  code String
+  path String
+  message String
+  metadata Json @default("{}")
+  createdAt DateTime @default(now()) @map("created_at")
+  pipeline ExecutionPipeline @relation(fields: [pipelineId], references: [id], onDelete: Restrict)
+  @@index([pipelineId, severity, createdAt], map: "pipeline_diagnostics_pipeline_severity_idx")
+  @@map("pipeline_diagnostics")
 }
 
 model Plan {

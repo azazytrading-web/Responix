@@ -29,6 +29,7 @@ import { PromptCompilerModule } from "../modules/prompt-compiler/prompt-compiler
 import { ProviderRuntimeModule } from "../modules/provider-runtime/provider-runtime.module";
 import { RetrievalRuntimeModule } from "../modules/retrieval-runtime/retrieval-runtime.module";
 import { ConversationRuntimeModule } from "../modules/conversation-runtime/conversation-runtime.module";
+import { ExecutionPipelineModule } from "../modules/execution-pipeline/execution-pipeline.module";
 import { SecretRedactionExceptionFilter } from "../common/secret-redaction-exception.filter";
 import { redactLogArguments } from "../common/secret-redaction";
 
@@ -99,7 +100,8 @@ import { redactLogArguments } from "../common/secret-redaction";
     PromptCompilerModule,
     ProviderRuntimeModule,
     RetrievalRuntimeModule,
-    ConversationRuntimeModule
+    ConversationRuntimeModule,
+    ExecutionPipelineModule
   ],
   providers: [
     {

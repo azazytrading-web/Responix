@@ -95,7 +95,15 @@ const permissions = [
   "conversation.runtime.archive",
   "conversation.runtime.restore",
   "conversation.runtime.delete",
-  "conversation.runtime.compare"
+  "conversation.runtime.compare",
+  "execution.pipeline.read",
+  "execution.pipeline.create",
+  "execution.pipeline.update",
+  "execution.pipeline.publish",
+  "execution.pipeline.rollback",
+  "execution.pipeline.archive",
+  "execution.pipeline.restore",
+  "execution.pipeline.delete"
 ];
 
 const roles = [

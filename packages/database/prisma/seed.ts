@@ -85,7 +85,17 @@ const permissions = [
   "retrieval.runtime.publish",
   "retrieval.runtime.archive",
   "retrieval.runtime.restore",
-  "retrieval.runtime.compare"
+  "retrieval.runtime.compare",
+  "conversation.runtime.read",
+  "conversation.runtime.create",
+  "conversation.runtime.update",
+  "conversation.runtime.publish",
+  "conversation.runtime.rollback",
+  "conversation.runtime.clone",
+  "conversation.runtime.archive",
+  "conversation.runtime.restore",
+  "conversation.runtime.delete",
+  "conversation.runtime.compare"
 ];
 
 const roles = [
@@ -116,7 +126,7 @@ async function seed(): Promise<void> {
   }
 
   const aiPermissions = await prisma.permission.findMany({
-    where: { code: { in: permissions.filter((code) => code.startsWith("ai.") || code.startsWith("platform.") || code.startsWith("studio.") || code.startsWith("prompt.") || code.startsWith("agent.") || code.startsWith("knowledge.") || code.startsWith("tool.") || code.startsWith("workflow.") || code.startsWith("runtime.orchestration.") || code.startsWith("execution.kernel.") || code.startsWith("provider.") || code.startsWith("retrieval.")) } }
+    where: { code: { in: permissions.filter((code) => code.startsWith("ai.") || code.startsWith("platform.") || code.startsWith("studio.") || code.startsWith("prompt.") || code.startsWith("agent.") || code.startsWith("knowledge.") || code.startsWith("tool.") || code.startsWith("workflow.") || code.startsWith("runtime.orchestration.") || code.startsWith("execution.kernel.") || code.startsWith("provider.") || code.startsWith("retrieval.") || code.startsWith("conversation.")) } }
   });
   const aiAdministrators = await prisma.role.findMany({
     where: { workspaceId: null, name: { in: ["Owner", "Administrator"] } }

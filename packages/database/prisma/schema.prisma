@@ -312,6 +312,45 @@ enum RetrievalDiagnosticSeverity {
   INFO
 }
 
+enum ConversationRuntimeStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+  DELETED
+}
+
+enum ConversationRuntimeStateType {
+  INITIALIZED
+  READY
+  ACTIVE
+  PAUSED
+  CLOSED
+}
+
+enum ConversationRuntimeParticipantType {
+  CUSTOMER
+  USER
+  AGENT
+  SYSTEM
+  EXTERNAL
+}
+
+enum ConversationRuntimeMessageRole {
+  SYSTEM
+  DEVELOPER
+  USER
+  ASSISTANT
+  TOOL
+}
+
+enum ConversationRuntimeAttachmentType {
+  FILE
+  IMAGE
+  AUDIO
+  VIDEO
+  OTHER
+}
+
 enum BillingCycle {
   MONTHLY
   YEARLY
@@ -485,6 +524,8 @@ model Workspace {
   providerRequestSnapshots ProviderRequestSnapshot[]
   retrievalRuntimes        RetrievalRuntime[]
   retrievalRuntimeSnapshots RetrievalRuntimeSnapshot[]
+  conversationRuntimes      ConversationRuntime[]
+  conversationRuntimeSnapshots ConversationRuntimeSnapshot[]
   subscriptions      Subscription[]      @relation("WorkspaceSubscriptions")
   payments           Payment[]
   apiKeys            ApiKey[]
@@ -3080,6 +3121,235 @@ model RetrievalRuntimeDiagnostic {
 
   @@index([runtimeId, severity, code], map: "retrieval_runtime_diagnostics_severity_code_idx")
   @@map("retrieval_runtime_diagnostics")
+}
+
+model ConversationRuntime {
+  id                     String                    @id @default(uuid()) @db.Uuid
+  workspaceId            String                    @map("workspace_id") @db.Uuid
+  createdById            String                    @map("created_by") @db.Uuid
+  updatedById            String                    @map("updated_by") @db.Uuid
+  sourceConversationId   String?                   @map("source_conversation_id") @db.Uuid
+  clonedFromId           String?                   @map("cloned_from_id") @db.Uuid
+  name                   String
+  status                 ConversationRuntimeStatus @default(DRAFT)
+  revision               Int                       @default(0)
+  compatibilityVersion   String                    @map("compatibility_version")
+  metadata               Json                      @default("{}")
+  runtimePackage         Json                      @map("runtime_package")
+  packageHash            String                    @map("package_hash")
+  checksum               String
+  publishedAt            DateTime?                 @map("published_at")
+  archivedAt             DateTime?                 @map("archived_at")
+  deletedAt              DateTime?                 @map("deleted_at")
+  createdAt              DateTime                  @default(now()) @map("created_at")
+  updatedAt              DateTime                  @updatedAt @map("updated_at")
+
+  workspace     Workspace                          @relation(fields: [workspaceId], references: [id], onDelete: Restrict)
+  snapshots     ConversationRuntimeSnapshot[]
+  contexts      ConversationRuntimeContext[]
+  variables     ConversationRuntimeVariable[]
+  messages      ConversationRuntimeMessage[]
+  participants  ConversationRuntimeParticipant[]
+  attachments   ConversationRuntimeAttachment[]
+  labels        ConversationRuntimeLabel[]
+  tags          ConversationRuntimeTag[]
+  notes         ConversationRuntimeNote[]
+  settings      ConversationRuntimeSettings?
+  state         ConversationRuntimeState?
+  versions      ConversationRuntimeVersion[]
+  auditMetadata ConversationRuntimeAuditMetadata[]
+
+  @@index([workspaceId, status, deletedAt, updatedAt], map: "conversation_runtimes_workspace_status_idx")
+  @@index([workspaceId, sourceConversationId], map: "conversation_runtimes_workspace_source_idx")
+  @@index([workspaceId, packageHash], map: "conversation_runtimes_workspace_hash_idx")
+  @@map("conversation_runtimes")
+}
+
+model ConversationRuntimeSnapshot {
+  id                   String   @id @default(uuid()) @db.Uuid
+  workspaceId          String   @map("workspace_id") @db.Uuid
+  runtimeId            String   @map("runtime_id") @db.Uuid
+  revision             Int
+  createdById          String   @map("created_by") @db.Uuid
+  compatibilityVersion String   @map("compatibility_version")
+  snapshot             Json
+  packageHash          String   @map("package_hash")
+  checksum             String
+  createdAt            DateTime @default(now()) @map("created_at")
+
+  workspace Workspace           @relation(fields: [workspaceId], references: [id], onDelete: Restrict)
+  runtime   ConversationRuntime @relation(fields: [runtimeId], references: [id], onDelete: Restrict)
+
+  @@unique([runtimeId, revision], map: "conversation_runtime_snapshots_runtime_revision_key")
+  @@index([workspaceId, createdAt], map: "conversation_runtime_snapshots_workspace_created_idx")
+  @@map("conversation_runtime_snapshots")
+}
+
+model ConversationRuntimeContext {
+  id                   String   @id @default(uuid()) @db.Uuid
+  runtimeId            String   @map("runtime_id") @db.Uuid
+  contextKey           String   @map("context_key")
+  agentRuntimeSnapshotId String? @map("agent_runtime_snapshot_id") @db.Uuid
+  retrievalSnapshotId  String?  @map("retrieval_snapshot_id") @db.Uuid
+  compiledPromptId     String?  @map("compiled_prompt_id") @db.Uuid
+  providerSnapshotId   String?  @map("provider_snapshot_id") @db.Uuid
+  executionRequestId   String?  @map("execution_request_id") @db.Uuid
+  executionRunId       String?  @map("execution_run_id") @db.Uuid
+  locale               String?
+  timezone             String?
+  correlationId        String?  @map("correlation_id")
+  metadata             Json     @default("{}")
+  createdAt            DateTime @default(now()) @map("created_at")
+  runtime ConversationRuntime @relation(fields: [runtimeId], references: [id], onDelete: Restrict)
+  @@unique([runtimeId, contextKey], map: "conversation_runtime_contexts_runtime_key_key")
+  @@map("conversation_runtime_contexts")
+}
+
+model ConversationRuntimeVariable {
+  id        String   @id @default(uuid()) @db.Uuid
+  runtimeId String   @map("runtime_id") @db.Uuid
+  name      String
+  type      String
+  value     Json
+  metadata  Json     @default("{}")
+  createdAt DateTime @default(now()) @map("created_at")
+  runtime ConversationRuntime @relation(fields: [runtimeId], references: [id], onDelete: Restrict)
+  @@unique([runtimeId, name], map: "conversation_runtime_variables_runtime_name_key")
+  @@map("conversation_runtime_variables")
+}
+
+model ConversationRuntimeMessage {
+  id                String                         @id @default(uuid()) @db.Uuid
+  runtimeId         String                         @map("runtime_id") @db.Uuid
+  messageIdentifier String                         @map("message_identifier")
+  ordinal           Int
+  role              ConversationRuntimeMessageRole
+  participantKey    String?                        @map("participant_key")
+  contentHash       String?                        @map("content_hash")
+  metadata          Json                           @default("{}")
+  tokenMetadata     Json                           @default("{}") @map("token_metadata")
+  createdAt         DateTime                       @default(now()) @map("created_at")
+  runtime ConversationRuntime @relation(fields: [runtimeId], references: [id], onDelete: Restrict)
+  @@unique([runtimeId, messageIdentifier], map: "conversation_runtime_messages_runtime_identifier_key")
+  @@unique([runtimeId, ordinal], map: "conversation_runtime_messages_runtime_ordinal_key")
+  @@map("conversation_runtime_messages")
+}
+
+model ConversationRuntimeParticipant {
+  id             String                             @id @default(uuid()) @db.Uuid
+  runtimeId      String                             @map("runtime_id") @db.Uuid
+  participantKey String                             @map("participant_key")
+  type           ConversationRuntimeParticipantType
+  referenceId    String?                            @map("reference_id") @db.Uuid
+  displayMetadata Json                              @default("{}") @map("display_metadata")
+  metadata       Json                               @default("{}")
+  createdAt      DateTime                           @default(now()) @map("created_at")
+  runtime ConversationRuntime @relation(fields: [runtimeId], references: [id], onDelete: Restrict)
+  @@unique([runtimeId, participantKey], map: "conversation_runtime_participants_runtime_key_key")
+  @@map("conversation_runtime_participants")
+}
+
+model ConversationRuntimeAttachment {
+  id                   String                            @id @default(uuid()) @db.Uuid
+  runtimeId            String                            @map("runtime_id") @db.Uuid
+  attachmentIdentifier String                            @map("attachment_identifier")
+  messageIdentifier    String?                           @map("message_identifier")
+  type                 ConversationRuntimeAttachmentType
+  mimeType             String                            @map("mime_type")
+  fileName             String?                           @map("file_name")
+  sizeBytes            BigInt?                           @map("size_bytes")
+  checksum             String?
+  metadata             Json                              @default("{}")
+  createdAt            DateTime                          @default(now()) @map("created_at")
+  runtime ConversationRuntime @relation(fields: [runtimeId], references: [id], onDelete: Restrict)
+  @@unique([runtimeId, attachmentIdentifier], map: "conversation_runtime_attachments_runtime_identifier_key")
+  @@map("conversation_runtime_attachments")
+}
+
+model ConversationRuntimeLabel {
+  id        String   @id @default(uuid()) @db.Uuid
+  runtimeId String   @map("runtime_id") @db.Uuid
+  value     String
+  metadata  Json     @default("{}")
+  createdAt DateTime @default(now()) @map("created_at")
+  runtime ConversationRuntime @relation(fields: [runtimeId], references: [id], onDelete: Restrict)
+  @@unique([runtimeId, value], map: "conversation_runtime_labels_runtime_value_key")
+  @@map("conversation_runtime_labels")
+}
+
+model ConversationRuntimeTag {
+  id        String   @id @default(uuid()) @db.Uuid
+  runtimeId String   @map("runtime_id") @db.Uuid
+  value     String
+  metadata  Json     @default("{}")
+  createdAt DateTime @default(now()) @map("created_at")
+  runtime ConversationRuntime @relation(fields: [runtimeId], references: [id], onDelete: Restrict)
+  @@unique([runtimeId, value], map: "conversation_runtime_tags_runtime_value_key")
+  @@map("conversation_runtime_tags")
+}
+
+model ConversationRuntimeNote {
+  id        String   @id @default(uuid()) @db.Uuid
+  runtimeId String   @map("runtime_id") @db.Uuid
+  noteKey   String   @map("note_key")
+  metadata  Json     @default("{}")
+  createdAt DateTime @default(now()) @map("created_at")
+  runtime ConversationRuntime @relation(fields: [runtimeId], references: [id], onDelete: Restrict)
+  @@unique([runtimeId, noteKey], map: "conversation_runtime_notes_runtime_key_key")
+  @@map("conversation_runtime_notes")
+}
+
+model ConversationRuntimeSettings {
+  id                   String   @id @default(uuid()) @db.Uuid
+  runtimeId            String   @unique @map("runtime_id") @db.Uuid
+  compatibilityVersion String   @map("compatibility_version")
+  settings             Json     @default("{}")
+  createdAt            DateTime @default(now()) @map("created_at")
+  runtime ConversationRuntime @relation(fields: [runtimeId], references: [id], onDelete: Restrict)
+  @@map("conversation_runtime_settings")
+}
+
+model ConversationRuntimeState {
+  id        String                       @id @default(uuid()) @db.Uuid
+  runtimeId String                       @unique @map("runtime_id") @db.Uuid
+  state     ConversationRuntimeStateType @default(INITIALIZED)
+  sequence  Int                          @default(0)
+  metadata  Json                         @default("{}")
+  updatedById String                     @map("updated_by") @db.Uuid
+  createdAt DateTime                     @default(now()) @map("created_at")
+  updatedAt DateTime                     @updatedAt @map("updated_at")
+  runtime ConversationRuntime @relation(fields: [runtimeId], references: [id], onDelete: Restrict)
+  @@map("conversation_runtime_states")
+}
+
+model ConversationRuntimeVersion {
+  id                   String   @id @default(uuid()) @db.Uuid
+  runtimeId            String   @map("runtime_id") @db.Uuid
+  revision             Int
+  sourceRevision       Int?     @map("source_revision")
+  compatibilityVersion String   @map("compatibility_version")
+  snapshot             Json
+  packageHash          String   @map("package_hash")
+  checksum             String
+  createdById          String   @map("created_by") @db.Uuid
+  createdAt            DateTime @default(now()) @map("created_at")
+  runtime ConversationRuntime @relation(fields: [runtimeId], references: [id], onDelete: Restrict)
+  @@unique([runtimeId, revision], map: "conversation_runtime_versions_runtime_revision_key")
+  @@index([runtimeId, createdAt], map: "conversation_runtime_versions_runtime_created_idx")
+  @@map("conversation_runtime_versions")
+}
+
+model ConversationRuntimeAuditMetadata {
+  id            String   @id @default(uuid()) @db.Uuid
+  runtimeId     String   @map("runtime_id") @db.Uuid
+  actorId       String   @map("actor_id") @db.Uuid
+  eventType     String   @map("event_type")
+  correlationId String?  @map("correlation_id")
+  metadata      Json     @default("{}")
+  createdAt     DateTime @default(now()) @map("created_at")
+  runtime ConversationRuntime @relation(fields: [runtimeId], references: [id], onDelete: Restrict)
+  @@index([runtimeId, createdAt], map: "conversation_runtime_audit_metadata_runtime_created_idx")
+  @@map("conversation_runtime_audit_metadata")
 }
 
 model Plan {

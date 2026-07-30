@@ -1,5 +1,8 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { AiContractError } from "../contracts";
-import type { AiRequestContract, ProviderExecutionResult } from "../contracts";
+import type {
+  AiRequestContract, ProviderExecutionRequest, ProviderExecutionResult
+} from "../contracts";
 import { CostNormalizerService } from "./cost-normalizer.service";
 import { ErrorNormalizerService } from "./error-normalizer.service";
 import { InvocationOrchestratorService } from "./invocation-orchestrator.service";
@@ -25,7 +28,7 @@ function createHarness(options: {
   timeoutMs?: number;
   neverResolve?: boolean;
 }) {
-  const invoke = jest.fn(
+  const invoke = jest.fn<Promise<ProviderExecutionResult>, [ProviderExecutionRequest]>(
     options.neverResolve
       ? () => new Promise<ProviderExecutionResult>(() => undefined)
       : () =>
@@ -78,6 +81,7 @@ function createHarness(options: {
     stageSuccess: jest.fn().mockResolvedValue("recovery-id"),
     stageFailure: jest.fn().mockResolvedValue("recovery-id"),
     complete: jest.fn().mockResolvedValue(undefined),
+    completeUnknownUsage: jest.fn().mockResolvedValue(undefined),
     failWithRuntime: jest.fn().mockResolvedValue(undefined),
     fail: jest.fn().mockResolvedValue(undefined)
   };
@@ -122,7 +126,8 @@ function createHarness(options: {
     new ResponseNormalizerService(),
     new ErrorNormalizerService(),
     {
-      getOrThrow: jest.fn().mockReturnValue(options.timeoutMs ?? 1_000)
+      getOrThrow: jest.fn().mockReturnValue(options.timeoutMs ?? 1_000),
+      get: jest.fn((key: string) => key === "ai.retry.maxAttempts" ? 3 : 0)
     } as never,
     runtime as never
   );
@@ -130,6 +135,67 @@ function createHarness(options: {
 }
 
 describe("InvocationOrchestratorService", () => {
+  it("completes with explicit UNKNOWN usage without fabricating token counts or cost", async () => {
+    const harness = createHarness({});
+    const stream = jest.fn(async (
+      _request: ProviderExecutionRequest,
+      _credential: unknown,
+      emit: (event: { type: "delta" | "completed"; content?: string }) => Promise<void>
+    ) => {
+      await emit({ type: "delta", content: "Hello" });
+      await emit({ type: "completed" });
+    });
+    harness.providers.create.mockResolvedValue({
+      provider: {
+        apiBaseUrl: null,
+        models: [{ modelId: "model-id", modelName: "model-name" }]
+      },
+      adapter: { providerName: "OpenAI", stream }
+    });
+    const streamed = new RequestNormalizerService().normalizeStream(
+      { ...request, mode: "stream" },
+      {
+        workspace: { id: "workspace-id" },
+        membership: { id: "membership-id" }
+      } as never
+    );
+
+    const result = await harness.service.stream(streamed, jest.fn());
+
+    expect(result.usage).toBeNull();
+    expect(result.cost).toBeNull();
+    expect(harness.repository.completeUnknownUsage).toHaveBeenCalledWith(
+      expect.objectContaining({ responseContent: "Hello" })
+    );
+    expect(harness.repository.complete).not.toHaveBeenCalled();
+  });
+
+  it("persists exactly one final usage and cost record after provider stream completion", async () => {
+    const harness = createHarness({});
+    const stream = jest.fn(async (
+      _request: ProviderExecutionRequest,
+      _credential: unknown,
+      emit: (event: { type: "delta" | "completed"; usage?: ProviderExecutionResult["usage"]; content?: string }) => Promise<void>
+    ) => {
+      await emit({ type: "delta", content: "Hello" });
+      await emit({ type: "completed", usage: { inputTokens: 10, outputTokens: 5, cachedTokens: 1 } });
+    });
+    harness.providers.create.mockResolvedValue({
+      provider: { apiBaseUrl: null, models: [{ modelId: "model-id", modelName: "model-name" }] },
+      adapter: { providerName: "OpenAI", stream }
+    });
+    const streamed = new RequestNormalizerService().normalizeStream({ ...request, mode: "stream" }, {
+      workspace: { id: "workspace-id" }, membership: { id: "membership-id" }
+    } as never);
+    await harness.service.stream(streamed, jest.fn());
+    expect(harness.repository.complete).toHaveBeenCalledTimes(1);
+    expect(harness.repository.complete).toHaveBeenCalledWith(expect.objectContaining({
+      usage: expect.objectContaining({ inputTokens: 10, outputTokens: 5, cachedTokens: 1 }),
+      responseContent: "Hello"
+    }));
+    expect(harness.repository.failWithRuntime).not.toHaveBeenCalled();
+  });
+
   it("executes the lifecycle and never propagates credential material", async () => {
     const harness = createHarness({});
 
@@ -254,5 +320,47 @@ describe("InvocationOrchestratorService", () => {
     expect(harness.repository.complete).toHaveBeenCalledTimes(2);
     expect(harness.runtime.recordFailure).not.toHaveBeenCalled();
     expect(harness.runtime.release).not.toHaveBeenCalled();
+  });
+
+  it("retries bounded transient provider failures and accounts for attempts", async () => {
+    const harness = createHarness({});
+    harness.invoke
+      .mockRejectedValueOnce(new AiContractError("RATE_LIMITED", "Retry"))
+      .mockResolvedValueOnce({
+        content: "Recovered", usage: { inputTokens: 1, outputTokens: 1, cachedTokens: 0 }
+      });
+    await expect(harness.service.invoke(command)).resolves.toMatchObject({ content: "Recovered" });
+    expect(harness.invoke).toHaveBeenCalledTimes(2);
+    expect(harness.repository.complete).toHaveBeenCalledWith(expect.objectContaining({
+      runtime: expect.objectContaining({ retryCount: 1 })
+    }));
+  });
+
+  it("does not retry non-transient provider validation failures", async () => {
+    const harness = createHarness({});
+    harness.invoke.mockRejectedValue(new AiContractError("RESPONSE_INVALID", "Invalid"));
+    await expect(harness.service.invoke(command)).rejects.toThrow("Invalid");
+    expect(harness.invoke).toHaveBeenCalledTimes(1);
+  });
+
+  it("propagates request cancellation into provider execution and accounting", async () => {
+    const harness = createHarness({ timeoutMs: 1_000 });
+    const controller = new AbortController();
+    harness.invoke.mockImplementation(({ signal }: { signal: AbortSignal }) =>
+      new Promise<ProviderExecutionResult>((_resolve, reject) => {
+        signal.addEventListener("abort", () => {
+          const error = new Error("cancelled");
+          error.name = "AbortError";
+          reject(error);
+        }, { once: true });
+      })
+    );
+    const invocation = harness.service.invoke({ ...command, signal: controller.signal });
+    controller.abort();
+    await expect(invocation).rejects.toThrow("AI invocation was cancelled");
+    expect(harness.repository.failWithRuntime).toHaveBeenCalledWith(expect.objectContaining({
+      error: expect.objectContaining({ code: "CANCELLED", status: "CANCELLED" }),
+      runtime: expect.objectContaining({ cancelled: true })
+    }));
   });
 });

@@ -5,6 +5,7 @@ import {
   HttpCode,
   HttpStatus,
   Post,
+  Query,
   Req,
   UseFilters,
   Version
@@ -19,6 +20,7 @@ import {
   ApiInternalServerErrorResponse,
   ApiOkResponse,
   ApiOperation,
+  ApiRequestTimeoutResponse,
   ApiServiceUnavailableResponse,
   ApiTags,
   ApiTooManyRequestsResponse,
@@ -28,7 +30,9 @@ import {
 import { Permissions } from "../auth/auth.guard";
 import { CurrentWorkspace } from "../auth/current-user.decorator";
 import { AiHttpExceptionFilter } from "./ai-http-exception.filter";
-import { AiInvocationRequestDto, AiRoutingRequestDto } from "./dto/ai-request.dto";
+import {
+  AiInvocationHistoryQueryDto, AiInvocationRequestDto, AiRoutingRequestDto
+} from "./dto/ai-request.dto";
 import {
   AiErrorResponseDto,
   AiInvocationResponseDto,
@@ -99,6 +103,21 @@ export class AiController {
   }
 
   @Permissions("ai.invoke")
+  @Get("invocations")
+  @Version("1")
+  @ApiOperation({
+    summary: "List provider executions",
+    description: "Returns filtered, paginated, workspace-isolated provider execution records."
+  })
+  @ApiOkResponse({ description: "Paginated provider execution history" })
+  listInvocations(
+    @CurrentWorkspace() workspace: { id: string },
+    @Query() query: AiInvocationHistoryQueryDto
+  ) {
+    return this.invocations.list(workspace.id, query);
+  }
+
+  @Permissions("ai.invoke")
   @Post("invocations")
   @HttpCode(HttpStatus.OK)
   @Version("1")
@@ -126,21 +145,37 @@ export class AiController {
     type: AiErrorResponseDto,
     description: "Provider execution or credentials are unavailable"
   })
+  @ApiRequestTimeoutResponse({
+    type: AiErrorResponseDto,
+    description: "Provider execution was cancelled or timed out"
+  })
   @ApiInternalServerErrorResponse({
     type: AiErrorResponseDto,
     description: "The invocation could not be completed"
   })
   async invoke(
-    @Req() request: { id: string },
+    @Req() request: {
+      id: string;
+      once?: (event: string, listener: () => void) => unknown;
+      removeListener?: (event: string, listener: () => void) => unknown;
+    },
     @Body() dto: AiInvocationRequestDto
   ): Promise<AiInvocationResponseDto> {
-    const response = await this.invocations.invoke({
-      requestId: request.id,
-      taskType: dto.taskType,
-      messages: dto.messages,
-      mode: dto.mode,
-      ...(dto.language ? { language: dto.language } : {})
-    });
-    return AiInvocationResponseDto.from(response);
+    const controller = new AbortController();
+    const cancel = () => controller.abort(new DOMException("Client disconnected", "AbortError"));
+    request.once?.("aborted", cancel);
+    try {
+      const response = await this.invocations.invoke({
+        requestId: request.id,
+        taskType: dto.taskType,
+        messages: dto.messages,
+        mode: dto.mode,
+        signal: controller.signal,
+        ...(dto.language ? { language: dto.language } : {})
+      });
+      return AiInvocationResponseDto.from(response);
+    } finally {
+      request.removeListener?.("aborted", cancel);
+    }
   }
 }

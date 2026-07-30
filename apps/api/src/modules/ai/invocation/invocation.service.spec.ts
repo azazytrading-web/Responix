@@ -20,13 +20,25 @@ function tenant(workspaceId: string, membershipId: string) {
 }
 
 describe("InvocationService", () => {
+  it("delegates workspace-scoped history queries", async () => {
+    const repository = { list: jest.fn().mockResolvedValue({ data: [], pagination: {} }) };
+    const service = new InvocationService(
+      { resolved: tenant("workspace", "membership") } as never,
+      new RequestNormalizerService(),
+      { invoke: jest.fn() } as never,
+      repository as never
+    );
+    await service.list("workspace", { page: 2, limit: 10 });
+    expect(repository.list).toHaveBeenCalledWith("workspace", { page: 2, limit: 10 });
+  });
   it("uses the authenticated request-scoped tenant and ignores caller identifiers", async () => {
     const orchestrator = { invoke: jest.fn().mockResolvedValue({ requestId: "request-id" }) };
     const tenantContext = { resolved: tenant("authenticated-workspace", "active-membership") };
     const service = new InvocationService(
       tenantContext as never,
       new RequestNormalizerService(),
-      orchestrator as never
+      orchestrator as never,
+      { list: jest.fn() } as never
     );
 
     await service.invoke(request);
@@ -48,12 +60,14 @@ describe("InvocationService", () => {
     const first = new InvocationService(
       { resolved: tenant("workspace-one", "membership-one") } as never,
       new RequestNormalizerService(),
-      firstOrchestrator as never
+      firstOrchestrator as never,
+      { list: jest.fn() } as never
     );
     const second = new InvocationService(
       { resolved: tenant("workspace-two", "membership-two") } as never,
       new RequestNormalizerService(),
-      secondOrchestrator as never
+      secondOrchestrator as never,
+      { list: jest.fn() } as never
     );
 
     await first.invoke(request);
@@ -77,7 +91,8 @@ describe("InvocationService", () => {
     const service = new InvocationService(
       tenantContext as never,
       new RequestNormalizerService(),
-      orchestrator as never
+      orchestrator as never,
+      { list: jest.fn() } as never
     );
 
     expect(() => service.invoke(request)).toThrow(UnauthorizedException);

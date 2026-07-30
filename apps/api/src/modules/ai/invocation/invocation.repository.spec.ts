@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { InvocationRepository } from "./invocation.repository";
 
 const runtime = {
@@ -40,6 +41,25 @@ const runtime = {
 };
 
 describe("InvocationRepository", () => {
+  it("filters and paginates invocation history within one workspace", async () => {
+    const findMany = jest.fn().mockResolvedValue([]);
+    const count = jest.fn().mockResolvedValue(0);
+    const repository = new InvocationRepository({
+      aiInvocationLog: { findMany, count },
+      $transaction: (operations: Array<Promise<unknown>>) => Promise.all(operations)
+    } as never);
+    await expect(repository.list("workspace", {
+      page: 2, limit: 10, status: "SUCCEEDED", providerId: "provider"
+    })).resolves.toMatchObject({
+      data: [], pagination: { page: 2, limit: 10, total: 0, totalPages: 0 }
+    });
+    expect(findMany).toHaveBeenCalledWith(expect.objectContaining({
+      where: expect.objectContaining({
+        workspaceId: "workspace", status: "SUCCEEDED", providerId: "provider"
+      }),
+      skip: 10, take: 10
+    }));
+  });
   it("creates a workspace-scoped pending invocation with safe metadata", async () => {
     interface CreateInput {
       data: { workspaceId: string; inputMetadata: { messageCount: number } };
@@ -50,8 +70,11 @@ describe("InvocationRepository", () => {
       workspaceId: "workspace-id",
       status: "PENDING"
     });
+    const auditCreate = jest.fn().mockResolvedValue({});
+    const transaction = { aiInvocationLog: { create }, auditLog: { create: auditCreate } };
     const repository = new InvocationRepository({
-      aiInvocationLog: { create }
+      $transaction: (operation: (client: typeof transaction) => Promise<unknown>) =>
+        operation(transaction)
     } as never);
 
     await repository.start({
@@ -66,6 +89,9 @@ describe("InvocationRepository", () => {
     const createInput = create.mock.calls[0]![0];
     expect(createInput.data.workspaceId).toBe("workspace-id");
     expect(createInput.data.inputMetadata).toEqual({ messageCount: 2 });
+    expect(auditCreate).toHaveBeenCalledWith(expect.objectContaining({
+      data: expect.objectContaining({ action: "ai.provider.execution.started" })
+    }));
   });
 
   it("persists lifecycle, usage, cost, and routing in one transaction", async () => {
@@ -86,7 +112,8 @@ describe("InvocationRepository", () => {
       aiRuntimeReservation: {
         updateMany: jest.fn().mockResolvedValue({ count: 1 })
       },
-      aiRuntimeAccounting: { create: jest.fn().mockResolvedValue({}) }
+      aiRuntimeAccounting: { create: jest.fn().mockResolvedValue({}) },
+      auditLog: { create: jest.fn().mockResolvedValue({}) }
     };
     const executeTransaction = jest.fn((operation: (client: typeof transaction) => Promise<void>) =>
       operation(transaction)

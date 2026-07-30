@@ -1,4 +1,5 @@
 import type { AiResponseContract } from "./contracts";
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { AiController } from "./ai.controller";
 
 describe("AiController", () => {
@@ -63,7 +64,8 @@ describe("AiController", () => {
       requestId: "http-request-id",
       taskType: "completion",
       messages: [{ role: "user", content: "Hello" }],
-      mode: "sync"
+      mode: "sync",
+      signal: expect.any(AbortSignal)
     });
     expect(JSON.stringify(invocations.invoke.mock.calls)).not.toContain("workspaceId");
     expect(JSON.stringify(invocations.invoke.mock.calls)).not.toContain("membershipId");

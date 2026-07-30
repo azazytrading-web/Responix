@@ -13,6 +13,8 @@ import {
   ProviderNetworkTimeoutError,
   ProviderResponseTooLargeError
 } from "../security/provider-http-client.service";
+import { unsupportedProviderPromptCache } from "./provider-prompt-cache.interface";
+import { streamOpenAiCompatible } from "./openai-compatible-stream";
 
 const openAiResponseSchema = z.object({
   choices: z
@@ -35,6 +37,8 @@ const openAiResponseSchema = z.object({
 @Injectable()
 export class OpenAiProviderAdapter implements AiProviderAdapter {
   readonly providerName = "OpenAI";
+  readonly contractVersion = "1.0";
+  readonly promptCache = unsupportedProviderPromptCache;
 
   constructor(private readonly http: ProviderHttpClient) {}
 
@@ -99,6 +103,12 @@ export class OpenAiProviderAdapter implements AiProviderAdapter {
         cachedTokens: parsed.data.usage.prompt_tokens_details?.cached_tokens ?? 0
       }
     };
+  }
+
+  stream(request: ProviderExecutionRequest, credential: ProviderExecutionCredential, emit: Parameters<NonNullable<AiProviderAdapter["stream"]>>[2]) {
+    return streamOpenAiCompatible({ http: this.http, provider: this.providerName,
+      url: `${(request.apiBaseUrl ?? "https://api.openai.com/v1").replace(/\/$/, "")}/chat/completions`,
+      authorization: `Bearer ${credential.secret}`, request, credential, emit });
   }
 
   private httpError(status: number): AiContractError {

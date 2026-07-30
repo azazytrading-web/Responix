@@ -30,6 +30,10 @@ import { ProviderRuntimeModule } from "../modules/provider-runtime/provider-runt
 import { RetrievalRuntimeModule } from "../modules/retrieval-runtime/retrieval-runtime.module";
 import { ConversationRuntimeModule } from "../modules/conversation-runtime/conversation-runtime.module";
 import { ExecutionPipelineModule } from "../modules/execution-pipeline/execution-pipeline.module";
+import { PromptExecutionModule } from "../modules/prompt-execution/prompt-execution.module";
+import { AgentExecutionModule } from "../modules/agent-execution/agent-execution.module";
+import { RuntimeOptimizationModule } from "../modules/runtime-optimization/runtime-optimization.module";
+import { StreamingRuntimeModule } from "../modules/streaming-runtime/streaming-runtime.module";
 import { SecretRedactionExceptionFilter } from "../common/secret-redaction-exception.filter";
 import { redactLogArguments } from "../common/secret-redaction";
 
@@ -101,7 +105,11 @@ import { redactLogArguments } from "../common/secret-redaction";
     ProviderRuntimeModule,
     RetrievalRuntimeModule,
     ConversationRuntimeModule,
-    ExecutionPipelineModule
+    ExecutionPipelineModule,
+    PromptExecutionModule,
+    AgentExecutionModule,
+    RuntimeOptimizationModule,
+    StreamingRuntimeModule
   ],
   providers: [
     {

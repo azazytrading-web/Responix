@@ -4,14 +4,18 @@ import {
   ArrayMinSize,
   IsArray,
   IsBoolean,
+  IsEnum,
   IsIn,
   IsInt,
   IsOptional,
   IsString,
+  IsUUID,
+  Max,
   MaxLength,
   Min,
   ValidateNested
 } from "class-validator";
+import { AiInvocationStatus } from "@prisma/client";
 import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
 
 export class AiMessageRequestDto {
@@ -48,6 +52,28 @@ export class AiInvocationRequestDto {
   @IsString()
   @MaxLength(12)
   language?: string;
+}
+
+export class AiInvocationHistoryQueryDto {
+  @ApiPropertyOptional({ minimum: 1, default: 1 })
+  @Type(() => Number) @IsOptional() @IsInt() @Min(1)
+  page?: number;
+
+  @ApiPropertyOptional({ minimum: 1, maximum: 100, default: 25 })
+  @Type(() => Number) @IsOptional() @IsInt() @Min(1) @Max(100)
+  limit?: number;
+
+  @ApiPropertyOptional({ enum: AiInvocationStatus })
+  @IsOptional() @IsEnum(AiInvocationStatus)
+  status?: AiInvocationStatus;
+
+  @ApiPropertyOptional({ format: "uuid" })
+  @IsOptional() @IsUUID()
+  providerId?: string;
+
+  @ApiPropertyOptional({ format: "uuid" })
+  @IsOptional() @IsUUID()
+  modelId?: string;
 }
 
 export class AiRoutingRequestDto {

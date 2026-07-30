@@ -58,7 +58,9 @@ const environmentSchema = z.object({
   AI_RESERVATION_TTL_MS: z.coerce.number().int().positive().default(60000),
   AI_RUNTIME_RECOVERY_INTERVAL_MS: z.coerce.number().int().positive().default(30000),
   AI_RUNTIME_RECOVERY_BATCH_SIZE: z.coerce.number().int().positive().default(100),
-  AI_PROVIDER_ALLOWED_HOSTS: z.string().min(1).default("api.openai.com"),
+  AI_PROVIDER_ALLOWED_HOSTS: z.string().min(1).default(
+    "api.openai.com,api.anthropic.com,generativelanguage.googleapis.com,openrouter.ai,api.deepseek.com"
+  ),
   AI_PROVIDER_ALLOWED_PORTS: z
     .string()
     .regex(/^\d+(?:,\d+)*$/)

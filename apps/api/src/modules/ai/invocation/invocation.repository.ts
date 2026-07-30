@@ -1,5 +1,5 @@
 import { Injectable } from "@nestjs/common";
-import type { Prisma } from "@prisma/client";
+import type { AiInvocationStatus, Prisma } from "@prisma/client";
 import type { AiCostContract, AiUsageContract } from "../contracts";
 import { PrismaService } from "../../../database/prisma.service";
 import type { RoutingDecision } from "../router/routing.types";
@@ -27,6 +27,7 @@ export interface InvocationCompletionInput {
   cost: AiCostContract;
   runtime: RuntimeSuccessAccounting;
   finishReason?: string;
+  responseContent?: string;
   recoveryId?: string;
 }
 
@@ -38,9 +39,44 @@ export interface InvocationFailureInput {
   recoveryId?: string;
 }
 
+export interface UnknownUsageCompletionInput {
+  invocationId: string;
+  workspaceId: string;
+  providerId: string;
+  modelId: string;
+  routing: RoutingDecision;
+  runtime: Omit<RuntimeSuccessAccounting, "usage" | "cost">;
+  responseContent: string;
+  finishReason?: string;
+  pricing: ModelPricing;
+}
+
 @Injectable()
 export class InvocationRepository {
   constructor(private readonly prisma: PrismaService) {}
+
+  async list(workspaceId: string, query: {
+    page?: number; limit?: number; status?: AiInvocationStatus; providerId?: string; modelId?: string;
+  }) {
+    const page = query.page ?? 1;
+    const limit = query.limit ?? 25;
+    const where: Prisma.AiInvocationLogWhereInput = {
+      workspaceId, status: query.status, providerId: query.providerId, modelId: query.modelId
+    };
+    const [data, total] = await this.prisma.$transaction([
+      this.prisma.aiInvocationLog.findMany({
+        where,
+        select: {
+          id: true, requestId: true, providerId: true, modelId: true, status: true,
+          taskType: true, errorCode: true, startedAt: true, completedAt: true
+        },
+        orderBy: [{ createdAt: "desc" }, { id: "asc" }],
+        skip: (page - 1) * limit, take: limit
+      }),
+      this.prisma.aiInvocationLog.count({ where })
+    ]);
+    return { data, pagination: { page, limit, total, totalPages: Math.ceil(total / limit) } };
+  }
 
   async findModelPricing(
     workspaceId: string,
@@ -81,21 +117,31 @@ export class InvocationRepository {
     taskType: string;
     messageCount: number;
   }): Promise<InvocationRecord> {
-    const record = await this.prisma.aiInvocationLog.create({
-      data: {
-        requestId: input.requestId,
-        workspaceId: input.workspaceId,
-        providerId: input.providerId,
-        modelId: input.modelId,
-        taskType: input.taskType,
-        inputMetadata: { messageCount: input.messageCount }
-      },
-      select: {
-        id: true,
-        requestId: true,
-        workspaceId: true,
-        status: true
-      }
+    const record = await this.prisma.$transaction(async (transaction) => {
+      const created = await transaction.aiInvocationLog.create({
+        data: {
+          requestId: input.requestId,
+          workspaceId: input.workspaceId,
+          providerId: input.providerId,
+          modelId: input.modelId,
+          taskType: input.taskType,
+          inputMetadata: { messageCount: input.messageCount }
+        },
+        select: {
+          id: true, requestId: true, workspaceId: true, status: true
+        }
+      });
+      await transaction.auditLog.create({
+        data: {
+          workspaceId: input.workspaceId, action: "ai.provider.execution.started",
+          entityType: "AiInvocationLog", entityId: created.id,
+          newValues: {
+            requestId: input.requestId, providerId: input.providerId,
+            modelId: input.modelId, taskType: input.taskType
+          }
+        }
+      });
+      return created;
     });
     return { ...record };
   }
@@ -113,7 +159,8 @@ export class InvocationRepository {
           status: "SUCCEEDED",
           completedAt: new Date(),
           outputMetadata: {
-            ...(input.finishReason ? { finishReason: input.finishReason } : {})
+            ...(input.finishReason ? { finishReason: input.finishReason } : {}),
+            ...(input.responseContent !== undefined ? { responseContent: input.responseContent } : {})
           }
         }
       });
@@ -203,7 +250,94 @@ export class InvocationRepository {
           status: "SUCCEEDED"
         }
       });
+      await transaction.auditLog.create({
+        data: {
+          workspaceId: input.workspaceId, action: "ai.provider.execution.succeeded",
+          entityType: "AiInvocationLog", entityId: input.invocationId,
+          newValues: {
+            providerId: input.providerId, modelId: input.modelId,
+            retryCount: input.runtime.retryCount
+          }
+        }
+      });
       await this.completeRecoveryRecord(transaction, input.recoveryId);
+    }, { isolationLevel: "Serializable" });
+  }
+
+  async completeUnknownUsage(input: UnknownUsageCompletionInput): Promise<void> {
+    await this.prisma.$transaction(async (transaction) => {
+      await transaction.$queryRaw`SELECT pg_advisory_xact_lock(hashtextextended(${input.workspaceId}, 0))`;
+      const updated = await transaction.aiInvocationLog.updateMany({
+        where: {
+          id: input.invocationId, workspaceId: input.workspaceId, status: "PENDING"
+        },
+        data: {
+          status: "SUCCEEDED", completedAt: new Date(),
+          outputMetadata: {
+            usageStatus: "UNKNOWN", responseContent: input.responseContent,
+            pricing: {
+              inputCostPerMillion: input.pricing.inputCostPerMillion,
+              outputCostPerMillion: input.pricing.outputCostPerMillion,
+              currency: input.pricing.currency
+            },
+            ...(input.finishReason ? { finishReason: input.finishReason } : {})
+          }
+        }
+      });
+      if (updated.count !== 1) {
+        const existing = await transaction.aiInvocationLog.findFirst({
+          where: {
+            id: input.invocationId, workspaceId: input.workspaceId, status: "SUCCEEDED"
+          },
+          select: { id: true }
+        });
+        if (existing) return;
+        throw new Error("Invocation finalization conflict");
+      }
+      await transaction.aiRoutingMetadata.create({
+        data: {
+          workspaceId: input.workspaceId, invocationId: input.invocationId,
+          selectedProviderId: input.providerId, selectedModelId: input.modelId,
+          decisionFactors: input.routing.decisionFactors as Prisma.InputJsonObject,
+          candidateMetadata:
+            input.routing.candidateMetadata as Prisma.InputJsonArray | undefined
+        }
+      });
+      const released = await transaction.aiRuntimeReservation.updateMany({
+        where: {
+          id: input.runtime.reservation.id, workspaceId: input.workspaceId,
+          ownerToken: input.runtime.reservation.ownerToken, status: "ACTIVE"
+        },
+        data: { status: "RELEASED", releasedAt: new Date() }
+      });
+      if (released.count !== 1) {
+        throw new Error("Invocation reservation ownership conflict");
+      }
+      await transaction.aiRuntimeAccounting.create({
+        data: {
+          workspaceId: input.workspaceId, invocationId: input.invocationId,
+          providerId: input.providerId, modelId: input.modelId,
+          requestId: input.runtime.reservation.requestId,
+          estimatedInputTokens: input.runtime.reservation.estimate.inputTokens,
+          estimatedOutputTokens: input.runtime.reservation.estimate.outputTokens,
+          estimatedTotalTokens: input.runtime.reservation.estimate.totalTokens,
+          estimatedCost: input.runtime.reservation.estimate.estimatedCost,
+          retryCount: input.runtime.retryCount,
+          queueWaitMs: input.runtime.reservation.queueWaitMs,
+          reservationMs: Date.now() - input.runtime.reservation.reservedAt,
+          executionDurationMs: input.runtime.executionDurationMs,
+          providerDurationMs: input.runtime.providerDurationMs,
+          status: "SUCCEEDED"
+        }
+      });
+      await transaction.auditLog.create({ data: {
+        workspaceId: input.workspaceId, action: "ai.provider.execution.succeeded",
+        entityType: "AiInvocationLog", entityId: input.invocationId,
+        newValues: {
+          providerId: input.providerId, modelId: input.modelId,
+          usageStatus: "UNKNOWN", retryCount: input.runtime.retryCount
+        }
+      } });
     }, { isolationLevel: "Serializable" });
   }
 
@@ -212,14 +346,21 @@ export class InvocationRepository {
     workspaceId: string,
     error: NormalizedInvocationError
   ): Promise<void> {
-    await this.prisma.aiInvocationLog.updateMany({
-      where: { id: invocationId, workspaceId, status: "PENDING" },
-      data: {
-        status: error.status,
-        errorCode: error.code,
-        errorMessage: error.message,
-        completedAt: new Date()
-      }
+    await this.prisma.$transaction(async (transaction) => {
+      await transaction.aiInvocationLog.updateMany({
+        where: { id: invocationId, workspaceId, status: "PENDING" },
+        data: {
+          status: error.status, errorCode: error.code,
+          errorMessage: error.message, completedAt: new Date()
+        }
+      });
+      await transaction.auditLog.create({
+        data: {
+          workspaceId, action: "ai.provider.execution.failed",
+          entityType: "AiInvocationLog", entityId: invocationId,
+          newValues: { status: error.status, errorCode: error.code }
+        }
+      });
     });
   }
 
@@ -291,6 +432,19 @@ export class InvocationRepository {
           failureReason: input.runtime.failureReason,
           timeoutReason: input.runtime.timeoutReason,
           cancelled: input.runtime.cancelled
+        }
+      });
+      await transaction.auditLog.create({
+        data: {
+          workspaceId: input.workspaceId,
+          action: input.runtime.cancelled
+            ? "ai.provider.execution.cancelled"
+            : "ai.provider.execution.failed",
+          entityType: "AiInvocationLog", entityId: input.invocationId,
+          newValues: {
+            status: input.error.status, errorCode: input.error.code,
+            retryCount: input.runtime.retryCount
+          }
         }
       });
       await this.completeRecoveryRecord(transaction, input.recoveryId);

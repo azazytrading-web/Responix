@@ -30,4 +30,10 @@ describe("ProviderRegistry", () => {
       "No adapter is registered for AI provider Unknown"
     );
   });
+
+  it("rejects incompatible adapter contract versions", () => {
+    expect(() => new ProviderRegistry([{
+      providerName: "Future", contractVersion: "2.0", invoke: jest.fn()
+    }])).toThrow("Unsupported AI provider adapter contract 2.0");
+  });
 });

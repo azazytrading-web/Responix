@@ -1,5 +1,13 @@
 # Session Handoff
 
+## Current Repository State - 2026-07-30
+
+Sprint 6E.7 is complete in the working tree. Unified provider streams now flow through
+the existing invocation/runtime accounting, Streaming Runtime, Agent Execution, and
+Execution Kernel boundaries. Usage is persisted as exact provider usage or explicit
+`UNKNOWN`; token counts are never inferred from streamed text. The full validation
+matrix passes. Changes remain intentionally uncommitted.
+
 ## Current Repository State — 2026-07-25
 
 | Field               | Value                                                                                   |

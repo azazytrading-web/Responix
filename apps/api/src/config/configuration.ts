@@ -27,6 +27,11 @@ export function configuration() {
       enabled: process.env.AI_ENABLED !== "false",
       credentialEncryptionKey: process.env.AI_CREDENTIAL_ENCRYPTION_KEY,
       requestTimeoutMs: Number.parseInt(process.env.AI_REQUEST_TIMEOUT_MS ?? "30000", 10),
+      retry: {
+        maxAttempts: Number.parseInt(process.env.AI_PROVIDER_RETRY_MAX_ATTEMPTS ?? "3", 10),
+        baseDelayMs: Number.parseInt(process.env.AI_PROVIDER_RETRY_BASE_DELAY_MS ?? "100", 10),
+        maxDelayMs: Number.parseInt(process.env.AI_PROVIDER_RETRY_MAX_DELAY_MS ?? "2000", 10)
+      },
       maxContextTokens: Number.parseInt(process.env.AI_MAX_CONTEXT_TOKENS ?? "32000", 10),
       runtime: {
         dailyRequestLimit: Number.parseInt(
@@ -92,7 +97,8 @@ export function configuration() {
         )
       },
       network: {
-        allowedHosts: (process.env.AI_PROVIDER_ALLOWED_HOSTS ?? "api.openai.com")
+        allowedHosts: (process.env.AI_PROVIDER_ALLOWED_HOSTS ??
+          "api.openai.com,api.anthropic.com,generativelanguage.googleapis.com,openrouter.ai,api.deepseek.com")
           .split(",")
           .map((host) => host.trim().toLowerCase())
           .filter(Boolean),

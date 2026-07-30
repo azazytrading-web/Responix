@@ -10,6 +10,11 @@ export class ProviderRegistry {
   constructor(@Inject(AI_PROVIDER_ADAPTERS) adapters: readonly AiProviderAdapter[]) {
     const registered = new Map<string, AiProviderAdapter>();
     for (const adapter of adapters) {
+      if (adapter.contractVersion && adapter.contractVersion !== "1.0") {
+        throw new Error(
+          `Unsupported AI provider adapter contract ${adapter.contractVersion}: ${adapter.providerName}`
+        );
+      }
       if (registered.has(adapter.providerName)) {
         throw new Error(`Duplicate AI provider adapter: ${adapter.providerName}`);
       }

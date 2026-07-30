@@ -285,6 +285,37 @@ enum ExecutionLogLevel {
   ERROR
 }
 
+enum AgentExecutionOrchestrationStatus {
+  PREPARING
+  READY
+  FAILED
+  CANCELLED
+}
+
+enum RuntimeOptimizationPackageType {
+  COMPILED_PROMPT
+  RENDERED_PROMPT
+  RUNTIME_CONTEXT
+  RETRIEVAL_RUNTIME
+}
+
+enum StreamSessionStatus {
+  PENDING
+  CONNECTING
+  STREAMING
+  PAUSED
+  COMPLETED
+  CANCELLED
+  FAILED
+  TIMED_OUT
+  DISCONNECTED
+}
+
+enum StreamUsageStatus {
+  AVAILABLE
+  UNKNOWN
+}
+
 enum AgentRuntimeStatus {
   PREPARED
   VALIDATED
@@ -527,6 +558,7 @@ model Workspace {
   agentRuntimeSnapshots    AgentRuntimeSnapshot[]
   agentRuntimeConversations AgentRuntimeConversation[]
   compiledPrompts          CompiledPrompt[]
+  promptExecutionPayloads  PromptExecutionPayload[]
   providerRuntimeRequests  ProviderRuntimeRequest[]
   providerRequestSnapshots ProviderRequestSnapshot[]
   retrievalRuntimes        RetrievalRuntime[]
@@ -535,6 +567,9 @@ model Workspace {
   conversationRuntimeSnapshots ConversationRuntimeSnapshot[]
   executionPipelines           ExecutionPipeline[]
   executionPipelineSnapshots   ExecutionPipelineSnapshot[]
+  agentExecutionOrchestrations AgentExecutionOrchestration[]
+  runtimeOptimizationPackages  RuntimeOptimizationPackage[]
+  streamSessions               StreamSession[]
   subscriptions      Subscription[]      @relation("WorkspaceSubscriptions")
   payments           Payment[]
   apiKeys            ApiKey[]
@@ -1234,6 +1269,7 @@ model AiInvocationLog {
   routingMetadata AiRoutingMetadata?
   runtimeAccounting AiRuntimeAccounting?
   runtimeFinalization AiRuntimeFinalization?
+  streamSession StreamSession?
 
   @@index([workspaceId, createdAt])
   @@index([workspaceId, status, createdAt])
@@ -1459,11 +1495,11 @@ model AiRuntimeAccounting {
   estimatedOutputTokens  Int                      @map("estimated_output_tokens")
   estimatedTotalTokens   Int                      @map("estimated_total_tokens")
   estimatedCost          Decimal                  @map("estimated_cost") @db.Decimal(14, 6)
-  actualPromptTokens     Int                      @default(0) @map("actual_prompt_tokens")
-  actualCompletionTokens Int                      @default(0) @map("actual_completion_tokens")
-  actualCachedTokens     Int                      @default(0) @map("actual_cached_tokens")
-  actualTotalTokens      Int                      @default(0) @map("actual_total_tokens")
-  actualCost             Decimal                  @default(0) @map("actual_cost") @db.Decimal(14, 6)
+  actualPromptTokens     Int?                     @map("actual_prompt_tokens")
+  actualCompletionTokens Int?                     @map("actual_completion_tokens")
+  actualCachedTokens     Int?                     @map("actual_cached_tokens")
+  actualTotalTokens      Int?                     @map("actual_total_tokens")
+  actualCost             Decimal?                 @map("actual_cost") @db.Decimal(14, 6)
   retryCount             Int                      @default(0) @map("retry_count")
   queueWaitMs            Int                      @default(0) @map("queue_wait_ms")
   reservationMs          Int                      @default(0) @map("reservation_ms")
@@ -2925,6 +2961,250 @@ model CompiledPrompt {
   @@index([workspaceId, agentVersionId], map: "compiled_prompts_workspace_agent_version_idx")
   @@index([workspaceId, hash], map: "compiled_prompts_workspace_hash_idx")
   @@map("compiled_prompts")
+}
+
+model PromptExecutionPayload {
+  id                            String   @id @default(uuid()) @db.Uuid
+  workspaceId                   String   @map("workspace_id") @db.Uuid
+  createdById                   String   @map("created_by") @db.Uuid
+  compiledPromptId              String   @map("compiled_prompt_id") @db.Uuid
+  agentRuntimeSnapshotId        String?  @map("agent_runtime_snapshot_id") @db.Uuid
+  conversationRuntimeSnapshotId String?  @map("conversation_runtime_snapshot_id") @db.Uuid
+  providerRuntimeSnapshotId     String?  @map("provider_runtime_snapshot_id") @db.Uuid
+  executionPipelineSnapshotId   String?  @map("execution_pipeline_snapshot_id") @db.Uuid
+  executionRequestId            String?  @map("execution_request_id") @db.Uuid
+  executionRunId                String?  @map("execution_run_id") @db.Uuid
+  rendererVersion               String   @map("renderer_version")
+  messages                      Json
+  resolvedVariables             Json     @map("resolved_variables")
+  contextMetadata               Json     @default("{}") @map("context_metadata")
+  executionPayload              Json     @map("execution_payload")
+  promptHash                    String   @map("prompt_hash")
+  payloadHash                   String   @map("payload_hash")
+  checksum                      String
+  createdAt                     DateTime @default(now()) @map("created_at")
+  workspace   Workspace                   @relation(fields: [workspaceId], references: [id], onDelete: Restrict)
+  diagnostics PromptExecutionDiagnostic[]
+  @@index([workspaceId, createdAt], map: "prompt_execution_payloads_workspace_created_idx")
+  @@index([workspaceId, compiledPromptId, createdAt], map: "prompt_execution_payloads_workspace_prompt_idx")
+  @@index([workspaceId, executionRequestId], map: "prompt_execution_payloads_workspace_request_idx")
+  @@index([workspaceId, payloadHash], map: "prompt_execution_payloads_workspace_hash_idx")
+  @@map("prompt_execution_payloads")
+}
+
+model PromptExecutionDiagnostic {
+  id        String   @id @default(uuid()) @db.Uuid
+  payloadId String   @map("payload_id") @db.Uuid
+  severity  String
+  code      String
+  path      String
+  message   String
+  metadata  Json     @default("{}")
+  createdAt DateTime @default(now()) @map("created_at")
+  payload PromptExecutionPayload @relation(fields: [payloadId], references: [id], onDelete: Restrict)
+  @@index([payloadId, severity, createdAt], map: "prompt_execution_diagnostics_payload_severity_idx")
+  @@map("prompt_execution_diagnostics")
+}
+
+model AgentExecutionOrchestration {
+  id                            String   @id @default(uuid()) @db.Uuid
+  workspaceId                   String   @map("workspace_id") @db.Uuid
+  createdById                   String   @map("created_by") @db.Uuid
+  executionRequestId            String   @map("execution_request_id") @db.Uuid
+  executionRunId                String   @unique @map("execution_run_id") @db.Uuid
+  agentRuntimeSnapshotId        String   @map("agent_runtime_snapshot_id") @db.Uuid
+  promptExecutionPayloadId      String   @map("prompt_execution_payload_id") @db.Uuid
+  providerRuntimeSnapshotId     String   @map("provider_runtime_snapshot_id") @db.Uuid
+  conversationRuntimeSnapshotId String?  @map("conversation_runtime_snapshot_id") @db.Uuid
+  executionPipelineSnapshotId   String   @map("execution_pipeline_snapshot_id") @db.Uuid
+  status                        AgentExecutionOrchestrationStatus @default(PREPARING)
+  correlationId                 String   @map("correlation_id")
+  orchestrationPlan             Json     @map("orchestration_plan")
+  runtimeDiagnostics            Json     @default("[]") @map("runtime_diagnostics")
+  metadata                      Json     @default("{}")
+  planHash                      String   @map("plan_hash")
+  checksum                      String
+  readyAt                       DateTime? @map("ready_at")
+  failedAt                      DateTime? @map("failed_at")
+  cancelledAt                   DateTime? @map("cancelled_at")
+  createdAt                     DateTime @default(now()) @map("created_at")
+  updatedAt                     DateTime @updatedAt @map("updated_at")
+  workspace Workspace @relation(fields: [workspaceId], references: [id], onDelete: Restrict)
+  diagnostics AgentExecutionDiagnostic[]
+  @@unique([workspaceId, executionRequestId], map: "agent_execution_orchestrations_workspace_request_key")
+  @@index([workspaceId, status, createdAt], map: "agent_execution_orchestrations_workspace_status_idx")
+  @@index([workspaceId, correlationId, createdAt], map: "agent_execution_orchestrations_workspace_correlation_idx")
+  @@map("agent_execution_orchestrations")
+}
+
+model AgentExecutionDiagnostic {
+  id              String   @id @default(uuid()) @db.Uuid
+  orchestrationId String   @map("orchestration_id") @db.Uuid
+  severity        String
+  code            String
+  path            String
+  message         String
+  metadata        Json     @default("{}")
+  createdAt       DateTime @default(now()) @map("created_at")
+  orchestration AgentExecutionOrchestration @relation(fields: [orchestrationId], references: [id], onDelete: Restrict)
+  @@index([orchestrationId, severity, createdAt], map: "agent_execution_diagnostics_orchestration_severity_idx")
+  @@map("agent_execution_diagnostics")
+}
+
+model RuntimeOptimizationPackage {
+  id                  String   @id @default(uuid()) @db.Uuid
+  workspaceId         String   @map("workspace_id") @db.Uuid
+  createdById         String   @map("created_by") @db.Uuid
+  type                RuntimeOptimizationPackageType
+  keyHash             String   @map("key_hash")
+  sourceHash          String   @map("source_hash")
+  staticVariablesHash String?  @map("static_variables_hash")
+  payload             Json
+  assetReferences     Json     @default("{}") @map("asset_references")
+  packageHash         String   @map("package_hash")
+  checksum            String
+  version             Int      @default(1)
+  createdAt           DateTime @default(now()) @map("created_at")
+  workspace Workspace @relation(fields: [workspaceId], references: [id], onDelete: Restrict)
+  metric RuntimeOptimizationMetric?
+  @@unique([workspaceId, type, keyHash], map: "runtime_optimization_packages_workspace_type_key")
+  @@index([workspaceId, type, createdAt], map: "runtime_optimization_packages_workspace_type_idx")
+  @@index([workspaceId, packageHash], map: "runtime_optimization_packages_workspace_hash_idx")
+  @@map("runtime_optimization_packages")
+}
+
+model RuntimeOptimizationMetric {
+  id                                  String   @id @default(uuid()) @db.Uuid
+  packageId                           String   @unique @map("package_id") @db.Uuid
+  version                             Int      @default(0)
+  cacheHits                           Int      @default(0) @map("cache_hits")
+  cacheMisses                         Int      @default(1) @map("cache_misses")
+  reuseCount                          Int      @default(0) @map("reuse_count")
+  compiledPromptReuse                 Int      @default(0) @map("compiled_prompt_reuse")
+  renderedPromptReuse                 Int      @default(0) @map("rendered_prompt_reuse")
+  runtimeSnapshotReuse                Int      @default(0) @map("runtime_snapshot_reuse")
+  retrievalPackageReuse               Int      @default(0) @map("retrieval_package_reuse")
+  providerCacheAvailable              Boolean  @default(false) @map("provider_cache_available")
+  providerCacheUsage                  Int      @default(0) @map("provider_cache_usage")
+  estimatedSavedTokens                Int      @default(0) @map("estimated_saved_tokens")
+  estimatedSavedRequests              Int      @default(0) @map("estimated_saved_requests")
+  estimatedSavedCompilationOperations Int      @default(0) @map("estimated_saved_compilation_operations")
+  estimatedSavedRenderingOperations   Int      @default(0) @map("estimated_saved_rendering_operations")
+  totalLifetimeMs                     BigInt   @default(0) @map("total_lifetime_ms")
+  averageCacheLifetimeMs              Int      @default(0) @map("average_cache_lifetime_ms")
+  lastAccessedAt                      DateTime @default(now()) @map("last_accessed_at")
+  createdAt                           DateTime @default(now()) @map("created_at")
+  updatedAt                           DateTime @updatedAt @map("updated_at")
+  package RuntimeOptimizationPackage @relation(fields: [packageId], references: [id], onDelete: Restrict)
+  @@index([lastAccessedAt], map: "runtime_optimization_metrics_last_accessed_idx")
+  @@map("runtime_optimization_metrics")
+}
+
+model StreamSession {
+  id                  String              @id @default(uuid()) @db.Uuid
+  workspaceId         String              @map("workspace_id") @db.Uuid
+  createdById         String              @map("created_by") @db.Uuid
+  conversationId      String?             @map("conversation_id") @db.Uuid
+  providerId          String              @map("provider_id") @db.Uuid
+  modelId             String              @map("model_id") @db.Uuid
+  agentRuntimeId      String?             @map("agent_runtime_id") @db.Uuid
+  executionRequestId  String?             @map("execution_request_id") @db.Uuid
+  executionRunId      String?             @map("execution_run_id") @db.Uuid
+  requestHash         String              @map("request_hash")
+  invocationId        String?             @unique @map("invocation_id") @db.Uuid
+  status              StreamSessionStatus @default(PENDING)
+  usageStatus         StreamUsageStatus?  @map("usage_status")
+  stateVersion        Int                 @default(0) @map("state_version")
+  reconnectCount      Int                 @default(0) @map("reconnect_count")
+  retryCount          Int                 @default(0) @map("retry_count")
+  timeoutMs           Int                 @map("timeout_ms")
+  startedAt           DateTime?           @map("started_at")
+  firstTokenAt        DateTime?           @map("first_token_at")
+  lastTokenAt         DateTime?           @map("last_token_at")
+  providerCompletedAt DateTime?           @map("provider_completed_at")
+  runtimeCompletedAt  DateTime?           @map("runtime_completed_at")
+  finishedAt          DateTime?           @map("finished_at")
+  cancelledAt         DateTime?           @map("cancelled_at")
+  disconnectedAt      DateTime?           @map("disconnected_at")
+  responseContent     String?             @map("response_content")
+  inputTokens         Int?                @map("input_tokens")
+  outputTokens        Int?                @map("output_tokens")
+  cachedTokens        Int?                @map("cached_tokens")
+  totalTokens         Int?                @map("total_tokens")
+  inputCost           Decimal?            @map("input_cost") @db.Decimal(14, 6)
+  outputCost          Decimal?            @map("output_cost") @db.Decimal(14, 6)
+  totalCost           Decimal?            @map("total_cost") @db.Decimal(14, 6)
+  costCurrency        String?             @map("cost_currency")
+  pricingMetadata     Json                @default("{}") @map("pricing_metadata")
+  providerMetadata    Json                @default("{}") @map("provider_metadata")
+  createdAt           DateTime            @default(now()) @map("created_at")
+  updatedAt           DateTime            @updatedAt @map("updated_at")
+  workspace Workspace @relation(fields: [workspaceId], references: [id], onDelete: Restrict)
+  invocation AiInvocationLog? @relation(fields: [invocationId], references: [id], onDelete: Restrict)
+  chunks StreamChunk[]
+  diagnostics StreamDiagnostic[]
+  metric StreamMetric?
+  snapshots StreamSnapshot[]
+  @@index([workspaceId, status, createdAt], map: "stream_sessions_workspace_status_idx")
+  @@index([workspaceId, requestHash], map: "stream_sessions_workspace_request_hash_idx")
+  @@map("stream_sessions")
+}
+
+model StreamChunk {
+  id               String   @id @default(uuid()) @db.Uuid
+  sessionId        String   @map("session_id") @db.Uuid
+  sequence         Int
+  content          String   @default("")
+  role             String?
+  delta            Boolean  @default(true)
+  finishReason     String?  @map("finish_reason")
+  providerMetadata Json     @default("{}") @map("provider_metadata")
+  createdAt        DateTime @default(now()) @map("created_at")
+  session StreamSession @relation(fields: [sessionId], references: [id], onDelete: Restrict)
+  @@unique([sessionId, sequence], map: "stream_chunks_session_sequence_key")
+  @@index([sessionId, createdAt], map: "stream_chunks_session_created_idx")
+  @@map("stream_chunks")
+}
+
+model StreamDiagnostic {
+  id        String   @id @default(uuid()) @db.Uuid
+  sessionId String   @map("session_id") @db.Uuid
+  code      String
+  message   String
+  metadata  Json     @default("{}")
+  createdAt DateTime @default(now()) @map("created_at")
+  session StreamSession @relation(fields: [sessionId], references: [id], onDelete: Restrict)
+  @@index([sessionId, createdAt], map: "stream_diagnostics_session_created_idx")
+  @@map("stream_diagnostics")
+}
+
+model StreamMetric {
+  id                String   @id @default(uuid()) @db.Uuid
+  sessionId         String   @unique @map("session_id") @db.Uuid
+  timeToFirstByteMs Int?     @map("time_to_first_byte_ms")
+  totalDurationMs   Int?     @map("total_duration_ms")
+  chunkCount        Int      @default(0) @map("chunk_count")
+  characters        Int      @default(0)
+  estimatedTokens   Int      @default(0) @map("estimated_tokens")
+  cancellationCount Int      @default(0) @map("cancellation_count")
+  reconnectCount    Int      @default(0) @map("reconnect_count")
+  updatedAt         DateTime @updatedAt @map("updated_at")
+  session StreamSession @relation(fields: [sessionId], references: [id], onDelete: Restrict)
+  @@map("stream_metrics")
+}
+
+model StreamSnapshot {
+  id          String   @id @default(uuid()) @db.Uuid
+  sessionId   String   @map("session_id") @db.Uuid
+  revision    Int
+  snapshot    Json
+  snapshotHash String  @map("snapshot_hash")
+  checksum    String
+  createdAt   DateTime @default(now()) @map("created_at")
+  session StreamSession @relation(fields: [sessionId], references: [id], onDelete: Restrict)
+  @@unique([sessionId, revision], map: "stream_snapshots_session_revision_key")
+  @@index([sessionId, createdAt], map: "stream_snapshots_session_created_idx")
+  @@map("stream_snapshots")
 }
 
 model ProviderRuntimeRequest {

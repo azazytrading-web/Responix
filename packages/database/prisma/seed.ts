@@ -103,7 +103,22 @@ const permissions = [
   "execution.pipeline.rollback",
   "execution.pipeline.archive",
   "execution.pipeline.restore",
-  "execution.pipeline.delete"
+  "execution.pipeline.delete",
+  "prompt.execution.render",
+  "prompt.execution.validate",
+  "prompt.execution.read",
+  "agent.execution.create",
+  "agent.execution.read",
+  "agent.execution.manage",
+  "agent.execution.cancel",
+  "runtime.optimization.create",
+  "runtime.optimization.read",
+  "runtime.optimization.manage",
+  "stream.runtime.read",
+  "stream.runtime.create",
+  "stream.runtime.cancel",
+  "stream.runtime.compare",
+  "stream.runtime.audit"
 ];
 
 const roles = [
@@ -191,30 +206,58 @@ async function seed(): Promise<void> {
     });
   }
 
-  const provider = await prisma.aiProvider.upsert({
-    where: { providerName: "OpenAI" },
-    update: {},
-    create: {
-      providerName: "OpenAI",
-      authenticationType: "api_key"
-    }
-  });
-
-  await prisma.aiModel.upsert({
-    where: {
-      providerId_modelName: {
-        providerId: provider.id,
-        modelName: "gpt-4.1-mini"
-      }
+  const providers = [
+    {
+      providerName: "OpenAI", apiBaseUrl: "https://api.openai.com/v1",
+      modelName: "gpt-4.1-mini", displayName: "GPT-4.1 mini", contextWindow: 1_000_000
     },
-    update: {},
-    create: {
-      providerId: provider.id,
-      modelName: "gpt-4.1-mini",
-      displayName: "GPT-4.1 mini",
+    {
+      providerName: "Claude", apiBaseUrl: "https://api.anthropic.com/v1",
+      modelName: "claude-3-5-sonnet-latest", displayName: "Claude 3.5 Sonnet",
+      contextWindow: 200_000
+    },
+    {
+      providerName: "Gemini", apiBaseUrl: "https://generativelanguage.googleapis.com/v1beta",
+      modelName: "gemini-2.0-flash", displayName: "Gemini 2.0 Flash", contextWindow: 1_000_000
+    },
+    {
+      providerName: "Azure OpenAI", apiBaseUrl: null,
+      modelName: "gpt-4.1-mini", displayName: "Azure GPT-4.1 mini", contextWindow: 1_000_000
+    },
+    {
+      providerName: "OpenRouter", apiBaseUrl: "https://openrouter.ai/api/v1",
+      modelName: "openai/gpt-4.1-mini", displayName: "OpenRouter GPT-4.1 mini",
       contextWindow: 1_000_000
+    },
+    {
+      providerName: "DeepSeek", apiBaseUrl: "https://api.deepseek.com",
+      modelName: "deepseek-chat", displayName: "DeepSeek Chat",
+      contextWindow: 65_536
     }
-  });
+  ];
+  for (const definition of providers) {
+    const provider = await prisma.aiProvider.upsert({
+      where: { providerName: definition.providerName },
+      update: {},
+      create: {
+        providerName: definition.providerName,
+        apiBaseUrl: definition.apiBaseUrl,
+        authenticationType: "api_key"
+      }
+    });
+    await prisma.aiModel.upsert({
+      where: {
+        providerId_modelName: {
+          providerId: provider.id, modelName: definition.modelName
+        }
+      },
+      update: {},
+      create: {
+        providerId: provider.id, modelName: definition.modelName,
+        displayName: definition.displayName, contextWindow: definition.contextWindow
+      }
+    });
+  }
 }
 
 seed()

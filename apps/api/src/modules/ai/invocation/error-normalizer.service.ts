@@ -12,12 +12,18 @@ export class InvocationTimeoutError extends Error {
 export interface NormalizedInvocationError {
   code: AiErrorCode;
   message: string;
-  status: "FAILED" | "BLOCKED";
+  status: "FAILED" | "BLOCKED" | "CANCELLED";
 }
 
 @Injectable()
 export class ErrorNormalizerService {
   normalize(error: unknown): NormalizedInvocationError {
+    if (error !== null && typeof error === "object" &&
+      (("name" in error && error.name === "AbortError") ||
+        ("message" in error && typeof error.message === "string" &&
+          /aborted|cancelled/i.test(error.message)))) {
+      return { code: "CANCELLED", message: "AI invocation was cancelled", status: "CANCELLED" };
+    }
     if (error instanceof InvocationTimeoutError) {
       return {
         code: "PROVIDER_UNAVAILABLE",

@@ -1,5 +1,11 @@
 # Project Version
 
+## Engineering State Update - 2026-07-30
+
+Sprint 6E.7 (Unified Streaming Execution Engine) is complete in the uncommitted
+working tree. Prisma validation/generation, typecheck, lint, tests, build, and
+whitespace validation pass.
+
 ## Repository Dashboard
 
 | Field               | Current value                                         |

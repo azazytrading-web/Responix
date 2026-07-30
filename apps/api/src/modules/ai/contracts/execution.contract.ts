@@ -8,6 +8,7 @@ export interface NormalizedInvocationRequest {
   taskType: string;
   messages: Array<Pick<AiMessageContract, "role" | "content">>;
   language?: string;
+  signal?: AbortSignal;
 }
 
 export interface ProviderExecutionRequest {
@@ -35,6 +36,15 @@ export interface ProviderExecutionResult {
   };
 }
 
+export interface ProviderStreamEvent {
+  type: "delta" | "completed";
+  content?: string;
+  role?: "system" | "user" | "assistant";
+  finishReason?: string;
+  usage?: Partial<ProviderExecutionResult["usage"]>;
+  providerMetadata?: Record<string, unknown>;
+}
+
 export interface NormalizedProviderResult {
   content: string;
   finishReason?: string;
@@ -44,4 +54,4 @@ export interface NormalizedProviderResult {
 export type AuthenticatedInvocationRequest = Omit<
   AiRequestContract,
   "workspaceId" | "membershipId"
->;
+> & { signal?: AbortSignal };

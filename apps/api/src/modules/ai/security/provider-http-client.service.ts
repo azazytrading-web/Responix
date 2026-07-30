@@ -40,7 +40,8 @@ export class ProviderHttpClient {
   async postJson(input: {
     provider: string;
     url: string;
-    authorization: string;
+    authorization?: string;
+    headers?: Readonly<Record<string, string>>;
     body: string;
     signal: AbortSignal;
   }): Promise<ProviderHttpResponse> {
@@ -70,12 +71,88 @@ export class ProviderHttpClient {
     }
   }
 
+  async postSse(input: {
+    provider: string;
+    url: string;
+    authorization?: string;
+    headers?: Readonly<Record<string, string>>;
+    body: string;
+    signal: AbortSignal;
+    onEvent: (event: { event?: string; data: string; id?: string }) => Promise<void>;
+  }): Promise<{ status: number }> {
+    const destination = await this.policy.authorize(input.url);
+    const connectionTimeoutMs = this.config.getOrThrow<number>("ai.network.connectionTimeoutMs");
+    const readTimeoutMs = this.config.getOrThrow<number>("ai.network.readTimeoutMs");
+    const providerTimeoutMs = this.config.getOrThrow<number>("ai.requestTimeoutMs");
+    const lookup: LookupFunction = (_hostname, _options, callback) => {
+      callback(null, destination.address, destination.family);
+    };
+    return new Promise((resolve, reject) => {
+      let settled = false;
+      let connectionTimer: ReturnType<typeof setTimeout> | undefined;
+      let readTimer: ReturnType<typeof setTimeout> | undefined;
+      const finish = (error?: Error, status?: number): void => {
+        if (settled) return;
+        settled = true;
+        clearTimeout(providerTimer);
+        if (connectionTimer) clearTimeout(connectionTimer);
+        if (readTimer) clearTimeout(readTimer);
+        input.signal.removeEventListener("abort", abort);
+        if (error) reject(error); else resolve({ status: status ?? 502 });
+      };
+      const request = httpsRequest(destination.url, {
+        method: "POST", agent: false, lookup, servername: destination.hostname,
+        rejectUnauthorized: true,
+        headers: {
+          ...(input.authorization ? { authorization: input.authorization } : {}),
+          ...input.headers, accept: "text/event-stream", "content-type": "application/json",
+          "content-length": Buffer.byteLength(input.body)
+        }
+      }, (response) => {
+        if (this.isRedirect(response)) {
+          response.destroy(); request.destroy(new ProviderDestinationRejectedError("Provider redirects are disabled")); return;
+        }
+        const status = response.statusCode ?? 502;
+        if (status < 200 || status >= 300) { response.resume(); finish(undefined, status); return; }
+        let buffer = "";
+        let chain = Promise.resolve();
+        const reset = () => {
+          if (readTimer) clearTimeout(readTimer);
+          readTimer = setTimeout(() => request.destroy(new ProviderNetworkTimeoutError("read")), readTimeoutMs);
+        };
+        response.on("data", (chunk: Buffer | string) => {
+          response.pause(); reset(); buffer += Buffer.isBuffer(chunk) ? chunk.toString("utf8") : chunk;
+          const blocks = buffer.split(/\r?\n\r?\n/); buffer = blocks.pop() ?? "";
+          for (const block of blocks) chain = chain.then(async () => {
+            const lines = block.split(/\r?\n/); const data = lines.filter((line) => line.startsWith("data:"))
+              .map((line) => line.slice(5).trimStart()).join("\n");
+            if (!data) return;
+            const event = lines.find((line) => line.startsWith("event:"))?.slice(6).trim();
+            const id = lines.find((line) => line.startsWith("id:"))?.slice(3).trim();
+            await input.onEvent({ ...(event ? { event } : {}), data, ...(id ? { id } : {}) });
+          });
+          chain.then(() => response.resume(), (error: unknown) => request.destroy(error instanceof Error ? error : new Error("SSE handler failed")));
+        });
+        response.once("error", (error) => finish(error));
+        response.once("end", () => { chain.then(() => finish(undefined, status), (error: unknown) => finish(error instanceof Error ? error : new Error("SSE handler failed"))); });
+        reset();
+      });
+      const providerTimer = setTimeout(() => request.destroy(new ProviderNetworkTimeoutError("provider")), providerTimeoutMs);
+      const abort = () => request.destroy(input.signal.reason instanceof Error ? input.signal.reason : new Error("Aborted"));
+      request.once("socket", (socket) => { connectionTimer = setTimeout(() => request.destroy(new ProviderNetworkTimeoutError("connection")), connectionTimeoutMs); socket.once("secureConnect", () => { if (connectionTimer) clearTimeout(connectionTimer); }); });
+      request.once("error", (error) => finish(error));
+      if (input.signal.aborted) abort(); else input.signal.addEventListener("abort", abort, { once: true });
+      request.end(input.body);
+    });
+  }
+
   private execute(input: {
     url: URL;
     hostname: string;
     address: string;
     family: 4 | 6;
-    authorization: string;
+    authorization?: string;
+    headers?: Readonly<Record<string, string>>;
     body: string;
     signal: AbortSignal;
   }): Promise<ProviderHttpResponse> {
@@ -125,7 +202,8 @@ export class ProviderHttpClient {
           servername: input.hostname,
           rejectUnauthorized: true,
           headers: {
-            authorization: input.authorization,
+            ...(input.authorization ? { authorization: input.authorization } : {}),
+            ...input.headers,
             "content-type": "application/json",
             "content-length": Buffer.byteLength(input.body)
           }

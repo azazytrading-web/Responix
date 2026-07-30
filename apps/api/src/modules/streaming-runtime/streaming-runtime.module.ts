@@ -1,0 +1,2 @@
+import { Module } from "@nestjs/common"; import { StreamingRuntimeController } from "./streaming-runtime.controller"; import { StreamingRuntimeRepository } from "./streaming-runtime.repository"; import { StreamingRuntimeService } from "./streaming-runtime.service"; import { StreamStateMachine } from "./stream-state-machine";
+@Module({controllers:[StreamingRuntimeController],providers:[StreamStateMachine,StreamingRuntimeRepository,StreamingRuntimeService],exports:[StreamingRuntimeService]}) export class StreamingRuntimeModule {}

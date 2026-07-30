@@ -18,6 +18,11 @@ import { ResponseNormalizerService } from "./invocation/response-normalizer.serv
 import { UsageNormalizerService } from "./invocation/usage-normalizer.service";
 import { CredentialRepository } from "./providers/credential.repository";
 import { OpenAiProviderAdapter } from "./providers/openai-provider.adapter";
+import { AnthropicProviderAdapter } from "./providers/anthropic-provider.adapter";
+import { GeminiProviderAdapter } from "./providers/gemini-provider.adapter";
+import { AzureOpenAiProviderAdapter } from "./providers/azure-openai-provider.adapter";
+import { OpenRouterProviderAdapter } from "./providers/openrouter-provider.adapter";
+import { DeepSeekProviderAdapter } from "./providers/deepseek-provider.adapter";
 import { ProviderConfigurationRepository } from "./providers/provider-configuration.repository";
 import { ProviderCredentialService } from "./providers/provider-credential.service";
 import { ProviderDiscoveryService } from "./providers/provider-discovery.service";
@@ -49,10 +54,22 @@ import { RuntimeRecoveryService } from "./runtime/runtime-recovery.service";
   controllers: [AiController],
   providers: [
     OpenAiProviderAdapter,
+    AnthropicProviderAdapter,
+    GeminiProviderAdapter,
+    AzureOpenAiProviderAdapter,
+    OpenRouterProviderAdapter,
+    DeepSeekProviderAdapter,
     {
       provide: AI_PROVIDER_ADAPTERS,
-      inject: [OpenAiProviderAdapter],
-      useFactory: (openAi: OpenAiProviderAdapter) => [openAi]
+      inject: [
+        OpenAiProviderAdapter, AnthropicProviderAdapter, GeminiProviderAdapter,
+        AzureOpenAiProviderAdapter, OpenRouterProviderAdapter, DeepSeekProviderAdapter
+      ],
+      useFactory: (
+        openAi: OpenAiProviderAdapter, claude: AnthropicProviderAdapter,
+        gemini: GeminiProviderAdapter, azure: AzureOpenAiProviderAdapter,
+        openRouter: OpenRouterProviderAdapter, deepSeek: DeepSeekProviderAdapter
+      ) => [openAi, claude, gemini, azure, openRouter, deepSeek]
     },
     ProviderRepository,
     CredentialRepository,

@@ -34,6 +34,7 @@ export class ToolRegistryService {
   delete(w:string,a:string,id:string){return this.repository.softDelete(w,a,id);}
   get(w:string,id:string){return this.repository.get(w,id);}
   history(w:string,id:string){return this.repository.history(w,id);}
+  publishedVersion(w:string,id:string){return this.repository.publishedVersion(w,id);}
   list(w:string,q:ToolDefinitionListQueryDto){return this.repository.list({
     workspaceId:w,page:q.page??1,limit:q.limit??25,search:q.search,status:q.status,type:q.type,
     visibility:q.visibility,categoryId:q.categoryId,groupId:q.groupId

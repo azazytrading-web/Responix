@@ -1,4 +1,5 @@
 import type { AiMessageContract, AiRequestContract } from "./request.contract";
+import type { AiToolCallContract, AiToolDefinitionContract } from "./tool.contract";
 import type { AiUsageContract } from "./usage.contract";
 
 export interface NormalizedInvocationRequest {
@@ -9,6 +10,7 @@ export interface NormalizedInvocationRequest {
   messages: Array<Pick<AiMessageContract, "role" | "content">>;
   language?: string;
   signal?: AbortSignal;
+  tools?: AiToolDefinitionContract[];
 }
 
 export interface ProviderExecutionRequest {
@@ -19,6 +21,7 @@ export interface ProviderExecutionRequest {
   messages: NormalizedInvocationRequest["messages"];
   maxOutputTokens: number;
   signal: AbortSignal;
+  tools?: AiToolDefinitionContract[];
 }
 
 export interface ProviderExecutionCredential {
@@ -34,6 +37,7 @@ export interface ProviderExecutionResult {
     outputTokens: number;
     cachedTokens?: number;
   };
+  toolCalls?: AiToolCallContract[];
 }
 
 export interface ProviderStreamEvent {
@@ -43,6 +47,7 @@ export interface ProviderStreamEvent {
   finishReason?: string;
   usage?: Partial<ProviderExecutionResult["usage"]>;
   providerMetadata?: Record<string, unknown>;
+  toolCall?: AiToolCallContract;
 }
 
 export interface NormalizedProviderResult {

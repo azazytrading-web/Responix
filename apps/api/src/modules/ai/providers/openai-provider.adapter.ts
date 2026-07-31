@@ -15,12 +15,15 @@ import {
 } from "../security/provider-http-client.service";
 import { unsupportedProviderPromptCache } from "./provider-prompt-cache.interface";
 import { streamOpenAiCompatible } from "./openai-compatible-stream";
+import { openAiCompatibleTools } from "./openai-compatible";
 
 const openAiResponseSchema = z.object({
   choices: z
     .array(
       z.object({
-        message: z.object({ content: z.string().nullable() }),
+        message: z.object({ content: z.string().nullable(), tool_calls: z.array(z.object({
+          id: z.string(), function: z.object({ name: z.string(), arguments: z.string() })
+        })).optional() }),
         finish_reason: z.string().nullable().optional()
       })
     )
@@ -55,7 +58,8 @@ export class OpenAiProviderAdapter implements AiProviderAdapter {
         body: JSON.stringify({
           model: request.modelName,
           messages: request.messages,
-          max_tokens: request.maxOutputTokens
+          max_tokens: request.maxOutputTokens,
+          ...(request.tools?.length ? { tools: openAiCompatibleTools(request) } : {})
         }),
         signal: request.signal
       });
@@ -94,8 +98,19 @@ export class OpenAiProviderAdapter implements AiProviderAdapter {
         "AI provider output exceeded the reserved token limit"
       );
     }
+    const toolCalls = (choice.message.tool_calls ?? []).map((call) => {
+        let value: unknown;
+        try { value = JSON.parse(call.function.arguments) as unknown; }
+        catch { throw new AiContractError("RESPONSE_INVALID", "AI provider returned invalid tool arguments"); }
+        if (!value || typeof value !== "object" || Array.isArray(value)) {
+          throw new AiContractError("RESPONSE_INVALID", "AI provider returned invalid tool arguments");
+        }
+        return { id: call.id, name: call.function.name, arguments: value as Record<string, unknown>,
+          status: "pending" as const };
+      });
     return {
       content: choice.message.content ?? "",
+      ...(toolCalls.length ? { toolCalls } : {}),
       ...(choice.finish_reason ? { finishReason: choice.finish_reason } : {}),
       usage: {
         inputTokens: parsed.data.usage.prompt_tokens,

@@ -117,7 +117,8 @@ import { RuntimeRecoveryService } from "./runtime/runtime-recovery.service";
     AI_INVOCATION_SERVICE,
     ProviderCredentialService,
     ProviderDiscoveryService,
-    ProviderConfigurationRepository
+    ProviderConfigurationRepository,
+    ProviderHttpClient
   ]
 })
 export class AiModule {}

@@ -47,15 +47,10 @@ describe("RequestNormalizerService", () => {
     });
   });
 
-  it("rejects streaming and tool requests", () => {
+  it("rejects streaming and preserves provider-neutral tool definitions", () => {
     expect(() => service.normalize(request({ mode: "stream" }), tenant)).toThrow(AiContractError);
-    expect(() =>
-      service.normalize(
-        request({
-          tools: [{ name: "tool", description: "tool", inputSchema: {} }]
-        }),
-        tenant
-      )
-    ).toThrow(AiContractError);
+    expect(service.normalize(request({
+      tools: [{ name: "tool", description: "tool", inputSchema: {} }]
+    }), tenant).tools).toEqual([{ name: "tool", description: "tool", inputSchema: {} }]);
   });
 });

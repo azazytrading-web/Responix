@@ -13,7 +13,8 @@ import { unsupportedProviderPromptCache } from "./provider-prompt-cache.interfac
 import type { ProviderStreamEvent } from "../contracts";
 
 const schema = z.object({
-  content: z.array(z.object({ type: z.string(), text: z.string().optional() })).min(1),
+  content: z.array(z.object({ type: z.string(), text: z.string().optional(), id: z.string().optional(),
+    name: z.string().optional(), input: z.record(z.string(), z.unknown()).optional() })).min(1),
   stop_reason: z.string().nullable().optional(),
   usage: z.object({
     input_tokens: z.number().int().nonnegative(),
@@ -42,7 +43,9 @@ export class AnthropicProviderAdapter implements AiProviderAdapter {
         headers: { "x-api-key": credential.secret, "anthropic-version": "2023-06-01" },
         body: JSON.stringify({
           model: request.modelName, max_tokens: request.maxOutputTokens,
-          ...(system ? { system } : {}), messages
+          ...(system ? { system } : {}), messages,
+          ...(request.tools?.length ? { tools: request.tools.map((tool) => ({ name: tool.name,
+            description: tool.description, input_schema: tool.inputSchema })) } : {})
         }),
         signal: request.signal
       });
@@ -51,8 +54,12 @@ export class AnthropicProviderAdapter implements AiProviderAdapter {
     const parsed = schema.safeParse(parseJson(response.body));
     if (!parsed.success) throw new AiContractError("RESPONSE_INVALID", "AI provider response was invalid");
     assertTokenLimit(parsed.data.usage.output_tokens, request.maxOutputTokens);
+    const toolCalls = parsed.data.content.filter((block) => block.type === "tool_use").map((block) => ({
+      id: block.id!, name: block.name!, arguments: block.input ?? {}, status: "pending" as const
+    }));
     return {
       content: parsed.data.content.map(({ text }) => text ?? "").join(""),
+      ...(toolCalls.length ? { toolCalls } : {}),
       ...(parsed.data.stop_reason ? { finishReason: parsed.data.stop_reason } : {}),
       usage: {
         inputTokens: parsed.data.usage.input_tokens,
@@ -71,7 +78,10 @@ export class AnthropicProviderAdapter implements AiProviderAdapter {
       const response = await this.http.postSse({ provider: this.providerName,
         url: `${(request.apiBaseUrl ?? "https://api.anthropic.com/v1").replace(/\/$/, "")}/messages`,
         headers: { "x-api-key": credential.secret, "anthropic-version": "2023-06-01" },
-        body: JSON.stringify({ model: request.modelName, max_tokens: request.maxOutputTokens, stream: true, ...(system ? { system } : {}), messages }), signal: request.signal,
+        body: JSON.stringify({ model: request.modelName, max_tokens: request.maxOutputTokens, stream: true,
+          ...(system ? { system } : {}), messages,
+          ...(request.tools?.length ? { tools: request.tools.map((tool) => ({ name: tool.name,
+            description: tool.description, input_schema: tool.inputSchema })) } : {}) }), signal: request.signal,
         onEvent: async ({ event, data }) => {
           const value = JSON.parse(data) as { type?: string; delta?: { text?: string; stop_reason?: string }; message?: { usage?: { input_tokens?: number; cache_read_input_tokens?: number } }; usage?: { input_tokens?: number; output_tokens?: number; cache_read_input_tokens?: number } };
           if (event === "message_start") {

@@ -21,6 +21,7 @@ import { PromptLibraryModule } from "../modules/prompt-library/prompt-library.mo
 import { AgentStudioModule } from "../modules/agent-studio/agent-studio.module";
 import { KnowledgeBaseModule } from "../modules/knowledge-base/knowledge-base.module";
 import { ToolRegistryModule } from "../modules/tool-registry/tool-registry.module";
+import { ToolRuntimeModule } from "../modules/tool-runtime/tool-runtime.module";
 import { WorkflowEngineModule } from "../modules/workflow-engine/workflow-engine.module";
 import { WorkflowRuntimeModule } from "../modules/workflow-runtime/workflow-runtime.module";
 import { RuntimeOrchestrationModule } from "../modules/runtime-orchestration/runtime-orchestration.module";
@@ -100,6 +101,7 @@ import { redactLogArguments } from "../common/secret-redaction";
     AgentStudioModule,
     KnowledgeBaseModule,
     ToolRegistryModule,
+    ToolRuntimeModule,
     WorkflowEngineModule,
     WorkflowRuntimeModule,
     RuntimeOrchestrationModule,

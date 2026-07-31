@@ -7,7 +7,7 @@ import type { AiProviderAdapter } from "./provider-adapter.interface";
 import {
   normalizeHttpStatus, normalizeTransportError
 } from "./provider-adapter.utils";
-import { normalizeOpenAiCompatibleResponse } from "./openai-compatible";
+import { normalizeOpenAiCompatibleResponse, openAiCompatibleTools } from "./openai-compatible";
 import { unsupportedProviderPromptCache } from "./provider-prompt-cache.interface";
 import { streamOpenAiCompatible } from "./openai-compatible-stream";
 
@@ -28,7 +28,8 @@ export class OpenRouterProviderAdapter implements AiProviderAdapter {
         authorization: `Bearer ${credential.secret}`,
         body: JSON.stringify({
           model: request.modelName, messages: request.messages,
-          max_tokens: request.maxOutputTokens
+          max_tokens: request.maxOutputTokens,
+          ...(request.tools?.length ? { tools: openAiCompatibleTools(request) } : {})
         }),
         signal: request.signal
       });

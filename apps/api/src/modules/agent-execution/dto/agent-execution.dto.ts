@@ -50,6 +50,14 @@ export class AgentMemoryWriteDto {
   metadata?: Record<string, unknown>;
 }
 
+export class AgentToolCallDto {
+  @ApiProperty({ format: "uuid" }) @IsUUID() toolVersionId!: string;
+  @ApiProperty({ type: "object", additionalProperties: true }) @IsObject()
+  input!: Record<string, unknown>;
+  @ApiPropertyOptional({ minimum: 1, maximum: 3600000 }) @IsOptional() @IsInt() @Min(1) @Max(3600000)
+  timeoutMs?: number;
+}
+
 export class CancelAgentExecutionDto {
   @ApiPropertyOptional({ maxLength: 2000 }) @IsOptional() @IsString() @MaxLength(2000)
   reason?: string;
@@ -77,6 +85,13 @@ export class ExecuteAgentExecutionDto extends PrepareAgentExecutionDto {
   @IsOptional() @IsArray() @ArrayMaxSize(100) @ValidateNested({ each: true })
   @Type(() => AgentMemoryWriteDto)
   memoryWrites?: AgentMemoryWriteDto[];
+  @ApiPropertyOptional({ type: [AgentToolCallDto], maxItems: 50 })
+  @IsOptional() @IsArray() @ArrayMaxSize(50) @ValidateNested({ each: true })
+  @Type(() => AgentToolCallDto)
+  toolCalls?: AgentToolCallDto[];
+  @ApiPropertyOptional({ type: [String], format: "uuid", maxItems: 100 })
+  @IsOptional() @IsArray() @ArrayMaxSize(100) @IsUUID("4", { each: true })
+  availableToolVersionIds?: string[];
 }
 
 export class StreamAgentExecutionDto extends ExecuteAgentExecutionDto {

@@ -1,6 +1,13 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { BadRequestException, ConflictException, NotFoundException } from "@nestjs/common";
 import { ToolRegistryRepository } from "./tool-registry.repository";
+import { createHash } from "node:crypto";
+
+const stable=(value:unknown):string=>Array.isArray(value)?`[${value.map(stable).join(",")}]`:
+  value!==null&&typeof value==="object"?`{${Object.entries(value as Record<string,unknown>)
+    .sort(([left],[right])=>left.localeCompare(right)).map(([key,item])=>`${JSON.stringify(key)}:${stable(item)}`).join(",")}}`:
+    JSON.stringify(value);
+const hash=(value:unknown)=>createHash("sha256").update(stable(value)).digest("hex");
 
 const category={id:"category",workspaceId:"workspace",name:"CRM",slug:"crm",description:null,metadata:{},createdAt:new Date(),updatedAt:new Date()};
 const group={id:"group",workspaceId:"workspace",categoryId:"category",name:"Contacts",slug:"contacts",description:null,metadata:{},createdAt:new Date(),updatedAt:new Date()};
@@ -118,7 +125,10 @@ describe("ToolRegistryRepository",()=>{
 
   it("rollback creates a new published revision and replaces normalized metadata",async()=>{
     prisma.toolDefinition.findFirst.mockResolvedValue(tool({status:"PUBLISHED",revision:2}));
-    prisma.toolVersion.findFirst.mockResolvedValue({id:"source",toolId:"tool",revision:1,snapshot:snapshot()});
+    const sourceSnapshot=snapshot(); const snapshotHash=hash(sourceSnapshot);
+    prisma.toolVersion.findFirst.mockResolvedValue({id:"source",toolId:"tool",revision:1,
+      snapshot:sourceSnapshot,snapshotHash,checksum:hash({snapshotHash,workspaceId:"workspace",toolId:"tool",revision:1}),
+      compatibilityVersion:"1.0"});
     prisma.toolVersion.create.mockResolvedValue({id:"new",revision:3});
     await repository.rollback("workspace","actor","tool",1);
     expect(prisma.toolVersion.create).toHaveBeenCalledWith(expect.objectContaining({

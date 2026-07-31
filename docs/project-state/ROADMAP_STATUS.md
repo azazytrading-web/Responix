@@ -1,5 +1,14 @@
 # Roadmap Status
 
+## Sprint 6E.11 Update - 2026-07-31
+
+The Tool Calling Engine is implemented as the vendor-neutral execution layer shared by
+Agent Execution and Workflow Runtime. Published tool definitions are hash-protected and
+workspace isolated; executions reuse Execution Kernel, secure HTTP transport, Retrieval,
+Memory, Runtime Optimization, Prompt, Provider, and Streaming boundaries with durable
+history, diagnostics, metrics, permissions, and append-only audits.
+
+
 ## Sprint 6E.10 Update - 2026-07-31
 
 The Workflow Execution Engine is complete and validated in the working tree. Immutable

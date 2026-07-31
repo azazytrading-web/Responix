@@ -1,5 +1,12 @@
 # Architecture Decisions
 
+## ADR-017 - Vendor-Neutral Tool Calling Runtime
+
+- **Status:** Accepted
+- **Context:** Agents and workflows need policy-controlled internal and external tool execution without duplicating provider transports, orchestration lifecycles, or tenant authorization.
+- **Decision:** Keep Tool Registry as the immutable definition authority and add a workspace-scoped Tool Runtime that verifies published SHA-256 snapshots, delegates lifecycle and parent-child tracing to Execution Kernel, delegates outbound traffic to the existing hardened HTTP client, and exposes registered internal executors as explicit extension points. Provider adapters translate one neutral tool contract at their boundaries. Agent and Workflow runtimes invoke the Tool Runtime rather than implementing tool behavior.
+- **Consequences:** Tool executions have durable immutable state, attempts, events, diagnostics, metrics, history, and audits; dynamic outputs are never cached; metadata participates in Runtime Optimization; Memory writes commit only after successful tool output; MCP and secret resolution remain adapter boundaries rather than vendor-specific runtime branches.
+
 This ADR register records accepted decisions established by the repository through Sprint 1. Official technical documentation remains authoritative.
 
 ## ADR-001 — Enterprise Modular Monorepo

@@ -127,12 +127,45 @@ enum ToolRegistryStatus {
 }
 
 enum ToolDefinitionType {
+  INTERNAL
+  HTTP
   REST
   WEBHOOK
+  DATABASE
+  FILE
+  STORAGE
+  WORKFLOW
+  AGENT
+  COMPOSITE
   OPENAPI
   INTERNAL_SERVICE
   FUNCTION
   MCP
+}
+
+enum ToolRuntimeStatus {
+  CREATED
+  QUEUED
+  PREPARING
+  RUNNING
+  STREAMING
+  COMPLETED
+  CANCELLED
+  FAILED
+  TIMED_OUT
+}
+
+enum ToolAttemptStatus {
+  RUNNING
+  COMPLETED
+  CANCELLED
+  FAILED
+  TIMED_OUT
+}
+
+enum ToolExecutionMode {
+  SYNC
+  STREAM
 }
 
 enum ToolVisibility {
@@ -2077,16 +2110,165 @@ model ToolVersion {
   toolId        String   @map("tool_id") @db.Uuid
   revision      Int
   snapshot      Json
+  snapshotHash  String   @map("snapshot_hash")
+  checksum      String
+  compatibilityVersion String @map("compatibility_version")
   changeSummary String?  @map("change_summary")
   createdById   String   @map("created_by") @db.Uuid
   createdAt     DateTime @default(now()) @map("created_at")
   publishedAt   DateTime @map("published_at")
 
   tool ToolDefinition @relation(fields: [toolId], references: [id], onDelete: Cascade)
+  executions ToolRuntimeExecution[]
 
   @@unique([toolId, revision])
   @@index([toolId, publishedAt])
   @@map("tool_versions")
+}
+
+model ToolRuntimeExecution {
+  id                 String            @id @default(uuid()) @db.Uuid
+  workspaceId        String            @map("workspace_id") @db.Uuid
+  actorId            String            @map("actor_id") @db.Uuid
+  toolId             String            @map("tool_id") @db.Uuid
+  toolVersionId      String            @map("tool_version_id") @db.Uuid
+  executionRequestId String            @map("execution_request_id") @db.Uuid
+  executionRunId     String            @map("execution_run_id") @db.Uuid
+  parentExecutionId  String?           @map("parent_execution_id") @db.Uuid
+  parentExecutionRunId String?         @map("parent_execution_run_id") @db.Uuid
+  status             ToolRuntimeStatus @default(CREATED)
+  mode               ToolExecutionMode @default(SYNC)
+  stateVersion       Int               @default(0) @map("state_version")
+  correlationId      String            @map("correlation_id")
+  traceId            String            @map("trace_id")
+  idempotencyKey     String            @map("idempotency_key")
+  input              Json
+  normalizedInput    Json              @map("normalized_input")
+  contextSnapshot    Json              @map("context_snapshot")
+  toolSnapshot       Json              @map("tool_snapshot")
+  policySnapshot     Json              @map("policy_snapshot")
+  output             Json?
+  partialOutput      Json?             @map("partial_output")
+  toolSnapshotHash   String            @map("tool_snapshot_hash")
+  inputHash          String            @map("input_hash")
+  contextHash        String            @map("context_hash")
+  checksum           String
+  attemptCount       Int               @default(0) @map("attempt_count")
+  timeoutMs          Int               @map("timeout_ms")
+  deadlineAt         DateTime          @map("deadline_at")
+  failureCode        String?           @map("failure_code")
+  failureMessage     String?           @map("failure_message")
+  cancellationReason String?           @map("cancellation_reason")
+  startedAt          DateTime?         @map("started_at")
+  endedAt            DateTime?         @map("ended_at")
+  durationMs         Int?              @map("duration_ms")
+  createdAt          DateTime          @default(now()) @map("created_at")
+  updatedAt          DateTime          @updatedAt @map("updated_at")
+
+  toolVersion ToolVersion @relation(fields: [toolVersionId], references: [id], onDelete: Restrict)
+  attempts    ToolRuntimeAttempt[]
+  states      ToolRuntimeStateHistory[]
+  diagnostics ToolRuntimeDiagnostic[]
+  events      ToolRuntimeEvent[]
+  metric      ToolRuntimeMetric?
+
+  @@unique([workspaceId, idempotencyKey])
+  @@index([workspaceId, status, createdAt])
+  @@index([workspaceId, toolId, createdAt])
+  @@index([executionRunId])
+  @@index([parentExecutionId])
+  @@index([deadlineAt, status])
+  @@map("tool_runtime_executions")
+}
+
+model ToolRuntimeAttempt {
+  id            String            @id @default(uuid()) @db.Uuid
+  executionId   String            @map("execution_id") @db.Uuid
+  attempt       Int
+  status        ToolAttemptStatus @default(RUNNING)
+  request       Json
+  response      Json?
+  error         Json?
+  responseBytes Int               @default(0) @map("response_bytes")
+  retryDelayMs  Int               @default(0) @map("retry_delay_ms")
+  startedAt     DateTime          @default(now()) @map("started_at")
+  endedAt       DateTime?         @map("ended_at")
+  durationMs    Int?              @map("duration_ms")
+  createdAt     DateTime          @default(now()) @map("created_at")
+
+  execution ToolRuntimeExecution @relation(fields: [executionId], references: [id], onDelete: Cascade)
+
+  @@unique([executionId, attempt])
+  @@index([executionId, createdAt])
+  @@map("tool_runtime_attempts")
+}
+
+model ToolRuntimeStateHistory {
+  id         String            @id @default(uuid()) @db.Uuid
+  executionId String           @map("execution_id") @db.Uuid
+  sequence   Int
+  fromStatus ToolRuntimeStatus? @map("from_status")
+  toStatus   ToolRuntimeStatus  @map("to_status")
+  actorId    String            @map("actor_id") @db.Uuid
+  reason     String?
+  metadata   Json              @default("{}")
+  createdAt  DateTime          @default(now()) @map("created_at")
+
+  execution ToolRuntimeExecution @relation(fields: [executionId], references: [id], onDelete: Cascade)
+
+  @@unique([executionId, sequence])
+  @@index([executionId, createdAt])
+  @@map("tool_runtime_state_history")
+}
+
+model ToolRuntimeDiagnostic {
+  id          String   @id @default(uuid()) @db.Uuid
+  executionId String   @map("execution_id") @db.Uuid
+  attempt     Int?
+  severity    String
+  code        String
+  path        String?
+  message     String
+  metadata    Json     @default("{}")
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  execution ToolRuntimeExecution @relation(fields: [executionId], references: [id], onDelete: Cascade)
+
+  @@index([executionId, createdAt])
+  @@index([executionId, code])
+  @@map("tool_runtime_diagnostics")
+}
+
+model ToolRuntimeEvent {
+  id          String   @id @default(uuid()) @db.Uuid
+  executionId String   @map("execution_id") @db.Uuid
+  sequence    Int
+  type        String
+  payload     Json
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  execution ToolRuntimeExecution @relation(fields: [executionId], references: [id], onDelete: Cascade)
+
+  @@unique([executionId, sequence])
+  @@index([executionId, createdAt])
+  @@map("tool_runtime_events")
+}
+
+model ToolRuntimeMetric {
+  id                 String   @id @default(uuid()) @db.Uuid
+  executionId        String   @unique @map("execution_id") @db.Uuid
+  attemptCount       Int      @default(0) @map("attempt_count")
+  retryCount         Int      @default(0) @map("retry_count")
+  requestBytes       Int      @default(0) @map("request_bytes")
+  responseBytes      Int      @default(0) @map("response_bytes")
+  executionDurationMs Int?    @map("execution_duration_ms")
+  transportDurationMs Int?    @map("transport_duration_ms")
+  createdAt          DateTime @default(now()) @map("created_at")
+  updatedAt          DateTime @updatedAt @map("updated_at")
+
+  execution ToolRuntimeExecution @relation(fields: [executionId], references: [id], onDelete: Cascade)
+
+  @@map("tool_runtime_metrics")
 }
 
 model Embedding {

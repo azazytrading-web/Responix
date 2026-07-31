@@ -26,6 +26,16 @@ export interface ProviderHttpResponse {
   status: number;
   body: string;
   bytes: number;
+  rawBody?: Buffer;
+  headers?: Readonly<Record<string, string | string[] | undefined>>;
+}
+
+export interface SecureHttpResponse {
+  status: number;
+  body: string;
+  encoding: "utf8" | "base64";
+  bytes: number;
+  headers: Readonly<Record<string, string | string[] | undefined>>;
 }
 
 @Injectable()
@@ -51,11 +61,12 @@ export class ProviderHttpClient {
     let bytes = 0;
     try {
       const response = await this.execute({
-        ...input,
         url: destination.url,
         hostname: destination.hostname,
         address: destination.address,
-        family: destination.family
+        family: destination.family, method: "POST", authorization: input.authorization,
+        headers: input.headers, body: Buffer.from(input.body), contentType: "application/json",
+        signal: input.signal
       });
       status = response.status;
       bytes = response.bytes;
@@ -68,6 +79,38 @@ export class ProviderHttpClient {
         status,
         bytes
       });
+    }
+  }
+
+  async request(input: {
+    label: string;
+    url: string;
+    method: "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
+    headers?: Readonly<Record<string, string>>;
+    body?: string | Buffer;
+    contentType?: string;
+    responseType?: "text" | "binary";
+    maximumResponseBytes: number;
+    signal: AbortSignal;
+  }): Promise<SecureHttpResponse> {
+    const destination = await this.policy.authorize(input.url);
+    const startedAt = Date.now();
+    let status: number | string = "failed";
+    let bytes = 0;
+    try {
+      const response = await this.execute({ url: destination.url,
+        hostname: destination.hostname, address: destination.address, family: destination.family,
+        method: input.method, headers: input.headers, body: Buffer.isBuffer(input.body) ?
+          input.body : Buffer.from(input.body ?? ""), contentType: input.contentType,
+        maximumResponseBytes: input.maximumResponseBytes, signal: input.signal });
+      status = response.status; bytes = response.bytes;
+      const binary = input.responseType === "binary";
+      return { status: response.status, bytes, headers: response.headers ?? {},
+        body: binary ? (response.rawBody ?? Buffer.from(response.body)).toString("base64") : response.body,
+        encoding: binary ? "base64" : "utf8" };
+    } finally {
+      this.logger.log({ provider: input.label, host: destination.hostname,
+        duration: Date.now() - startedAt, status, bytes });
     }
   }
 
@@ -151,15 +194,19 @@ export class ProviderHttpClient {
     hostname: string;
     address: string;
     family: 4 | 6;
+    method: "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
     authorization?: string;
     headers?: Readonly<Record<string, string>>;
-    body: string;
+    body: Buffer;
+    contentType?: string;
+    maximumResponseBytes?: number;
     signal: AbortSignal;
   }): Promise<ProviderHttpResponse> {
     const connectionTimeoutMs = this.config.getOrThrow<number>("ai.network.connectionTimeoutMs");
     const readTimeoutMs = this.config.getOrThrow<number>("ai.network.readTimeoutMs");
     const providerTimeoutMs = this.config.getOrThrow<number>("ai.requestTimeoutMs");
-    const maximumBytes = this.config.getOrThrow<number>("ai.network.maxResponseBytes");
+    const configuredMaximum = this.config.getOrThrow<number>("ai.network.maxResponseBytes");
+    const maximumBytes = Math.min(configuredMaximum, input.maximumResponseBytes ?? configuredMaximum);
     const lookup: LookupFunction = (_hostname, _options, callback) => {
       callback(null, input.address, input.family);
     };
@@ -196,7 +243,7 @@ export class ProviderHttpClient {
       const request = httpsRequest(
         input.url,
         {
-          method: "POST",
+          method: input.method,
           agent: false,
           lookup,
           servername: input.hostname,
@@ -204,8 +251,8 @@ export class ProviderHttpClient {
           headers: {
             ...(input.authorization ? { authorization: input.authorization } : {}),
             ...input.headers,
-            "content-type": "application/json",
-            "content-length": Buffer.byteLength(input.body)
+            ...(input.contentType ? { "content-type": input.contentType } : {}),
+            ...(input.body.length ? { "content-length": input.body.length } : {})
           }
         },
         (response) => {
@@ -238,7 +285,7 @@ export class ProviderHttpClient {
       request.on("error", (error) => finish(error));
       if (input.signal.aborted) abort();
       else input.signal.addEventListener("abort", abort, { once: true });
-      request.end(input.body);
+      request.end(input.body.length ? input.body : undefined);
     });
   }
 
@@ -266,7 +313,8 @@ export class ProviderHttpClient {
       finish(undefined, {
         status: response.statusCode ?? 502,
         body: Buffer.concat(chunks, bytes).toString("utf8"),
-        bytes
+        rawBody: Buffer.concat(chunks, bytes), bytes,
+        headers: response.headers
       });
     });
   }

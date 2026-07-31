@@ -90,8 +90,8 @@ describe("DeepSeekProviderAdapter", () => {
   it("exposes immutable non-streaming chat capabilities", () => {
     expect(Object.isFrozen(DEEPSEEK_CAPABILITIES)).toBe(true);
     expect(DEEPSEEK_CAPABILITIES).toMatchObject({
-      chatCompletions: true, streaming: false, tools: false,
-      functionCalling: false, maximumOutputTokens: 8_192
+      chatCompletions: true, streaming: false, tools: true,
+      functionCalling: true, maximumOutputTokens: 8_192
     });
   });
   it.each([

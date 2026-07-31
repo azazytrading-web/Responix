@@ -1,5 +1,23 @@
 # Session Handoff
 
+## Current Repository State - Sprint 6E.11 - 2026-07-31
+
+Sprint 6E.11 adds the production Tool Calling Engine above the existing Prompt, Memory,
+Retrieval, Optimization, Provider, Streaming, and Execution Kernel layers. Tool Registry
+published versions carry SHA-256 integrity metadata. Tool Runtime persists immutable
+workspace-scoped snapshots, attempts, state history, events, diagnostics, metrics, and
+transactional audits; it supports cancellation, bounded retries/timeouts, policy-controlled
+secure HTTP, registered internal executors, Agent/Workflow/composite delegation, chained
+Agent calls, Workflow TOOL nodes, and provider-neutral function/tool contracts.
+
+The `000034_tool_calling_engine` migration and new permission seeds are included. MCP
+transport and secret material resolution are explicit future connector boundaries; MCP
+metadata remains supported but cannot execute without a registered connector adapter.
+
+The final matrix passes: Prisma validate/generate, typecheck, lint, API 132 suites with
+837 tests passed and one PostgreSQL suite skipped, build, and `git diff --check`.
+
+
 ## Current Repository State - Sprint 6E.10 - 2026-07-31
 
 Sprint 6E.10 is complete in the uncommitted working tree. The new Workflow Runtime

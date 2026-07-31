@@ -1,5 +1,12 @@
 # Project Version
 
+## Engineering State Update - Sprint 6E.11 - 2026-07-31
+
+Sprint 6E.11 (Tool Calling Engine) is implemented in the uncommitted working tree.
+The project remains private and unreleased at `0.4.0`; this engineering milestone does
+not authorize a release, tag, or publication. The full repository validation matrix passes.
+
+
 ## Engineering State Update - Sprint 6E.10 - 2026-07-31
 
 Sprint 6E.10 (Workflow Execution Engine) is complete in the uncommitted working tree.

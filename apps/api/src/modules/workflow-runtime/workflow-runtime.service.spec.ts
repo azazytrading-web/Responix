@@ -22,8 +22,9 @@ describe("WorkflowRuntimeService", () => {
   const agents = { execute: jest.fn(), stream: jest.fn() };
   const streams = { get: jest.fn() };
   const memory = { commitWrites: jest.fn() };
+  const tools = { execute: jest.fn() };
   const service = new WorkflowRuntimeService(repository as never, new WorkflowRuntimeValidator(), kernel as never,
-    agents as never, streams as never, memory as never);
+    agents as never, streams as never, memory as never, tools as never);
 
   beforeEach(() => {
     jest.clearAllMocks(); status = WorkflowRuntimeStatus.CREATED;

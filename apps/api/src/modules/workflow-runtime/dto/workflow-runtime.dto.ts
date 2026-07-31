@@ -22,6 +22,10 @@ export class ExecuteWorkflowDto {
   @IsOptional() @IsInt() @Min(1) @Max(10000) maxNodeExecutions?: number;
   @ApiPropertyOptional({ type: "object", additionalProperties: true }) @IsOptional() @IsObject()
   metadata?: Record<string, unknown>;
+  @ApiPropertyOptional({ format: "uuid", description: "Parent tool/workflow execution identifier" })
+  @IsOptional() @IsUUID() parentExecutionId?: string;
+  @ApiPropertyOptional({ format: "uuid", description: "Parent Execution Kernel run identifier" })
+  @IsOptional() @IsUUID() parentExecutionRunId?: string;
 }
 
 export class CancelWorkflowExecutionDto {

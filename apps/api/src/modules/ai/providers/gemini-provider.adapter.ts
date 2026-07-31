@@ -13,7 +13,8 @@ import type { ProviderStreamEvent } from "../contracts";
 
 const schema = z.object({
   candidates: z.array(z.object({
-    content: z.object({ parts: z.array(z.object({ text: z.string().optional() })) }),
+    content: z.object({ parts: z.array(z.object({ text: z.string().optional(),
+      functionCall: z.object({ name: z.string(), args: z.record(z.string(), z.unknown()) }).optional() })) }),
     finishReason: z.string().optional()
   })).min(1),
   usageMetadata: z.object({
@@ -46,7 +47,10 @@ export class GeminiProviderAdapter implements AiProviderAdapter {
         headers: { "x-goog-api-key": credential.secret },
         body: JSON.stringify({
           ...(system.length ? { systemInstruction: { parts: system } } : {}),
-          contents, generationConfig: { maxOutputTokens: request.maxOutputTokens }
+          contents, generationConfig: { maxOutputTokens: request.maxOutputTokens },
+          ...(request.tools?.length ? { tools: [{ functionDeclarations: request.tools.map((tool) => ({
+            name: tool.name, description: tool.description, parameters: tool.inputSchema
+          })) }] } : {})
         }),
         signal: request.signal
       });
@@ -57,8 +61,13 @@ export class GeminiProviderAdapter implements AiProviderAdapter {
     const candidate = parsed.data.candidates[0];
     if (!candidate) throw new AiContractError("RESPONSE_INVALID", "AI provider response was empty");
     assertTokenLimit(parsed.data.usageMetadata.candidatesTokenCount, request.maxOutputTokens);
+    const toolCalls = candidate.content.parts.flatMap((part, index) => part.functionCall ? [{
+      id: `gemini:${part.functionCall.name}:${index}`, name: part.functionCall.name,
+      arguments: part.functionCall.args, status: "pending" as const
+    }] : []);
     return {
       content: candidate.content.parts.map(({ text }) => text ?? "").join(""),
+      ...(toolCalls.length ? { toolCalls } : {}),
       ...(candidate.finishReason ? { finishReason: candidate.finishReason } : {}),
       usage: {
         inputTokens: parsed.data.usageMetadata.promptTokenCount,
@@ -75,7 +84,11 @@ export class GeminiProviderAdapter implements AiProviderAdapter {
       const base = (request.apiBaseUrl ?? "https://generativelanguage.googleapis.com/v1beta").replace(/\/$/, "");
       const response = await this.http.postSse({ provider: this.providerName,
         url: `${base}/models/${encodeURIComponent(request.modelName)}:streamGenerateContent?alt=sse`, headers: { "x-goog-api-key": credential.secret },
-        body: JSON.stringify({ ...(system.length ? { systemInstruction: { parts: system } } : {}), contents, generationConfig: { maxOutputTokens: request.maxOutputTokens } }), signal: request.signal,
+        body: JSON.stringify({ ...(system.length ? { systemInstruction: { parts: system } } : {}), contents,
+          generationConfig: { maxOutputTokens: request.maxOutputTokens },
+          ...(request.tools?.length ? { tools: [{ functionDeclarations: request.tools.map((tool) => ({
+            name: tool.name, description: tool.description, parameters: tool.inputSchema
+          })) }] } : {}) }), signal: request.signal,
         onEvent: async ({ data }) => { const value = JSON.parse(data) as { candidates?: Array<{ content?: { parts?: Array<{ text?: string }> }; finishReason?: string }>; usageMetadata?: { promptTokenCount?: number; candidatesTokenCount?: number; cachedContentTokenCount?: number } };
           const candidate = value.candidates?.[0]; const text = candidate?.content?.parts?.map((part) => part.text ?? "").join("");
           if (text || candidate?.finishReason) await emit({ type: "delta", ...(text ? { content: text } : {}), role: "assistant", ...(candidate?.finishReason ? { finishReason: candidate.finishReason } : {}) });

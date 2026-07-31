@@ -29,14 +29,12 @@ export class RequestNormalizerService {
     if (!modes.includes(request.mode)) {
       throw new AiContractError("INVALID_REQUEST", "Invocation mode is not supported by this operation");
     }
-    if (request.tools?.length) {
-      throw new AiContractError("INVALID_REQUEST", "Tool invocation is not supported");
-    }
     if (!request.messages.length || request.messages.some(({ content }) => !content.trim())) {
       throw new AiContractError("INVALID_REQUEST", "Invocation messages are invalid");
     }
-    if (request.messages.some(({ role }) => role === "tool")) {
-      throw new AiContractError("INVALID_REQUEST", "Tool messages are not supported");
+    if (request.tools?.some((tool) => !tool.name.trim() || !tool.description.trim() ||
+      !tool.inputSchema || typeof tool.inputSchema !== "object")) {
+      throw new AiContractError("INVALID_REQUEST", "Tool definitions are invalid");
     }
     return {
       requestId: request.requestId,
@@ -45,6 +43,7 @@ export class RequestNormalizerService {
       taskType: request.taskType,
       messages: request.messages.map(({ role, content }) => ({ role, content })),
       ...(request.language ? { language: request.language } : {}),
+      ...(request.tools?.length ? { tools: structuredClone(request.tools) } : {}),
       ...(request.signal ? { signal: request.signal } : {})
     } as TrustedInvocationRequest;
   }

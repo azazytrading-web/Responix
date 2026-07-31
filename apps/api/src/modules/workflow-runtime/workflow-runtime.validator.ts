@@ -10,6 +10,7 @@ export class WorkflowRuntimeValidator {
     }
     const supported = new Set(["START", "END", "AGENT", "CONDITION", "DECISION", "PARALLEL",
       "MERGE", "DELAY", "APPROVAL", "VARIABLE", "SUBFLOW", "SUBWORKFLOW"]);
+    supported.add("TOOL");
     for (const node of snapshot.nodes) {
       if (!supported.has(node.type)) {
         throw new BadRequestException(`Workflow node ${node.id} type ${node.type} is not executable`);
@@ -21,6 +22,9 @@ export class WorkflowRuntimeValidator {
       if ((node.type === "SUBFLOW" || node.type === "SUBWORKFLOW") &&
         typeof config.workflowVersionId !== "string") {
         throw new BadRequestException(`SUBWORKFLOW node ${node.id} requires workflowVersionId`);
+      }
+      if (node.type === "TOOL" && typeof config.toolVersionId !== "string") {
+        throw new BadRequestException(`TOOL node ${node.id} requires toolVersionId`);
       }
       if (node.type === "DELAY") {
         const delayMs = config.delayMs;

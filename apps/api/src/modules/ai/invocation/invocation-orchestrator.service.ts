@@ -61,7 +61,7 @@ export class InvocationOrchestratorService {
     try {
       reservation = await this.runtime.begin(request);
       const routing = await this.routing.route({
-        workspaceId: request.workspaceId
+        workspaceId: request.workspaceId, ...(request.tools?.length ? { tools: true } : {})
       });
       providerId = routing.providerId;
       modelId = routing.modelId;
@@ -237,7 +237,8 @@ export class InvocationOrchestratorService {
     let providerCompletedAt: Date | undefined;
     try {
       reservation = await this.runtime.begin(request);
-      routing = await this.routing.route({ workspaceId: request.workspaceId, streaming: true });
+      routing = await this.routing.route({ workspaceId: request.workspaceId, streaming: true,
+        ...(request.tools?.length ? { tools: true } : {}) });
       providerId = routing.providerId; modelId = routing.modelId;
       const resolved = await this.providers.create(request.workspaceId, routing.providerId);
       const model = resolved.provider.models.find(({ modelId: id }) => id === routing!.modelId);
@@ -266,7 +267,8 @@ export class InvocationOrchestratorService {
                     requestId: request.requestId, modelId: routing!.modelId,
                     modelName: model.modelName, apiBaseUrl: resolved.provider.apiBaseUrl,
                     messages: request.messages,
-                    maxOutputTokens: reservation!.estimate.outputTokens, signal
+                    maxOutputTokens: reservation!.estimate.outputTokens, signal,
+                    ...(request.tools ? { tools: request.tools } : {})
                   }, credential, async (event) => {
                     if (event.usage && event.usage.inputTokens !== undefined &&
                         event.usage.outputTokens !== undefined) {
@@ -388,6 +390,7 @@ export class InvocationOrchestratorService {
                   apiBaseUrl: input.apiBaseUrl,
                   messages: input.request.messages,
                   maxOutputTokens: input.maxOutputTokens,
+                  ...(input.request.tools ? { tools: input.request.tools } : {}),
                   signal
                 },
                 credential

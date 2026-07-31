@@ -12,6 +12,7 @@ import {
   ToolVisibility
 } from "@prisma/client";
 import { PrismaService } from "../../database/prisma.service";
+import { createHash } from "node:crypto";
 import type {
   CreateToolDefinitionDto,
   CreateToolGroupDto,
@@ -250,10 +251,13 @@ export class ToolRegistryRepository {
       const snapshot = this.snapshot(current);
       this.validatePublishable(snapshot);
       const revision = current.revision + 1;
+      const snapshotHash = this.hash(snapshot);
       const version = await tx.toolVersion.create({
         data: {
           toolId, revision, snapshot: json(snapshot), changeSummary,
-          createdById: actorId, publishedAt: new Date()
+          createdById: actorId, publishedAt: new Date(), snapshotHash,
+          checksum: this.hash({ snapshotHash, workspaceId, toolId, revision }),
+          compatibilityVersion: "1.0"
         },
         select: this.versionSelect
       });
@@ -282,15 +286,23 @@ export class ToolRegistryRepository {
       });
       if (!source) throw new NotFoundException("Published tool version was not found");
       const snapshot = this.readSnapshot(source.snapshot);
+      if (this.hash(snapshot) !== source.snapshotHash ||
+        this.hash({ snapshotHash: source.snapshotHash, workspaceId, toolId,
+          revision: source.revision }) !== source.checksum) {
+        throw new ConflictException("Published tool version integrity validation failed");
+      }
       await this.validateReferences(tx, workspaceId, snapshot.categoryId ?? undefined, snapshot.groupId ?? undefined);
       await this.validateChildren(tx, snapshot.parameters, snapshot.schemas, snapshot.capabilities, snapshot.permissions);
       this.validatePublishable(snapshot);
       const revision = current.revision + 1;
+      const snapshotHash = this.hash(snapshot);
       const version = await tx.toolVersion.create({
         data: {
           toolId, revision, snapshot: json(snapshot),
           changeSummary: changeSummary ?? `Rollback to revision ${sourceRevision}`,
-          createdById: actorId, publishedAt: new Date()
+          createdById: actorId, publishedAt: new Date(), snapshotHash,
+          checksum: this.hash({ snapshotHash, workspaceId, toolId, revision }),
+          compatibilityVersion: source.compatibilityVersion
         },
         select: this.versionSelect
       });
@@ -364,6 +376,20 @@ export class ToolRegistryRepository {
     });
   }
 
+  async publishedVersion(workspaceId: string, versionId: string) {
+    const version = await this.prisma.toolVersion.findFirst({ where: {
+      id: versionId, tool: { workspaceId, status: "PUBLISHED", archivedAt: null, deletedAt: null }
+    }, select: { ...this.versionSelect, tool: { select: { id: true, workspaceId: true } } } });
+    if (!version) throw new NotFoundException("Published tool version was not found");
+    const snapshot = this.readSnapshot(version.snapshot);
+    if (version.compatibilityVersion !== "1.0" || this.hash(snapshot) !== version.snapshotHash ||
+      this.hash({ snapshotHash: version.snapshotHash, workspaceId, toolId: version.toolId,
+        revision: version.revision }) !== version.checksum) {
+      throw new ConflictException("Published tool version integrity validation failed");
+    }
+    return { ...version, snapshot };
+  }
+
   async list(input: {
     workspaceId: string;
     page: number;
@@ -431,7 +457,8 @@ export class ToolRegistryRepository {
     permissions: { select: this.permissionSelect, orderBy: { permissionCode: "asc" as const } }
   } as const;
   private readonly versionSelect = {
-    id: true, toolId: true, revision: true, snapshot: true, changeSummary: true,
+    id: true, toolId: true, revision: true, snapshot: true, snapshotHash: true,
+    checksum: true, compatibilityVersion: true, changeSummary: true,
     createdById: true, createdAt: true, publishedAt: true
   } as const;
 
@@ -504,7 +531,7 @@ export class ToolRegistryRepository {
       throw new BadRequestException("Published tools require an input schema");
     }
     const provider = snapshot.providerMetadata;
-    if (["REST", "WEBHOOK"].includes(snapshot.type)) {
+    if (["HTTP", "REST", "WEBHOOK"].includes(snapshot.type)) {
       this.requireMetadataString(provider, "endpoint", "REST and webhook tools require a provider endpoint");
     } else if (snapshot.type === "OPENAPI") {
       if (typeof provider.specUrl !== "string" && typeof provider.documentReference !== "string") {
@@ -516,6 +543,19 @@ export class ToolRegistryRepository {
       this.requireMetadataString(provider, "function", "Function tools require a function identifier");
     } else if (snapshot.type === "MCP") {
       this.requireMetadataString(snapshot.mcpMetadata, "server", "MCP tools require server metadata");
+    } else if (["INTERNAL", "DATABASE", "FILE", "STORAGE"].includes(snapshot.type)) {
+      this.requireMetadataString(provider, "handler", "Internal tools require a registered handler identifier");
+    } else if (snapshot.type === "WORKFLOW") {
+      this.requireMetadataString(provider, "workflowVersionId", "Workflow tools require workflowVersionId");
+    } else if (snapshot.type === "AGENT") {
+      if (!provider.execution || typeof provider.execution !== "object") {
+        throw new BadRequestException("Agent tools require execution metadata");
+      }
+    } else if (snapshot.type === "COMPOSITE") {
+      if (!Array.isArray(provider.toolVersionIds) || !provider.toolVersionIds.length ||
+        provider.toolVersionIds.some((id) => typeof id !== "string")) {
+        throw new BadRequestException("Composite tools require toolVersionIds");
+      }
     }
     this.validateAuthentication(snapshot.authenticationType, snapshot.authenticationMetadata);
   }
@@ -703,5 +743,16 @@ export class ToolRegistryRepository {
       }
       throw error;
     }
+  }
+
+  private hash(value: unknown) {
+    return createHash("sha256").update(this.stable(value)).digest("hex");
+  }
+  private stable(value: unknown): string {
+    if (Array.isArray(value)) return `[${value.map((item) => this.stable(item)).join(",")}]`;
+    if (value && typeof value === "object") return `{${Object.entries(value)
+      .sort(([left], [right]) => left.localeCompare(right))
+      .map(([key, item]) => `${JSON.stringify(key)}:${this.stable(item)}`).join(",")}}`;
+    return JSON.stringify(value) ?? "null";
   }
 }

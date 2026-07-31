@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable, type OnModuleDestroy, type OnModuleInit } from "@nestjs/common";
+import { BadRequestException, forwardRef, Inject, Injectable, type OnModuleDestroy, type OnModuleInit } from "@nestjs/common";
 import { ExecutionKernelStatus, ExecutionSourceType, WorkflowNodeRuntimeStatus,
   WorkflowNodeType, WorkflowRuntimeStatus } from "@prisma/client";
 import { randomUUID } from "node:crypto";
@@ -14,6 +14,7 @@ import { WorkflowRuntimeRepository } from "./workflow-runtime.repository";
 import type { WorkflowExecutionContext, WorkflowRuntimeNode,
   WorkflowRuntimeSnapshot } from "./workflow-runtime.types";
 import { WorkflowRuntimeValidator } from "./workflow-runtime.validator";
+import { ToolRuntimeService } from "../tool-runtime/tool-runtime.service";
 
 type NodeResult = { node: WorkflowRuntimeNode; nodeExecutionId: string; output: unknown;
   next: string[]; selectedBranch?: string; wait?: boolean; agentExecutionId?: string;
@@ -26,7 +27,8 @@ export class WorkflowRuntimeService implements OnModuleInit, OnModuleDestroy {
   constructor(private readonly repository: WorkflowRuntimeRepository,
     private readonly validator: WorkflowRuntimeValidator, private readonly kernel: ExecutionKernelService,
     private readonly agents: AgentExecutionService, private readonly streams: StreamingRuntimeService,
-    private readonly memory: MemoryRuntimeService) {}
+    private readonly memory: MemoryRuntimeService,
+    @Inject(forwardRef(() => ToolRuntimeService)) private readonly tools: ToolRuntimeService) {}
 
   onModuleInit() {
     this.expiryTimer = setInterval(() => { void this.expireExecutions(); }, 1000);
@@ -35,7 +37,8 @@ export class WorkflowRuntimeService implements OnModuleInit, OnModuleDestroy {
   onModuleDestroy() { if (this.expiryTimer) clearInterval(this.expiryTimer); }
 
   execute(workspaceId: string, actorId: string, dto: ExecuteWorkflowDto) {
-    return this.executeInternal(workspaceId, actorId, dto, 0);
+    return this.executeInternal(workspaceId, actorId, dto, 0, dto.parentExecutionId,
+      dto.parentExecutionRunId);
   }
 
   private async executeInternal(workspaceId: string, actorId: string, dto: ExecuteWorkflowDto,
@@ -209,6 +212,19 @@ export class WorkflowRuntimeService implements OnModuleInit, OnModuleDestroy {
       const result = await this.agents.execute(workspaceId, actorId, dto);
       return { ...base, output: result, agentExecutionId: result.executionId,
         compensation: { nodeKey: node.id, compensation: node.configuration?.compensation, memoryWrites } };
+    }
+    if (node.type === WorkflowNodeType.TOOL) {
+      const input = this.validator.resolve(node.configuration?.input ?? {}, context) as Record<string, unknown>;
+      const tool = await this.tools.execute(workspaceId, actorId, {
+        toolVersionId: String(node.configuration?.toolVersionId), input,
+        correlationId: `${executionId}:${node.id}`,
+        idempotencyKey: `${executionId}:${node.id}:${nodeExecutionId}`,
+        parentExecutionId: executionId, parentExecutionRunId: runId,
+        timeoutMs: Number(node.configuration?.timeoutMs ?? 300_000),
+        metadata: { workflowExecutionId: executionId, workflowNodeId: node.id }
+      });
+      if (tool.status !== "COMPLETED") throw new Error(`Tool execution ended in ${tool.status}`);
+      return { ...base, output: tool.output };
     }
     if (node.type === WorkflowNodeType.SUBFLOW || node.type === WorkflowNodeType.SUBWORKFLOW) {
       const versionId = String(node.configuration?.workflowVersionId);

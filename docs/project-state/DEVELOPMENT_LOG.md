@@ -1,5 +1,16 @@
 # Development Log
 
+## Sprint 6E.11 - Tool Calling Engine - 2026-07-31
+
+- **Status:** Implementation complete; final repository validation is recorded in Validation History.
+- **Registry:** Published Tool Registry versions now persist deterministic snapshot hashes, checksums, and runtime compatibility versions while retaining draft/publish/rollback semantics and strict workspace ownership.
+- **Runtime:** Added immutable Tool Runtime execution, attempt, state, event, diagnostic, metric, history, cancellation, timeout, retry, rate-policy, and transactional audit persistence for internal, HTTP/REST/webhook, database, file, storage, workflow, agent, and composite tools.
+- **Security:** HTTP tools reuse the hardened destination-policy transport with method, destination, header, MIME, response-size, execution-time, and cancellation enforcement. Internal behavior requires an explicitly registered production executor.
+- **Integration:** Agents support chained explicit tool calls and provider-neutral definitions; Workflow TOOL nodes delegate to Tool Runtime; parent-child Execution Kernel tracing, Retrieval packages, Optimization metadata, deferred Memory writes, prompt variables, and Streaming Runtime-compatible events are reused.
+- **Providers:** OpenAI, Azure OpenAI, OpenRouter, DeepSeek, Claude, and Gemini adapters translate neutral definitions and normalize tool calls without placing vendor logic in Tool Runtime.
+- **Persistence:** Migration `000034_tool_calling_engine` adds immutable Tool Runtime models and hash metadata without modifying historical migrations.
+
+
 ## Sprint 6E.10 - Workflow Execution Engine - 2026-07-31
 
 - **Status:** Completed in the working tree; the full validation matrix passes.

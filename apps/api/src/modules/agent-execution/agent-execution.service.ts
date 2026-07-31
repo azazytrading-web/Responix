@@ -1,4 +1,4 @@
-import { BadRequestException, Inject, Injectable } from "@nestjs/common";
+import { BadRequestException, forwardRef, Inject, Injectable } from "@nestjs/common";
 import { ExecutionKernelStatus, ExecutionSourceType } from "@prisma/client";
 import { AI_INVOCATION_SERVICE } from "../ai/ai.tokens";
 import type { InvocationService } from "../ai/invocation/invocation.service";
@@ -14,6 +14,7 @@ import { MemoryRuntimeService } from "../memory-runtime/memory-runtime.service";
 import type { ResolvedMemoryPackage } from "../memory-runtime/memory-runtime.types";
 import { RetrievalExecutionService } from "../retrieval-execution/retrieval-execution.service";
 import type { RetrievalKnowledgePackage } from "../retrieval-execution/retrieval-execution.types";
+import { ToolRuntimeService } from "../tool-runtime/tool-runtime.service";
 import type {
   AgentExecutionListQueryDto, CancelAgentExecutionDto, ExecuteAgentExecutionDto,
   PrepareAgentExecutionDto, StreamAgentExecutionDto
@@ -39,7 +40,8 @@ export class AgentExecutionService {
     private readonly optimization: RuntimeOptimizationService,
     private readonly streaming: StreamingRuntimeService,
     private readonly memory: MemoryRuntimeService,
-    private readonly retrievalExecution: RetrievalExecutionService
+    private readonly retrievalExecution: RetrievalExecutionService,
+    @Inject(forwardRef(() => ToolRuntimeService)) private readonly tools: ToolRuntimeService
   ) {}
 
   async prepare(workspaceId: string, actorId: string, dto: PrepareAgentExecutionDto) {
@@ -146,19 +148,24 @@ export class AgentExecutionService {
         orchestration.executionRequestId, orchestration.executionRunId);
       const retrieval = await this.resolveRetrieval(workspaceId, actorId, dto,
         orchestration.executionRequestId, orchestration.executionRunId, memory);
+      const toolOutputs = await this.executeTools(workspaceId, actorId, dto, run.id);
       const payload = await this.promptExecution.get(workspaceId, dto.promptExecutionPayloadId);
-      const messages = this.messages(payload.messages, dto.userMessage, memory, retrieval);
+      const messages = this.messages(payload.messages, dto.userMessage, memory, retrieval, toolOutputs);
       await this.optimization.cacheCompiled(workspaceId, actorId, {
         compiledPromptId: payload.compiledPromptId
       });
-      if (dto.staticVariables) {
+      const effectiveVariables = { ...dto.staticVariables, ...(toolOutputs.length ? { toolOutputs } : {}) };
+      if (Object.keys(effectiveVariables).length) {
         await this.optimization.cacheRendered(workspaceId, actorId, {
-          compiledPromptId: payload.compiledPromptId, staticVariables: dto.staticVariables
+          compiledPromptId: payload.compiledPromptId, staticVariables: effectiveVariables
         });
       }
+      const providerTools = dto.availableToolVersionIds?.length ?
+        await this.tools.providerContracts(workspaceId, dto.availableToolVersionIds) : undefined;
       const response = await this.invocations.invoke({
         requestId: orchestration.executionRequestId, taskType: dto.taskType, messages,
-        mode: "sync", ...(dto.language ? { language: dto.language } : {})
+        mode: "sync", ...(providerTools ? { tools: providerTools } : {}),
+        ...(dto.language ? { language: dto.language } : {})
       });
       const completed = await this.kernel.transition(workspaceId, actorId, run.id, {
         status: ExecutionKernelStatus.SUCCEEDED, expectedStateVersion: running.stateVersion,
@@ -194,12 +201,14 @@ export class AgentExecutionService {
       orchestration.executionRequestId, orchestration.executionRunId);
     const retrieval = await this.resolveRetrieval(workspaceId, actorId, dto,
       orchestration.executionRequestId, orchestration.executionRunId, memory);
+    const toolOutputs = await this.executeTools(workspaceId, actorId, dto, orchestration.executionRunId);
     const provider = await this.providerRuntime.getSnapshot(workspaceId, dto.providerRuntimeSnapshotId);
     const payload = await this.promptExecution.get(workspaceId, dto.promptExecutionPayloadId);
-    const messages = this.messages(payload.messages, dto.userMessage, memory, retrieval);
+    const messages = this.messages(payload.messages, dto.userMessage, memory, retrieval, toolOutputs);
     await this.optimization.cacheCompiled(workspaceId, actorId, { compiledPromptId: payload.compiledPromptId });
-    if (dto.staticVariables) await this.optimization.cacheRendered(workspaceId, actorId, {
-      compiledPromptId: payload.compiledPromptId, staticVariables: dto.staticVariables
+    const effectiveVariables = { ...dto.staticVariables, ...(toolOutputs.length ? { toolOutputs } : {}) };
+    if (Object.keys(effectiveVariables).length) await this.optimization.cacheRendered(workspaceId, actorId, {
+      compiledPromptId: payload.compiledPromptId, staticVariables: effectiveVariables
     });
     const session = await this.streaming.create(workspaceId, actorId, {
       providerId: provider.providerId, modelId: provider.modelId, requestHash: orchestration.planHash,
@@ -208,8 +217,11 @@ export class AgentExecutionService {
       ...(dto.conversationRuntimeSnapshotId ? { conversationId: dto.conversationRuntimeSnapshotId } : {}),
       providerMetadata: { orchestrationId: orchestration.id, providerRuntimeSnapshotId: provider.id }
     });
+    const providerTools = dto.availableToolVersionIds?.length ?
+      await this.tools.providerContracts(workspaceId, dto.availableToolVersionIds) : undefined;
     const controller = new AbortController(); this.streamControllers.set(session.id, controller);
-    void this.runStream(workspaceId, actorId, session.id, orchestration.executionRunId, dto, messages, controller);
+    void this.runStream(workspaceId, actorId, session.id, orchestration.executionRunId, dto,
+      messages, controller, providerTools);
     return session;
   }
 
@@ -226,7 +238,8 @@ export class AgentExecutionService {
   }
 
   private async runStream(workspaceId: string, actorId: string, sessionId: string, runId: string,
-    dto: StreamAgentExecutionDto, messages: ReturnType<AgentExecutionService["messages"]>, controller: AbortController) {
+    dto: StreamAgentExecutionDto, messages: ReturnType<AgentExecutionService["messages"]>,
+    controller: AbortController, providerTools?: Awaited<ReturnType<ToolRuntimeService["providerContracts"]>>) {
     let sequence = 0;
     const timeout = setTimeout(
       () => controller.abort(new Error("Stream timeout")),
@@ -238,7 +251,9 @@ export class AgentExecutionService {
       const run = await this.kernel.getRun(workspaceId, runId);
       const starting = await this.kernel.transition(workspaceId, actorId, runId, { status: ExecutionKernelStatus.STARTING, expectedStateVersion: run.stateVersion, message: "Provider stream is connecting" });
       await this.kernel.transition(workspaceId, actorId, runId, { status: ExecutionKernelStatus.RUNNING, expectedStateVersion: starting.stateVersion, message: "Provider stream is active" });
-      const completion = await this.invocations.stream({ requestId: runId, taskType: dto.taskType, messages, mode: "stream", signal: controller.signal, ...(dto.language ? { language: dto.language } : {}) }, async (event) => {
+      const completion = await this.invocations.stream({ requestId: runId, taskType: dto.taskType,
+        messages, mode: "stream", signal: controller.signal, ...(providerTools ? { tools: providerTools } : {}),
+        ...(dto.language ? { language: dto.language } : {}) }, async (event) => {
         if (event.type === "delta" && event.content) {
           await this.streaming.append(workspaceId, actorId, sessionId, {
             sequence: sequence++, content: event.content, role: event.role, delta: true,
@@ -272,7 +287,7 @@ export class AgentExecutionService {
   }
 
   private messages(value: unknown, userMessage?: string, memory?: ResolvedMemoryPackage,
-    retrieval?: RetrievalKnowledgePackage) {
+    retrieval?: RetrievalKnowledgePackage, toolOutputs: unknown[] = []) {
     if (!Array.isArray(value)) {
       throw new BadRequestException("Prompt execution payload messages are invalid");
     }
@@ -309,6 +324,7 @@ export class AgentExecutionService {
         tokenBudget: retrieval.budget }
       }) });
     }
+    if (toolOutputs.length) messages.unshift({ role: "system", content: JSON.stringify({ toolOutputs }) });
     if (userMessage?.trim()) messages.push({ role: "user", content: userMessage });
     if (!messages.length) throw new BadRequestException("Prompt execution payload has no messages");
     return messages;
@@ -353,6 +369,31 @@ export class AgentExecutionService {
     if (!dto.memoryWrites?.length) return;
     await this.memory.commitWrites(workspaceId, actorId,
       dto.memoryWrites.map((write) => ({ ...write, executionRunId })));
+  }
+  private async executeTools(workspaceId: string, actorId: string,
+    dto: ExecuteAgentExecutionDto, parentRunId: string) {
+    const outputs: unknown[] = []; let previous: unknown;
+    for (let index = 0; index < (dto.toolCalls?.length ?? 0); index += 1) {
+      const call = dto.toolCalls![index]!;
+      const input = this.resolveToolInput(call.input, previous) as Record<string, unknown>;
+      const execution = await this.tools.execute(workspaceId, actorId, {
+        toolVersionId: call.toolVersionId, input, timeoutMs: call.timeoutMs,
+        correlationId: `${dto.correlationId}:tool:${index}`,
+        idempotencyKey: `${dto.idempotencyKey}:tool:${index}`,
+        parentExecutionRunId: parentRunId, promptVariables: dto.staticVariables,
+        metadata: { agentToolCallIndex: index }
+      });
+      if (execution.status !== "COMPLETED") throw new BadRequestException(`Agent tool call ${index} ended in ${execution.status}`);
+      previous = execution.output; outputs.push(previous);
+    }
+    return outputs;
+  }
+  private resolveToolInput(value: unknown, previous: unknown): unknown {
+    if (value === "$previous") return previous;
+    if (Array.isArray(value)) return value.map((item) => this.resolveToolInput(item, previous));
+    if (value && typeof value === "object") return Object.fromEntries(Object.entries(value)
+      .map(([key, item]) => [key, this.resolveToolInput(item, previous)]));
+    return value;
   }
   get(workspaceId: string, id: string) { return this.repository.get(workspaceId, id); }
   list(workspaceId: string, query: AgentExecutionListQueryDto) {

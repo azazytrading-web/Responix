@@ -24,7 +24,7 @@ export class ResponseNormalizerService {
       ...(input.providerResult.finishReason
         ? { finishReason: input.providerResult.finishReason }
         : {}),
-      toolCalls: [],
+      toolCalls: input.providerResult.toolCalls ?? [],
       usage: input.usage,
       cost: input.cost,
       routing: input.routing

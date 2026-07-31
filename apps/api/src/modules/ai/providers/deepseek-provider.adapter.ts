@@ -8,15 +8,15 @@ import type { AiProviderAdapter } from "./provider-adapter.interface";
 import {
   normalizeHttpStatus, normalizeTransportError
 } from "./provider-adapter.utils";
-import { normalizeOpenAiCompatibleResponse } from "./openai-compatible";
+import { normalizeOpenAiCompatibleResponse, openAiCompatibleTools } from "./openai-compatible";
 import { unsupportedProviderPromptCache } from "./provider-prompt-cache.interface";
 import { streamOpenAiCompatible } from "./openai-compatible-stream";
 
 export const DEEPSEEK_CAPABILITIES = Object.freeze({
   chatCompletions: true,
   streaming: false,
-  tools: false,
-  functionCalling: false,
+  tools: true,
+  functionCalling: true,
   structuredOutput: false,
   vision: false,
   contextWindowTokens: 65_536,
@@ -61,7 +61,8 @@ export class DeepSeekProviderAdapter implements AiProviderAdapter {
           model: request.modelName,
           messages: request.messages,
           max_tokens: request.maxOutputTokens,
-          stream: false
+          stream: false,
+          ...(request.tools?.length ? { tools: openAiCompatibleTools(request) } : {})
         }),
         signal: request.signal
       });

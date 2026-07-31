@@ -1,4 +1,4 @@
-import { Module } from "@nestjs/common";
+import { forwardRef, Module } from "@nestjs/common";
 import { AgentRuntimeModule } from "../agent-runtime/agent-runtime.module";
 import { AiModule } from "../ai/ai.module";
 import { ConversationRuntimeModule } from "../conversation-runtime/conversation-runtime.module";
@@ -10,6 +10,7 @@ import { RuntimeOptimizationModule } from "../runtime-optimization/runtime-optim
 import { StreamingRuntimeModule } from "../streaming-runtime/streaming-runtime.module";
 import { MemoryRuntimeModule } from "../memory-runtime/memory-runtime.module";
 import { RetrievalExecutionModule } from "../retrieval-execution/retrieval-execution.module";
+import { ToolRuntimeModule } from "../tool-runtime/tool-runtime.module";
 import { AgentExecutionController, UnifiedAgentExecutionController } from "./agent-execution.controller";
 import { AgentExecutionRepository } from "./agent-execution.repository";
 import { AgentExecutionService } from "./agent-execution.service";
@@ -20,7 +21,7 @@ import { AgentExecutionValidator } from "./agent-execution.validator";
     ExecutionKernelModule, AgentRuntimeModule, PromptExecutionModule,
     ProviderRuntimeModule, ConversationRuntimeModule, ExecutionPipelineModule,
     AiModule, RuntimeOptimizationModule, StreamingRuntimeModule,
-    MemoryRuntimeModule, RetrievalExecutionModule
+    MemoryRuntimeModule, RetrievalExecutionModule, forwardRef(() => ToolRuntimeModule)
   ],
   controllers: [AgentExecutionController, UnifiedAgentExecutionController],
   providers: [AgentExecutionValidator, AgentExecutionRepository, AgentExecutionService],

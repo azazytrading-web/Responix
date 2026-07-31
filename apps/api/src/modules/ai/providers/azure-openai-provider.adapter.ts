@@ -7,7 +7,7 @@ import type { AiProviderAdapter } from "./provider-adapter.interface";
 import {
   normalizeHttpStatus, normalizeTransportError
 } from "./provider-adapter.utils";
-import { normalizeOpenAiCompatibleResponse } from "./openai-compatible";
+import { normalizeOpenAiCompatibleResponse, openAiCompatibleTools } from "./openai-compatible";
 import { streamOpenAiCompatible } from "./openai-compatible-stream";
 
 @Injectable()
@@ -29,7 +29,8 @@ export class AzureOpenAiProviderAdapter implements AiProviderAdapter {
           "/chat/completions?api-version=2024-10-21",
         headers: { "api-key": credential.secret },
         body: JSON.stringify({
-          messages: request.messages, max_tokens: request.maxOutputTokens
+          messages: request.messages, max_tokens: request.maxOutputTokens,
+          ...(request.tools?.length ? { tools: openAiCompatibleTools(request) } : {})
         }),
         signal: request.signal
       });

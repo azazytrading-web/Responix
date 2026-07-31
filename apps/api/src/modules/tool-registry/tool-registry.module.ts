@@ -5,6 +5,7 @@ import { ToolRegistryService } from "./tool-registry.service";
 
 @Module({
   controllers: [ToolRegistryController],
-  providers: [ToolRegistryRepository, ToolRegistryService]
+  providers: [ToolRegistryRepository, ToolRegistryService],
+  exports: [ToolRegistryService]
 })
 export class ToolRegistryModule {}

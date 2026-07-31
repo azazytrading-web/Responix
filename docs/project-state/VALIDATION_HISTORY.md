@@ -1,5 +1,22 @@
 # Validation History
 
+## Sprint 6E.11 - Tool Calling Engine - 2026-07-31
+
+| Check | Result |
+| --- | --- |
+| `pnpm prisma validate` | PASS |
+| `pnpm prisma generate` | PASS |
+| `pnpm typecheck` | PASS |
+| `pnpm lint` | PASS with `NODE_OPTIONS=--max-old-space-size=8192` |
+| `pnpm test` | PASS - API: 132 suites passed, 1 PostgreSQL suite skipped; 837 tests passed, 4 skipped |
+| `pnpm build` | PASS |
+| `git diff --check` | PASS |
+
+Focused Tool Runtime, Tool Registry integrity, Workflow/Agent integration, request
+normalization, and provider-adapter regression suites also passed before the final full
+matrix. The final full test run completed in 121.3 seconds at the workspace level.
+
+
 ## Sprint 6E.10 - Workflow Execution Engine - 2026-07-31
 
 | Check | Result |

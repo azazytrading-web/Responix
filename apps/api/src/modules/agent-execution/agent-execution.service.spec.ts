@@ -55,7 +55,8 @@ describe("AgentExecutionService", () => {
         cacheMemory: jest.fn() } as never,
       { create: jest.fn(), connect: jest.fn(), start: jest.fn(), append: jest.fn(), complete: jest.fn(), cancel: jest.fn(), fail: jest.fn(), get: jest.fn() } as never,
       memory as never,
-      { execute: jest.fn().mockResolvedValue({ documents: [] }) } as never
+      { execute: jest.fn().mockResolvedValue({ documents: [] }) } as never,
+      { execute: jest.fn(), providerContracts: jest.fn().mockResolvedValue([]) } as never
     );
     return { service, repository, kernel, validator, memory };
   };

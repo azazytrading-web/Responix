@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import type {
-  CacheCompiledPromptDto, CacheMemoryRuntimeDto, CacheRenderedPromptDto, CacheRetrievalRuntimeDto,
+  CacheCompiledPromptDto, CacheImmutablePackageDto, CacheMemoryRuntimeDto, CacheRenderedPromptDto, CacheRetrievalRuntimeDto,
   CreateRuntimeContextSnapshotDto, RuntimeOptimizationListQueryDto
 } from "./dto/runtime-optimization.dto";
 import { RuntimeOptimizationRepository } from "./runtime-optimization.repository";
@@ -22,6 +22,15 @@ export class RuntimeOptimizationService {
   }
   cacheMemory(w: string, a: string, d: CacheMemoryRuntimeDto) {
     return this.repository.cacheMemory(w, a, d);
+  }
+  cacheImmutable(w: string, a: string, d: CacheImmutablePackageDto) {
+    return this.repository.cacheImmutable(w, a, d);
+  }
+  invalidate(w: string, a: string, id: string, reason: string) {
+    return this.repository.invalidate(w, a, id, reason);
+  }
+  recordProviderOutcome(w: string, a: string, input: Parameters<RuntimeOptimizationRepository["recordProviderOutcome"]>[2]) {
+    return this.repository.recordProviderOutcome(w, a, input);
   }
   get(w: string, id: string) { return this.repository.get(w, id); }
   list(w: string, q: RuntimeOptimizationListQueryDto) {

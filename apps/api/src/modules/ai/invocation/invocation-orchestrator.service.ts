@@ -29,6 +29,9 @@ export interface StreamInvocationResult {
   pricing: ModelPricing;
   providerCompletedAt: Date;
   retryCount: number;
+  providerId: string;
+  modelId: string;
+  nativePromptCacheSupported: boolean;
 }
 
 @Injectable()
@@ -118,7 +121,12 @@ export class InvocationOrchestratorService {
         providerResult,
         routing,
         usage,
-        cost
+        cost,
+        metadata: { providerDurationMs,
+          promptCache: { packageId: request.promptCache?.packageId ?? null,
+            nativeSupported: resolved.adapter.promptCache?.supportsCaching() === true,
+            mode: resolved.adapter.promptCache?.mode ?? "NONE",
+            ttlSeconds: resolved.adapter.promptCache?.ttlSeconds ?? null } }
       });
       const runtimeCompletion = {
         reservation,
@@ -268,7 +276,8 @@ export class InvocationOrchestratorService {
                     modelName: model.modelName, apiBaseUrl: resolved.provider.apiBaseUrl,
                     messages: request.messages,
                     maxOutputTokens: reservation!.estimate.outputTokens, signal,
-                    ...(request.tools ? { tools: request.tools } : {})
+                    ...(request.tools ? { tools: request.tools } : {}),
+                    ...(request.promptCache ? { promptCache: request.promptCache } : {})
                   }, credential, async (event) => {
                     if (event.usage && event.usage.inputTokens !== undefined &&
                         event.usage.outputTokens !== undefined) {
@@ -319,7 +328,9 @@ export class InvocationOrchestratorService {
       }
       return {
         invocationId, responseContent, ...(finishReason ? { finishReason } : {}),
-        usage, cost, pricing, providerCompletedAt, retryCount: providerRetryCount
+        usage, cost, pricing, providerCompletedAt, retryCount: providerRetryCount,
+        providerId, modelId,
+        nativePromptCacheSupported: resolved.adapter.promptCache?.supportsCaching() === true
       };
     } catch (error: unknown) {
       if (reservation && invocationId) {
@@ -391,6 +402,7 @@ export class InvocationOrchestratorService {
                   messages: input.request.messages,
                   maxOutputTokens: input.maxOutputTokens,
                   ...(input.request.tools ? { tools: input.request.tools } : {}),
+                  ...(input.request.promptCache ? { promptCache: input.request.promptCache } : {}),
                   signal
                 },
                 credential

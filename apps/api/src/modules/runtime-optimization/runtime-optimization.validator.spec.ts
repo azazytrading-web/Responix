@@ -1,5 +1,6 @@
 import { BadRequestException } from "@nestjs/common";
 import { RuntimeOptimizationValidator } from "./runtime-optimization.validator";
+import { RuntimeOptimizationPackageType } from "@prisma/client";
 
 describe("RuntimeOptimizationValidator", () => {
   const validator = new RuntimeOptimizationValidator();
@@ -39,5 +40,27 @@ describe("RuntimeOptimizationValidator", () => {
     expect(() => validator.validateRetrieval({
       retrievalRuntimeSnapshotId: "id", languages: ["not valid"]
     })).toThrow("Invalid retrieval language");
+  });
+  it("accepts immutable workflow/tool/studio packages and excludes dynamic context", () => {
+    expect(() => validator.validateImmutablePackage({ type: RuntimeOptimizationPackageType.WORKFLOW_PACKAGE,
+      scopeKey: "workflow:one", sourceHash: "a".repeat(64),
+      payload: { nodes: [], policies: { locale: "en" } } })).not.toThrow();
+    for (const key of ["userMessage", "conversation", "history", "memoryEntries",
+      "retrievalResults", "toolOutputs", "runtimeVariables"]) {
+      expect(() => validator.validateImmutablePackage({
+        type: RuntimeOptimizationPackageType.CONVERSATION_PREFIX,
+        scopeKey: "conversation:one", sourceHash: "a".repeat(64), payload: { [key]: [] }
+      })).toThrow(BadRequestException);
+    }
+  });
+  it("rejects dedicated and malformed immutable package requests", () => {
+    expect(() => validator.validateImmutablePackage({
+      type: RuntimeOptimizationPackageType.COMPILED_PROMPT, scopeKey: "compiled:one",
+      sourceHash: "a".repeat(64), payload: {}
+    })).toThrow(BadRequestException);
+    expect(() => validator.validateImmutablePackage({
+      type: RuntimeOptimizationPackageType.EXECUTION_PLAN, scopeKey: "bad scope",
+      sourceHash: "a".repeat(64), payload: {}
+    })).toThrow(BadRequestException);
   });
 });

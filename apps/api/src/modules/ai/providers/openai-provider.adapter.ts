@@ -13,7 +13,7 @@ import {
   ProviderNetworkTimeoutError,
   ProviderResponseTooLargeError
 } from "../security/provider-http-client.service";
-import { unsupportedProviderPromptCache } from "./provider-prompt-cache.interface";
+import { nativeProviderPromptCache } from "./provider-prompt-cache.interface";
 import { streamOpenAiCompatible } from "./openai-compatible-stream";
 import { openAiCompatibleTools } from "./openai-compatible";
 
@@ -41,7 +41,7 @@ const openAiResponseSchema = z.object({
 export class OpenAiProviderAdapter implements AiProviderAdapter {
   readonly providerName = "OpenAI";
   readonly contractVersion = "1.0";
-  readonly promptCache = unsupportedProviderPromptCache;
+  readonly promptCache = nativeProviderPromptCache("AUTOMATIC", 600);
 
   constructor(private readonly http: ProviderHttpClient) {}
 

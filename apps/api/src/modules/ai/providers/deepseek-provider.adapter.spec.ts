@@ -67,6 +67,13 @@ describe("DeepSeekProviderAdapter", () => {
       url: "https://gateway.example.com/deepseek/chat/completions"
     }));
   });
+  it("normalizes DeepSeek native context-cache hit tokens", async () => {
+    const postJson = jest.fn().mockResolvedValue({ status: 200, body: JSON.stringify({
+      ...response, usage: { prompt_tokens: 8, completion_tokens: 3, prompt_cache_hit_tokens: 6 }
+    }) });
+    await expect(new DeepSeekProviderAdapter({ postJson } as never).invoke(request(), credential))
+      .resolves.toMatchObject({ usage: { cachedTokens: 6 } });
+  });
   it.each([
     "deepseek-chat", "deepseek-chat-v3", "deepseek-chat:2026-07", "deepseek-chat.latest"
   ])("supports extensible DeepSeek Chat model names: %s", (modelName) => {

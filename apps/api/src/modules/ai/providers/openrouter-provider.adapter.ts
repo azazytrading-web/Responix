@@ -8,14 +8,14 @@ import {
   normalizeHttpStatus, normalizeTransportError
 } from "./provider-adapter.utils";
 import { normalizeOpenAiCompatibleResponse, openAiCompatibleTools } from "./openai-compatible";
-import { unsupportedProviderPromptCache } from "./provider-prompt-cache.interface";
+import { nativeProviderPromptCache } from "./provider-prompt-cache.interface";
 import { streamOpenAiCompatible } from "./openai-compatible-stream";
 
 @Injectable()
 export class OpenRouterProviderAdapter implements AiProviderAdapter {
   readonly providerName = "OpenRouter";
   readonly contractVersion = "1.0";
-  readonly promptCache = unsupportedProviderPromptCache;
+  readonly promptCache = nativeProviderPromptCache("AUTOMATIC", 300);
   constructor(private readonly http: ProviderHttpClient) {}
   async invoke(request: ProviderExecutionRequest, credential: ProviderExecutionCredential):
   Promise<ProviderExecutionResult> {

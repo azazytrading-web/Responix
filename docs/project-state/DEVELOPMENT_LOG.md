@@ -1,5 +1,16 @@
 # Development Log
 
+## Sprint 6E.12 - Advanced Prompt Cache & Runtime Optimization - 2026-07-31
+
+- **Status:** Implementation complete; final validation evidence is recorded in Validation History.
+- **Layers:** Extended the existing Runtime Optimization authority for compiled prompts, rendered static prompts, provider prompts, conversation prefixes, studio configurations, retrieval preparation, memory packages, tool definitions, workflow packages, runtime contexts, and execution plans.
+- **Integrity:** Added immutable scope/revision/publisher metadata, SHA-256 validation, checksum verification, reference validation, automatic hash invalidation, retained rollback history, partial active-key uniqueness, transactional advisory locking, and optimistic invalidation.
+- **Providers:** Added truthful native-cache negotiation for OpenAI/Azure OpenAI, DeepSeek, Claude, OpenRouter, and Gemini. Claude marks only the stable system prefix using explicit `cache_control`; automatic providers rely on native usage reporting. Unsupported adapters retain internal-cache fallback.
+- **Integration:** Agent synchronous and streaming paths reuse one provider-prompt package; dynamic tool outputs are excluded from static rendering. Tool Runtime caches verified definitions, Workflow Runtime reuses compiled graphs/plans, and existing Retrieval/Memory preparation caches remain authoritative.
+- **Observability:** Added provider hit/miss outcomes, TTL/provider-cache identifiers, cached tokens, compile time, saved-cost/latency fields, reuse metrics, pagination/filtering, permissions, immutable audits, and explicit invalidation reasons.
+- **Persistence:** Migration `000035_advanced_prompt_cache` extends Runtime Optimization without changing historical migrations.
+
+
 ## Sprint 6E.11 - Tool Calling Engine - 2026-07-31
 
 - **Status:** Implementation complete; final repository validation is recorded in Validation History.

@@ -359,9 +359,20 @@ enum AgentExecutionOrchestrationStatus {
 enum RuntimeOptimizationPackageType {
   COMPILED_PROMPT
   RENDERED_PROMPT
+  PROVIDER_PROMPT
+  CONVERSATION_PREFIX
+  STUDIO_CONFIGURATION
   RUNTIME_CONTEXT
   RETRIEVAL_RUNTIME
   MEMORY_RUNTIME
+  TOOL_DEFINITION
+  WORKFLOW_PACKAGE
+  EXECUTION_PLAN
+}
+
+enum RuntimeOptimizationPackageStatus {
+  ACTIVE
+  INVALIDATED
 }
 
 enum MemoryRuntimeType {
@@ -668,6 +679,7 @@ model Workspace {
   executionPipelineSnapshots   ExecutionPipelineSnapshot[]
   agentExecutionOrchestrations AgentExecutionOrchestration[]
   runtimeOptimizationPackages  RuntimeOptimizationPackage[]
+  runtimeOptimizationProviderOutcomes RuntimeOptimizationProviderOutcome[]
   streamSessions               StreamSession[]
   memoryRuntimes               MemoryRuntime[]
   memoryRuntimeSnapshots       MemoryRuntimeSnapshot[]
@@ -1017,6 +1029,7 @@ model AiProvider {
   routingRecords AiRoutingMetadata[]
   cacheMetadata  AiCacheMetadata[]
   runtimeAccounting AiRuntimeAccounting[]
+  runtimeOptimizationProviderOutcomes RuntimeOptimizationProviderOutcome[]
 
   @@index([status, priority])
   @@map("ai_providers")
@@ -1050,6 +1063,7 @@ model AiModel {
   routingRecords AiRoutingMetadata[]
   cacheMetadata  AiCacheMetadata[]
   runtimeAccounting AiRuntimeAccounting[]
+  runtimeOptimizationProviderOutcomes RuntimeOptimizationProviderOutcome[]
 
   @@unique([providerId, modelName])
   @@index([providerId, status])
@@ -3438,6 +3452,8 @@ model RuntimeOptimizationPackage {
   workspaceId         String   @map("workspace_id") @db.Uuid
   createdById         String   @map("created_by") @db.Uuid
   type                RuntimeOptimizationPackageType
+  status              RuntimeOptimizationPackageStatus @default(ACTIVE)
+  scopeKey            String?  @map("scope_key")
   keyHash             String   @map("key_hash")
   sourceHash          String   @map("source_hash")
   staticVariablesHash String?  @map("static_variables_hash")
@@ -3446,12 +3462,19 @@ model RuntimeOptimizationPackage {
   packageHash         String   @map("package_hash")
   checksum            String
   version             Int      @default(1)
+  revision            Int      @default(1)
+  publisherId         String?  @map("publisher_id") @db.Uuid
+  invalidatedAt       DateTime? @map("invalidated_at")
+  invalidatedById     String?  @map("invalidated_by_id") @db.Uuid
+  invalidationReason  String?  @map("invalidation_reason")
   createdAt           DateTime @default(now()) @map("created_at")
   workspace Workspace @relation(fields: [workspaceId], references: [id], onDelete: Restrict)
   metric RuntimeOptimizationMetric?
-  @@unique([workspaceId, type, keyHash], map: "runtime_optimization_packages_workspace_type_key")
+  providerOutcomes RuntimeOptimizationProviderOutcome[]
+  @@index([workspaceId, type, keyHash], map: "runtime_optimization_packages_workspace_type_key_idx")
   @@index([workspaceId, type, createdAt], map: "runtime_optimization_packages_workspace_type_idx")
   @@index([workspaceId, packageHash], map: "runtime_optimization_packages_workspace_hash_idx")
+  @@index([workspaceId, type, scopeKey, status], map: "runtime_optimization_packages_scope_status_idx")
   @@map("runtime_optimization_packages")
 }
 
@@ -3468,7 +3491,12 @@ model RuntimeOptimizationMetric {
   retrievalPackageReuse               Int      @default(0) @map("retrieval_package_reuse")
   providerCacheAvailable              Boolean  @default(false) @map("provider_cache_available")
   providerCacheUsage                  Int      @default(0) @map("provider_cache_usage")
+  providerCacheHits                   Int      @default(0) @map("provider_cache_hits")
+  providerCacheMisses                 Int      @default(0) @map("provider_cache_misses")
   estimatedSavedTokens                Int      @default(0) @map("estimated_saved_tokens")
+  estimatedSavedCost                  Decimal  @default(0) @map("estimated_saved_cost") @db.Decimal(18, 8)
+  estimatedLatencyGainMs              BigInt   @default(0) @map("estimated_latency_gain_ms")
+  compileTimeMs                       Int      @default(0) @map("compile_time_ms")
   estimatedSavedRequests              Int      @default(0) @map("estimated_saved_requests")
   estimatedSavedCompilationOperations Int      @default(0) @map("estimated_saved_compilation_operations")
   estimatedSavedRenderingOperations   Int      @default(0) @map("estimated_saved_rendering_operations")
@@ -3480,6 +3508,28 @@ model RuntimeOptimizationMetric {
   package RuntimeOptimizationPackage @relation(fields: [packageId], references: [id], onDelete: Restrict)
   @@index([lastAccessedAt], map: "runtime_optimization_metrics_last_accessed_idx")
   @@map("runtime_optimization_metrics")
+}
+
+model RuntimeOptimizationProviderOutcome {
+  id              String   @id @default(uuid()) @db.Uuid
+  packageId       String   @map("package_id") @db.Uuid
+  workspaceId     String   @map("workspace_id") @db.Uuid
+  providerId      String   @map("provider_id") @db.Uuid
+  modelId         String   @map("model_id") @db.Uuid
+  nativeSupported Boolean  @map("native_supported")
+  cacheHit        Boolean  @map("cache_hit")
+  cachedTokens    Int      @default(0) @map("cached_tokens")
+  providerCacheId String?  @map("provider_cache_id")
+  ttlSeconds      Int?     @map("ttl_seconds")
+  metadata        Json     @default("{}")
+  createdAt       DateTime @default(now()) @map("created_at")
+  package RuntimeOptimizationPackage @relation(fields: [packageId], references: [id], onDelete: Restrict)
+  workspace Workspace @relation(fields: [workspaceId], references: [id], onDelete: Restrict)
+  provider AiProvider @relation(fields: [providerId], references: [id], onDelete: Restrict)
+  model AiModel @relation(fields: [modelId], references: [id], onDelete: Restrict)
+  @@index([workspaceId, providerId, cacheHit, createdAt], map: "runtime_optimization_provider_outcomes_workspace_idx")
+  @@index([packageId, createdAt], map: "runtime_optimization_provider_outcomes_package_idx")
+  @@map("runtime_optimization_provider_outcomes")
 }
 
 model MemoryRuntime {

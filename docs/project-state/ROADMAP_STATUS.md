@@ -1,5 +1,14 @@
 # Roadmap Status
 
+## Sprint 6E.12 Update - 2026-07-31
+
+Advanced Prompt Cache and Runtime Optimization is implemented by extending the existing
+immutable optimization packages rather than adding a response cache or Redis-only path.
+Static prompt/runtime assets now reuse hash-addressed workspace packages across providers,
+while native provider hits, internal fallback, invalidation, history, audits, and metrics
+remain explicit and durable.
+
+
 ## Sprint 6E.11 Update - 2026-07-31
 
 The Tool Calling Engine is implemented as the vendor-neutral execution layer shared by

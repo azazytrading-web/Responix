@@ -14,6 +14,7 @@ const schema = z.object({
   usage: z.object({
     prompt_tokens: z.number().int().nonnegative(),
     completion_tokens: z.number().int().nonnegative(),
+    prompt_cache_hit_tokens: z.number().int().nonnegative().optional(),
     prompt_tokens_details: z.object({
       cached_tokens: z.number().int().nonnegative().optional()
     }).optional()
@@ -37,7 +38,8 @@ export function normalizeOpenAiCompatibleResponse(
     usage: {
       inputTokens: parsed.data.usage.prompt_tokens,
       outputTokens: parsed.data.usage.completion_tokens,
-      cachedTokens: parsed.data.usage.prompt_tokens_details?.cached_tokens ?? 0
+      cachedTokens: parsed.data.usage.prompt_tokens_details?.cached_tokens ??
+        parsed.data.usage.prompt_cache_hit_tokens ?? 0
     }
   };
 }

@@ -1,9 +1,9 @@
 import { Type } from "class-transformer";
 import {
-  IsArray, IsInt, IsObject, IsOptional, IsString, IsUUID, Matches, Max, Min
+  IsArray, IsInt, IsObject, IsOptional, IsString, IsUUID, Matches, Max, MaxLength, Min
 } from "class-validator";
 import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
-import { RuntimeOptimizationPackageType } from "@prisma/client";
+import { RuntimeOptimizationPackageStatus, RuntimeOptimizationPackageType } from "@prisma/client";
 import { IsEnum } from "class-validator";
 
 export class CacheCompiledPromptDto {
@@ -59,4 +59,33 @@ export class RuntimeOptimizationListQueryDto {
   type?: RuntimeOptimizationPackageType;
   @ApiPropertyOptional() @IsOptional() @Matches(/^[a-f0-9]{64}$/)
   sourceHash?: string;
+  @ApiPropertyOptional({ maxLength: 300 }) @IsOptional() @IsString() @MaxLength(300)
+  scopeKey?: string;
+  @ApiPropertyOptional({ enum: RuntimeOptimizationPackageStatus }) @IsOptional()
+  @IsEnum(RuntimeOptimizationPackageStatus)
+  status?: RuntimeOptimizationPackageStatus;
+}
+
+export class CacheImmutablePackageDto {
+  @ApiProperty({ enum: RuntimeOptimizationPackageType }) @IsEnum(RuntimeOptimizationPackageType)
+  type!: RuntimeOptimizationPackageType;
+  @ApiProperty({ maxLength: 300 }) @IsString() @MaxLength(300)
+  scopeKey!: string;
+  @ApiProperty({ pattern: "^[a-f0-9]{64}$" }) @Matches(/^[a-f0-9]{64}$/)
+  sourceHash!: string;
+  @ApiProperty({ type: "object", additionalProperties: true }) @IsObject()
+  payload!: Record<string, unknown>;
+  @ApiPropertyOptional({ type: "object", additionalProperties: { type: "string" } })
+  @IsOptional() @IsObject() references?: Record<string, string>;
+  @ApiPropertyOptional({ minimum: 1 }) @IsOptional() @IsInt() @Min(1)
+  revision?: number;
+  @ApiPropertyOptional({ minimum: 0 }) @IsOptional() @IsInt() @Min(0)
+  savedTokens?: number;
+  @ApiPropertyOptional({ minimum: 0 }) @IsOptional() @IsInt() @Min(0)
+  compileTimeMs?: number;
+}
+
+export class InvalidateOptimizationPackageDto {
+  @ApiProperty({ maxLength: 1000 }) @IsString() @MaxLength(1000)
+  reason!: string;
 }

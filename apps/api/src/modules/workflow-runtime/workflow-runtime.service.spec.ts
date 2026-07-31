@@ -23,14 +23,16 @@ describe("WorkflowRuntimeService", () => {
   const streams = { get: jest.fn() };
   const memory = { commitWrites: jest.fn() };
   const tools = { execute: jest.fn() };
+  const optimization = { cacheImmutable: jest.fn() };
   const service = new WorkflowRuntimeService(repository as never, new WorkflowRuntimeValidator(), kernel as never,
-    agents as never, streams as never, memory as never, tools as never);
+    agents as never, streams as never, memory as never, tools as never, optimization as never);
 
   beforeEach(() => {
     jest.clearAllMocks(); status = WorkflowRuntimeStatus.CREATED;
     repository.findByIdempotency.mockResolvedValue(null);
     repository.loadVersion.mockResolvedValue({ id: "version", workflowId: "workflow", snapshot,
-      snapshotHash: "hash" });
+      snapshotHash: "a".repeat(64), revision: 1 });
+    optimization.cacheImmutable.mockResolvedValue({ id: "cache" });
     repository.create.mockImplementation(async () => execution());
     repository.transition.mockImplementation(async (_w: string, _a: string, _id: string, next: WorkflowRuntimeStatus) => {
       status = next; return execution();

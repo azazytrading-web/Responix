@@ -1,13 +1,13 @@
 import {
-  ConflictException, Injectable, NotFoundException
+  BadRequestException, ConflictException, Injectable, NotFoundException
 } from "@nestjs/common";
 import {
-  Prisma, RuntimeOptimizationPackageType
+  Prisma, RuntimeOptimizationPackageStatus, RuntimeOptimizationPackageType
 } from "@prisma/client";
 import { createHash } from "node:crypto";
 import { PrismaService } from "../../database/prisma.service";
 import type {
-  CacheMemoryRuntimeDto, CacheRenderedPromptDto, CacheRetrievalRuntimeDto,
+  CacheImmutablePackageDto, CacheMemoryRuntimeDto, CacheRenderedPromptDto, CacheRetrievalRuntimeDto,
   CreateRuntimeContextSnapshotDto, RuntimeOptimizationListQueryDto
 } from "./dto/runtime-optimization.dto";
 import { RuntimeOptimizationValidator } from "./runtime-optimization.validator";
@@ -33,6 +33,7 @@ export class RuntimeOptimizationRepository {
       if (!prompt) throw new NotFoundException("Compiled Prompt was not found");
       return this.reuseOrCreate(tx, workspaceId, actorId, {
         type: RuntimeOptimizationPackageType.COMPILED_PROMPT,
+        scopeKey: `compiled:${prompt.id}`,
         keyHash: prompt.hash, sourceHash: prompt.hash, payload: prompt.compiledPackage,
         references: { compiledPromptId: prompt.id, promptVersionId: prompt.promptVersionId },
         savedTokens: prompt.sizeBytes, operation: "compilation"
@@ -62,6 +63,7 @@ export class RuntimeOptimizationRepository {
       };
       return this.reuseOrCreate(tx, workspaceId, actorId, {
         type: RuntimeOptimizationPackageType.RENDERED_PROMPT,
+        scopeKey: `rendered:${prompt.id}`,
         keyHash: this.hash({ compiledPromptHash: prompt.hash, variablesHash }),
         sourceHash: prompt.hash, staticVariablesHash: variablesHash, payload,
         references: { compiledPromptId: prompt.id, promptVersionId: prompt.promptVersionId },
@@ -129,6 +131,7 @@ export class RuntimeOptimizationRepository {
       const sourceHash = this.hash({ references, hashes: this.assetHashes(assets), workspace });
       return this.reuseOrCreate(tx, workspaceId, actorId, {
         type: RuntimeOptimizationPackageType.RUNTIME_CONTEXT,
+        scopeKey: `context:${this.hash(references)}`,
         keyHash: sourceHash, sourceHash, payload, references,
         savedTokens: JSON.stringify(payload).length, operation: "snapshot"
       });
@@ -141,7 +144,7 @@ export class RuntimeOptimizationRepository {
     this.validator.validateRetrieval(dto);
     return this.prisma.$transaction(async (tx) => {
       const snapshot = await tx.retrievalRuntimeSnapshot.findFirst({
-        where: { id: dto.retrievalRuntimeSnapshotId, workspaceId },
+        where: { id: dto.retrievalRuntimeSnapshotId, workspaceId, runtime: { status: "PUBLISHED" } },
         select: {
           id: true, runtimeId: true, revision: true, retrievalPackage: true,
           packageHash: true, checksum: true
@@ -157,6 +160,7 @@ export class RuntimeOptimizationRepository {
       };
       return this.reuseOrCreate(tx, workspaceId, actorId, {
         type: RuntimeOptimizationPackageType.RETRIEVAL_RUNTIME,
+        scopeKey: `retrieval:${snapshot.runtimeId}`,
         keyHash: this.hash({ packageHash: snapshot.packageHash, configHash }),
         sourceHash: snapshot.packageHash, payload,
         references: {
@@ -173,7 +177,7 @@ export class RuntimeOptimizationRepository {
         throw new ConflictException("Duplicate memory cache references");
       }
       const snapshots = await tx.memoryRuntimeSnapshot.findMany({
-        where: { id: { in: uniqueIds }, workspaceId },
+        where: { id: { in: uniqueIds }, workspaceId, runtime: { status: "PUBLISHED" } },
         select: { id: true, runtimeId: true, revision: true, snapshot: true,
           packageHash: true, checksum: true }
       });
@@ -186,6 +190,7 @@ export class RuntimeOptimizationRepository {
       })));
       return this.reuseOrCreate(tx, workspaceId, actorId, {
         type: RuntimeOptimizationPackageType.MEMORY_RUNTIME,
+        scopeKey: `memory:${uniqueIds.join(":")}`,
         keyHash: sourceHash, sourceHash, payload: ordered,
         references: Object.fromEntries(ordered.map((item, index) => [
           `memoryRuntimeSnapshot${index}Id`, item.id
@@ -195,18 +200,83 @@ export class RuntimeOptimizationRepository {
     });
   }
 
+  cacheImmutable(workspaceId: string, actorId: string, dto: CacheImmutablePackageDto) {
+    this.validator.validateImmutablePackage(dto);
+    return this.prisma.$transaction(async (tx) => {
+      await this.validateReferences(tx, workspaceId, dto.references ?? {});
+      return this.reuseOrCreate(tx, workspaceId, actorId, {
+      type: dto.type, scopeKey: dto.scopeKey,
+      keyHash: this.hash({ type: dto.type, sourceHash: dto.sourceHash, payload: dto.payload }),
+      sourceHash: dto.sourceHash, payload: dto.payload, references: dto.references ?? {},
+      savedTokens: dto.savedTokens ?? JSON.stringify(dto.payload).length,
+      compileTimeMs: dto.compileTimeMs ?? 0, revision: dto.revision ?? 1,
+      operation: dto.type === RuntimeOptimizationPackageType.WORKFLOW_PACKAGE ? "workflow" :
+        dto.type === RuntimeOptimizationPackageType.TOOL_DEFINITION ? "tool" :
+        dto.type === RuntimeOptimizationPackageType.EXECUTION_PLAN ? "plan" : "snapshot"
+      });
+    });
+  }
+
+  invalidate(workspaceId: string, actorId: string, id: string, reason: string) {
+    return this.prisma.$transaction(async (tx) => {
+      const current = await tx.runtimeOptimizationPackage.findFirst({ where: { id, workspaceId },
+        select: this.select });
+      if (!current) throw new NotFoundException("Runtime optimization package was not found");
+      if (current.status === RuntimeOptimizationPackageStatus.INVALIDATED) return current;
+      const updated = await tx.runtimeOptimizationPackage.updateMany({ where: { id, workspaceId,
+        status: RuntimeOptimizationPackageStatus.ACTIVE, version: current.version }, data: {
+        status: RuntimeOptimizationPackageStatus.INVALIDATED, version: { increment: 1 },
+        invalidatedAt: new Date(), invalidatedById: actorId, invalidationReason: reason
+      } });
+      if (updated.count !== 1) throw new ConflictException("Optimization package was updated concurrently");
+      await this.audit(tx, workspaceId, actorId, "runtime.optimization.invalidated", id, { reason });
+      return tx.runtimeOptimizationPackage.findFirstOrThrow({ where: { id, workspaceId }, select: this.select });
+    });
+  }
+
+  recordProviderOutcome(workspaceId: string, actorId: string, input: { packageId: string;
+    providerId: string; modelId: string; nativeSupported: boolean; cachedTokens: number;
+    providerCacheId?: string; ttlSeconds?: number; savedCost?: number; latencyGainMs?: number }) {
+    return this.prisma.$transaction(async (tx) => {
+      const cache = await tx.runtimeOptimizationPackage.findFirst({ where: { id: input.packageId,
+        workspaceId, status: RuntimeOptimizationPackageStatus.ACTIVE } });
+      if (!cache) throw new NotFoundException("Active optimization package was not found");
+      const model = await tx.aiModel.findFirst({ where: { id: input.modelId,
+        providerId: input.providerId, status: "ACTIVE", provider: { status: "ACTIVE",
+          configurations: { some: { workspaceId, enabled: true } } } }, select: { id: true } });
+      if (!model) throw new NotFoundException("Active workspace provider model was not found");
+      const hit = input.cachedTokens > 0;
+      const outcome = await tx.runtimeOptimizationProviderOutcome.create({ data: {
+        packageId: cache.id, workspaceId, providerId: input.providerId, modelId: input.modelId,
+        nativeSupported: input.nativeSupported, cacheHit: hit, cachedTokens: input.cachedTokens,
+        providerCacheId: input.providerCacheId, ttlSeconds: input.ttlSeconds
+      } });
+      await tx.runtimeOptimizationMetric.update({ where: { packageId: cache.id }, data: {
+        providerCacheAvailable: input.nativeSupported, providerCacheUsage: { increment: 1 },
+        ...(hit ? { providerCacheHits: { increment: 1 } } : { providerCacheMisses: { increment: 1 } }),
+        estimatedSavedTokens: { increment: input.cachedTokens },
+        estimatedSavedCost: { increment: input.savedCost ?? 0 },
+        estimatedLatencyGainMs: { increment: BigInt(input.latencyGainMs ?? 0) }
+      } });
+      await this.audit(tx, workspaceId, actorId, hit ? "runtime.optimization.provider.hit" :
+        "runtime.optimization.provider.miss", outcome.id, input);
+      return outcome;
+    });
+  }
+
   get(workspaceId: string, id: string) {
     return this.prisma.runtimeOptimizationPackage.findFirst({
       where: { id, workspaceId }, select: this.select
     }).then((value) => {
       if (!value) throw new NotFoundException("Runtime optimization package was not found");
-      return value;
+      this.verify(value); return value;
     });
   }
   async list(workspaceId: string, query: RuntimeOptimizationListQueryDto) {
     const page = query.page ?? 1; const limit = query.limit ?? 25;
     const where: Prisma.RuntimeOptimizationPackageWhereInput = {
-      workspaceId, type: query.type, sourceHash: query.sourceHash
+      workspaceId, type: query.type, sourceHash: query.sourceHash,
+      scopeKey: query.scopeKey, status: query.status
     };
     const [data, total] = await this.prisma.$transaction([
       this.prisma.runtimeOptimizationPackage.findMany({
@@ -215,13 +285,15 @@ export class RuntimeOptimizationRepository {
       }),
       this.prisma.runtimeOptimizationPackage.count({ where })
     ]);
+    data.forEach((item) => this.verify(item));
     return { data, pagination: { page, limit, total, totalPages: Math.ceil(total / limit) } };
   }
   getMetrics(workspaceId: string, id: string) {
     return this.prisma.runtimeOptimizationPackage.findFirst({
-      where: { id, workspaceId }, select: { id: true, metric: true }
+      where: { id, workspaceId }, select: this.select
     }).then((value) => {
       if (!value) throw new NotFoundException("Runtime optimization package was not found");
+      this.verify(value);
       return value.metric;
     });
   }
@@ -230,18 +302,19 @@ export class RuntimeOptimizationRepository {
     tx: Prisma.TransactionClient, workspaceId: string, actorId: string,
     input: {
       type: RuntimeOptimizationPackageType; keyHash: string; sourceHash: string;
+      scopeKey?: string; revision?: number; compileTimeMs?: number;
       staticVariablesHash?: string; payload: unknown; references: Record<string, string>;
-      savedTokens: number; operation: "compilation" | "rendering" | "snapshot" | "retrieval" | "memory";
+      savedTokens: number; operation: "compilation" | "rendering" | "snapshot" | "retrieval" | "memory" | "workflow" | "tool" | "plan";
     }
   ) {
-    const existing = await tx.runtimeOptimizationPackage.findUnique({
-      where: {
-        workspaceId_type_keyHash: {
-          workspaceId, type: input.type, keyHash: input.keyHash
-        }
-      }, select: this.select
-    });
-    if (existing) {
+    await tx.$executeRaw(Prisma.sql`SELECT pg_advisory_xact_lock(hashtextextended(
+      ${`${workspaceId}:${input.type}:${input.keyHash}`}, 0))`);
+    const existing = await tx.runtimeOptimizationPackage.findFirst({ where: {
+      workspaceId, type: input.type, keyHash: input.keyHash,
+      status: RuntimeOptimizationPackageStatus.ACTIVE
+    }, select: this.select });
+    if (existing && existing.status === RuntimeOptimizationPackageStatus.ACTIVE) {
+      this.verify(existing);
       const metric = existing.metric!;
       const lifetime = Math.max(0, Date.now() - existing.createdAt.getTime());
       const updated = await tx.runtimeOptimizationMetric.updateMany({
@@ -279,15 +352,29 @@ export class RuntimeOptimizationRepository {
         where: { id: existing.id }, select: this.select
       });
     }
+    if (input.scopeKey) {
+      const stale = await tx.runtimeOptimizationPackage.findMany({ where: { workspaceId,
+        type: input.type, scopeKey: input.scopeKey, status: RuntimeOptimizationPackageStatus.ACTIVE,
+        NOT: { keyHash: input.keyHash } }, select: { id: true } });
+      if (stale.length) {
+        await tx.runtimeOptimizationPackage.updateMany({ where: { id: { in: stale.map(({ id }) => id) },
+          status: RuntimeOptimizationPackageStatus.ACTIVE }, data: { status: RuntimeOptimizationPackageStatus.INVALIDATED,
+          invalidatedAt: new Date(), invalidatedById: actorId,
+          invalidationReason: "Source hash changed" } });
+        for (const item of stale) await this.audit(tx, workspaceId, actorId,
+          "runtime.optimization.invalidated", item.id, { reason: "Source hash changed", successorKeyHash: input.keyHash });
+      }
+    }
     const packageHash = this.hash(input.payload);
     const created = await tx.runtimeOptimizationPackage.create({
       data: {
-        workspaceId, createdById: actorId, type: input.type,
+        workspaceId, createdById: actorId, publisherId: actorId, type: input.type,
+        scopeKey: input.scopeKey, revision: input.revision ?? 1,
         keyHash: input.keyHash, sourceHash: input.sourceHash,
         staticVariablesHash: input.staticVariablesHash,
         payload: json(input.payload), assetReferences: json(input.references),
         packageHash, checksum: this.hash({ packageHash, workspaceId, type: input.type }),
-        metric: { create: { cacheMisses: 1 } }
+        metric: { create: { cacheMisses: 1, compileTimeMs: input.compileTimeMs ?? 0 } }
       }, select: this.select
     });
     await this.audit(tx, workspaceId, actorId, "runtime.optimization.created", created.id, {
@@ -310,6 +397,23 @@ export class RuntimeOptimizationRepository {
       };
     }
     return record;
+  }
+  private async validateReferences(tx: Prisma.TransactionClient, workspaceId: string,
+    references: Record<string, string>) {
+    for (const [name, id] of Object.entries(references)) {
+      let found: unknown;
+      if (name === "compiledPromptId") found = await tx.compiledPrompt.findFirst({ where: { id, workspaceId }, select: { id: true } });
+      else if (name === "agentRuntimeSnapshotId") found = await tx.agentRuntimeSnapshot.findFirst({ where: { id, workspaceId }, select: { id: true } });
+      else if (name === "providerRuntimeSnapshotId") found = await tx.providerRequestSnapshot.findFirst({ where: { id, workspaceId }, select: { id: true } });
+      else if (name === "conversationRuntimeSnapshotId") found = await tx.conversationRuntimeSnapshot.findFirst({ where: { id, workspaceId }, select: { id: true } });
+      else if (name === "retrievalRuntimeSnapshotId") found = await tx.retrievalRuntimeSnapshot.findFirst({ where: { id, workspaceId }, select: { id: true } });
+      else if (name === "executionPipelineSnapshotId") found = await tx.executionPipelineSnapshot.findFirst({ where: { id, workspaceId }, select: { id: true } });
+      else if (name === "workflowVersionId") found = await tx.workflowVersion.findFirst({ where: { id, workflow: { workspaceId } }, select: { id: true } });
+      else if (/^toolVersion\d*Id$/.test(name)) found = await tx.toolVersion.findFirst({ where: { id, tool: { workspaceId } }, select: { id: true } });
+      else if (/^memoryRuntimeSnapshot\d*Id$/.test(name)) found = await tx.memoryRuntimeSnapshot.findFirst({ where: { id, workspaceId }, select: { id: true } });
+      else throw new BadRequestException(`Unsupported cache reference ${name}`);
+      if (!found) throw new NotFoundException(`Cache reference ${name} was not found in the workspace`);
+    }
   }
   private render(value: unknown, variables: Record<string, unknown>): unknown {
     if (typeof value === "string") return value.replace(
@@ -336,6 +440,13 @@ export class RuntimeOptimizationRepository {
   private hash(value: unknown) {
     return createHash("sha256").update(this.stable(value)).digest("hex");
   }
+  private verify(value: { workspaceId: string; type: RuntimeOptimizationPackageType;
+    payload: unknown; packageHash: string; checksum: string }) {
+    if (this.hash(value.payload) !== value.packageHash || this.hash({ packageHash: value.packageHash,
+      workspaceId: value.workspaceId, type: value.type }) !== value.checksum) {
+      throw new ConflictException("Runtime optimization package integrity validation failed");
+    }
+  }
   private stable(value: unknown): string {
     if (Array.isArray(value)) return `[${value.map((item) => this.stable(item)).join(",")}]`;
     if (value && typeof value === "object") return `{${Object.entries(value)
@@ -355,8 +466,11 @@ export class RuntimeOptimizationRepository {
     } });
   }
   private readonly select = {
-    id: true, workspaceId: true, createdById: true, type: true, keyHash: true,
+    id: true, workspaceId: true, createdById: true, publisherId: true, type: true,
+    status: true, scopeKey: true, keyHash: true,
     sourceHash: true, staticVariablesHash: true, payload: true, assetReferences: true,
-    packageHash: true, checksum: true, version: true, createdAt: true, metric: true
+    packageHash: true, checksum: true, version: true, revision: true, invalidatedAt: true,
+    invalidatedById: true, invalidationReason: true, createdAt: true, metric: true,
+    providerOutcomes: { orderBy: { createdAt: "desc" as const } }
   } as const;
 }

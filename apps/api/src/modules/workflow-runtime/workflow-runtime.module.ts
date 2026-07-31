@@ -9,9 +9,10 @@ import { WorkflowRuntimeService } from "./workflow-runtime.service";
 import { WorkflowRuntimeStateMachine } from "./workflow-runtime.state-machine";
 import { WorkflowRuntimeValidator } from "./workflow-runtime.validator";
 import { ToolRuntimeModule } from "../tool-runtime/tool-runtime.module";
+import { RuntimeOptimizationModule } from "../runtime-optimization/runtime-optimization.module";
 
 @Module({ imports: [ExecutionKernelModule, AgentExecutionModule, StreamingRuntimeModule, MemoryRuntimeModule,
-    forwardRef(() => ToolRuntimeModule)],
+    forwardRef(() => ToolRuntimeModule), RuntimeOptimizationModule],
   controllers: [WorkflowRuntimeController], providers: [WorkflowRuntimeStateMachine,
     WorkflowRuntimeValidator, WorkflowRuntimeRepository, WorkflowRuntimeService],
   exports: [WorkflowRuntimeService] })

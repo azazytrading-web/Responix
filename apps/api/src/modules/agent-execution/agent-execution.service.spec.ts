@@ -51,8 +51,10 @@ describe("AgentExecutionService", () => {
       { getSnapshot: jest.fn().mockResolvedValue(assets.conversation) } as never,
       { getSnapshot: jest.fn().mockResolvedValue(assets.pipeline) } as never,
       { invoke: jest.fn() } as never,
-      { cacheCompiled: jest.fn(), cacheRendered: jest.fn(), cacheRetrieval: jest.fn(),
-        cacheMemory: jest.fn() } as never,
+      { cacheCompiled: jest.fn().mockResolvedValue({ packageHash: "a".repeat(64) }),
+        cacheRendered: jest.fn(), cacheRetrieval: jest.fn(), cacheMemory: jest.fn(),
+        cacheImmutable: jest.fn().mockResolvedValue({ id: "cache", keyHash: "b".repeat(64) }),
+        recordProviderOutcome: jest.fn() } as never,
       { create: jest.fn(), connect: jest.fn(), start: jest.fn(), append: jest.fn(), complete: jest.fn(), cancel: jest.fn(), fail: jest.fn(), get: jest.fn() } as never,
       memory as never,
       { execute: jest.fn().mockResolvedValue({ documents: [] }) } as never,
@@ -127,7 +129,8 @@ describe("AgentExecutionService", () => {
     });
     invocation.invocations.invoke.mockResolvedValue({
       requestId: "request", providerId: "provider", modelId: "model", content: "answer",
-      usage: { promptTokens: 2, completionTokens: 1 }
+      usage: { inputTokens: 2, outputTokens: 1, cachedTokens: 0, totalTokens: 3 },
+      cost: { inputCost: "0", outputCost: "0", totalCost: "0", currency: "USD" }
     });
     await expect(state.service.execute("workspace", "actor", {
       ...dto, taskType: "completion"
@@ -151,7 +154,8 @@ describe("AgentExecutionService", () => {
     });
     internals.invocations.invoke.mockResolvedValue({
       requestId: "request", providerId: "provider", modelId: "model",
-      content: "answer", usage: {}
+      content: "answer", usage: { inputTokens: 2, outputTokens: 1, cachedTokens: 0, totalTokens: 3 },
+      cost: { inputCost: "0", outputCost: "0", totalCost: "0", currency: "USD" }
     });
     state.memory.resolve.mockResolvedValue({
       snapshots: [{

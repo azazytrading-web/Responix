@@ -1,5 +1,13 @@
 # Architecture Decisions
 
+## ADR-018 - Layered Immutable Prompt and Runtime Cache
+
+- **Status:** Accepted
+- **Context:** Compiled prompts, deterministic rendering, provider prefixes, published studio assets, retrieval preparation, memory graphs, tool definitions, workflow graphs, and execution plans must be reused without caching responses or dynamic user/runtime state.
+- **Decision:** Extend the existing Runtime Optimization repository as the single cache authority. Store workspace-scoped immutable packages addressed by deterministic SHA-256 source/key/package hashes and checksums. Separate cache types by lifecycle, automatically invalidate active scope predecessors when source hashes change, serialize concurrent key creation with PostgreSQL transaction advisory locks, and retain invalidated revisions for audit and rollback history. Provider adapters expose truthful `AUTOMATIC`, `EXPLICIT`, or `NONE` cache capability; Agent Execution always retains the internal package and records native provider outcomes from reported cached-token usage.
+- **Consequences:** Static packages are reusable across providers; user messages, conversation history, memory entries, retrieval results, tool outputs, and runtime variables cannot enter static caches. Native provider caching remains provider-boundary behavior, while unsupported providers fall back to the same internal package. Cache metrics and provider outcomes are durable and auditable, and cache invalidation never deletes prior snapshots.
+
+
 ## ADR-017 - Vendor-Neutral Tool Calling Runtime
 
 - **Status:** Accepted

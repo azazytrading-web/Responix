@@ -127,6 +127,7 @@ const permissions = [
   "agent.execution.cancel",
   "runtime.optimization.create",
   "runtime.optimization.read",
+  "runtime.optimization.invalidate",
   "runtime.optimization.manage",
   "stream.runtime.read",
   "stream.runtime.create",

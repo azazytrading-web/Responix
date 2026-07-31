@@ -1,5 +1,6 @@
 import { BadRequestException, forwardRef, Inject, Injectable } from "@nestjs/common";
-import { ExecutionKernelStatus, ExecutionSourceType } from "@prisma/client";
+import { ExecutionKernelStatus, ExecutionSourceType, RuntimeOptimizationPackageType } from "@prisma/client";
+import { createHash } from "node:crypto";
 import { AI_INVOCATION_SERVICE } from "../ai/ai.tokens";
 import type { InvocationService } from "../ai/invocation/invocation.service";
 import { AgentRuntimeService } from "../agent-runtime/agent-runtime.service";
@@ -151,21 +152,22 @@ export class AgentExecutionService {
       const toolOutputs = await this.executeTools(workspaceId, actorId, dto, run.id);
       const payload = await this.promptExecution.get(workspaceId, dto.promptExecutionPayloadId);
       const messages = this.messages(payload.messages, dto.userMessage, memory, retrieval, toolOutputs);
-      await this.optimization.cacheCompiled(workspaceId, actorId, {
-        compiledPromptId: payload.compiledPromptId
-      });
-      const effectiveVariables = { ...dto.staticVariables, ...(toolOutputs.length ? { toolOutputs } : {}) };
-      if (Object.keys(effectiveVariables).length) {
-        await this.optimization.cacheRendered(workspaceId, actorId, {
-          compiledPromptId: payload.compiledPromptId, staticVariables: effectiveVariables
-        });
-      }
       const providerTools = dto.availableToolVersionIds?.length ?
         await this.tools.providerContracts(workspaceId, dto.availableToolVersionIds) : undefined;
+      const promptCache = await this.prepareOptimization(workspaceId, actorId, dto, orchestration,
+        payload, providerTools);
       const response = await this.invocations.invoke({
         requestId: orchestration.executionRequestId, taskType: dto.taskType, messages,
         mode: "sync", ...(providerTools ? { tools: providerTools } : {}),
+        promptCache: { packageId: promptCache.id, keyHash: promptCache.keyHash, ttlSeconds: 300 },
         ...(dto.language ? { language: dto.language } : {})
+      });
+      const cacheMetadata = response.metadata?.promptCache as Record<string, unknown> | undefined;
+      await this.optimization.recordProviderOutcome(workspaceId, actorId, {
+        packageId: promptCache.id, providerId: response.providerId, modelId: response.modelId,
+        nativeSupported: cacheMetadata?.nativeSupported === true,
+        cachedTokens: response.usage.cachedTokens,
+        ttlSeconds: typeof cacheMetadata?.ttlSeconds === "number" ? cacheMetadata.ttlSeconds : undefined
       });
       const completed = await this.kernel.transition(workspaceId, actorId, run.id, {
         status: ExecutionKernelStatus.SUCCEEDED, expectedStateVersion: running.stateVersion,
@@ -181,7 +183,7 @@ export class AgentExecutionService {
         executionId: orchestration.id, answer: response.content, provider: response.providerId,
         model: response.modelId, finishReason: response.finishReason ?? null,
         usage: response.usage, latency: response.metadata?.providerDurationMs ?? null,
-        executionTime: completed.durationMs ?? null, cacheHit: false,
+        executionTime: completed.durationMs ?? null, cacheHit: response.usage.cachedTokens > 0,
         diagnostics: orchestration.runtimeDiagnostics
       };
     } catch (error) {
@@ -205,11 +207,6 @@ export class AgentExecutionService {
     const provider = await this.providerRuntime.getSnapshot(workspaceId, dto.providerRuntimeSnapshotId);
     const payload = await this.promptExecution.get(workspaceId, dto.promptExecutionPayloadId);
     const messages = this.messages(payload.messages, dto.userMessage, memory, retrieval, toolOutputs);
-    await this.optimization.cacheCompiled(workspaceId, actorId, { compiledPromptId: payload.compiledPromptId });
-    const effectiveVariables = { ...dto.staticVariables, ...(toolOutputs.length ? { toolOutputs } : {}) };
-    if (Object.keys(effectiveVariables).length) await this.optimization.cacheRendered(workspaceId, actorId, {
-      compiledPromptId: payload.compiledPromptId, staticVariables: effectiveVariables
-    });
     const session = await this.streaming.create(workspaceId, actorId, {
       providerId: provider.providerId, modelId: provider.modelId, requestHash: orchestration.planHash,
       agentRuntimeId: dto.agentRuntimeSnapshotId, executionRequestId: orchestration.executionRequestId,
@@ -219,9 +216,11 @@ export class AgentExecutionService {
     });
     const providerTools = dto.availableToolVersionIds?.length ?
       await this.tools.providerContracts(workspaceId, dto.availableToolVersionIds) : undefined;
+    const promptCache = await this.prepareOptimization(workspaceId, actorId, dto, orchestration,
+      payload, providerTools);
     const controller = new AbortController(); this.streamControllers.set(session.id, controller);
     void this.runStream(workspaceId, actorId, session.id, orchestration.executionRunId, dto,
-      messages, controller, providerTools);
+      messages, controller, providerTools, promptCache);
     return session;
   }
 
@@ -239,7 +238,8 @@ export class AgentExecutionService {
 
   private async runStream(workspaceId: string, actorId: string, sessionId: string, runId: string,
     dto: StreamAgentExecutionDto, messages: ReturnType<AgentExecutionService["messages"]>,
-    controller: AbortController, providerTools?: Awaited<ReturnType<ToolRuntimeService["providerContracts"]>>) {
+    controller: AbortController, providerTools?: Awaited<ReturnType<ToolRuntimeService["providerContracts"]>>,
+    promptCache?: { id: string; keyHash: string }) {
     let sequence = 0;
     const timeout = setTimeout(
       () => controller.abort(new Error("Stream timeout")),
@@ -253,6 +253,8 @@ export class AgentExecutionService {
       await this.kernel.transition(workspaceId, actorId, runId, { status: ExecutionKernelStatus.RUNNING, expectedStateVersion: starting.stateVersion, message: "Provider stream is active" });
       const completion = await this.invocations.stream({ requestId: runId, taskType: dto.taskType,
         messages, mode: "stream", signal: controller.signal, ...(providerTools ? { tools: providerTools } : {}),
+        ...(promptCache ? { promptCache: { packageId: promptCache.id, keyHash: promptCache.keyHash,
+          ttlSeconds: 300 } } : {}),
         ...(dto.language ? { language: dto.language } : {}) }, async (event) => {
         if (event.type === "delta" && event.content) {
           await this.streaming.append(workspaceId, actorId, sessionId, {
@@ -261,6 +263,10 @@ export class AgentExecutionService {
           });
         }
       });
+      if (promptCache && completion.usage) await this.optimization.recordProviderOutcome(workspaceId,
+        actorId, { packageId: promptCache.id, providerId: completion.providerId,
+          modelId: completion.modelId, nativeSupported: completion.nativePromptCacheSupported,
+          cachedTokens: completion.usage.cachedTokens });
       await this.streaming.complete(
         workspaceId, actorId, sessionId, started.stateVersion, completion
       );
@@ -284,6 +290,67 @@ export class AgentExecutionService {
   async observeStream(workspaceId: string, sessionId: string) {
     await this.streaming.get(workspaceId, sessionId);
     return this.streaming.observe(sessionId);
+  }
+
+  private async prepareOptimization(workspaceId: string, actorId: string,
+    dto: ExecuteAgentExecutionDto, orchestration: { id: string; planHash: string },
+    payload: { compiledPromptId: string; payloadHash?: string; messages: unknown },
+    tools?: Awaited<ReturnType<ToolRuntimeService["providerContracts"]>>) {
+    const compiled = await this.optimization.cacheCompiled(workspaceId, actorId,
+      { compiledPromptId: payload.compiledPromptId });
+    if (dto.staticVariables && Object.keys(dto.staticVariables).length) {
+      await this.optimization.cacheRendered(workspaceId, actorId, {
+        compiledPromptId: payload.compiledPromptId, staticVariables: dto.staticVariables
+      });
+    }
+    const prefix = Array.isArray(payload.messages) ? payload.messages.filter((message) => {
+      const value = message as Record<string, unknown>; return value.role === "system";
+    }) : [];
+    const sourceHash = this.hash({ compiled: compiled.packageHash, staticVariables: dto.staticVariables ?? {}, tools: tools ?? [] });
+    if (tools?.length) await this.optimization.cacheImmutable(workspaceId, actorId, {
+      type: RuntimeOptimizationPackageType.TOOL_DEFINITION,
+      scopeKey: `agent-tools:${dto.agentRuntimeSnapshotId}`, sourceHash: this.hash(tools),
+      payload: { definitions: tools }, references: Object.fromEntries((dto.availableToolVersionIds ?? [])
+        .map((id, index) => [`toolVersion${index}Id`, id]))
+    });
+    await this.optimization.cacheImmutable(workspaceId, actorId, {
+      type: RuntimeOptimizationPackageType.STUDIO_CONFIGURATION,
+      scopeKey: `agent-studio:${dto.agentRuntimeSnapshotId}`, sourceHash: orchestration.planHash,
+      payload: { agentRuntimeSnapshotId: dto.agentRuntimeSnapshotId,
+        compiledPromptId: payload.compiledPromptId, providerRuntimeSnapshotId: dto.providerRuntimeSnapshotId,
+        executionPipelineSnapshotId: dto.executionPipelineSnapshotId,
+        staticVariables: dto.staticVariables ?? {}, tools: tools ?? [] }
+    });
+    const providerPrompt = await this.optimization.cacheImmutable(workspaceId, actorId, {
+      type: RuntimeOptimizationPackageType.PROVIDER_PROMPT,
+      scopeKey: `provider-prompt:${dto.agentRuntimeSnapshotId}`, sourceHash,
+      payload: { prefix, tools: tools ?? [], compiledPromptHash: compiled.packageHash },
+      references: { compiledPromptId: payload.compiledPromptId }
+    });
+    if (dto.conversationRuntimeSnapshotId) await this.optimization.cacheImmutable(workspaceId, actorId, {
+      type: RuntimeOptimizationPackageType.CONVERSATION_PREFIX,
+      scopeKey: `conversation:${dto.conversationRuntimeSnapshotId}`, sourceHash,
+      payload: { prefix, tools: tools ?? [] },
+      references: { conversationRuntimeSnapshotId: dto.conversationRuntimeSnapshotId }
+    });
+    await this.optimization.cacheImmutable(workspaceId, actorId, {
+      type: RuntimeOptimizationPackageType.EXECUTION_PLAN,
+      scopeKey: `agent-plan:${dto.agentRuntimeSnapshotId}`, sourceHash: orchestration.planHash,
+      payload: { planHash: orchestration.planHash, agentRuntimeSnapshotId: dto.agentRuntimeSnapshotId,
+        compiledPromptId: payload.compiledPromptId, providerRuntimeSnapshotId: dto.providerRuntimeSnapshotId,
+        executionPipelineSnapshotId: dto.executionPipelineSnapshotId,
+        memoryRuntimeSnapshotIds: dto.memoryRuntimeSnapshotIds ?? [],
+        retrievalRuntimeSnapshotId: dto.retrievalRuntimeSnapshotId ?? null,
+        toolVersionIds: dto.availableToolVersionIds ?? [] }
+    });
+    return providerPrompt;
+  }
+
+  private hash(value: unknown) {
+    const stable = (item: unknown): string => Array.isArray(item) ? `[${item.map(stable).join(",")}]` :
+      item && typeof item === "object" ? `{${Object.entries(item).sort(([a], [b]) => a.localeCompare(b))
+        .map(([key, child]) => `${JSON.stringify(key)}:${stable(child)}`).join(",")}}` : JSON.stringify(item) ?? "null";
+    return createHash("sha256").update(stable(value)).digest("hex");
   }
 
   private messages(value: unknown, userMessage?: string, memory?: ResolvedMemoryPackage,

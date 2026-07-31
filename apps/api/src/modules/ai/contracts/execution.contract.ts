@@ -11,6 +11,7 @@ export interface NormalizedInvocationRequest {
   language?: string;
   signal?: AbortSignal;
   tools?: AiToolDefinitionContract[];
+  promptCache?: AiRequestContract["promptCache"];
 }
 
 export interface ProviderExecutionRequest {
@@ -22,6 +23,7 @@ export interface ProviderExecutionRequest {
   maxOutputTokens: number;
   signal: AbortSignal;
   tools?: AiToolDefinitionContract[];
+  promptCache?: AiRequestContract["promptCache"];
 }
 
 export interface ProviderExecutionCredential {

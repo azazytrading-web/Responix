@@ -23,4 +23,5 @@ export interface AiRequestContract {
   customerId?: string;
   tools?: AiToolDefinitionContract[];
   metadata?: Record<string, unknown>;
+  promptCache?: { packageId: string; keyHash: string; ttlSeconds?: number };
 }

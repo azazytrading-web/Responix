@@ -1,6 +1,7 @@
 import { BadRequestException, forwardRef, Inject, Injectable, type OnModuleDestroy, type OnModuleInit } from "@nestjs/common";
 import { ExecutionKernelStatus, ExecutionSourceType, WorkflowNodeRuntimeStatus,
   WorkflowNodeType, WorkflowRuntimeStatus } from "@prisma/client";
+import { RuntimeOptimizationPackageType } from "@prisma/client";
 import { randomUUID } from "node:crypto";
 import { AgentExecutionService } from "../agent-execution/agent-execution.service";
 import type { ExecuteAgentExecutionDto } from "../agent-execution/dto/agent-execution.dto";
@@ -15,6 +16,7 @@ import type { WorkflowExecutionContext, WorkflowRuntimeNode,
   WorkflowRuntimeSnapshot } from "./workflow-runtime.types";
 import { WorkflowRuntimeValidator } from "./workflow-runtime.validator";
 import { ToolRuntimeService } from "../tool-runtime/tool-runtime.service";
+import { RuntimeOptimizationService } from "../runtime-optimization/runtime-optimization.service";
 
 type NodeResult = { node: WorkflowRuntimeNode; nodeExecutionId: string; output: unknown;
   next: string[]; selectedBranch?: string; wait?: boolean; agentExecutionId?: string;
@@ -28,7 +30,8 @@ export class WorkflowRuntimeService implements OnModuleInit, OnModuleDestroy {
     private readonly validator: WorkflowRuntimeValidator, private readonly kernel: ExecutionKernelService,
     private readonly agents: AgentExecutionService, private readonly streams: StreamingRuntimeService,
     private readonly memory: MemoryRuntimeService,
-    @Inject(forwardRef(() => ToolRuntimeService)) private readonly tools: ToolRuntimeService) {}
+    @Inject(forwardRef(() => ToolRuntimeService)) private readonly tools: ToolRuntimeService,
+    private readonly optimization: RuntimeOptimizationService) {}
 
   onModuleInit() {
     this.expiryTimer = setInterval(() => { void this.expireExecutions(); }, 1000);
@@ -47,6 +50,21 @@ export class WorkflowRuntimeService implements OnModuleInit, OnModuleDestroy {
     if (existing) return existing;
     const version = await this.repository.loadVersion(workspaceId, dto.workflowVersionId);
     const snapshot = version.snapshot; this.validator.validateSnapshot(snapshot);
+    await this.optimization.cacheImmutable(workspaceId, actorId, {
+      type: RuntimeOptimizationPackageType.WORKFLOW_PACKAGE,
+      scopeKey: `workflow:${version.workflowId}`, sourceHash: version.snapshotHash,
+      payload: { snapshot, compiledGraph: { nodes: snapshot.nodes, edges: snapshot.edges,
+        branches: snapshot.branches }, conditions: snapshot.branches },
+      references: { workflowVersionId: version.id }, revision: version.revision
+    });
+    await this.optimization.cacheImmutable(workspaceId, actorId, {
+      type: RuntimeOptimizationPackageType.EXECUTION_PLAN,
+      scopeKey: `workflow-plan:${version.workflowId}`, sourceHash: version.snapshotHash,
+      payload: { workflowVersionId: version.id, graph: { nodes: snapshot.nodes,
+        edges: snapshot.edges, branches: snapshot.branches }, maxDepth: dto.maxDepth ?? 10,
+        maxNodeExecutions: dto.maxNodeExecutions ?? 1000 },
+      references: { workflowVersionId: version.id }, revision: version.revision
+    });
     this.validator.validateInput(snapshot, dto.input ?? {});
     const maxDepth = dto.maxDepth ?? 10;
     if (depth > maxDepth) throw new BadRequestException("Workflow maximum subworkflow depth exceeded");

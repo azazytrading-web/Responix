@@ -39,6 +39,18 @@ describe("Vendor provider adapters", () => {
       body: expect.stringContaining('"max_tokens":100')
     }));
   });
+  it("marks only the stable Claude system prefix for explicit native caching", async () => {
+    const postJson = jest.fn().mockResolvedValue({ status: 200, body: JSON.stringify({
+      content: [{ type: "text", text: "ok" }], usage: { input_tokens: 2, output_tokens: 1 }
+    }) });
+    await new AnthropicProviderAdapter({ postJson } as never).invoke(request({
+      promptCache: { packageId: "package", keyHash: "a".repeat(64), ttlSeconds: 3600 }
+    }), credential);
+    const body = JSON.parse(postJson.mock.calls[0]?.[0].body as string);
+    expect(body.system).toEqual([{ type: "text", text: "Be concise",
+      cache_control: { type: "ephemeral", ttl: "1h" } }]);
+    expect(body.messages).toEqual([{ role: "user", content: "Hello" }]);
+  });
   it("normalizes Gemini requests, headers, content, and usage", async () => {
     const postJson = jest.fn().mockResolvedValue({
       status: 200, body: JSON.stringify({

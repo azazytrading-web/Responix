@@ -7,17 +7,20 @@ export interface ProviderPromptCacheContext {
 }
 
 export interface ProviderPromptCache {
+  readonly mode: "NONE" | "AUTOMATIC" | "EXPLICIT";
+  readonly ttlSeconds: number | null;
   supportsCaching(): boolean;
   buildProviderCacheKey(context: ProviderPromptCacheContext): string | null;
-  restoreProviderCache(key: string): Promise<unknown>;
-  storeProviderCache(key: string, value: unknown): Promise<boolean>;
-  invalidateProviderCache(key: string): Promise<boolean>;
 }
 
 export const unsupportedProviderPromptCache: ProviderPromptCache = Object.freeze({
+  mode: "NONE", ttlSeconds: null,
   supportsCaching: () => false,
-  buildProviderCacheKey: () => null,
-  restoreProviderCache: () => Promise.resolve(null),
-  storeProviderCache: () => Promise.resolve(false),
-  invalidateProviderCache: () => Promise.resolve(false)
+  buildProviderCacheKey: () => null
 });
+
+export function nativeProviderPromptCache(mode: "AUTOMATIC" | "EXPLICIT", ttlSeconds: number): ProviderPromptCache {
+  return Object.freeze({ mode, ttlSeconds, supportsCaching: () => true,
+    buildProviderCacheKey: (context: ProviderPromptCacheContext) =>
+      `${context.workspaceId}:${context.providerName}:${context.modelName}:${context.promptHash}` });
+}

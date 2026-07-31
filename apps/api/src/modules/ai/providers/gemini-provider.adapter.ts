@@ -10,6 +10,7 @@ import {
   assertTokenLimit, normalizeHttpStatus, normalizeTransportError, parseJson
 } from "./provider-adapter.utils";
 import type { ProviderStreamEvent } from "../contracts";
+import { nativeProviderPromptCache } from "./provider-prompt-cache.interface";
 
 const schema = z.object({
   candidates: z.array(z.object({
@@ -28,6 +29,7 @@ const schema = z.object({
 export class GeminiProviderAdapter implements AiProviderAdapter {
   readonly providerName = "Gemini";
   readonly contractVersion = "1.0";
+  readonly promptCache = nativeProviderPromptCache("AUTOMATIC", 3600);
   constructor(private readonly http: ProviderHttpClient) {}
   async invoke(request: ProviderExecutionRequest, credential: ProviderExecutionCredential):
   Promise<ProviderExecutionResult> {

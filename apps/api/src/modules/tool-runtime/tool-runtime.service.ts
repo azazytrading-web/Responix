@@ -2,7 +2,7 @@ import { BadRequestException, ForbiddenException, Injectable, type OnModuleDestr
   type OnModuleInit } from "@nestjs/common";
 import { ModuleRef } from "@nestjs/core";
 import { ExecutionKernelStatus, ExecutionSourceType, ToolAttemptStatus,
-  ToolExecutionMode, ToolRuntimeStatus } from "@prisma/client";
+  ToolExecutionMode, ToolRuntimeStatus, RuntimeOptimizationPackageType } from "@prisma/client";
 import { randomUUID } from "node:crypto";
 import { ReplaySubject } from "rxjs";
 import { AgentExecutionService } from "../agent-execution/agent-execution.service";
@@ -51,6 +51,14 @@ export class ToolRuntimeService implements OnModuleInit, OnModuleDestroy {
     const snapshot = version.snapshot as unknown as ToolRuntimeSnapshot;
     this.validator.validateSnapshot(snapshot); this.validator.assertCompatibility(snapshot);
     await this.assertPermissions(workspaceId, actorId, snapshot);
+    await this.optimization.cacheImmutable(workspaceId, actorId, {
+      type: RuntimeOptimizationPackageType.TOOL_DEFINITION,
+      scopeKey: `tool:${version.toolId}`, sourceHash: version.snapshotHash,
+      payload: { snapshot, inputSchema: snapshot.schemas.find(({ kind }) => kind === "INPUT")?.schema,
+        outputSchema: snapshot.schemas.find(({ kind }) => kind === "OUTPUT")?.schema,
+        parameters: snapshot.parameters, capabilities: snapshot.capabilities },
+      references: { toolVersionId: version.id }, revision: version.revision
+    });
     const normalizedInput = this.validator.normalizeInput(snapshot, dto.input);
     const policy = this.policies.resolve(snapshot);
     const timeoutMs = Math.min(dto.timeoutMs ?? policy.maximumExecutionMs, policy.maximumExecutionMs);

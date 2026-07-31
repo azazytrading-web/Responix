@@ -1,5 +1,20 @@
 # Validation History
 
+## Sprint 6E.12 - Advanced Prompt Cache & Runtime Optimization - 2026-07-31
+
+| Check                   | Result                                             |
+| ----------------------- | -------------------------------------------------- |
+| `pnpm prisma validate`  | PASS                                               |
+| `pnpm prisma generate`  | PASS                                               |
+| `pnpm typecheck`        | PASS - 10 workspace tasks                          |
+| `pnpm lint`             | PASS - all 7 applicable workspace projects         |
+| `pnpm test`             | PASS - API Jest: 132 suites, 848 tests             |
+| `pnpm build`            | PASS - 6 workspace build tasks                     |
+| `git diff --check`      | PASS                                               |
+| Sprint 6E.12 validation | PASS - full mandatory repository validation matrix |
+
+The repository retains one pre-existing skipped API suite and four skipped tests; no tests were disabled or newly skipped by Sprint 6E.12. Validation used `NODE_OPTIONS=--max-old-space-size=8192` for the full workspace checks.
+
 ## Sprint 6E.11 - Tool Calling Engine - 2026-07-31
 
 | Check | Result |

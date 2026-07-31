@@ -9,7 +9,7 @@ import type { AiProviderAdapter } from "./provider-adapter.interface";
 import {
   assertTokenLimit, normalizeHttpStatus, normalizeTransportError, parseJson
 } from "./provider-adapter.utils";
-import { unsupportedProviderPromptCache } from "./provider-prompt-cache.interface";
+import { nativeProviderPromptCache } from "./provider-prompt-cache.interface";
 import type { ProviderStreamEvent } from "../contracts";
 
 const schema = z.object({
@@ -27,7 +27,7 @@ const schema = z.object({
 export class AnthropicProviderAdapter implements AiProviderAdapter {
   readonly providerName = "Claude";
   readonly contractVersion = "1.0";
-  readonly promptCache = unsupportedProviderPromptCache;
+  readonly promptCache = nativeProviderPromptCache("EXPLICIT", 300);
   constructor(private readonly http: ProviderHttpClient) {}
   async invoke(request: ProviderExecutionRequest, credential: ProviderExecutionCredential):
   Promise<ProviderExecutionResult> {
@@ -43,7 +43,8 @@ export class AnthropicProviderAdapter implements AiProviderAdapter {
         headers: { "x-api-key": credential.secret, "anthropic-version": "2023-06-01" },
         body: JSON.stringify({
           model: request.modelName, max_tokens: request.maxOutputTokens,
-          ...(system ? { system } : {}), messages,
+          ...(system ? { system: request.promptCache ? [{ type: "text", text: system,
+            cache_control: { type: "ephemeral", ttl: request.promptCache.ttlSeconds === 3600 ? "1h" : "5m" } }] : system } : {}), messages,
           ...(request.tools?.length ? { tools: request.tools.map((tool) => ({ name: tool.name,
             description: tool.description, input_schema: tool.inputSchema })) } : {})
         }),
@@ -79,7 +80,8 @@ export class AnthropicProviderAdapter implements AiProviderAdapter {
         url: `${(request.apiBaseUrl ?? "https://api.anthropic.com/v1").replace(/\/$/, "")}/messages`,
         headers: { "x-api-key": credential.secret, "anthropic-version": "2023-06-01" },
         body: JSON.stringify({ model: request.modelName, max_tokens: request.maxOutputTokens, stream: true,
-          ...(system ? { system } : {}), messages,
+          ...(system ? { system: request.promptCache ? [{ type: "text", text: system,
+            cache_control: { type: "ephemeral", ttl: request.promptCache.ttlSeconds === 3600 ? "1h" : "5m" } }] : system } : {}), messages,
           ...(request.tools?.length ? { tools: request.tools.map((tool) => ({ name: tool.name,
             description: tool.description, input_schema: tool.inputSchema })) } : {}) }), signal: request.signal,
         onEvent: async ({ event, data }) => {

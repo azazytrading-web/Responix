@@ -44,6 +44,7 @@ export class RequestNormalizerService {
       messages: request.messages.map(({ role, content }) => ({ role, content })),
       ...(request.language ? { language: request.language } : {}),
       ...(request.tools?.length ? { tools: structuredClone(request.tools) } : {}),
+      ...(request.promptCache ? { promptCache: structuredClone(request.promptCache) } : {}),
       ...(request.signal ? { signal: request.signal } : {})
     } as TrustedInvocationRequest;
   }

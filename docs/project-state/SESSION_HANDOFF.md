@@ -1,5 +1,22 @@
 # Session Handoff
 
+## Current Repository State - Sprint 6E.12 - 2026-07-31
+
+Sprint 6E.12 extends the existing Runtime Optimization module into the authoritative
+layered prompt/runtime cache. New immutable package types cover provider prompts,
+conversation prefixes, studio configurations, tool definitions, workflow packages, and
+execution plans alongside the existing compiled/rendered/retrieval/memory/context layers.
+Packages are workspace isolated, hash/checksum verified, revisioned, automatically
+invalidated by scope when sources change, and retained for audit/rollback history.
+
+Agent sync and streaming execution share the same static provider package; Workflow and
+Tool runtimes reuse compiled immutable packages. Native cache capability is negotiated at
+provider boundaries, Claude uses explicit stable-prefix cache control, automatic providers
+report hits through cached-token usage, and unsupported providers retain internal fallback.
+Dynamic user, conversation, memory-entry, retrieval-result, tool-output, and runtime values
+are excluded from static packages.
+
+
 ## Current Repository State - Sprint 6E.11 - 2026-07-31
 
 Sprint 6E.11 adds the production Tool Calling Engine above the existing Prompt, Memory,

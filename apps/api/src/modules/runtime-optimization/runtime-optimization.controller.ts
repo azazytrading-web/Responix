@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post, Query, Req, Version } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Param, Post, Query, Req, Version } from "@nestjs/common";
 import {
   ApiBadRequestResponse, ApiBearerAuth, ApiForbiddenResponse, ApiNotFoundResponse,
   ApiOperation, ApiTags
@@ -6,7 +6,8 @@ import {
 import { Permissions } from "../auth/auth.guard";
 import type { TenantRequest } from "../tenant/tenant-context.service";
 import {
-  CacheCompiledPromptDto, CacheRenderedPromptDto, CacheRetrievalRuntimeDto,
+  CacheCompiledPromptDto, CacheImmutablePackageDto, CacheRenderedPromptDto, CacheRetrievalRuntimeDto,
+  InvalidateOptimizationPackageDto,
   CreateRuntimeContextSnapshotDto, RuntimeOptimizationListQueryDto
 } from "./dto/runtime-optimization.dto";
 import { RuntimeOptimizationService } from "./runtime-optimization.service";
@@ -39,6 +40,17 @@ export class RuntimeOptimizationController {
   cacheRetrieval(@Req() req: TenantRequest, @Body() dto: CacheRetrievalRuntimeDto) {
     const c = req.tenantContext!;
     return this.service.cacheRetrieval(c.workspace.id, c.user.id, dto);
+  }
+  @Post("immutable-packages") @Version("1") @Permissions("runtime.optimization.create")
+  @ApiOperation({ summary: "Cache or reuse a hash-protected immutable runtime package" })
+  cacheImmutable(@Req() req: TenantRequest, @Body() dto: CacheImmutablePackageDto) {
+    const c = req.tenantContext!; return this.service.cacheImmutable(c.workspace.id, c.user.id, dto);
+  }
+  @Delete(":id") @Version("1") @Permissions("runtime.optimization.invalidate")
+  @ApiOperation({ summary: "Invalidate an immutable cache package using optimistic locking" })
+  invalidate(@Req() req: TenantRequest, @Param("id") id: string,
+    @Body() dto: InvalidateOptimizationPackageDto) {
+    const c = req.tenantContext!; return this.service.invalidate(c.workspace.id, c.user.id, id, dto.reason);
   }
   @Get() @Version("1") @Permissions("runtime.optimization.read")
   @ApiOperation({ summary: "Filter and paginate immutable optimization packages" })

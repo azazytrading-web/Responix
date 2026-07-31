@@ -9,7 +9,7 @@ import {
   normalizeHttpStatus, normalizeTransportError
 } from "./provider-adapter.utils";
 import { normalizeOpenAiCompatibleResponse, openAiCompatibleTools } from "./openai-compatible";
-import { unsupportedProviderPromptCache } from "./provider-prompt-cache.interface";
+import { nativeProviderPromptCache } from "./provider-prompt-cache.interface";
 import { streamOpenAiCompatible } from "./openai-compatible-stream";
 
 export const DEEPSEEK_CAPABILITIES = Object.freeze({
@@ -28,7 +28,7 @@ export class DeepSeekProviderAdapter implements AiProviderAdapter {
   readonly providerName = "DeepSeek";
   readonly contractVersion = "1.0";
   readonly capabilities = DEEPSEEK_CAPABILITIES;
-  readonly promptCache = unsupportedProviderPromptCache;
+  readonly promptCache = nativeProviderPromptCache("AUTOMATIC", 3600);
 
   constructor(private readonly http: ProviderHttpClient) {}
 

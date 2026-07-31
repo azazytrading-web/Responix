@@ -15,6 +15,7 @@ export class ResponseNormalizerService {
     routing: RoutingDecision;
     usage: AiUsageContract;
     cost: AiCostContract;
+    metadata?: Record<string, unknown>;
   }): AiResponseContract {
     return {
       requestId: input.requestId,
@@ -27,7 +28,8 @@ export class ResponseNormalizerService {
       toolCalls: input.providerResult.toolCalls ?? [],
       usage: input.usage,
       cost: input.cost,
-      routing: input.routing
+      routing: input.routing,
+      ...(input.metadata ? { metadata: input.metadata } : {})
     };
   }
 }

@@ -9,11 +9,13 @@ import {
 } from "./provider-adapter.utils";
 import { normalizeOpenAiCompatibleResponse, openAiCompatibleTools } from "./openai-compatible";
 import { streamOpenAiCompatible } from "./openai-compatible-stream";
+import { nativeProviderPromptCache } from "./provider-prompt-cache.interface";
 
 @Injectable()
 export class AzureOpenAiProviderAdapter implements AiProviderAdapter {
   readonly providerName = "Azure OpenAI";
   readonly contractVersion = "1.0";
+  readonly promptCache = nativeProviderPromptCache("AUTOMATIC", 600);
   constructor(private readonly http: ProviderHttpClient) {}
   async invoke(request: ProviderExecutionRequest, credential: ProviderExecutionCredential):
   Promise<ProviderExecutionResult> {

@@ -1,5 +1,12 @@
 # Project Version
 
+## Engineering State Update - Sprint 6E.12 - 2026-07-31
+
+Sprint 6E.12 (Advanced Prompt Cache & Runtime Optimization) is implemented in the
+working tree. The project remains private and unreleased at `0.4.0`; this milestone does
+not authorize a release, tag, or publication.
+
+
 ## Engineering State Update - Sprint 6E.11 - 2026-07-31
 
 Sprint 6E.11 (Tool Calling Engine) is implemented in the uncommitted working tree.

@@ -1,7 +1,8 @@
 import { BadRequestException, Injectable } from "@nestjs/common";
 import type {
-  CacheRetrievalRuntimeDto, CreateRuntimeContextSnapshotDto
+  CacheImmutablePackageDto, CacheRetrievalRuntimeDto, CreateRuntimeContextSnapshotDto
 } from "./dto/runtime-optimization.dto";
+import { RuntimeOptimizationPackageType } from "@prisma/client";
 
 @Injectable()
 export class RuntimeOptimizationValidator {
@@ -40,6 +41,41 @@ export class RuntimeOptimizationValidator {
       }
     }
     this.assertJson(dto.searchConfiguration ?? {}, "searchConfiguration", new Set());
+  }
+  validateImmutablePackage(dto: CacheImmutablePackageDto): void {
+    const advanced = new Set<RuntimeOptimizationPackageType>([
+      RuntimeOptimizationPackageType.CONVERSATION_PREFIX,
+      RuntimeOptimizationPackageType.STUDIO_CONFIGURATION,
+      RuntimeOptimizationPackageType.TOOL_DEFINITION,
+      RuntimeOptimizationPackageType.WORKFLOW_PACKAGE,
+      RuntimeOptimizationPackageType.EXECUTION_PLAN,
+      RuntimeOptimizationPackageType.PROVIDER_PROMPT
+    ]);
+    if (!advanced.has(dto.type)) throw new BadRequestException("Package type requires its dedicated endpoint");
+    if (!/^[A-Za-z0-9._:-]{1,300}$/.test(dto.scopeKey)) throw new BadRequestException("Cache scope key is invalid");
+    this.assertJson(dto.payload, "payload", new Set());
+    this.assertJson(dto.references ?? {}, "references", new Set());
+    for (const [name, id] of Object.entries(dto.references ?? {})) {
+      if (typeof id !== "string" || !/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(id)) {
+        throw new BadRequestException(`Cache reference ${name} is invalid`);
+      }
+    }
+    if (dto.type === RuntimeOptimizationPackageType.CONVERSATION_PREFIX ||
+        dto.type === RuntimeOptimizationPackageType.STUDIO_CONFIGURATION ||
+        dto.type === RuntimeOptimizationPackageType.TOOL_DEFINITION ||
+        dto.type === RuntimeOptimizationPackageType.WORKFLOW_PACKAGE) {
+      this.assertStatic(dto.payload, "payload");
+    }
+  }
+  private assertStatic(value: unknown, path: string): void {
+    if (Array.isArray(value)) return value.forEach((item, index) => this.assertStatic(item, `${path}.${index}`));
+    if (!value || typeof value !== "object") return;
+    for (const [key, item] of Object.entries(value as Record<string, unknown>)) {
+      if (/^(userMessage|userInput|messages|conversation|history|memoryEntries|memoryReads|retrievalResults|toolOutputs|runtimeVariables|dynamicVariables)$/i.test(key)) {
+        throw new BadRequestException(`Dynamic value cannot be cached at ${path}.${key}`);
+      }
+      this.assertStatic(item, `${path}.${key}`);
+    }
   }
   private assertJson(value: unknown, path: string, seen: Set<object>): void {
     if (value === undefined || typeof value === "function" || typeof value === "symbol" ||

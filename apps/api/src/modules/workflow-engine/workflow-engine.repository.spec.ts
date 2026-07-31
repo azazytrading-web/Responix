@@ -1,9 +1,14 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { BadRequestException, ConflictException, NotFoundException } from "@nestjs/common";
+import { createHash } from "node:crypto";
 import { WorkflowEngineRepository } from "./workflow-engine.repository";
 import { WorkflowGraphValidator } from "./workflow-graph.validator";
 
 const now = new Date();
+const stable = (value: unknown): string => Array.isArray(value) ? `[${value.map(stable).join(",")}]` :
+  value && typeof value === "object" ? `{${Object.entries(value).sort(([a], [b]) => a.localeCompare(b))
+    .map(([key, item]) => `${JSON.stringify(key)}:${stable(item)}`).join(",")}}` : JSON.stringify(value) ?? "null";
+const hash = (value: unknown) => createHash("sha256").update(stable(value)).digest("hex");
 const category = {
   id: "category", workspaceId: "workspace", name: "Operations", slug: "operations",
   description: null, metadata: {}, createdAt: now, updatedAt: now
@@ -180,8 +185,12 @@ describe("WorkflowEngineRepository", () => {
 
   it("rollback creates a new revision and replaces every mutable draft relation", async () => {
     prisma.workflow.findFirst.mockResolvedValue(workflow({ status: "PUBLISHED", version: 2 }));
+    const sourceSnapshot = snapshot();
+    const snapshotHash = hash(sourceSnapshot);
     prisma.workflowVersion.findFirst.mockResolvedValue({
-      id: "source", workflowId: "workflow", revision: 1, snapshot: snapshot()
+      id: "source", workflowId: "workflow", revision: 1, snapshot: sourceSnapshot,
+      snapshotHash, checksum: hash({ snapshotHash, workspaceId: "workspace", workflowId: "workflow", revision: 1 }),
+      compatibilityVersion: "1.0"
     });
     prisma.workflowVersion.create.mockResolvedValue({ id: "new", revision: 3 });
     await repository.rollback("workspace", "actor", "workflow", 1);

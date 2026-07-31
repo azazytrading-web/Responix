@@ -51,6 +51,7 @@ export class AgentExecutionService {
     const existing = await this.repository.findByRequest(workspaceId, request.id);
     if (existing) return existing;
     const run = await this.kernel.createRun(workspaceId, actorId, request.id, {
+      parentRunId: dto.parentExecutionRunId,
       runtimeMetadata: { orchestrationType: "AGENT" }
     });
     const queued = await this.kernel.transition(workspaceId, actorId, run.id, {

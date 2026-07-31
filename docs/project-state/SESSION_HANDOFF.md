@@ -1,5 +1,16 @@
 # Session Handoff
 
+## Current Repository State - Sprint 6E.10 - 2026-07-31
+
+Sprint 6E.10 is complete in the uncommitted working tree. The new Workflow Runtime
+executes SHA-256-protected published workflow versions and persists immutable execution,
+node, state, diagnostic, metric, and audit records. Agent and streaming nodes reuse Agent
+Execution and its Prompt, Memory, Retrieval, Optimization, Provider, Streaming, and
+Execution Kernel integrations. Deferred memory writes commit only after workflow success.
+
+The full matrix passes: Prisma validate/generate, typecheck, lint, API 126 suites with
+820 tests passed and one PostgreSQL suite skipped, build, and `git diff --check`.
+
 ## Current Repository State - 2026-07-31
 
 Sprint 6E.9 is complete in the uncommitted working tree. Retrieval execution is

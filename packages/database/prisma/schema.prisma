@@ -205,7 +205,38 @@ enum WorkflowNodeType {
   TRANSFORM
   VARIABLE
   SUBFLOW
+  SUBWORKFLOW
+  PARALLEL
+  MERGE
+  APPROVAL
   CUSTOM
+}
+
+enum WorkflowRuntimeStatus {
+  CREATED
+  QUEUED
+  PREPARING
+  RUNNING
+  WAITING
+  PAUSED
+  COMPLETED
+  CANCELLED
+  FAILED
+  TIMED_OUT
+  COMPENSATED
+}
+
+enum WorkflowNodeRuntimeStatus {
+  PENDING
+  PREPARING
+  RUNNING
+  WAITING
+  COMPLETED
+  SKIPPED
+  CANCELLED
+  FAILED
+  TIMED_OUT
+  COMPENSATED
 }
 
 enum RuntimeOrchestrationStatus {
@@ -2366,16 +2397,148 @@ model WorkflowVersion {
   workflowId    String   @map("workflow_id") @db.Uuid
   revision      Int
   snapshot      Json
+  snapshotHash  String  @map("snapshot_hash")
+  checksum      String
+  compatibilityVersion String @map("compatibility_version")
   changeSummary String?  @map("change_summary")
   createdById   String?  @map("created_by") @db.Uuid
   createdAt     DateTime @default(now()) @map("created_at")
   publishedAt   DateTime @default(now()) @map("published_at")
 
   workflow Workflow @relation(fields: [workflowId], references: [id], onDelete: Restrict)
+  executions WorkflowRuntimeExecution[]
 
   @@unique([workflowId, revision])
   @@index([workflowId, publishedAt])
   @@map("workflow_versions")
+}
+
+model WorkflowRuntimeExecution {
+  id                String                @id @default(uuid()) @db.Uuid
+  workspaceId       String                @map("workspace_id") @db.Uuid
+  createdById       String                @map("created_by") @db.Uuid
+  workflowId        String                @map("workflow_id") @db.Uuid
+  workflowVersionId String                @map("workflow_version_id") @db.Uuid
+  executionRequestId String               @map("execution_request_id") @db.Uuid
+  executionRunId    String                @unique @map("execution_run_id") @db.Uuid
+  parentExecutionId String?               @map("parent_execution_id") @db.Uuid
+  status            WorkflowRuntimeStatus @default(CREATED)
+  stateVersion      Int                   @default(0) @map("state_version")
+  correlationId     String                @map("correlation_id")
+  traceId           String                @map("trace_id")
+  idempotencyKey    String                @map("idempotency_key")
+  depth             Int                   @default(0)
+  maxDepth          Int                   @default(10) @map("max_depth")
+  maxNodeExecutions Int                   @default(1000) @map("max_node_executions")
+  timeoutMs         Int                   @map("timeout_ms")
+  deadlineAt        DateTime              @map("deadline_at")
+  input             Json                  @default("{}")
+  contextSnapshot   Json                  @map("context_snapshot")
+  runtimeContext    Json                  @map("runtime_context")
+  output            Json                  @default("{}")
+  pendingNodeKeys   String[]              @default([]) @map("pending_node_keys")
+  completedNodeKeys String[]              @default([]) @map("completed_node_keys")
+  compensationPlan Json                   @default("[]") @map("compensation_plan")
+  workflowSnapshotHash String             @map("workflow_snapshot_hash")
+  contextHash       String                @map("context_hash")
+  checksum          String
+  failureCode       String?               @map("failure_code")
+  failureMessage    String?               @map("failure_message")
+  cancellationReason String?              @map("cancellation_reason")
+  startedAt         DateTime?             @map("started_at")
+  endedAt           DateTime?             @map("ended_at")
+  durationMs        Int?                  @map("duration_ms")
+  createdAt         DateTime              @default(now()) @map("created_at")
+  updatedAt         DateTime              @updatedAt @map("updated_at")
+
+  workflowVersion WorkflowVersion @relation(fields: [workflowVersionId], references: [id], onDelete: Restrict)
+  nodes WorkflowRuntimeNodeExecution[]
+  states WorkflowRuntimeStateHistory[]
+  diagnostics WorkflowRuntimeDiagnostic[]
+  metric WorkflowRuntimeMetric?
+
+  @@unique([workspaceId, idempotencyKey], map: "workflow_runtime_executions_workspace_idempotency_key")
+  @@index([workspaceId, status, createdAt], map: "workflow_runtime_executions_workspace_status_idx")
+  @@index([workspaceId, workflowId, createdAt], map: "workflow_runtime_executions_workspace_workflow_idx")
+  @@index([parentExecutionId], map: "workflow_runtime_executions_parent_idx")
+  @@map("workflow_runtime_executions")
+}
+
+model WorkflowRuntimeNodeExecution {
+  id              String                    @id @default(uuid()) @db.Uuid
+  executionId     String                    @map("execution_id") @db.Uuid
+  nodeKey         String                    @map("node_key")
+  nodeType        WorkflowNodeType          @map("node_type")
+  attempt         Int                       @default(1)
+  status          WorkflowNodeRuntimeStatus @default(PENDING)
+  input           Json                      @default("{}")
+  output          Json                      @default("{}")
+  error           Json                      @default("{}")
+  selectedBranch  String?                   @map("selected_branch")
+  agentExecutionId String?                  @map("agent_execution_id") @db.Uuid
+  streamSessionId String?                   @map("stream_session_id") @db.Uuid
+  retryDelayMs    Int                       @default(0) @map("retry_delay_ms")
+  startedAt       DateTime?                 @map("started_at")
+  endedAt         DateTime?                 @map("ended_at")
+  durationMs      Int?                      @map("duration_ms")
+  metadata        Json                      @default("{}")
+  createdAt       DateTime                  @default(now()) @map("created_at")
+  execution       WorkflowRuntimeExecution @relation(fields: [executionId], references: [id], onDelete: Restrict)
+
+  @@unique([executionId, nodeKey, attempt], map: "workflow_runtime_nodes_execution_node_attempt_key")
+  @@index([executionId, status, createdAt], map: "workflow_runtime_nodes_execution_status_idx")
+  @@map("workflow_runtime_node_executions")
+}
+
+model WorkflowRuntimeStateHistory {
+  id           String                @id @default(uuid()) @db.Uuid
+  executionId  String                @map("execution_id") @db.Uuid
+  sequence     Int
+  fromStatus   WorkflowRuntimeStatus? @map("from_status")
+  toStatus     WorkflowRuntimeStatus  @map("to_status")
+  actorId      String?               @map("actor_id") @db.Uuid
+  reason       String?
+  metadata     Json                  @default("{}")
+  occurredAt   DateTime              @default(now()) @map("occurred_at")
+  execution    WorkflowRuntimeExecution @relation(fields: [executionId], references: [id], onDelete: Restrict)
+
+  @@unique([executionId, sequence], map: "workflow_runtime_states_execution_sequence_key")
+  @@map("workflow_runtime_state_history")
+}
+
+model WorkflowRuntimeDiagnostic {
+  id          String   @id @default(uuid()) @db.Uuid
+  executionId String   @map("execution_id") @db.Uuid
+  nodeKey     String?  @map("node_key")
+  severity    String
+  code        String
+  message     String
+  metadata    Json     @default("{}")
+  createdAt   DateTime @default(now()) @map("created_at")
+  execution   WorkflowRuntimeExecution @relation(fields: [executionId], references: [id], onDelete: Restrict)
+
+  @@index([executionId, severity, createdAt], map: "workflow_runtime_diagnostics_execution_idx")
+  @@map("workflow_runtime_diagnostics")
+}
+
+model WorkflowRuntimeMetric {
+  id                  String   @id @default(uuid()) @db.Uuid
+  executionId         String   @unique @map("execution_id") @db.Uuid
+  nodeCount           Int      @default(0) @map("node_count")
+  completedNodeCount  Int      @default(0) @map("completed_node_count")
+  failedNodeCount     Int      @default(0) @map("failed_node_count")
+  retryCount          Int      @default(0) @map("retry_count")
+  parallelBranchCount Int      @default(0) @map("parallel_branch_count")
+  agentNodeCount      Int      @default(0) @map("agent_node_count")
+  streamedNodeCount   Int      @default(0) @map("streamed_node_count")
+  compensationCount   Int      @default(0) @map("compensation_count")
+  waitDurationMs      Int      @default(0) @map("wait_duration_ms")
+  executionDurationMs Int      @default(0) @map("execution_duration_ms")
+  createdAt           DateTime @default(now()) @map("created_at")
+  updatedAt           DateTime @updatedAt @map("updated_at")
+  execution           WorkflowRuntimeExecution @relation(fields: [executionId], references: [id], onDelete: Restrict)
+
+  @@map("workflow_runtime_metrics")
 }
 
 model WorkflowRun {

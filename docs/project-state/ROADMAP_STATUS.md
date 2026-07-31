@@ -1,5 +1,12 @@
 # Roadmap Status
 
+## Sprint 6E.10 Update - 2026-07-31
+
+The Workflow Execution Engine is complete and validated in the working tree. Immutable
+published workflow versions now execute through a provider-neutral orchestration layer
+above Agent Execution with durable lifecycle, graph, approval, retry, compensation,
+history, diagnostics, metrics, permissions, auditing, and workspace isolation.
+
 ## Sprint 6E.9 Update - 2026-07-31
 
 The Retrieval Execution Engine is complete and validated in the working tree. Published

@@ -19,6 +19,9 @@ export class PrepareAgentExecutionDto {
   conversationRuntimeSnapshotId?: string;
   @ApiProperty({ format: "uuid" }) @IsUUID()
   executionPipelineSnapshotId!: string;
+  @ApiPropertyOptional({ format: "uuid", description: "Parent Execution Kernel run for nested orchestration" })
+  @IsOptional() @IsUUID()
+  parentExecutionRunId?: string;
   @ApiProperty({ maxLength: 200 }) @IsString()
   @Matches(/^[A-Za-z0-9._:-]+$/) @MaxLength(200)
   correlationId!: string;

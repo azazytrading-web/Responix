@@ -1,5 +1,21 @@
 # Validation History
 
+## Sprint 6E.10 - Workflow Execution Engine - 2026-07-31
+
+| Check | Result |
+| --- | --- |
+| `pnpm prisma validate` | PASS |
+| `pnpm prisma generate` | PASS |
+| `pnpm typecheck` | PASS |
+| `pnpm lint` | PASS with `NODE_OPTIONS=--max-old-space-size=8192` |
+| `pnpm test` | PASS - API: 126 suites passed, 1 PostgreSQL suite skipped; 820 tests passed, 4 skipped |
+| `pnpm build` | PASS |
+| `git diff --check` | PASS |
+
+The initial full test invocation exceeded the command runner's 120-second limit while
+tests were still passing. The unchanged tree was rerun with a 300-second allowance and
+completed successfully in 130.2 seconds.
+
 ## Sprint 6E.9 - Retrieval Execution Engine - 2026-07-31
 
 | Check | Result |

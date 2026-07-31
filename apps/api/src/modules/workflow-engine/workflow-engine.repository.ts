@@ -10,6 +10,7 @@ import {
   WorkflowVisibility
 } from "@prisma/client";
 import { PrismaService } from "../../database/prisma.service";
+import { createHash } from "node:crypto";
 import type {
   CreateWorkflowDto,
   UpdateWorkflowDto,
@@ -200,10 +201,13 @@ export class WorkflowEngineRepository {
       const snapshot = this.snapshot(current);
       await this.validateSnapshot(tx, workspaceId, snapshot, workflowId, true);
       const revision = current.version + 1;
+      const snapshotHash = this.hash(snapshot);
       const version = await tx.workflowVersion.create({
         data: {
           workflowId, revision, snapshot: json(snapshot), changeSummary,
-          createdById: actorId, publishedAt: new Date()
+          createdById: actorId, publishedAt: new Date(), snapshotHash,
+          checksum: this.hash({ snapshotHash, workspaceId, workflowId, revision }),
+          compatibilityVersion: "1.0"
         },
         select: this.versionSelect
       });
@@ -235,13 +239,22 @@ export class WorkflowEngineRepository {
       });
       if (!source) throw new NotFoundException("Published workflow version was not found");
       const snapshot = this.readSnapshot(source.snapshot);
+      if (!source.snapshotHash || !source.checksum ||
+        this.hash(snapshot) !== source.snapshotHash ||
+        this.hash({ snapshotHash: source.snapshotHash, workspaceId, workflowId,
+          revision: source.revision }) !== source.checksum) {
+        throw new ConflictException("Published workflow version integrity validation failed");
+      }
       await this.validateSnapshot(tx, workspaceId, snapshot, workflowId, true);
       const revision = current.version + 1;
+      const snapshotHash = this.hash(snapshot);
       const version = await tx.workflowVersion.create({
         data: {
           workflowId, revision, snapshot: json(snapshot),
           changeSummary: changeSummary ?? `Rollback to revision ${sourceRevision}`,
-          createdById: actorId, publishedAt: new Date()
+          createdById: actorId, publishedAt: new Date(), snapshotHash,
+          checksum: this.hash({ snapshotHash, workspaceId, workflowId, revision }),
+          compatibilityVersion: source.compatibilityVersion ?? "1.0"
         },
         select: this.versionSelect
       });
@@ -382,7 +395,8 @@ export class WorkflowEngineRepository {
   } as const;
 
   private readonly versionSelect = {
-    id: true, workflowId: true, revision: true, snapshot: true,
+    id: true, workflowId: true, revision: true, snapshot: true, snapshotHash: true,
+    checksum: true, compatibilityVersion: true,
     changeSummary: true, createdById: true, createdAt: true, publishedAt: true
   } as const;
 
@@ -789,6 +803,19 @@ export class WorkflowEngineRepository {
     if (new Set(values).size !== values.length) {
       throw new BadRequestException(`${label} must be unique`);
     }
+  }
+
+  private hash(value: unknown) {
+    return createHash("sha256").update(this.stable(value)).digest("hex");
+  }
+
+  private stable(value: unknown): string {
+    if (Array.isArray(value)) return `[${value.map((item) => this.stable(item)).join(",")}]`;
+    if (value && typeof value === "object") return `{${Object.entries(value)
+      .sort(([left], [right]) => left.localeCompare(right))
+      .map(([key, item]) => `${JSON.stringify(key)}:${this.stable(item)}`).join(",")}}`;
+    if (typeof value === "bigint") return JSON.stringify(value.toString());
+    return JSON.stringify(value) ?? "null";
   }
 
   private async audit(

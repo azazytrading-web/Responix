@@ -22,6 +22,7 @@ import { AgentStudioModule } from "../modules/agent-studio/agent-studio.module";
 import { KnowledgeBaseModule } from "../modules/knowledge-base/knowledge-base.module";
 import { ToolRegistryModule } from "../modules/tool-registry/tool-registry.module";
 import { WorkflowEngineModule } from "../modules/workflow-engine/workflow-engine.module";
+import { WorkflowRuntimeModule } from "../modules/workflow-runtime/workflow-runtime.module";
 import { RuntimeOrchestrationModule } from "../modules/runtime-orchestration/runtime-orchestration.module";
 import { ExecutionKernelModule } from "../modules/execution-kernel/execution-kernel.module";
 import { AgentRuntimeModule } from "../modules/agent-runtime/agent-runtime.module";
@@ -100,6 +101,7 @@ import { redactLogArguments } from "../common/secret-redaction";
     KnowledgeBaseModule,
     ToolRegistryModule,
     WorkflowEngineModule,
+    WorkflowRuntimeModule,
     RuntimeOrchestrationModule,
     ExecutionKernelModule,
     AgentRuntimeModule,

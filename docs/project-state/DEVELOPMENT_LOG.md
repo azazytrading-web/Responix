@@ -1,5 +1,22 @@
 # Development Log
 
+## Sprint 6E.10 - Workflow Execution Engine - 2026-07-31
+
+- **Status:** Completed in the working tree; the full validation matrix passes.
+- **Runtime:** Added a workspace-isolated orchestration layer for hash-verified immutable
+  workflow versions with sequential, parallel, conditional, merge, delay, approval,
+  variable, Agent, and subworkflow nodes.
+- **Lifecycle:** Added optimistic execution states, immutable node/state history, durable
+  timeout recovery, cancellation, bounded retries/depth/node counts, compensation, and
+  deferred Memory Runtime writes committed only after successful graph completion.
+- **Integration:** Workflow Agent nodes delegate to existing Agent Execution, preserving
+  Prompt, Memory, Retrieval, Runtime Optimization, Provider, Streaming, and Execution
+  Kernel boundaries; parent/child kernel runs preserve trace hierarchy.
+- **Persistence:** Migration `000033_workflow_execution_engine` adds immutable execution,
+  node, state, diagnostic, metric, hash/checksum, and audit-backed runtime persistence.
+- **Validation:** Prisma validate/generate, typecheck, lint, API 126 suites and 820 tests,
+  build, and `git diff --check` passed.
+
 ## Sprint 6E.9 - Retrieval Execution Engine - 2026-07-31
 
 - **Status:** Completed in the working tree; the full validation matrix passes.

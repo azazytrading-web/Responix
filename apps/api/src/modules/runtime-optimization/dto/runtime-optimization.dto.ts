@@ -43,6 +43,10 @@ export class CacheRetrievalRuntimeDto {
   @IsOptional() @IsObject()
   searchConfiguration?: Record<string, unknown>;
 }
+export class CacheMemoryRuntimeDto {
+  @ApiProperty({ type: [String], format: "uuid" }) @IsArray() @IsUUID("4", { each: true })
+  memoryRuntimeSnapshotIds!: string[];
+}
 export class RuntimeOptimizationListQueryDto {
   @ApiPropertyOptional({ minimum: 1 }) @Type(() => Number)
   @IsOptional() @IsInt() @Min(1)

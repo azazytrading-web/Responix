@@ -31,7 +31,8 @@ export class AgentExecutionRepository {
           promptExecutionPayloadId: dto.promptExecutionPayloadId,
           providerRuntimeSnapshotId: dto.providerRuntimeSnapshotId,
           conversationRuntimeSnapshotId: dto.conversationRuntimeSnapshotId ?? null,
-          executionPipelineSnapshotId: dto.executionPipelineSnapshotId
+          executionPipelineSnapshotId: dto.executionPipelineSnapshotId,
+          memoryRuntimeSnapshotIds: dto.memoryRuntimeSnapshotIds ?? []
         },
         dependencies: [
           ["agentRuntime", "promptExecution"],

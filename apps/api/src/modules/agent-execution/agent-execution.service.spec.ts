@@ -37,6 +37,12 @@ describe("AgentExecutionService", () => {
       cancel: jest.fn()
     };
     const validator = { validate: jest.fn().mockReturnValue(diagnostics) };
+    const memory = {
+      resolve: jest.fn().mockResolvedValue({
+        snapshots: [], packageHash: "memory-hash", resolvedAt: "now"
+      }),
+      commitWrite: jest.fn(), commitWrites: jest.fn()
+    };
     const service = new AgentExecutionService(
       repository as never, validator as never, kernel as never,
       { getSnapshot: jest.fn().mockResolvedValue(assets.agent) } as never,
@@ -45,11 +51,13 @@ describe("AgentExecutionService", () => {
       { getSnapshot: jest.fn().mockResolvedValue(assets.conversation) } as never,
       { getSnapshot: jest.fn().mockResolvedValue(assets.pipeline) } as never,
       { invoke: jest.fn() } as never,
-      { cacheCompiled: jest.fn(), cacheRendered: jest.fn(), cacheRetrieval: jest.fn() } as never,
-      { getSnapshot: jest.fn() } as never,
-      { create: jest.fn(), connect: jest.fn(), start: jest.fn(), append: jest.fn(), complete: jest.fn(), cancel: jest.fn(), fail: jest.fn(), get: jest.fn() } as never
+      { cacheCompiled: jest.fn(), cacheRendered: jest.fn(), cacheRetrieval: jest.fn(),
+        cacheMemory: jest.fn() } as never,
+      { create: jest.fn(), connect: jest.fn(), start: jest.fn(), append: jest.fn(), complete: jest.fn(), cancel: jest.fn(), fail: jest.fn(), get: jest.fn() } as never,
+      memory as never,
+      { execute: jest.fn().mockResolvedValue({ documents: [] }) } as never
     );
-    return { service, repository, kernel, validator };
+    return { service, repository, kernel, validator, memory };
   };
   it("creates and queues a kernel lifecycle before persisting a ready plan", async () => {
     const { service, kernel, repository } = setup();
@@ -129,5 +137,51 @@ describe("AgentExecutionService", () => {
     expect(invocation.invocations.invoke).toHaveBeenCalledWith(expect.objectContaining({
       requestId: "request", mode: "sync", messages: [{ role: "system", content: "Hello" }]
     }));
+  });
+  it("resolves memory before prompt loading and commits buffered writes once after completion", async () => {
+    const state = setup();
+    const internals = state.service as unknown as {
+      invocations: { invoke: jest.Mock };
+      promptExecution: { get: jest.Mock };
+      optimization: { cacheCompiled: jest.Mock; cacheMemory: jest.Mock };
+    };
+    internals.promptExecution.get.mockResolvedValue({
+      compiledPromptId: "compiled", messages: [{ role: "user", content: "Question" }]
+    });
+    internals.invocations.invoke.mockResolvedValue({
+      requestId: "request", providerId: "provider", modelId: "model",
+      content: "answer", usage: {}
+    });
+    state.memory.resolve.mockResolvedValue({
+      snapshots: [{
+        snapshotId: "memory-snapshot", runtimeId: "memory-runtime",
+        identifier: "session.one", type: "SESSION", scopeKey: "session:one",
+        revision: 1, content: { fact: "remembered" }, metadata: {}, packageHash: "hash"
+      }],
+      packageHash: "memory-hash", resolvedAt: "now"
+    });
+    const input = {
+      ...dto, taskType: "completion",
+      memoryRuntimeSnapshotIds: ["66666666-6666-4666-8666-666666666666"],
+      memoryWrites: [{
+        runtimeId: "77777777-7777-4777-8777-777777777777",
+        content: { result: "answer" }, expectedStateVersion: 1
+      }]
+    };
+    await state.service.execute("workspace", "actor", input);
+    expect(state.memory.resolve.mock.invocationCallOrder[0])
+      .toBeLessThan(internals.promptExecution.get.mock.invocationCallOrder.at(-1)!);
+    /* eslint-disable @typescript-eslint/no-unsafe-assignment */
+    expect(internals.invocations.invoke).toHaveBeenCalledWith(expect.objectContaining({
+      messages: expect.arrayContaining([
+        expect.objectContaining({ role: "system", content: expect.stringContaining("remembered") })
+      ])
+    }));
+    /* eslint-enable @typescript-eslint/no-unsafe-assignment */
+    expect(state.memory.commitWrites).toHaveBeenCalledTimes(1);
+    expect(state.memory.commitWrites).toHaveBeenCalledWith("workspace", "actor", [{
+      runtimeId: "77777777-7777-4777-8777-777777777777",
+      content: { result: "answer" }, expectedStateVersion: 1, executionRunId: "run"
+    }]);
   });
 });

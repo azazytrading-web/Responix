@@ -1,9 +1,11 @@
 import { Type } from "class-transformer";
 import {
-  IsInt, IsObject, IsOptional, IsString, IsUUID, Matches, Max, MaxLength, Min
+  ArrayMaxSize, IsArray, IsInt, IsObject, IsOptional, IsString, IsUUID,
+  Matches, Max, MaxLength, Min, ValidateNested
 } from "class-validator";
 import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
 import { AgentExecutionOrchestrationStatus } from "@prisma/client";
+import { RetrievalExecutionMode } from "@prisma/client";
 import { IsEnum } from "class-validator";
 
 export class PrepareAgentExecutionDto {
@@ -29,6 +31,20 @@ export class PrepareAgentExecutionDto {
   @ApiPropertyOptional({ type: "object", additionalProperties: true })
   @IsOptional() @IsObject()
   metadata?: Record<string, unknown>;
+  @ApiPropertyOptional({ type: [String], format: "uuid", maxItems: 100 })
+  @IsOptional() @IsArray() @ArrayMaxSize(100) @IsUUID("4", { each: true })
+  memoryRuntimeSnapshotIds?: string[];
+  @ApiPropertyOptional({ maxLength: 32 }) @IsOptional() @Matches(/^\d+\.\d+$/)
+  memoryCompatibilityVersion?: string;
+}
+
+export class AgentMemoryWriteDto {
+  @ApiProperty({ format: "uuid" }) @IsUUID() runtimeId!: string;
+  @ApiProperty({ type: "object", additionalProperties: true }) @IsObject()
+  content!: Record<string, unknown>;
+  @ApiProperty({ minimum: 0 }) @IsInt() @Min(0) expectedStateVersion!: number;
+  @ApiPropertyOptional({ type: "object", additionalProperties: true }) @IsOptional() @IsObject()
+  metadata?: Record<string, unknown>;
 }
 
 export class CancelAgentExecutionDto {
@@ -45,9 +61,19 @@ export class ExecuteAgentExecutionDto extends PrepareAgentExecutionDto {
   language?: string;
   @ApiPropertyOptional({ format: "uuid" }) @IsOptional() @IsUUID()
   retrievalRuntimeSnapshotId?: string;
+  @ApiPropertyOptional({ enum: RetrievalExecutionMode }) @IsOptional() @IsEnum(RetrievalExecutionMode)
+  retrievalMode?: RetrievalExecutionMode;
+  @ApiPropertyOptional({ minimum: 1, maximum: 100 }) @IsOptional() @IsInt() @Min(1) @Max(100)
+  retrievalTopK?: number;
+  @ApiPropertyOptional({ minimum: 1, maximum: 100000 }) @IsOptional() @IsInt() @Min(1) @Max(100000)
+  retrievalTokenBudget?: number;
   @ApiPropertyOptional({ type: "object", additionalProperties: true })
   @IsOptional() @IsObject()
   staticVariables?: Record<string, unknown>;
+  @ApiPropertyOptional({ type: [AgentMemoryWriteDto], maxItems: 100 })
+  @IsOptional() @IsArray() @ArrayMaxSize(100) @ValidateNested({ each: true })
+  @Type(() => AgentMemoryWriteDto)
+  memoryWrites?: AgentMemoryWriteDto[];
 }
 
 export class StreamAgentExecutionDto extends ExecuteAgentExecutionDto {

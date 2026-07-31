@@ -1,5 +1,11 @@
 # Roadmap Status
 
+## Sprint 6E.9 Update - 2026-07-31
+
+The Retrieval Execution Engine is complete and validated in the working tree. Published
+Retrieval Runtime metadata now becomes immutable, prompt-ready execution context without
+introducing a vector database, embedding provider, or provider-specific retrieval path.
+
 ## Sprint 6E.7 Update - 2026-07-30
 
 The Unified Streaming Execution Engine is complete and validated. It extends the

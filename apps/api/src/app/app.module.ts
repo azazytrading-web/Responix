@@ -34,6 +34,8 @@ import { PromptExecutionModule } from "../modules/prompt-execution/prompt-execut
 import { AgentExecutionModule } from "../modules/agent-execution/agent-execution.module";
 import { RuntimeOptimizationModule } from "../modules/runtime-optimization/runtime-optimization.module";
 import { StreamingRuntimeModule } from "../modules/streaming-runtime/streaming-runtime.module";
+import { MemoryRuntimeModule } from "../modules/memory-runtime/memory-runtime.module";
+import { RetrievalExecutionModule } from "../modules/retrieval-execution/retrieval-execution.module";
 import { SecretRedactionExceptionFilter } from "../common/secret-redaction-exception.filter";
 import { redactLogArguments } from "../common/secret-redaction";
 
@@ -109,7 +111,9 @@ import { redactLogArguments } from "../common/secret-redaction";
     PromptExecutionModule,
     AgentExecutionModule,
     RuntimeOptimizationModule,
-    StreamingRuntimeModule
+    StreamingRuntimeModule,
+    MemoryRuntimeModule,
+    RetrievalExecutionModule
   ],
   providers: [
     {

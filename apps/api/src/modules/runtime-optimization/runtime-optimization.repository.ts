@@ -7,7 +7,7 @@ import {
 import { createHash } from "node:crypto";
 import { PrismaService } from "../../database/prisma.service";
 import type {
-  CacheRenderedPromptDto, CacheRetrievalRuntimeDto,
+  CacheMemoryRuntimeDto, CacheRenderedPromptDto, CacheRetrievalRuntimeDto,
   CreateRuntimeContextSnapshotDto, RuntimeOptimizationListQueryDto
 } from "./dto/runtime-optimization.dto";
 import { RuntimeOptimizationValidator } from "./runtime-optimization.validator";
@@ -166,6 +166,35 @@ export class RuntimeOptimizationRepository {
     });
   }
 
+  cacheMemory(workspaceId: string, actorId: string, dto: CacheMemoryRuntimeDto) {
+    return this.prisma.$transaction(async (tx) => {
+      const uniqueIds = [...new Set(dto.memoryRuntimeSnapshotIds)];
+      if (uniqueIds.length !== dto.memoryRuntimeSnapshotIds.length) {
+        throw new ConflictException("Duplicate memory cache references");
+      }
+      const snapshots = await tx.memoryRuntimeSnapshot.findMany({
+        where: { id: { in: uniqueIds }, workspaceId },
+        select: { id: true, runtimeId: true, revision: true, snapshot: true,
+          packageHash: true, checksum: true }
+      });
+      if (snapshots.length !== uniqueIds.length) {
+        throw new NotFoundException("Memory runtime snapshot was not found");
+      }
+      const ordered = uniqueIds.map((id) => snapshots.find((item) => item.id === id)!);
+      const sourceHash = this.hash(ordered.map((item) => ({
+        id: item.id, packageHash: item.packageHash
+      })));
+      return this.reuseOrCreate(tx, workspaceId, actorId, {
+        type: RuntimeOptimizationPackageType.MEMORY_RUNTIME,
+        keyHash: sourceHash, sourceHash, payload: ordered,
+        references: Object.fromEntries(ordered.map((item, index) => [
+          `memoryRuntimeSnapshot${index}Id`, item.id
+        ])),
+        savedTokens: JSON.stringify(ordered).length, operation: "memory"
+      });
+    });
+  }
+
   get(workspaceId: string, id: string) {
     return this.prisma.runtimeOptimizationPackage.findFirst({
       where: { id, workspaceId }, select: this.select
@@ -202,7 +231,7 @@ export class RuntimeOptimizationRepository {
     input: {
       type: RuntimeOptimizationPackageType; keyHash: string; sourceHash: string;
       staticVariablesHash?: string; payload: unknown; references: Record<string, string>;
-      savedTokens: number; operation: "compilation" | "rendering" | "snapshot" | "retrieval";
+      savedTokens: number; operation: "compilation" | "rendering" | "snapshot" | "retrieval" | "memory";
     }
   ) {
     const existing = await tx.runtimeOptimizationPackage.findUnique({
@@ -238,7 +267,7 @@ export class RuntimeOptimizationRepository {
             } : {}),
           ...(input.operation === "snapshot"
             ? { runtimeSnapshotReuse: { increment: 1 } } : {}),
-          ...(input.operation === "retrieval"
+          ...(input.operation === "retrieval" || input.operation === "memory"
             ? { retrievalPackageReuse: { increment: 1 } } : {})
         }
       });

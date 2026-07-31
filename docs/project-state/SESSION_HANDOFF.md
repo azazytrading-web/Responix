@@ -1,5 +1,16 @@
 # Session Handoff
 
+## Current Repository State - 2026-07-31
+
+Sprint 6E.9 is complete in the uncommitted working tree. Retrieval execution is
+workspace-isolated and transactional, validates immutable Retrieval Runtime hashes and
+Execution Kernel dependencies, reuses identical packages by hash, persists diagnostics,
+metrics and audits, and injects budgeted citation-ready knowledge context into synchronous
+and streaming Agent Execution after memory resolution and before prompt loading.
+
+The final matrix passes: Prisma validate/generate, typecheck, lint, API 121 suites with
+803 tests passed and one PostgreSQL suite skipped, build, and `git diff --check`.
+
 ## Current Repository State - 2026-07-30
 
 Sprint 6E.7 is complete in the working tree. Unified provider streams now flow through

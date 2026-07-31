@@ -6,9 +6,10 @@ import { ExecutionKernelModule } from "../execution-kernel/execution-kernel.modu
 import { ExecutionPipelineModule } from "../execution-pipeline/execution-pipeline.module";
 import { PromptExecutionModule } from "../prompt-execution/prompt-execution.module";
 import { ProviderRuntimeModule } from "../provider-runtime/provider-runtime.module";
-import { RetrievalRuntimeModule } from "../retrieval-runtime/retrieval-runtime.module";
 import { RuntimeOptimizationModule } from "../runtime-optimization/runtime-optimization.module";
 import { StreamingRuntimeModule } from "../streaming-runtime/streaming-runtime.module";
+import { MemoryRuntimeModule } from "../memory-runtime/memory-runtime.module";
+import { RetrievalExecutionModule } from "../retrieval-execution/retrieval-execution.module";
 import { AgentExecutionController, UnifiedAgentExecutionController } from "./agent-execution.controller";
 import { AgentExecutionRepository } from "./agent-execution.repository";
 import { AgentExecutionService } from "./agent-execution.service";
@@ -18,7 +19,8 @@ import { AgentExecutionValidator } from "./agent-execution.validator";
   imports: [
     ExecutionKernelModule, AgentRuntimeModule, PromptExecutionModule,
     ProviderRuntimeModule, ConversationRuntimeModule, ExecutionPipelineModule,
-    AiModule, RuntimeOptimizationModule, RetrievalRuntimeModule, StreamingRuntimeModule
+    AiModule, RuntimeOptimizationModule, StreamingRuntimeModule,
+    MemoryRuntimeModule, RetrievalExecutionModule
   ],
   controllers: [AgentExecutionController, UnifiedAgentExecutionController],
   providers: [AgentExecutionValidator, AgentExecutionRepository, AgentExecutionService],

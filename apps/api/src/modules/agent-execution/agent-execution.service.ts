@@ -8,9 +8,12 @@ import { ExecutionKernelService } from "../execution-kernel/execution-kernel.ser
 import { ExecutionPipelineService } from "../execution-pipeline/execution-pipeline.service";
 import { PromptExecutionService } from "../prompt-execution/prompt-execution.service";
 import { ProviderRuntimeService } from "../provider-runtime/provider-runtime.service";
-import { RetrievalRuntimeService } from "../retrieval-runtime/retrieval-runtime.service";
 import { RuntimeOptimizationService } from "../runtime-optimization/runtime-optimization.service";
 import { StreamingRuntimeService } from "../streaming-runtime/streaming-runtime.service";
+import { MemoryRuntimeService } from "../memory-runtime/memory-runtime.service";
+import type { ResolvedMemoryPackage } from "../memory-runtime/memory-runtime.types";
+import { RetrievalExecutionService } from "../retrieval-execution/retrieval-execution.service";
+import type { RetrievalKnowledgePackage } from "../retrieval-execution/retrieval-execution.types";
 import type {
   AgentExecutionListQueryDto, CancelAgentExecutionDto, ExecuteAgentExecutionDto,
   PrepareAgentExecutionDto, StreamAgentExecutionDto
@@ -34,8 +37,9 @@ export class AgentExecutionService {
     private readonly executionPipeline: ExecutionPipelineService,
     @Inject(AI_INVOCATION_SERVICE) private readonly invocations: InvocationService,
     private readonly optimization: RuntimeOptimizationService,
-    private readonly retrieval: RetrievalRuntimeService,
-    private readonly streaming: StreamingRuntimeService
+    private readonly streaming: StreamingRuntimeService,
+    private readonly memory: MemoryRuntimeService,
+    private readonly retrievalExecution: RetrievalExecutionService
   ) {}
 
   async prepare(workspaceId: string, actorId: string, dto: PrepareAgentExecutionDto) {
@@ -137,20 +141,18 @@ export class AgentExecutionService {
       message: "Provider invocation is running"
     });
     try {
+      const memory = await this.resolveMemory(workspaceId, actorId, dto,
+        orchestration.executionRequestId, orchestration.executionRunId);
+      const retrieval = await this.resolveRetrieval(workspaceId, actorId, dto,
+        orchestration.executionRequestId, orchestration.executionRunId, memory);
       const payload = await this.promptExecution.get(workspaceId, dto.promptExecutionPayloadId);
-      const messages = this.messages(payload.messages, dto.userMessage);
+      const messages = this.messages(payload.messages, dto.userMessage, memory, retrieval);
       await this.optimization.cacheCompiled(workspaceId, actorId, {
         compiledPromptId: payload.compiledPromptId
       });
       if (dto.staticVariables) {
         await this.optimization.cacheRendered(workspaceId, actorId, {
           compiledPromptId: payload.compiledPromptId, staticVariables: dto.staticVariables
-        });
-      }
-      if (dto.retrievalRuntimeSnapshotId) {
-        await this.retrieval.getSnapshot(workspaceId, dto.retrievalRuntimeSnapshotId);
-        await this.optimization.cacheRetrieval(workspaceId, actorId, {
-          retrievalRuntimeSnapshotId: dto.retrievalRuntimeSnapshotId
         });
       }
       const response = await this.invocations.invoke({
@@ -166,6 +168,7 @@ export class AgentExecutionService {
         eventType: "agent.execution.completed", message: "Unified agent execution completed",
         metadata: { orchestrationId: orchestration.id, invocationRequestId: response.requestId }
       });
+      await this.commitMemoryWrites(workspaceId, actorId, dto, run.id);
       return {
         executionId: orchestration.id, answer: response.content, provider: response.providerId,
         model: response.modelId, finishReason: response.finishReason ?? null,
@@ -186,9 +189,13 @@ export class AgentExecutionService {
   async stream(workspaceId: string, actorId: string, dto: StreamAgentExecutionDto) {
     const orchestration = await this.prepare(workspaceId, actorId, dto);
     if (orchestration.status !== "READY") throw new BadRequestException("Agent execution dependencies are invalid");
+    const memory = await this.resolveMemory(workspaceId, actorId, dto,
+      orchestration.executionRequestId, orchestration.executionRunId);
+    const retrieval = await this.resolveRetrieval(workspaceId, actorId, dto,
+      orchestration.executionRequestId, orchestration.executionRunId, memory);
     const provider = await this.providerRuntime.getSnapshot(workspaceId, dto.providerRuntimeSnapshotId);
     const payload = await this.promptExecution.get(workspaceId, dto.promptExecutionPayloadId);
-    const messages = this.messages(payload.messages, dto.userMessage);
+    const messages = this.messages(payload.messages, dto.userMessage, memory, retrieval);
     await this.optimization.cacheCompiled(workspaceId, actorId, { compiledPromptId: payload.compiledPromptId });
     if (dto.staticVariables) await this.optimization.cacheRendered(workspaceId, actorId, {
       compiledPromptId: payload.compiledPromptId, staticVariables: dto.staticVariables
@@ -243,6 +250,7 @@ export class AgentExecutionService {
       );
       const current = await this.kernel.getRun(workspaceId, runId);
       await this.kernel.transition(workspaceId, actorId, runId, { status: ExecutionKernelStatus.SUCCEEDED, expectedStateVersion: current.stateVersion, message: "Provider stream completed" });
+      await this.commitMemoryWrites(workspaceId, actorId, dto, runId);
     } catch (error) {
       const session = await this.streaming.get(workspaceId, sessionId).catch(() => undefined);
       if (session && session.status !== "CANCELLED") {
@@ -262,7 +270,8 @@ export class AgentExecutionService {
     return this.streaming.observe(sessionId);
   }
 
-  private messages(value: unknown, userMessage?: string) {
+  private messages(value: unknown, userMessage?: string, memory?: ResolvedMemoryPackage,
+    retrieval?: RetrievalKnowledgePackage) {
     if (!Array.isArray(value)) {
       throw new BadRequestException("Prompt execution payload messages are invalid");
     }
@@ -277,9 +286,72 @@ export class AgentExecutionService {
       }
       return { role: record.role, content: record.content } as const;
     });
+    if (memory?.snapshots.length) {
+      messages.unshift({
+        role: "system",
+        content: JSON.stringify({
+          memory: memory.snapshots.map((snapshot) => ({
+            identifier: snapshot.identifier, type: snapshot.type,
+            scopeKey: snapshot.scopeKey, revision: snapshot.revision,
+            content: snapshot.content
+          })),
+          packageHash: memory.packageHash
+        })
+      });
+    }
+    if (retrieval?.documents.length) {
+      messages.unshift({ role: "system", content: JSON.stringify({
+        retrieval: { query: retrieval.query, documents: retrieval.documents.map((document) => ({
+          documentId: document.documentId, versionId: document.versionId, name: document.name,
+          score: document.score, content: document.content, citation: document.citation
+        })), citations: retrieval.citations, packageHash: retrieval.packageHash,
+        tokenBudget: retrieval.budget }
+      }) });
+    }
     if (userMessage?.trim()) messages.push({ role: "user", content: userMessage });
     if (!messages.length) throw new BadRequestException("Prompt execution payload has no messages");
     return messages;
+  }
+  private async resolveMemory(
+    workspaceId: string, actorId: string, dto: ExecuteAgentExecutionDto,
+    executionRequestId: string, executionRunId: string
+  ) {
+    if (!dto.memoryRuntimeSnapshotIds?.length) return undefined;
+    const resolved = await this.memory.resolve(workspaceId, actorId, {
+      snapshotIds: dto.memoryRuntimeSnapshotIds,
+      compatibilityVersion: dto.memoryCompatibilityVersion ?? "1.0",
+      executionRequestId, executionRunId
+    });
+    await this.optimization.cacheMemory(workspaceId, actorId, {
+      memoryRuntimeSnapshotIds: dto.memoryRuntimeSnapshotIds
+    });
+    return resolved;
+  }
+  private async resolveRetrieval(
+    workspaceId: string, actorId: string, dto: ExecuteAgentExecutionDto,
+    executionRequestId: string, executionRunId: string, memory?: ResolvedMemoryPackage
+  ) {
+    if (!dto.retrievalRuntimeSnapshotId) return undefined;
+    const query = [dto.userMessage?.trim(), memory?.snapshots.map((item) =>
+      JSON.stringify(item.content)).join(" ")].filter(Boolean).join(" ");
+    if (!query) throw new BadRequestException("Retrieval execution requires a query or user message");
+    await this.optimization.cacheRetrieval(workspaceId, actorId, {
+      retrievalRuntimeSnapshotId: dto.retrievalRuntimeSnapshotId
+    });
+    return this.retrievalExecution.execute(workspaceId, actorId, {
+      retrievalRuntimeSnapshotId: dto.retrievalRuntimeSnapshotId, query,
+      mode: dto.retrievalMode, topK: dto.retrievalTopK,
+      maxTokens: dto.retrievalTokenBudget, executionRequestId, executionRunId,
+      compatibilityVersion: "1.0"
+    });
+  }
+  private async commitMemoryWrites(
+    workspaceId: string, actorId: string, dto: ExecuteAgentExecutionDto,
+    executionRunId: string
+  ) {
+    if (!dto.memoryWrites?.length) return;
+    await this.memory.commitWrites(workspaceId, actorId,
+      dto.memoryWrites.map((write) => ({ ...write, executionRunId })));
   }
   get(workspaceId: string, id: string) { return this.repository.get(workspaceId, id); }
   list(workspaceId: string, query: AgentExecutionListQueryDto) {

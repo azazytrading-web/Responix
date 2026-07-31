@@ -297,6 +297,29 @@ enum RuntimeOptimizationPackageType {
   RENDERED_PROMPT
   RUNTIME_CONTEXT
   RETRIEVAL_RUNTIME
+  MEMORY_RUNTIME
+}
+
+enum MemoryRuntimeType {
+  CONVERSATION
+  SESSION
+  WORKSPACE
+  AGENT
+  EXECUTION
+  TEMPORARY_RUNTIME
+  SHARED_RUNTIME
+  REFERENCE
+}
+
+enum MemoryRuntimeStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}
+
+enum MemoryReferenceKind {
+  DEPENDENCY
+  REFERENCE
 }
 
 enum StreamSessionStatus {
@@ -341,6 +364,18 @@ enum RetrievalDiagnosticSeverity {
   ERROR
   WARNING
   INFO
+}
+
+enum RetrievalExecutionMode {
+  KEYWORD
+  SEMANTIC
+  HYBRID
+}
+
+enum RetrievalExecutionStatus {
+  COMPLETED
+  FAILED
+  CANCELLED
 }
 
 enum ConversationRuntimeStatus {
@@ -570,6 +605,8 @@ model Workspace {
   agentExecutionOrchestrations AgentExecutionOrchestration[]
   runtimeOptimizationPackages  RuntimeOptimizationPackage[]
   streamSessions               StreamSession[]
+  memoryRuntimes               MemoryRuntime[]
+  memoryRuntimeSnapshots       MemoryRuntimeSnapshot[]
   subscriptions      Subscription[]      @relation("WorkspaceSubscriptions")
   payments           Payment[]
   apiKeys            ApiKey[]
@@ -3100,6 +3137,140 @@ model RuntimeOptimizationMetric {
   @@map("runtime_optimization_metrics")
 }
 
+model MemoryRuntime {
+  id                   String              @id @default(uuid()) @db.Uuid
+  workspaceId          String              @map("workspace_id") @db.Uuid
+  createdById          String              @map("created_by") @db.Uuid
+  updatedById          String              @map("updated_by") @db.Uuid
+  identifier           String
+  name                 String
+  type                 MemoryRuntimeType
+  scopeKey             String              @map("scope_key")
+  status               MemoryRuntimeStatus @default(DRAFT)
+  version              Int                 @default(1)
+  revision             Int                 @default(0)
+  stateVersion         Int                 @default(0) @map("state_version")
+  compatibilityVersion String              @map("compatibility_version")
+  executionRequestId   String?             @map("execution_request_id") @db.Uuid
+  executionRunId       String?             @map("execution_run_id") @db.Uuid
+  content              Json
+  metadata             Json                @default("{}")
+  packageHash          String              @map("package_hash")
+  checksum             String
+  publishedAt          DateTime?           @map("published_at")
+  archivedAt           DateTime?           @map("archived_at")
+  createdAt            DateTime            @default(now()) @map("created_at")
+  updatedAt            DateTime            @updatedAt @map("updated_at")
+  workspace   Workspace                 @relation(fields: [workspaceId], references: [id], onDelete: Restrict)
+  snapshots   MemoryRuntimeSnapshot[]
+  versions    MemoryRuntimeVersion[]
+  references  MemoryRuntimeReference[]  @relation("MemoryReferenceSource")
+  referencedBy MemoryRuntimeReference[] @relation("MemoryReferenceTarget")
+  diagnostics MemoryRuntimeDiagnostic[]
+  metric      MemoryRuntimeMetric?
+  lifecycle   MemoryRuntimeLifecycle[]
+  @@unique([workspaceId, identifier], map: "memory_runtimes_workspace_identifier_key")
+  @@index([workspaceId, type, status, updatedAt], map: "memory_runtimes_workspace_type_status_idx")
+  @@index([workspaceId, scopeKey], map: "memory_runtimes_workspace_scope_idx")
+  @@map("memory_runtimes")
+}
+
+model MemoryRuntimeSnapshot {
+  id                   String   @id @default(uuid()) @db.Uuid
+  workspaceId          String   @map("workspace_id") @db.Uuid
+  runtimeId            String   @map("runtime_id") @db.Uuid
+  version              Int
+  revision             Int
+  createdById          String   @map("created_by") @db.Uuid
+  compatibilityVersion String   @map("compatibility_version")
+  snapshot             Json
+  metadata             Json     @default("{}")
+  packageHash          String   @map("package_hash")
+  checksum             String
+  createdAt            DateTime @default(now()) @map("created_at")
+  workspace Workspace     @relation(fields: [workspaceId], references: [id], onDelete: Restrict)
+  runtime   MemoryRuntime @relation(fields: [runtimeId], references: [id], onDelete: Restrict)
+  @@unique([runtimeId, revision], map: "memory_runtime_snapshots_runtime_revision_key")
+  @@index([workspaceId, createdAt], map: "memory_runtime_snapshots_workspace_created_idx")
+  @@map("memory_runtime_snapshots")
+}
+
+model MemoryRuntimeVersion {
+  id             String   @id @default(uuid()) @db.Uuid
+  runtimeId      String   @map("runtime_id") @db.Uuid
+  version        Int
+  revision       Int
+  sourceRevision Int?     @map("source_revision")
+  snapshot       Json
+  packageHash    String   @map("package_hash")
+  checksum       String
+  createdById    String   @map("created_by") @db.Uuid
+  createdAt      DateTime @default(now()) @map("created_at")
+  runtime MemoryRuntime @relation(fields: [runtimeId], references: [id], onDelete: Restrict)
+  @@unique([runtimeId, revision], map: "memory_runtime_versions_runtime_revision_key")
+  @@index([runtimeId, createdAt], map: "memory_runtime_versions_runtime_created_idx")
+  @@map("memory_runtime_versions")
+}
+
+model MemoryRuntimeReference {
+  id               String              @id @default(uuid()) @db.Uuid
+  runtimeId        String              @map("runtime_id") @db.Uuid
+  targetRuntimeId  String              @map("target_runtime_id") @db.Uuid
+  targetRevision   Int?                @map("target_revision")
+  referenceKey     String              @map("reference_key")
+  kind             MemoryReferenceKind
+  required         Boolean             @default(true)
+  metadata         Json                @default("{}")
+  createdAt        DateTime            @default(now()) @map("created_at")
+  runtime       MemoryRuntime @relation("MemoryReferenceSource", fields: [runtimeId], references: [id], onDelete: Restrict)
+  targetRuntime MemoryRuntime @relation("MemoryReferenceTarget", fields: [targetRuntimeId], references: [id], onDelete: Restrict)
+  @@unique([runtimeId, referenceKey], map: "memory_runtime_references_runtime_key_key")
+  @@index([targetRuntimeId], map: "memory_runtime_references_target_idx")
+  @@map("memory_runtime_references")
+}
+
+model MemoryRuntimeDiagnostic {
+  id        String   @id @default(uuid()) @db.Uuid
+  runtimeId String   @map("runtime_id") @db.Uuid
+  severity  String
+  code      String
+  path      String
+  message   String
+  metadata  Json     @default("{}")
+  createdAt DateTime @default(now()) @map("created_at")
+  runtime MemoryRuntime @relation(fields: [runtimeId], references: [id], onDelete: Restrict)
+  @@index([runtimeId, severity, createdAt], map: "memory_runtime_diagnostics_runtime_severity_idx")
+  @@map("memory_runtime_diagnostics")
+}
+
+model MemoryRuntimeMetric {
+  id                  String   @id @default(uuid()) @db.Uuid
+  runtimeId           String   @unique @map("runtime_id") @db.Uuid
+  loadCount           Int      @default(0) @map("load_count")
+  cacheHitCount       Int      @default(0) @map("cache_hit_count")
+  writeCount          Int      @default(0) @map("write_count")
+  resolutionDurationMs Int     @default(0) @map("resolution_duration_ms")
+  lastResolvedAt      DateTime? @map("last_resolved_at")
+  createdAt           DateTime @default(now()) @map("created_at")
+  updatedAt           DateTime @updatedAt @map("updated_at")
+  runtime MemoryRuntime @relation(fields: [runtimeId], references: [id], onDelete: Restrict)
+  @@map("memory_runtime_metrics")
+}
+
+model MemoryRuntimeLifecycle {
+  id           String              @id @default(uuid()) @db.Uuid
+  runtimeId    String              @map("runtime_id") @db.Uuid
+  actorId      String              @map("actor_id") @db.Uuid
+  fromStatus   MemoryRuntimeStatus? @map("from_status")
+  toStatus     MemoryRuntimeStatus  @map("to_status")
+  stateVersion Int                 @map("state_version")
+  metadata     Json                @default("{}")
+  createdAt    DateTime            @default(now()) @map("created_at")
+  runtime MemoryRuntime @relation(fields: [runtimeId], references: [id], onDelete: Restrict)
+  @@unique([runtimeId, stateVersion], map: "memory_runtime_lifecycle_runtime_state_key")
+  @@map("memory_runtime_lifecycle")
+}
+
 model StreamSession {
   id                  String              @id @default(uuid()) @db.Uuid
   workspaceId         String              @map("workspace_id") @db.Uuid
@@ -3410,6 +3581,69 @@ model RetrievalRuntimeDiagnostic {
 
   @@index([runtimeId, severity, code], map: "retrieval_runtime_diagnostics_severity_code_idx")
   @@map("retrieval_runtime_diagnostics")
+}
+
+model RetrievalExecution {
+  id                        String                   @id @default(uuid()) @db.Uuid
+  workspaceId               String                   @map("workspace_id") @db.Uuid
+  createdById               String                   @map("created_by") @db.Uuid
+  retrievalRuntimeSnapshotId String                  @map("retrieval_runtime_snapshot_id") @db.Uuid
+  executionRequestId        String?                  @map("execution_request_id") @db.Uuid
+  executionRunId            String?                  @map("execution_run_id") @db.Uuid
+  mode                      RetrievalExecutionMode
+  status                    RetrievalExecutionStatus
+  normalizedQuery           String                   @map("normalized_query")
+  requestHash               String                   @map("request_hash")
+  sourceHash                String                   @map("source_hash")
+  compatibilityVersion      String                   @map("compatibility_version")
+  retrievalPackage          Json                     @map("retrieval_package")
+  packageHash               String                   @map("package_hash")
+  checksum                  String
+  cacheHit                  Boolean                  @default(false) @map("cache_hit")
+  durationMs                Int                      @map("duration_ms")
+  candidateCount            Int                      @default(0) @map("candidate_count")
+  resultCount               Int                      @default(0) @map("result_count")
+  tokenCount                Int                      @default(0) @map("token_count")
+  failureCode               String?                  @map("failure_code")
+  failureMessage            String?                  @map("failure_message")
+  metadata                  Json                     @default("{}")
+  createdAt                 DateTime                 @default(now()) @map("created_at")
+  diagnostics               RetrievalExecutionDiagnostic[]
+  metric                    RetrievalExecutionMetric?
+
+  @@index([workspaceId, status, createdAt], map: "retrieval_executions_workspace_status_idx")
+  @@index([workspaceId, requestHash, createdAt], map: "retrieval_executions_workspace_request_hash_idx")
+  @@index([workspaceId, retrievalRuntimeSnapshotId], map: "retrieval_executions_workspace_snapshot_idx")
+  @@map("retrieval_executions")
+}
+
+model RetrievalExecutionDiagnostic {
+  id          String   @id @default(uuid()) @db.Uuid
+  executionId String   @map("execution_id") @db.Uuid
+  severity    String
+  code        String
+  path        String
+  message     String
+  metadata    Json     @default("{}")
+  createdAt   DateTime @default(now()) @map("created_at")
+  execution   RetrievalExecution @relation(fields: [executionId], references: [id], onDelete: Restrict)
+
+  @@index([executionId, severity, createdAt], map: "retrieval_execution_diagnostics_execution_idx")
+  @@map("retrieval_execution_diagnostics")
+}
+
+model RetrievalExecutionMetric {
+  id              String   @id @default(uuid()) @db.Uuid
+  executionId     String   @unique @map("execution_id") @db.Uuid
+  queryDurationMs Int      @default(0) @map("query_duration_ms")
+  filterDurationMs Int     @default(0) @map("filter_duration_ms")
+  rankingDurationMs Int    @default(0) @map("ranking_duration_ms")
+  packagingDurationMs Int  @default(0) @map("packaging_duration_ms")
+  cacheLookupMs   Int      @default(0) @map("cache_lookup_ms")
+  createdAt       DateTime @default(now()) @map("created_at")
+  execution       RetrievalExecution @relation(fields: [executionId], references: [id], onDelete: Restrict)
+
+  @@map("retrieval_execution_metrics")
 }
 
 model ConversationRuntime {

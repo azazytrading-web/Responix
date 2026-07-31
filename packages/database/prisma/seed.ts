@@ -86,6 +86,8 @@ const permissions = [
   "retrieval.runtime.archive",
   "retrieval.runtime.restore",
   "retrieval.runtime.compare",
+  "retrieval.execution.execute",
+  "retrieval.execution.read",
   "conversation.runtime.read",
   "conversation.runtime.create",
   "conversation.runtime.update",
@@ -118,7 +120,12 @@ const permissions = [
   "stream.runtime.create",
   "stream.runtime.cancel",
   "stream.runtime.compare",
-  "stream.runtime.audit"
+  "stream.runtime.audit",
+  "memory.runtime.read",
+  "memory.runtime.write",
+  "memory.runtime.publish",
+  "memory.runtime.archive",
+  "memory.runtime.compare"
 ];
 
 const roles = [

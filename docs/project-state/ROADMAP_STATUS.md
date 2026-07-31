@@ -1,5 +1,13 @@
 # Roadmap Status
 
+## Sprint 6E.14 Update - 2026-07-31
+
+The Channel Runtime is now a provider-neutral multi-channel foundation. Installed adapters are resolved through a registry and share credential, transport, webhook, media, capability, health, retry, rate-limit, delivery, batching, presence, diagnostics, metrics, audit, and normalized-message contracts. Meta WhatsApp Cloud implements these contracts without a provider-specific orchestration path.
+
+## Sprint 6E.13 Update - 2026-07-31
+
+The generic Channel Runtime and its first production adapter, Meta WhatsApp Cloud, are implemented. The runtime owns workspace-scoped connections, sessions, normalized messages, media, delivery state, replay protection, immutable history, diagnostics, metrics, and transactional audits while reusing existing Conversation, Workflow, Agent, Tool, Memory, Retrieval, Optimization, Provider, Streaming, and Execution Kernel layers.
+
 ## Sprint 6E.12 Update - 2026-07-31
 
 Advanced Prompt Cache and Runtime Optimization is implemented by extending the existing

@@ -118,7 +118,8 @@ import { RuntimeRecoveryService } from "./runtime/runtime-recovery.service";
     ProviderCredentialService,
     ProviderDiscoveryService,
     ProviderConfigurationRepository,
-    ProviderHttpClient
+    ProviderHttpClient,
+    ProviderCredentialCryptoService
   ]
 })
 export class AiModule {}

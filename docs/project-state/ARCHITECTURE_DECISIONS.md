@@ -1,5 +1,19 @@
 # Architecture Decisions
 
+## ADR-021 - Provider-Neutral Multi-Channel Boundary
+
+- **Status:** Accepted
+- **Context:** Communication providers differ in payloads, signatures, media transports, delivery states, credentials, capabilities, and health semantics, while Agent and Workflow runtimes must remain channel agnostic.
+- **Decision:** Resolve installed channel adapters through a registry and constrain them to generic provider, credential, transport, webhook, media, normalization, capability, and health contracts. Persist normalized workspace-scoped runtime records and keep provider mappings inside adapters. Retain legacy WhatsApp endpoints as compatibility delegates to the same runtime.
+- **Consequences:** Future channel adapters require registration and contract implementation but no changes to Agent, Workflow, Conversation, Execution Kernel, Prompt, Memory, Retrieval, Tool, Optimization, Provider, or Streaming runtimes. Queue and virus-scanner vendors remain replaceable integration boundaries.
+
+## ADR-019 - Vendor-Neutral Channel Runtime with Meta WhatsApp Adapter
+
+- **Status:** Accepted
+- **Context:** Communication channels must normalize provider payloads into workspace-scoped immutable messages without adding provider logic to Agent Execution or duplicating Conversation, Workflow, Tool, Memory, Retrieval, Optimization, Provider, Streaming, or Execution Kernel behavior.
+- **Decision:** Introduce Channel Runtime as the sole channel lifecycle authority. Keep the historical `channels` table as the global provider catalog, create workspace-owned runtime channels/connections/sessions/conversations/messages/attachments/deliveries/events/metrics/diagnostics/snapshots, and isolate Meta payload/signature/transport behavior in `MetaWhatsappCloudAdapter`. Encrypt Meta credentials, verify signatures against raw bytes, persist replay receipts before processing, and delegate configured inbound work to existing Workflow or Agent execution services.
+- **Consequences:** WhatsApp is the first adapter, not a special execution path. Outbound records are queue-ready but processed inline until a queue provider is selected. Streaming falls back to a final aggregated WhatsApp message because Meta Cloud message delivery does not expose token streaming.
+
 ## ADR-018 - Layered Immutable Prompt and Runtime Cache
 
 - **Status:** Accepted

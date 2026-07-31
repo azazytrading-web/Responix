@@ -1,5 +1,22 @@
 # Development Log
 
+## Sprint 6E.14 - Multi-Channel Foundation Runtime - 2026-07-31
+
+- **Foundation:** Generalized Channel Runtime contracts for providers, credentials, transport, webhooks, media, identities, presence, capabilities, health, retry/rate-limit policies, and batching.
+- **Registry:** Added normalized installed-adapter resolution, duplicate rejection, capability lookup/refresh, and workspace-scoped connection resolution.
+- **Compatibility:** Refactored Meta WhatsApp Cloud into the generic contracts while retaining the Sprint 6E.13 public routes and persistence compatibility.
+- **Security:** Credential references remain encrypted and excluded from snapshots; webhook verification, replay/idempotency protection, checksums, optimistic locking, permissions, and transactional audits remain enforced.
+- **Persistence:** Added migration `000037_multi_channel_foundation` without modifying historical migrations.
+
+## Sprint 6E.13 - WhatsApp Business Channel Runtime - 2026-07-31
+
+- **Status:** Complete; the full repository validation matrix passes and is recorded in Validation History.
+- **Foundation:** Added generic workspace-isolated Channel Runtime entities, immutable snapshots/configuration revisions, optimistic state transitions, delivery history, diagnostics, metrics, and append-only transactional audits.
+- **WhatsApp:** Added a native Meta WhatsApp Cloud adapter for configuration/capabilities, secure health and send operations, inbound/outbound normalization, media upload/download, and provider delivery/account callbacks.
+- **Security:** Added encrypted access/verification/app secrets, raw-body HMAC verification, constant-time token verification, timestamp windows, replay receipts, idempotency, checksums, MIME/size/integrity enforcement, workspace boundaries, and persisted rate limits.
+- **Integration:** Incoming messages create Conversation Runtime packages and delegate configured work to existing Workflow Runtime or Agent Execution, inheriting Execution Kernel, Prompt, Memory, Retrieval, Tool, Optimization, Provider, and Streaming behavior without duplication.
+- **Persistence:** Added migration `000036_whatsapp_business_channel_runtime` and six channel/WhatsApp permissions without modifying historical migrations.
+
 ## Sprint 6E.12 - Advanced Prompt Cache & Runtime Optimization - 2026-07-31
 
 - **Status:** Implementation complete; final validation evidence is recorded in Validation History.

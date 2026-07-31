@@ -98,7 +98,7 @@ export function configuration() {
       },
       network: {
         allowedHosts: (process.env.AI_PROVIDER_ALLOWED_HOSTS ??
-          "api.openai.com,api.anthropic.com,generativelanguage.googleapis.com,openrouter.ai,api.deepseek.com")
+          "api.openai.com,api.anthropic.com,generativelanguage.googleapis.com,openrouter.ai,api.deepseek.com,graph.facebook.com,lookaside.fbsbx.com")
           .split(",")
           .map((host) => host.trim().toLowerCase())
           .filter(Boolean),

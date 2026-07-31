@@ -38,6 +38,7 @@ import { RuntimeOptimizationModule } from "../modules/runtime-optimization/runti
 import { StreamingRuntimeModule } from "../modules/streaming-runtime/streaming-runtime.module";
 import { MemoryRuntimeModule } from "../modules/memory-runtime/memory-runtime.module";
 import { RetrievalExecutionModule } from "../modules/retrieval-execution/retrieval-execution.module";
+import { ChannelRuntimeModule } from "../modules/channel-runtime/channel-runtime.module";
 import { SecretRedactionExceptionFilter } from "../common/secret-redaction-exception.filter";
 import { redactLogArguments } from "../common/secret-redaction";
 
@@ -117,7 +118,8 @@ import { redactLogArguments } from "../common/secret-redaction";
     RuntimeOptimizationModule,
     StreamingRuntimeModule,
     MemoryRuntimeModule,
-    RetrievalExecutionModule
+    RetrievalExecutionModule,
+    ChannelRuntimeModule
   ],
   providers: [
     {

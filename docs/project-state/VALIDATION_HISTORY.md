@@ -1,5 +1,35 @@
 # Validation History
 
+## Sprint 6E.14 - Multi-Channel Foundation Runtime - 2026-07-31
+
+| Check | Result |
+| --- | --- |
+| `pnpm prisma validate` | PASS |
+| `pnpm prisma generate` | PASS |
+| `pnpm typecheck` | PASS - 10 workspace tasks |
+| `pnpm lint` | PASS - all 6 applicable workspace lint projects |
+| `pnpm test` | PASS - API Jest: 141 suites passed, 1 skipped; 889 tests passed, 4 skipped |
+| `pnpm build` | PASS - 6 workspace build tasks |
+| `git diff --check` | PASS |
+| Sprint 6E.14 validation | PASS - full mandatory repository validation matrix |
+
+Focused Channel Runtime validation passed 9 suites and 41 tests. The repository retains one pre-existing skipped API suite and four pre-existing skipped tests; Sprint 6E.14 introduced no disabled or skipped tests. Full workspace checks used `NODE_OPTIONS=--max-old-space-size=8192`.
+
+## Sprint 6E.13 - WhatsApp Business Channel Runtime - 2026-07-31
+
+| Check                   | Result                                             |
+| ----------------------- | -------------------------------------------------- |
+| `pnpm prisma validate`  | PASS                                               |
+| `pnpm prisma generate`  | PASS                                               |
+| `pnpm typecheck`        | PASS - 10 workspace tasks                          |
+| `pnpm lint`             | PASS - all 7 applicable workspace projects         |
+| `pnpm test`             | PASS - API Jest: 139 suites, 885 tests             |
+| `pnpm build`            | PASS - 6 workspace build tasks                     |
+| `git diff --check`      | PASS                                               |
+| Sprint 6E.13 validation | PASS - full mandatory repository validation matrix |
+
+Focused Channel Runtime validation also passed: 7 suites and 37 tests. The repository retains one pre-existing skipped API suite and four pre-existing skipped tests; Sprint 6E.13 introduced no disabled or skipped tests. Full workspace checks used `NODE_OPTIONS=--max-old-space-size=8192`.
+
 ## Sprint 6E.12 - Advanced Prompt Cache & Runtime Optimization - 2026-07-31
 
 | Check                   | Result                                             |

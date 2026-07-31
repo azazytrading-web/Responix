@@ -1,5 +1,21 @@
 # Session Handoff
 
+## Current Repository State - Sprint 6E.14 - 2026-07-31
+
+Channel Runtime now provides the reusable multi-channel boundary for future Telegram, Slack, Discord, Teams, email, SMS, web chat, custom REST, and connector adapters. Providers implement generic normalization, webhook, signature, transport, media, capability, and health contracts and are discovered through the adapter registry. Runtime orchestration remains provider agnostic and continues delegating normalized messages to Conversation Runtime and configured Workflow or Agent execution.
+
+Meta WhatsApp Cloud is the first adapter and retains backward-compatible routes. Generic encrypted credential references, immutable provider configuration, health history, capability persistence, connection lifecycle validation, rate/retry policy records, presence, and queue-ready message batches are added by migration `000037_multi_channel_foundation`.
+
+The full validation matrix passes: Prisma validation/generation, workspace typecheck/lint, 141 passing API suites with 889 passing tests, production build, and `git diff --check`.
+
+## Current Repository State - Sprint 6E.13 - 2026-07-31
+
+Channel Runtime is now the vendor-neutral communication boundary. Meta WhatsApp Cloud is isolated behind its provider adapter; credentials are encrypted, webhook signatures use captured raw request bytes, replay/idempotency receipts are durable, and all channel data is workspace scoped. Messages and attachments are normalized, checksum protected, lifecycle validated, measured, diagnosed, and transactionally audited.
+
+Inbound WhatsApp messages prepare Conversation Runtime state and select configured Workflow Runtime or Agent Execution entry points. Those existing runtimes continue to own Execution Kernel, Prompt, Memory, Retrieval, Tool, Runtime Optimization, Provider, and Streaming behavior. Meta does not support token-streamed outgoing messages, so the adapter sends the completed aggregate response. Outbound persistence is queue-ready but no queue vendor has been introduced.
+
+The full Sprint 6E.13 repository validation matrix passes: Prisma validation/generation, workspace typecheck/lint, 139 API suites with 885 passing tests, production build, and `git diff --check`.
+
 ## Current Repository State - Sprint 6E.12 - 2026-07-31
 
 Sprint 6E.12 extends the existing Runtime Optimization module into the authoritative

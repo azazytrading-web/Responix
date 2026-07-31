@@ -10,7 +10,8 @@ import { AppModule } from "./app/app.module";
 
 async function bootstrap(): Promise<void> {
   const app = await NestFactory.create<NestExpressApplication>(AppModule, {
-    bufferLogs: true
+    bufferLogs: true,
+    rawBody: true
   });
   const configService = app.get(ConfigService);
   const logger = app.get(Logger);

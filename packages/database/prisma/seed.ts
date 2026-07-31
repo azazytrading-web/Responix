@@ -138,7 +138,13 @@ const permissions = [
   "memory.runtime.write",
   "memory.runtime.publish",
   "memory.runtime.archive",
-  "memory.runtime.compare"
+  "memory.runtime.compare",
+  "channel.runtime.read",
+  "channel.runtime.write",
+  "channel.runtime.admin",
+  "whatsapp.connection.read",
+  "whatsapp.connection.write",
+  "whatsapp.connection.admin"
 ];
 
 const roles = [
@@ -219,7 +225,7 @@ async function seed(): Promise<void> {
     { name: "whatsapp", displayName: "WhatsApp" },
     { name: "email", displayName: "Email" }
   ]) {
-    await prisma.channel.upsert({
+    await prisma.channelProvider.upsert({
       where: { name: channel.name },
       update: {},
       create: channel

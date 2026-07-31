@@ -1,5 +1,14 @@
 # Project Version
 
+## Engineering State Update - Sprint 6E.14 - 2026-07-31
+
+Sprint 6E.14 (Multi-Channel Foundation Runtime) is implemented and fully validated in the working tree. The project remains private and unreleased at `0.4.0`; this milestone does not authorize a release, tag, or publication.
+
+## Engineering State Update - Sprint 6E.13 - 2026-07-31
+
+Sprint 6E.13 (WhatsApp Business Channel Runtime) is implemented in the working tree. The project remains private and unreleased at `0.4.0`; this engineering milestone does not authorize a release, tag, or publication.
+The complete repository validation matrix passes.
+
 ## Engineering State Update - Sprint 6E.12 - 2026-07-31
 
 Sprint 6E.12 (Advanced Prompt Cache & Runtime Optimization) is implemented in the

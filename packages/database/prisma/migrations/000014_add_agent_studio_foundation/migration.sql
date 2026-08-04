@@ -1,8 +1,18 @@
 ALTER TYPE "AgentStatus" ADD VALUE IF NOT EXISTS 'PUBLISHED';
 ALTER TYPE "AgentStatus" ADD VALUE IF NOT EXISTS 'ARCHIVED';
 
-CREATE TYPE "AgentVisibility" AS ENUM ('PRIVATE', 'WORKSPACE');
-CREATE TYPE "AgentPromptRole" AS ENUM ('SYSTEM', 'DEVELOPER', 'USER_TEMPLATE', 'LIBRARY');
+DO $$
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'agentvisibility') THEN
+        CREATE TYPE "AgentVisibility" AS ENUM ('PRIVATE', 'WORKSPACE');
+    END IF;
+END $$;
+DO $$
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'agentpromptrole') THEN
+        CREATE TYPE "AgentPromptRole" AS ENUM ('SYSTEM', 'DEVELOPER', 'USER_TEMPLATE', 'LIBRARY');
+    END IF;
+END $$;
 
 ALTER TABLE "ai_agents"
   ADD COLUMN "slug" TEXT,
@@ -32,7 +42,7 @@ ALTER TABLE "ai_agents"
 
 ALTER TABLE "ai_agents" ALTER COLUMN "version" SET DEFAULT 0;
 
-CREATE UNIQUE INDEX "ai_agents_workspace_id_slug_key"
+CREATE UNIQUE INDEX IF NOT EXISTS "ai_agents_workspace_id_slug_key"
   ON "ai_agents"("workspace_id", "slug");
 
 ALTER TABLE "ai_agents"
@@ -41,7 +51,7 @@ ALTER TABLE "ai_agents"
   REFERENCES "ai_provider_configurations"("id")
   ON DELETE SET NULL;
 
-CREATE TABLE "agent_prompt_bindings" (
+CREATE TABLE IF NOT EXISTS "agent_prompt_bindings" (
   "id" UUID NOT NULL,
   "agent_id" UUID NOT NULL,
   "role" "AgentPromptRole" NOT NULL,
@@ -54,11 +64,11 @@ CREATE TABLE "agent_prompt_bindings" (
   CONSTRAINT "agent_prompt_bindings_pkey" PRIMARY KEY ("id")
 );
 
-CREATE UNIQUE INDEX "agent_prompt_bindings_agent_id_role_prompt_id_key"
+CREATE UNIQUE INDEX IF NOT EXISTS "agent_prompt_bindings_agent_id_role_prompt_id_key"
   ON "agent_prompt_bindings"("agent_id", "role", "prompt_id");
-CREATE INDEX "agent_prompt_bindings_prompt_id_idx"
+CREATE INDEX IF NOT EXISTS "agent_prompt_bindings_prompt_id_idx"
   ON "agent_prompt_bindings"("prompt_id");
-CREATE INDEX "agent_prompt_bindings_prompt_version_id_idx"
+CREATE INDEX IF NOT EXISTS "agent_prompt_bindings_prompt_version_id_idx"
   ON "agent_prompt_bindings"("prompt_version_id");
 
 ALTER TABLE "agent_prompt_bindings"
@@ -71,7 +81,7 @@ ALTER TABLE "agent_prompt_bindings"
   ADD CONSTRAINT "agent_prompt_bindings_prompt_version_id_fkey"
   FOREIGN KEY ("prompt_version_id") REFERENCES "prompt_library_versions"("id") ON DELETE RESTRICT;
 
-CREATE TABLE "ai_agent_versions" (
+CREATE TABLE IF NOT EXISTS "ai_agent_versions" (
   "id" UUID NOT NULL,
   "agent_id" UUID NOT NULL,
   "revision" INTEGER NOT NULL,
@@ -83,9 +93,9 @@ CREATE TABLE "ai_agent_versions" (
   CONSTRAINT "ai_agent_versions_pkey" PRIMARY KEY ("id")
 );
 
-CREATE UNIQUE INDEX "ai_agent_versions_agent_id_revision_key"
+CREATE UNIQUE INDEX IF NOT EXISTS "ai_agent_versions_agent_id_revision_key"
   ON "ai_agent_versions"("agent_id", "revision");
-CREATE INDEX "ai_agent_versions_agent_id_published_at_idx"
+CREATE INDEX IF NOT EXISTS "ai_agent_versions_agent_id_published_at_idx"
   ON "ai_agent_versions"("agent_id", "published_at");
 
 ALTER TABLE "ai_agent_versions"

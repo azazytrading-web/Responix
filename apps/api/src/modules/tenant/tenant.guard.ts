@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import type { CanActivate, ExecutionContext } from "@nestjs/common";
-import { Reflector } from "@nestjs/core";
+import { ContextIdFactory, ModuleRef, Reflector } from "@nestjs/core";
 import { IS_PUBLIC } from "../auth/auth.guard";
 import { TenantContextService } from "./tenant-context.service";
 import { ALLOW_INACTIVE_WORKSPACE, SKIP_TENANT_CONTEXT } from "./tenant.metadata";
@@ -9,12 +9,20 @@ import { ALLOW_INACTIVE_WORKSPACE, SKIP_TENANT_CONTEXT } from "./tenant.metadata
 export class TenantGuard implements CanActivate {
   constructor(
     private readonly reflector: Reflector,
-    private readonly tenantContext: TenantContextService
+    private readonly moduleRef: ModuleRef
   ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     if (this.isPublic(context) || this.shouldSkipTenantContext(context)) return true;
-    await this.tenantContext.resolve({
+    const request = context.switchToHttp().getRequest<object>();
+    const contextId = ContextIdFactory.getByRequest(request);
+    this.moduleRef.registerRequestByContextId(request, contextId);
+    const tenantContext = await this.moduleRef.resolve(
+      TenantContextService,
+      contextId,
+      { strict: false }
+    );
+    await tenantContext.resolve({
       allowInactiveWorkspace: this.reflector.getAllAndOverride<boolean>(ALLOW_INACTIVE_WORKSPACE, [
         context.getHandler(),
         context.getClass()

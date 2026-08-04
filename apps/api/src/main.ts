@@ -60,6 +60,12 @@ async function bootstrap(): Promise<void> {
       .setDescription("Enterprise multi-tenant AI customer engagement API")
       .setVersion("1.0.0")
       .addBearerAuth()
+      .addCookieAuth("responix_refresh_token", {
+        type: "apiKey",
+        in: "cookie",
+        name: "responix_refresh_token",
+        description: "Rotating HttpOnly refresh-session cookie"
+      }, "responix_refresh_token")
       .build()
   );
   SwaggerModule.setup("docs", app, document);

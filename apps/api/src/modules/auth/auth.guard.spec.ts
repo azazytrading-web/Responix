@@ -9,13 +9,20 @@ describe("authentication guards", () => {
       getClass: () => class TestController {},
       switchToHttp: () => ({ getRequest: () => request })
     } as never;
+    const claims = {
+      sub: "user",
+      workspaceId: "workspace",
+      membershipId: "membership",
+      sessionId: "session"
+    };
     const guard = new JwtAuthGuard(
-      { verifyAsync: jest.fn().mockResolvedValue({ sub: "user" }) } as never,
+      { verifyAsync: jest.fn().mockResolvedValue(claims) } as never,
       { getOrThrow: jest.fn().mockReturnValue("secret") } as never,
-      { getAllAndOverride: jest.fn() } as never
+      { getAllAndOverride: jest.fn() } as never,
+      { findSession: jest.fn().mockResolvedValue({ id: "session" }) } as never
     );
     await expect(guard.canActivate(context)).resolves.toBe(true);
-    expect(request).toMatchObject({ user: { sub: "user" } });
+    expect(request).toMatchObject({ user: claims });
   });
 
   it("rejects missing bearer tokens", async () => {
@@ -27,7 +34,8 @@ describe("authentication guards", () => {
     const guard = new JwtAuthGuard(
       {} as never,
       {} as never,
-      { getAllAndOverride: jest.fn() } as never
+      { getAllAndOverride: jest.fn() } as never,
+      {} as never
     );
     await expect(guard.canActivate(context)).rejects.toBeInstanceOf(UnauthorizedException);
   });

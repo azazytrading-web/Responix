@@ -8,6 +8,7 @@ import type { AuthClaims } from "./auth.types";
 import { SKIP_TENANT_CONTEXT } from "../tenant/tenant.metadata";
 import { PermissionDeniedException } from "../../common/domain-errors";
 import { PermissionResolutionService } from "../platform-control/permission-resolution.service";
+import { AuthRepository } from "./auth.repository";
 export const IS_PUBLIC = "isPublic";
 export const Public = () => SetMetadata(IS_PUBLIC, true);
 export const Permissions = (...permissions: string[]) => SetMetadata("permissions", permissions);
@@ -16,7 +17,8 @@ export class JwtAuthGuard implements CanActivate {
   constructor(
     private readonly jwt: JwtService,
     private readonly config: ConfigService,
-    private readonly reflector: Reflector
+    private readonly reflector: Reflector,
+    private readonly repository: AuthRepository
   ) {}
   async canActivate(context: ExecutionContext) {
     const request = context
@@ -30,9 +32,19 @@ export class JwtAuthGuard implements CanActivate {
     const token = request.headers.authorization?.replace(/^Bearer\s+/i, "");
     if (!token) throw new UnauthorizedException();
     try {
-      request.user = await this.jwt.verifyAsync<AuthClaims>(token, {
+      const claims = await this.jwt.verifyAsync<AuthClaims>(token, {
         secret: this.config.getOrThrow("JWT_ACCESS_SECRET")
       });
+      if (!claims.sub || !claims.workspaceId || !claims.membershipId || !claims.sessionId) {
+        throw new UnauthorizedException();
+      }
+      const session = await this.repository.findSession(
+        claims.sessionId,
+        claims.sub,
+        claims.workspaceId
+      );
+      if (!session) throw new UnauthorizedException();
+      request.user = claims;
       return true;
     } catch {
       throw new UnauthorizedException();

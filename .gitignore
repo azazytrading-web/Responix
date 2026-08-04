@@ -11,5 +11,8 @@ coverage
 Dockerfile.local
 tmp
 temp
+.dev-runtime
+.next-dashboard
+.next-client
 *.tsbuildinfo
 **/*.tsbuildinfo

@@ -1,19 +1,20 @@
 import { Body, Controller, Delete, Get, Param, Patch, Post, Put, Req, Version } from "@nestjs/common";
-import { ApiBearerAuth, ApiForbiddenResponse, ApiOkResponse, ApiOperation, ApiTags } from "@nestjs/swagger";
+import { ApiBearerAuth, ApiForbiddenResponse, ApiOkResponse, ApiOperation, ApiTags, ApiUnauthorizedResponse } from "@nestjs/swagger";
 import { Permissions } from "../auth/auth.guard";
 import type { TenantRequest } from "../tenant/tenant-context.service";
 import { PlatformControlService } from "./platform-control.service";
-import { CreateRoleDto, TemporaryPermissionDto, TemporaryRoleDto, UpdateBrandingDto, UpdateFeatureDto, UpdateManifestDto, UpdatePermissionOverrideDto, UpdateRoleDto } from "./dto/platform-control.dto";
+import { CreateRoleDto, PlatformCurrentResponseDto, TemporaryPermissionDto, TemporaryRoleDto, UpdateBrandingDto, UpdateFeatureDto, UpdateManifestDto, UpdatePermissionOverrideDto, UpdateRoleDto } from "./dto/platform-control.dto";
 
 @ApiTags("Platform Control")
 @ApiBearerAuth()
 @ApiForbiddenResponse({ description: "Active workspace membership and declared permission are required" })
+@ApiUnauthorizedResponse({ description: "A valid workspace-bound access token is required" })
 @Controller("platform")
 export class PlatformControlController {
   constructor(private readonly service: PlatformControlService) {}
 
   @Get("current") @Version("1") @Permissions("platform.read")
-  @ApiOperation({ summary: "Resolve the current workspace control plane" }) @ApiOkResponse({ description: "Resolved permissions, features, license, branding, and manifest" })
+  @ApiOperation({ summary: "Resolve the current workspace control plane" }) @ApiOkResponse({ description: "Resolved permissions, features, license, branding, and manifest", type: PlatformCurrentResponseDto })
   async current(@Req() request: TenantRequest) {
     const context = request.tenantContext!;
     const input = { workspaceId: context.workspace.id, userId: context.user.id, roleId: context.role.id, roleName: context.role.name };

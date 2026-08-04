@@ -50,20 +50,28 @@ describe("TenantContextService", () => {
 describe("tenant guards", () => {
   const context = {
     getHandler: () => function handler() {},
-    getClass: () => class TestController {}
+    getClass: () => class TestController {},
+    switchToHttp: () => ({ getRequest: () => request })
   } as never;
+  const request: { tenantContext?: { membership: { status: string } } } = {};
   const reflector = { getAllAndOverride: jest.fn().mockReturnValue(false) };
 
   it("resolves tenant context before allowing a protected route", async () => {
     const tenantContext = { resolve: jest.fn().mockResolvedValue({}) };
-    const guard = new TenantGuard(reflector as never, tenantContext as never);
+    const moduleRef = {
+      registerRequestByContextId: jest.fn(),
+      resolve: jest.fn().mockResolvedValue(tenantContext)
+    };
+    const guard = new TenantGuard(reflector as never, moduleRef as never);
     await expect(guard.canActivate(context)).resolves.toBe(true);
+    expect(moduleRef.resolve).toHaveBeenCalled();
+    expect(moduleRef.registerRequestByContextId).toHaveBeenCalled();
     expect(tenantContext.resolve).toHaveBeenCalled();
   });
 
   it("rejects an inactive membership", () => {
-    const tenantContext = { resolved: { membership: { status: "SUSPENDED" } } };
-    const guard = new MembershipGuard(reflector as never, tenantContext as never);
+    request.tenantContext = { membership: { status: "SUSPENDED" } };
+    const guard = new MembershipGuard(reflector as never);
     expect(() => guard.canActivate(context)).toThrow(ForbiddenException);
   });
 });

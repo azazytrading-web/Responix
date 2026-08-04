@@ -1,5 +1,10 @@
 ALTER TYPE "KnowledgeStatus" ADD VALUE IF NOT EXISTS 'PUBLISHED';
-CREATE TYPE "KnowledgeSourceType" AS ENUM ('FILE', 'URL', 'TEXT', 'IMPORT', 'API');
+DO $$
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'knowledgesourcetype') THEN
+        CREATE TYPE "KnowledgeSourceType" AS ENUM ('FILE', 'URL', 'TEXT', 'IMPORT', 'API');
+    END IF;
+END $$;
 
 ALTER TABLE "knowledge_bases"
   ADD COLUMN "slug" TEXT,
@@ -9,10 +14,10 @@ ALTER TABLE "knowledge_bases"
   ADD COLUMN "updated_by" UUID,
   ADD COLUMN "archived_at" TIMESTAMP(3);
 
-CREATE UNIQUE INDEX "knowledge_bases_workspace_id_slug_key"
+CREATE UNIQUE INDEX IF NOT EXISTS "knowledge_bases_workspace_id_slug_key"
   ON "knowledge_bases"("workspace_id", "slug");
 
-CREATE TABLE "knowledge_collections" (
+CREATE TABLE IF NOT EXISTS "knowledge_collections" (
   "id" UUID NOT NULL,
   "workspace_id" UUID NOT NULL,
   "knowledge_base_id" UUID NOT NULL,
@@ -28,12 +33,12 @@ CREATE TABLE "knowledge_collections" (
   CONSTRAINT "knowledge_collections_pkey" PRIMARY KEY ("id")
 );
 
-CREATE UNIQUE INDEX "knowledge_collections_knowledge_base_id_slug_key"
+CREATE UNIQUE INDEX IF NOT EXISTS "knowledge_collections_knowledge_base_id_slug_key"
   ON "knowledge_collections"("knowledge_base_id", "slug");
-CREATE INDEX "knowledge_collections_workspace_id_knowledge_base_id_deleted_at_idx"
+CREATE INDEX IF NOT EXISTS "knowledge_collections_workspace_id_knowledge_base_id_deleted_at_idx"
   ON "knowledge_collections"("workspace_id", "knowledge_base_id", "deleted_at");
 
-CREATE TABLE "knowledge_folders" (
+CREATE TABLE IF NOT EXISTS "knowledge_folders" (
   "id" UUID NOT NULL,
   "workspace_id" UUID NOT NULL,
   "knowledge_base_id" UUID NOT NULL,
@@ -50,10 +55,10 @@ CREATE TABLE "knowledge_folders" (
   CONSTRAINT "knowledge_folders_pkey" PRIMARY KEY ("id")
 );
 
-CREATE INDEX "knowledge_folders_workspace_id_knowledge_base_id_collection_id_parent_id_idx"
+CREATE INDEX IF NOT EXISTS "knowledge_folders_workspace_id_knowledge_base_id_collection_id_parent_id_idx"
   ON "knowledge_folders"("workspace_id", "knowledge_base_id", "collection_id", "parent_id");
 
-CREATE TABLE "knowledge_categories" (
+CREATE TABLE IF NOT EXISTS "knowledge_categories" (
   "id" UUID NOT NULL,
   "workspace_id" UUID NOT NULL,
   "name" TEXT NOT NULL,
@@ -64,10 +69,10 @@ CREATE TABLE "knowledge_categories" (
   CONSTRAINT "knowledge_categories_pkey" PRIMARY KEY ("id")
 );
 
-CREATE UNIQUE INDEX "knowledge_categories_workspace_id_slug_key"
+CREATE UNIQUE INDEX IF NOT EXISTS "knowledge_categories_workspace_id_slug_key"
   ON "knowledge_categories"("workspace_id", "slug");
 
-CREATE TABLE "knowledge_tags" (
+CREATE TABLE IF NOT EXISTS "knowledge_tags" (
   "id" UUID NOT NULL,
   "workspace_id" UUID NOT NULL,
   "name" TEXT NOT NULL,
@@ -78,7 +83,7 @@ CREATE TABLE "knowledge_tags" (
   CONSTRAINT "knowledge_tags_pkey" PRIMARY KEY ("id")
 );
 
-CREATE UNIQUE INDEX "knowledge_tags_workspace_id_slug_key"
+CREATE UNIQUE INDEX IF NOT EXISTS "knowledge_tags_workspace_id_slug_key"
   ON "knowledge_tags"("workspace_id", "slug");
 
 ALTER TABLE "knowledge_documents"
@@ -106,10 +111,10 @@ ALTER TABLE "knowledge_documents"
   ADD COLUMN "updated_by" UUID,
   ADD COLUMN "archived_at" TIMESTAMP(3);
 
-CREATE UNIQUE INDEX "knowledge_documents_workspace_id_slug_key"
+CREATE UNIQUE INDEX IF NOT EXISTS "knowledge_documents_workspace_id_slug_key"
   ON "knowledge_documents"("workspace_id", "slug");
 
-CREATE TABLE "knowledge_chunk_metadata" (
+CREATE TABLE IF NOT EXISTS "knowledge_chunk_metadata" (
   "id" UUID NOT NULL,
   "workspace_id" UUID NOT NULL,
   "document_id" UUID NOT NULL,
@@ -124,12 +129,12 @@ CREATE TABLE "knowledge_chunk_metadata" (
   CONSTRAINT "knowledge_chunk_metadata_pkey" PRIMARY KEY ("id")
 );
 
-CREATE UNIQUE INDEX "knowledge_chunk_metadata_document_id_ordinal_key"
+CREATE UNIQUE INDEX IF NOT EXISTS "knowledge_chunk_metadata_document_id_ordinal_key"
   ON "knowledge_chunk_metadata"("document_id", "ordinal");
-CREATE INDEX "knowledge_chunk_metadata_workspace_id_document_id_idx"
+CREATE INDEX IF NOT EXISTS "knowledge_chunk_metadata_workspace_id_document_id_idx"
   ON "knowledge_chunk_metadata"("workspace_id", "document_id");
 
-CREATE TABLE "knowledge_versions" (
+CREATE TABLE IF NOT EXISTS "knowledge_versions" (
   "id" UUID NOT NULL,
   "document_id" UUID NOT NULL,
   "revision" INTEGER NOT NULL,
@@ -141,12 +146,12 @@ CREATE TABLE "knowledge_versions" (
   CONSTRAINT "knowledge_versions_pkey" PRIMARY KEY ("id")
 );
 
-CREATE UNIQUE INDEX "knowledge_versions_document_id_revision_key"
+CREATE UNIQUE INDEX IF NOT EXISTS "knowledge_versions_document_id_revision_key"
   ON "knowledge_versions"("document_id", "revision");
-CREATE INDEX "knowledge_versions_document_id_published_at_idx"
+CREATE INDEX IF NOT EXISTS "knowledge_versions_document_id_published_at_idx"
   ON "knowledge_versions"("document_id", "published_at");
 
-CREATE TABLE "knowledge_tag_assignments" (
+CREATE TABLE IF NOT EXISTS "knowledge_tag_assignments" (
   "document_id" UUID NOT NULL,
   "tag_id" UUID NOT NULL,
   CONSTRAINT "knowledge_tag_assignments_pkey" PRIMARY KEY ("document_id", "tag_id")

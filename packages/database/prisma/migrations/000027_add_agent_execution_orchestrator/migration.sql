@@ -1,6 +1,11 @@
-CREATE TYPE "AgentExecutionOrchestrationStatus" AS ENUM ('PREPARING', 'READY', 'FAILED', 'CANCELLED');
+DO $$
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'agentexecutionorchestrationstatus') THEN
+        CREATE TYPE "AgentExecutionOrchestrationStatus" AS ENUM ('PREPARING', 'READY', 'FAILED', 'CANCELLED');
+    END IF;
+END $$;
 
-CREATE TABLE "agent_execution_orchestrations" (
+CREATE TABLE IF NOT EXISTS "agent_execution_orchestrations" (
   "id" UUID NOT NULL,
   "workspace_id" UUID NOT NULL,
   "created_by" UUID NOT NULL,
@@ -25,7 +30,7 @@ CREATE TABLE "agent_execution_orchestrations" (
   "updated_at" TIMESTAMP(3) NOT NULL,
   CONSTRAINT "agent_execution_orchestrations_pkey" PRIMARY KEY ("id")
 );
-CREATE TABLE "agent_execution_diagnostics" (
+CREATE TABLE IF NOT EXISTS "agent_execution_diagnostics" (
   "id" UUID NOT NULL,
   "orchestration_id" UUID NOT NULL,
   "severity" TEXT NOT NULL,
@@ -36,10 +41,10 @@ CREATE TABLE "agent_execution_diagnostics" (
   "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
   CONSTRAINT "agent_execution_diagnostics_pkey" PRIMARY KEY ("id")
 );
-CREATE UNIQUE INDEX "agent_execution_orchestrations_execution_run_id_key" ON "agent_execution_orchestrations"("execution_run_id");
-CREATE UNIQUE INDEX "agent_execution_orchestrations_workspace_request_key" ON "agent_execution_orchestrations"("workspace_id", "execution_request_id");
-CREATE INDEX "agent_execution_orchestrations_workspace_status_idx" ON "agent_execution_orchestrations"("workspace_id", "status", "created_at");
-CREATE INDEX "agent_execution_orchestrations_workspace_correlation_idx" ON "agent_execution_orchestrations"("workspace_id", "correlation_id", "created_at");
-CREATE INDEX "agent_execution_diagnostics_orchestration_severity_idx" ON "agent_execution_diagnostics"("orchestration_id", "severity", "created_at");
+CREATE UNIQUE INDEX IF NOT EXISTS "agent_execution_orchestrations_execution_run_id_key" ON "agent_execution_orchestrations"("execution_run_id");
+CREATE UNIQUE INDEX IF NOT EXISTS "agent_execution_orchestrations_workspace_request_key" ON "agent_execution_orchestrations"("workspace_id", "execution_request_id");
+CREATE INDEX IF NOT EXISTS "agent_execution_orchestrations_workspace_status_idx" ON "agent_execution_orchestrations"("workspace_id", "status", "created_at");
+CREATE INDEX IF NOT EXISTS "agent_execution_orchestrations_workspace_correlation_idx" ON "agent_execution_orchestrations"("workspace_id", "correlation_id", "created_at");
+CREATE INDEX IF NOT EXISTS "agent_execution_diagnostics_orchestration_severity_idx" ON "agent_execution_diagnostics"("orchestration_id", "severity", "created_at");
 ALTER TABLE "agent_execution_orchestrations" ADD CONSTRAINT "agent_execution_orchestrations_workspace_id_fkey" FOREIGN KEY ("workspace_id") REFERENCES "workspaces"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 ALTER TABLE "agent_execution_diagnostics" ADD CONSTRAINT "agent_execution_diagnostics_orchestration_id_fkey" FOREIGN KEY ("orchestration_id") REFERENCES "agent_execution_orchestrations"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

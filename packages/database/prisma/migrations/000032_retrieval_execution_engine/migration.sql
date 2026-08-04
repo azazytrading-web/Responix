@@ -1,7 +1,17 @@
-CREATE TYPE "RetrievalExecutionMode" AS ENUM ('KEYWORD', 'SEMANTIC', 'HYBRID');
-CREATE TYPE "RetrievalExecutionStatus" AS ENUM ('COMPLETED', 'FAILED', 'CANCELLED');
+DO $$
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'retrievalexecutionmode') THEN
+        CREATE TYPE "RetrievalExecutionMode" AS ENUM ('KEYWORD', 'SEMANTIC', 'HYBRID');
+    END IF;
+END $$;
+DO $$
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'retrievalexecutionstatus') THEN
+        CREATE TYPE "RetrievalExecutionStatus" AS ENUM ('COMPLETED', 'FAILED', 'CANCELLED');
+    END IF;
+END $$;
 
-CREATE TABLE "retrieval_executions" (
+CREATE TABLE IF NOT EXISTS "retrieval_executions" (
   "id" UUID NOT NULL, "workspace_id" UUID NOT NULL, "created_by" UUID NOT NULL,
   "retrieval_runtime_snapshot_id" UUID NOT NULL, "execution_request_id" UUID,
   "execution_run_id" UUID, "mode" "RetrievalExecutionMode" NOT NULL,
@@ -17,20 +27,20 @@ CREATE TABLE "retrieval_executions" (
   CONSTRAINT "retrieval_executions_workspace_id_fkey" FOREIGN KEY ("workspace_id") REFERENCES "workspaces"("id") ON DELETE RESTRICT ON UPDATE CASCADE,
   CONSTRAINT "retrieval_executions_snapshot_id_fkey" FOREIGN KEY ("retrieval_runtime_snapshot_id") REFERENCES "retrieval_runtime_snapshots"("id") ON DELETE RESTRICT ON UPDATE CASCADE
 );
-CREATE INDEX "retrieval_executions_workspace_status_idx" ON "retrieval_executions"("workspace_id", "status", "created_at");
-CREATE INDEX "retrieval_executions_workspace_request_hash_idx" ON "retrieval_executions"("workspace_id", "request_hash", "created_at");
-CREATE INDEX "retrieval_executions_workspace_snapshot_idx" ON "retrieval_executions"("workspace_id", "retrieval_runtime_snapshot_id");
+CREATE INDEX IF NOT EXISTS "retrieval_executions_workspace_status_idx" ON "retrieval_executions"("workspace_id", "status", "created_at");
+CREATE INDEX IF NOT EXISTS "retrieval_executions_workspace_request_hash_idx" ON "retrieval_executions"("workspace_id", "request_hash", "created_at");
+CREATE INDEX IF NOT EXISTS "retrieval_executions_workspace_snapshot_idx" ON "retrieval_executions"("workspace_id", "retrieval_runtime_snapshot_id");
 
-CREATE TABLE "retrieval_execution_diagnostics" (
+CREATE TABLE IF NOT EXISTS "retrieval_execution_diagnostics" (
   "id" UUID NOT NULL, "execution_id" UUID NOT NULL, "severity" TEXT NOT NULL,
   "code" TEXT NOT NULL, "path" TEXT NOT NULL, "message" TEXT NOT NULL,
   "metadata" JSONB NOT NULL DEFAULT '{}', "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
   CONSTRAINT "retrieval_execution_diagnostics_pkey" PRIMARY KEY ("id"),
   CONSTRAINT "retrieval_execution_diagnostics_execution_id_fkey" FOREIGN KEY ("execution_id") REFERENCES "retrieval_executions"("id") ON DELETE RESTRICT ON UPDATE CASCADE
 );
-CREATE INDEX "retrieval_execution_diagnostics_execution_idx" ON "retrieval_execution_diagnostics"("execution_id", "severity", "created_at");
+CREATE INDEX IF NOT EXISTS "retrieval_execution_diagnostics_execution_idx" ON "retrieval_execution_diagnostics"("execution_id", "severity", "created_at");
 
-CREATE TABLE "retrieval_execution_metrics" (
+CREATE TABLE IF NOT EXISTS "retrieval_execution_metrics" (
   "id" UUID NOT NULL, "execution_id" UUID NOT NULL, "query_duration_ms" INTEGER NOT NULL DEFAULT 0,
   "filter_duration_ms" INTEGER NOT NULL DEFAULT 0, "ranking_duration_ms" INTEGER NOT NULL DEFAULT 0,
   "packaging_duration_ms" INTEGER NOT NULL DEFAULT 0, "cache_lookup_ms" INTEGER NOT NULL DEFAULT 0,

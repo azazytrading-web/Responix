@@ -1,5 +1,15 @@
 # Known Issues
 
+## FM-4 Closeout - 2026-08-02
+
+There are no known FM-4 implementation defects. The earlier FM-2 authentication lint debt was resolved by FM-3. A transient Windows native Node heap allocation failure occurred during workspace lint; rerunning after confirming no orphaned validation processes completed successfully. The existing Next.js ESLint-plugin detection warning remains non-blocking and outside FM-4.
+
+## Active Frontend Validation Debt — 2026-08-01
+
+| Status | Issue | Impact | Resolution |
+| --- | --- | --- | --- |
+| Deferred outside FM-2 | `PROACTIVE_REFRESH_BUFFER_MS` is unused in `packages/auth/src/refresh/detector.ts`. | Root workspace lint stops in the authentication package after all FM-2-owned packages pass. API-client, Dashboard, workspace typecheck, tests, and builds are unaffected. | Address only in an approved authentication/FM-3 scope; FM-2 did not modify authentication lifecycle code. |
+
 ## Active External Environment Limitations
 
 | Status  | Limitation                                                 | Impact                                                                                                                 | Resolution                                         |

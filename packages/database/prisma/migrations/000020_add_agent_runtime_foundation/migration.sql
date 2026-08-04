@@ -1,6 +1,11 @@
-CREATE TYPE "AgentRuntimeStatus" AS ENUM ('PREPARED', 'VALIDATED', 'REJECTED', 'SNAPSHOTTED');
+DO $$
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'agentruntimestatus') THEN
+        CREATE TYPE "AgentRuntimeStatus" AS ENUM ('PREPARED', 'VALIDATED', 'REJECTED', 'SNAPSHOTTED');
+    END IF;
+END $$;
 
-CREATE TABLE "agent_runtime_preparations" (
+CREATE TABLE IF NOT EXISTS "agent_runtime_preparations" (
     "id" UUID NOT NULL,
     "workspace_id" UUID NOT NULL,
     "actor_id" UUID NOT NULL,
@@ -34,7 +39,7 @@ CREATE TABLE "agent_runtime_preparations" (
     CONSTRAINT "agent_runtime_preparations_pkey" PRIMARY KEY ("id")
 );
 
-CREATE TABLE "agent_runtime_conversations" (
+CREATE TABLE IF NOT EXISTS "agent_runtime_conversations" (
     "id" UUID NOT NULL,
     "workspace_id" UUID NOT NULL,
     "runtime_id" UUID NOT NULL,
@@ -49,7 +54,7 @@ CREATE TABLE "agent_runtime_conversations" (
     CONSTRAINT "agent_runtime_conversations_pkey" PRIMARY KEY ("id")
 );
 
-CREATE TABLE "agent_runtime_snapshots" (
+CREATE TABLE IF NOT EXISTS "agent_runtime_snapshots" (
     "id" UUID NOT NULL,
     "workspace_id" UUID NOT NULL,
     "runtime_id" UUID NOT NULL,
@@ -79,27 +84,27 @@ CREATE TABLE "agent_runtime_snapshots" (
     CONSTRAINT "agent_runtime_snapshots_pkey" PRIMARY KEY ("id")
 );
 
-CREATE UNIQUE INDEX "agent_runtime_conversations_runtime_id_key"
+CREATE UNIQUE INDEX IF NOT EXISTS "agent_runtime_conversations_runtime_id_key"
     ON "agent_runtime_conversations"("runtime_id");
-CREATE UNIQUE INDEX "agent_runtime_snapshots_runtime_id_key"
+CREATE UNIQUE INDEX IF NOT EXISTS "agent_runtime_snapshots_runtime_id_key"
     ON "agent_runtime_snapshots"("runtime_id");
-CREATE INDEX "agent_runtime_preparations_workspace_status_idx"
+CREATE INDEX IF NOT EXISTS "agent_runtime_preparations_workspace_status_idx"
     ON "agent_runtime_preparations"("workspace_id", "status", "created_at");
-CREATE INDEX "agent_runtime_preparations_workspace_agent_idx"
+CREATE INDEX IF NOT EXISTS "agent_runtime_preparations_workspace_agent_idx"
     ON "agent_runtime_preparations"("workspace_id", "agent_id", "created_at");
-CREATE INDEX "agent_runtime_preparations_workspace_conversation_idx"
+CREATE INDEX IF NOT EXISTS "agent_runtime_preparations_workspace_conversation_idx"
     ON "agent_runtime_preparations"("workspace_id", "conversation_id", "created_at");
-CREATE INDEX "agent_runtime_preparations_request_idx"
+CREATE INDEX IF NOT EXISTS "agent_runtime_preparations_request_idx"
     ON "agent_runtime_preparations"("execution_request_id");
-CREATE INDEX "agent_runtime_preparations_run_idx"
+CREATE INDEX IF NOT EXISTS "agent_runtime_preparations_run_idx"
     ON "agent_runtime_preparations"("execution_run_id");
-CREATE INDEX "agent_runtime_conversations_workspace_conversation_idx"
+CREATE INDEX IF NOT EXISTS "agent_runtime_conversations_workspace_conversation_idx"
     ON "agent_runtime_conversations"("workspace_id", "conversation_id", "created_at");
-CREATE INDEX "agent_runtime_conversations_parent_run_idx"
+CREATE INDEX IF NOT EXISTS "agent_runtime_conversations_parent_run_idx"
     ON "agent_runtime_conversations"("parent_execution_run_id");
-CREATE INDEX "agent_runtime_snapshots_workspace_agent_idx"
+CREATE INDEX IF NOT EXISTS "agent_runtime_snapshots_workspace_agent_idx"
     ON "agent_runtime_snapshots"("workspace_id", "agent_id", "created_at");
-CREATE INDEX "agent_runtime_snapshots_workspace_hash_idx"
+CREATE INDEX IF NOT EXISTS "agent_runtime_snapshots_workspace_hash_idx"
     ON "agent_runtime_snapshots"("workspace_id", "content_hash");
 
 ALTER TABLE "agent_runtime_preparations"

@@ -1,6 +1,11 @@
-CREATE TYPE "MembershipStatus" AS ENUM ('INVITED', 'ACTIVE', 'SUSPENDED', 'REMOVED');
+DO $$
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'membershipstatus') THEN
+        CREATE TYPE "MembershipStatus" AS ENUM ('INVITED', 'ACTIVE', 'SUSPENDED', 'REMOVED');
+    END IF;
+END $$;
 
-CREATE TABLE "workspace_users" (
+CREATE TABLE IF NOT EXISTS "workspace_users" (
     "id" UUID NOT NULL,
     "workspace_id" UUID NOT NULL,
     "user_id" UUID NOT NULL,
@@ -15,9 +20,9 @@ CREATE TABLE "workspace_users" (
     CONSTRAINT "workspace_users_pkey" PRIMARY KEY ("id")
 );
 
-CREATE UNIQUE INDEX "workspace_users_workspace_id_user_id_key" ON "workspace_users"("workspace_id", "user_id");
-CREATE INDEX "workspace_users_workspace_id_status_idx" ON "workspace_users"("workspace_id", "status");
-CREATE INDEX "workspace_users_user_id_status_idx" ON "workspace_users"("user_id", "status");
+CREATE UNIQUE INDEX IF NOT EXISTS "workspace_users_workspace_id_user_id_key" ON "workspace_users"("workspace_id", "user_id");
+CREATE INDEX IF NOT EXISTS "workspace_users_workspace_id_status_idx" ON "workspace_users"("workspace_id", "status");
+CREATE INDEX IF NOT EXISTS "workspace_users_user_id_status_idx" ON "workspace_users"("user_id", "status");
 ALTER TABLE "workspace_users" ADD CONSTRAINT "workspace_users_workspace_id_fkey" FOREIGN KEY ("workspace_id") REFERENCES "workspaces"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 ALTER TABLE "workspace_users" ADD CONSTRAINT "workspace_users_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 ALTER TABLE "workspace_users" ADD CONSTRAINT "workspace_users_role_id_fkey" FOREIGN KEY ("role_id") REFERENCES "roles"("id") ON DELETE SET NULL ON UPDATE CASCADE;

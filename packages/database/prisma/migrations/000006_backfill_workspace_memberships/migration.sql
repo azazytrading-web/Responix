@@ -89,15 +89,15 @@ WHERE workspace."id" = membership."workspace_id"
 
 ALTER TABLE "workspace_users" ALTER COLUMN "role_id" SET NOT NULL;
 
-ALTER TABLE "workspace_users" DROP CONSTRAINT "workspace_users_role_id_fkey";
+ALTER TABLE "workspace_users" DROP CONSTRAINT IF EXISTS "workspace_users_role_id_fkey";
 ALTER TABLE "workspace_users"
   ADD CONSTRAINT "workspace_users_role_id_fkey"
   FOREIGN KEY ("role_id") REFERENCES "roles"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
-CREATE INDEX "workspace_users_user_id_workspace_id_status_idx"
+CREATE INDEX IF NOT EXISTS "workspace_users_user_id_workspace_id_status_idx"
   ON "workspace_users"("user_id", "workspace_id", "status");
-CREATE UNIQUE INDEX "workspace_users_id_workspace_id_key"
+CREATE UNIQUE INDEX IF NOT EXISTS "workspace_users_id_workspace_id_key"
   ON "workspace_users"("id", "workspace_id");
-CREATE INDEX "workspace_users_active_workspace_user_idx"
+CREATE INDEX IF NOT EXISTS "workspace_users_active_workspace_user_idx"
   ON "workspace_users"("workspace_id", "user_id")
   WHERE "status" = 'ACTIVE';

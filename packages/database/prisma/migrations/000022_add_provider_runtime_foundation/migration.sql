@@ -1,6 +1,11 @@
-CREATE TYPE "ProviderRuntimeStatus" AS ENUM ('PREPARED', 'VALIDATED', 'REJECTED', 'SNAPSHOTTED');
+DO $$
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'providerruntimestatus') THEN
+        CREATE TYPE "ProviderRuntimeStatus" AS ENUM ('PREPARED', 'VALIDATED', 'REJECTED', 'SNAPSHOTTED');
+    END IF;
+END $$;
 
-CREATE TABLE "provider_runtime_requests" (
+CREATE TABLE IF NOT EXISTS "provider_runtime_requests" (
     "id" UUID NOT NULL,
     "workspace_id" UUID NOT NULL,
     "created_by" UUID NOT NULL,
@@ -32,7 +37,7 @@ CREATE TABLE "provider_runtime_requests" (
     CONSTRAINT "provider_runtime_requests_pkey" PRIMARY KEY ("id")
 );
 
-CREATE TABLE "provider_request_snapshots" (
+CREATE TABLE IF NOT EXISTS "provider_request_snapshots" (
     "id" UUID NOT NULL,
     "workspace_id" UUID NOT NULL,
     "request_id" UUID NOT NULL,
@@ -58,21 +63,21 @@ CREATE TABLE "provider_request_snapshots" (
     CONSTRAINT "provider_request_snapshots_pkey" PRIMARY KEY ("id")
 );
 
-CREATE INDEX "provider_runtime_requests_workspace_status_idx"
+CREATE INDEX IF NOT EXISTS "provider_runtime_requests_workspace_status_idx"
 ON "provider_runtime_requests"("workspace_id", "status", "created_at");
-CREATE INDEX "provider_runtime_requests_provider_model_idx"
+CREATE INDEX IF NOT EXISTS "provider_runtime_requests_provider_model_idx"
 ON "provider_runtime_requests"("workspace_id", "provider_id", "model_id", "created_at");
-CREATE INDEX "provider_runtime_requests_execution_idx"
+CREATE INDEX IF NOT EXISTS "provider_runtime_requests_execution_idx"
 ON "provider_runtime_requests"("workspace_id", "execution_request_id");
-CREATE INDEX "provider_runtime_requests_hash_idx"
+CREATE INDEX IF NOT EXISTS "provider_runtime_requests_hash_idx"
 ON "provider_runtime_requests"("workspace_id", "request_hash");
-CREATE UNIQUE INDEX "provider_request_snapshots_request_revision_key"
+CREATE UNIQUE INDEX IF NOT EXISTS "provider_request_snapshots_request_revision_key"
 ON "provider_request_snapshots"("request_id", "revision");
-CREATE INDEX "provider_request_snapshots_workspace_created_idx"
+CREATE INDEX IF NOT EXISTS "provider_request_snapshots_workspace_created_idx"
 ON "provider_request_snapshots"("workspace_id", "created_at");
-CREATE INDEX "provider_request_snapshots_provider_model_idx"
+CREATE INDEX IF NOT EXISTS "provider_request_snapshots_provider_model_idx"
 ON "provider_request_snapshots"("workspace_id", "provider_id", "model_id");
-CREATE INDEX "provider_request_snapshots_hash_idx"
+CREATE INDEX IF NOT EXISTS "provider_request_snapshots_hash_idx"
 ON "provider_request_snapshots"("workspace_id", "request_hash");
 
 ALTER TABLE "provider_runtime_requests"

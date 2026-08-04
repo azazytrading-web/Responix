@@ -1,5 +1,35 @@
 # Roadmap Status
 
+## Frontend Foundation Milestones - 2026-08-02
+
+| Sprint | Status | Outcome |
+| --- | --- | --- |
+| FM-3 | Complete | Backend-authoritative authentication and tenant lifecycle |
+| FM-4 | Complete | Canonical platform bootstrap, provider composition, readiness boundary, and manifest-driven navigation |
+| FM-5 | Not started | Requires separate approval |
+
+## Authoritative Current State — Sprint FM-2 — 2026-08-01
+
+Sprint FM-2 (API Foundation) is **complete**. `@responix/api-client` is the single frontend HTTP owner and consumes raw NestJS DTO responses without a frontend-only response envelope. It provides query serialization, request metadata, timeout and abort handling, empty-body handling, normalized backend errors, and replay-capable interceptor integration points. OpenAPI types are generated from the live NestJS `/docs-json` document. The unused Dashboard-local API layer and unsupported shared endpoint catalog were removed.
+
+FM-3 has not started. Authentication lifecycle, provider composition, runtime bootstrap integration, navigation integration, realtime, notifications, UI, and feature modules remain outside FM-2. This section supersedes older frontend-next-step statements below.
+
+## Sprint F2.5 Update - 2026-08-01
+
+Sprint F2.5 (Dashboard Infrastructure Completion) is complete. All hardcoded navigation has been replaced with a manifest-driven navigation engine. The notification infrastructure is fully abstracted with provider, store, transport, repository, and hooks. Auth refresh infrastructure includes silent refresh manager, token expiration detector, 401 retry pipeline, and request replay. Frontend testing foundation is established with Vitest, React Testing Library, and 22 passing tests. Developer experience improvements include global error/loading boundaries, query devtools, environment validation, logger, debug mode, and runtime assertions. API integration clients are prepared for all domains. The manifest mock matches backend contracts and is replaceable by `GET /dashboard-runtime/bootstrap`.
+
+## Sprint F2 Update - 2026-08-01
+
+Sprint F2 (Dashboard Core Shell & Auth System) is complete. The Dashboard now has a fully functional authentication layer, workspace-aware navigation, responsive layout shell, command palette, and error pages. All frontend packages and the Dashboard app pass typecheck, lint, build, and tests. The auth provider stores access tokens in memory only; session metadata is persisted to `responix:session`. The sidebar, topbar, app-shell, and command palette are all integrated and responsive.
+
+## Foundation Verification - 2026-08-01
+
+The Frontend Foundation has passed strict verification. All temporary scripts, placeholder text, and unnecessary dependencies were removed. The auth provider now stores access tokens in memory only (never localStorage). All 7 shared packages export clean public APIs. The Dashboard shell matches the MVP HTML visual language. Next.js 15.5.21, React 19, TypeScript 5.7.3, next-intl 3.26, next-themes, and TanStack Query 5.64.2 are in place. The foundation is production-ready and will not force refactoring during later Dashboard sprints.
+
+## Sprint F1 Update - 2026-08-01
+
+The Frontend Foundation & Design System sprint is complete. The Turborepo monorepo now contains 7 shared packages (`types`, `design-system`, `ui`, `shared`, `api-client`, `auth`, `state`) and a bootable Next.js 15 Dashboard application at `apps/dashboard/`. All workspace packages typecheck, lint, test, and build successfully. The two-TSConfig pattern (`tsconfig.json` for typecheck, `tsconfig.build.json` for build) is established. next-intl v3.26 i18n, theme provider, auth foundation, plugin infrastructure, widget SDK, manifest loader, route guards, error boundaries, Suspense, and layout persistence are all in place.
+
 ## Sprint 6E.14 Update - 2026-07-31
 
 The Channel Runtime is now a provider-neutral multi-channel foundation. Installed adapters are resolved through a registry and share credential, transport, webhook, media, capability, health, retry, rate-limit, delivery, batching, presence, diagnostics, metrics, audit, and normalized-message contracts. Meta WhatsApp Cloud implements these contracts without a provider-specific orchestration path.
@@ -16,7 +46,6 @@ Static prompt/runtime assets now reuse hash-addressed workspace packages across 
 while native provider hits, internal fallback, invalidation, history, audits, and metrics
 remain explicit and durable.
 
-
 ## Sprint 6E.11 Update - 2026-07-31
 
 The Tool Calling Engine is implemented as the vendor-neutral execution layer shared by
@@ -24,7 +53,6 @@ Agent Execution and Workflow Runtime. Published tool definitions are hash-protec
 workspace isolated; executions reuse Execution Kernel, secure HTTP transport, Retrieval,
 Memory, Runtime Optimization, Prompt, Provider, and Streaming boundaries with durable
 history, diagnostics, metrics, permissions, and append-only audits.
-
 
 ## Sprint 6E.10 Update - 2026-07-31
 
@@ -47,6 +75,10 @@ execution, prompt, agent, or accounting path.
 
 | Sprint                                                        | Status    | Scope                                                                                             |
 | ------------------------------------------------------------- | --------- | ------------------------------------------------------------------------------------------------- |
+| Sprint FM-2 — API Foundation                                  | Complete  | Canonical API client, raw NestJS DTO transport, OpenAPI generation, consolidated API ownership   |
+| Sprint F2.5 — Dashboard Infrastructure Completion            | Complete  | Navigation engine, notifications, auth refresh, testing, DX, API clients, manifest mock |
+| Sprint F2 — Dashboard Core Shell & Auth System                | Complete  | Auth pages, workspace switcher, sidebar, topbar, command palette, error pages, i18n, responsive   |
+| Sprint F1 — Frontend Foundation & Design System               | Verified  | Turborepo packages, Design System, UI primitives, Dashboard shell, i18n, theme, auth foundation   |
 | Sprint 0 — Project Initialization                             | Completed | Monorepo and development foundation                                                               |
 | Sprint 1 — Infrastructure Finalization                        | Completed | Production-readiness and infrastructure baseline                                                  |
 | Sprint 2 — Database Foundation                                | Completed | Prisma schema, migrations, pgvector, and bootstrap data                                           |
@@ -66,4 +98,4 @@ execution, prompt, agent, or accounting path.
 
 ## Current Direction
 
-Sprint 06 Phase 1 is the active implementation scope. It establishes shared platform contracts only; it does not authorize dashboard rendering, plugins, new business behavior, or public endpoints. Docker-based Compose verification remains an external environment task.
+Sprint F2 is complete. The frontend Dashboard now has a production-ready auth system, workspace-aware navigation, responsive layout shell, and command palette. The next step is Sprint F3 — Dashboard Feature Modules (AI Providers, Prompt Studio, Agent Studio, Workflow Studio, Tool Registry, Knowledge Base, Memory, Retrieval, Conversations, Channels, Runtime Monitoring, Analytics, Billing, Team Management, Roles & Permissions, Audit Logs, Settings). Preserve all completed backend boundaries; do not modify backend code.

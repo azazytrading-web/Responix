@@ -1,4 +1,5 @@
 import type { SafeMembership, SafeRole, SafeUser } from "../workspace.types";
+import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
 
 type UnknownRecord = Record<string, unknown>;
 
@@ -63,6 +64,34 @@ export class SafeMembershipResponseDto {
 }
 
 export class WorkspaceResponseDto {
+  @ApiProperty({ format: "uuid" }) id!: string;
+  @ApiProperty() name!: string;
+  @ApiProperty() slug!: string;
+  @ApiPropertyOptional({ nullable: true }) companyName!: string | null;
+  @ApiProperty({ format: "uuid" }) ownerId!: string;
+  @ApiPropertyOptional({ nullable: true }) logoUrl!: string | null;
+  @ApiPropertyOptional({ nullable: true }) primaryColor!: string | null;
+  @ApiPropertyOptional({ nullable: true }) secondaryColor!: string | null;
+  @ApiPropertyOptional({ nullable: true }) country!: string | null;
+  @ApiProperty() language!: string;
+  @ApiProperty() timezone!: string;
+  @ApiProperty() currency!: string;
+  @ApiPropertyOptional({ nullable: true, format: "uuid" }) subscriptionId!: string | null;
+  @ApiPropertyOptional({ nullable: true, format: "uuid" }) planId!: string | null;
+  @ApiProperty({ enum: ["ACTIVE", "SUSPENDED", "ARCHIVED"] }) status!: string;
+  @ApiProperty() maxUsers!: number;
+  @ApiProperty() maxAgents!: number;
+  @ApiProperty() maxMessages!: number;
+  @ApiProperty() maxStorage!: number;
+  @ApiProperty() maxTokens!: number;
+  @ApiProperty() currentStorageUsage!: number;
+  @ApiProperty() currentTokenUsage!: number;
+  @ApiProperty() aiEnabled!: boolean;
+  @ApiProperty() whatsappEnabled!: boolean;
+  @ApiProperty() emailEnabled!: boolean;
+  @ApiProperty() apiEnabled!: boolean;
+  @ApiProperty() createdAt!: Date;
+  @ApiProperty() updatedAt!: Date;
   static from(workspace: UnknownRecord): UnknownRecord {
     return {
       id: workspace.id,

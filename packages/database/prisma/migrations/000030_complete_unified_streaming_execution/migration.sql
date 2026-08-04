@@ -1,4 +1,9 @@
-CREATE TYPE "StreamUsageStatus" AS ENUM ('AVAILABLE', 'UNKNOWN');
+DO $$
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'streamusagestatus') THEN
+        CREATE TYPE "StreamUsageStatus" AS ENUM ('AVAILABLE', 'UNKNOWN');
+    END IF;
+END $$;
 
 ALTER TABLE "stream_sessions"
   ADD COLUMN "invocation_id" UUID,
@@ -18,7 +23,7 @@ ALTER TABLE "stream_sessions"
   ADD COLUMN "cost_currency" TEXT,
   ADD COLUMN "pricing_metadata" JSONB NOT NULL DEFAULT '{}';
 
-CREATE UNIQUE INDEX "stream_sessions_invocation_id_key"
+CREATE UNIQUE INDEX IF NOT EXISTS "stream_sessions_invocation_id_key"
   ON "stream_sessions"("invocation_id");
 
 ALTER TABLE "stream_sessions"

@@ -1,18 +1,43 @@
-CREATE TYPE "ExecutionKernelStatus" AS ENUM (
+DO $$
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'executionkernelstatus') THEN
+        CREATE TYPE "ExecutionKernelStatus" AS ENUM (
   'REQUESTED', 'QUEUED', 'STARTING', 'RUNNING', 'PAUSED',
   'SUCCEEDED', 'FAILED', 'CANCELLED', 'TIMED_OUT'
 );
-CREATE TYPE "ExecutionStepStatus" AS ENUM (
+    END IF;
+END $$;
+DO $$
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'executionstepstatus') THEN
+        CREATE TYPE "ExecutionStepStatus" AS ENUM (
   'PENDING', 'RUNNING', 'SUCCEEDED', 'FAILED', 'CANCELLED', 'TIMED_OUT', 'SKIPPED'
 );
-CREATE TYPE "ExecutionSourceType" AS ENUM (
+    END IF;
+END $$;
+DO $$
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'executionsourcetype') THEN
+        CREATE TYPE "ExecutionSourceType" AS ENUM (
   'PROFILE', 'WORKFLOW', 'AGENT', 'PROMPT', 'KNOWLEDGE',
   'TOOL', 'PROVIDER', 'WORKSPACE', 'MANUAL', 'SYSTEM'
 );
-CREATE TYPE "ExecutionEventActorType" AS ENUM ('USER', 'SYSTEM');
-CREATE TYPE "ExecutionLogLevel" AS ENUM ('TRACE', 'DEBUG', 'INFO', 'WARN', 'ERROR');
+    END IF;
+END $$;
+DO $$
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'executioneventactortype') THEN
+        CREATE TYPE "ExecutionEventActorType" AS ENUM ('USER', 'SYSTEM');
+    END IF;
+END $$;
+DO $$
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'executionloglevel') THEN
+        CREATE TYPE "ExecutionLogLevel" AS ENUM ('TRACE', 'DEBUG', 'INFO', 'WARN', 'ERROR');
+    END IF;
+END $$;
 
-CREATE TABLE "execution_requests" (
+CREATE TABLE IF NOT EXISTS "execution_requests" (
   "id" UUID NOT NULL,
   "workspace_id" UUID NOT NULL,
   "requested_by" UUID NOT NULL,
@@ -27,16 +52,16 @@ CREATE TABLE "execution_requests" (
   "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
   CONSTRAINT "execution_requests_pkey" PRIMARY KEY ("id")
 );
-CREATE UNIQUE INDEX "execution_requests_workspace_idempotency_key"
+CREATE UNIQUE INDEX IF NOT EXISTS "execution_requests_workspace_idempotency_key"
   ON "execution_requests"("workspace_id", "idempotency_key");
-CREATE INDEX "execution_requests_workspace_correlation_idx"
+CREATE INDEX IF NOT EXISTS "execution_requests_workspace_correlation_idx"
   ON "execution_requests"("workspace_id", "correlation_id", "requested_at");
-CREATE INDEX "execution_requests_workspace_source_idx"
+CREATE INDEX IF NOT EXISTS "execution_requests_workspace_source_idx"
   ON "execution_requests"("workspace_id", "source_type", "source_reference_id");
-CREATE INDEX "execution_requests_actor_requested_idx"
+CREATE INDEX IF NOT EXISTS "execution_requests_actor_requested_idx"
   ON "execution_requests"("requested_by", "requested_at");
 
-CREATE TABLE "execution_runs" (
+CREATE TABLE IF NOT EXISTS "execution_runs" (
   "id" UUID NOT NULL,
   "workspace_id" UUID NOT NULL,
   "request_id" UUID NOT NULL,
@@ -55,13 +80,13 @@ CREATE TABLE "execution_runs" (
   "updated_at" TIMESTAMP(3) NOT NULL,
   CONSTRAINT "execution_runs_pkey" PRIMARY KEY ("id")
 );
-CREATE INDEX "execution_runs_workspace_status_idx"
+CREATE INDEX IF NOT EXISTS "execution_runs_workspace_status_idx"
   ON "execution_runs"("workspace_id", "status", "created_at");
-CREATE INDEX "execution_runs_request_created_idx"
+CREATE INDEX IF NOT EXISTS "execution_runs_request_created_idx"
   ON "execution_runs"("request_id", "created_at");
-CREATE INDEX "execution_runs_parent_idx" ON "execution_runs"("parent_run_id");
+CREATE INDEX IF NOT EXISTS "execution_runs_parent_idx" ON "execution_runs"("parent_run_id");
 
-CREATE TABLE "execution_steps" (
+CREATE TABLE IF NOT EXISTS "execution_steps" (
   "id" UUID NOT NULL,
   "workspace_id" UUID NOT NULL,
   "run_id" UUID NOT NULL,
@@ -79,12 +104,12 @@ CREATE TABLE "execution_steps" (
   "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
   CONSTRAINT "execution_steps_pkey" PRIMARY KEY ("id")
 );
-CREATE UNIQUE INDEX "execution_steps_run_sequence_key"
+CREATE UNIQUE INDEX IF NOT EXISTS "execution_steps_run_sequence_key"
   ON "execution_steps"("run_id", "sequence");
-CREATE INDEX "execution_steps_workspace_status_idx"
+CREATE INDEX IF NOT EXISTS "execution_steps_workspace_status_idx"
   ON "execution_steps"("workspace_id", "status", "created_at");
 
-CREATE TABLE "execution_events" (
+CREATE TABLE IF NOT EXISTS "execution_events" (
   "id" UUID NOT NULL,
   "workspace_id" UUID NOT NULL,
   "run_id" UUID NOT NULL,
@@ -100,12 +125,12 @@ CREATE TABLE "execution_events" (
   "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
   CONSTRAINT "execution_events_pkey" PRIMARY KEY ("id")
 );
-CREATE UNIQUE INDEX "execution_events_run_sequence_key"
+CREATE UNIQUE INDEX IF NOT EXISTS "execution_events_run_sequence_key"
   ON "execution_events"("run_id", "sequence");
-CREATE INDEX "execution_events_workspace_type_idx"
+CREATE INDEX IF NOT EXISTS "execution_events_workspace_type_idx"
   ON "execution_events"("workspace_id", "event_type", "occurred_at");
 
-CREATE TABLE "execution_logs" (
+CREATE TABLE IF NOT EXISTS "execution_logs" (
   "id" UUID NOT NULL,
   "workspace_id" UUID NOT NULL,
   "run_id" UUID NOT NULL,
@@ -117,11 +142,11 @@ CREATE TABLE "execution_logs" (
   "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
   CONSTRAINT "execution_logs_pkey" PRIMARY KEY ("id")
 );
-CREATE INDEX "execution_logs_workspace_level_idx"
+CREATE INDEX IF NOT EXISTS "execution_logs_workspace_level_idx"
   ON "execution_logs"("workspace_id", "level", "created_at");
-CREATE INDEX "execution_logs_run_created_idx"
+CREATE INDEX IF NOT EXISTS "execution_logs_run_created_idx"
   ON "execution_logs"("run_id", "created_at");
-CREATE INDEX "execution_logs_correlation_created_idx"
+CREATE INDEX IF NOT EXISTS "execution_logs_correlation_created_idx"
   ON "execution_logs"("correlation_id", "created_at");
 
 ALTER TABLE "execution_requests" ADD CONSTRAINT "execution_requests_workspace_id_fkey"

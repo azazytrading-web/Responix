@@ -1,6 +1,100 @@
 import { PrismaClient } from "@prisma/client";
+import { hash } from "@node-rs/argon2";
 
 const prisma = new PrismaClient();
+
+const developmentAdministrator = {
+  email: "admin@responix.local",
+  password: process.env.RESPONIX_DEV_ADMIN_PASSWORD ?? "ResponixDev2026!",
+  fullName: "Responix Administrator",
+  workspaceName: "Responix Development",
+  workspaceSlug: "responix-development",
+  roleName: "Administrator"
+} as const;
+
+const developmentPlatformManifest = {
+  schemaVersion: "1.0",
+  id: "responix-development-dashboard",
+  navigation: {
+    items: [
+      {
+        id: "dashboard",
+        label: "Dashboard",
+        route: "/",
+        icon: { name: "LayoutDashboard" },
+        order: 1,
+        placement: "sidebar"
+      },
+      {
+        id: "company",
+        label: "Company",
+        route: "/company",
+        icon: { name: "Building2" },
+        order: 2,
+        placement: "sidebar",
+        visibility: { permissions: ["workspace.read"] }
+      }
+    ]
+  },
+  dashboard: {
+    pages: [
+      {
+        id: "home",
+        title: "Dashboard",
+        route: "/",
+        layout: "grid",
+        order: 1,
+        sections: []
+      },
+      {
+        id: "company",
+        title: "Company",
+        route: "/company",
+        layout: "grid",
+        order: 2,
+        sections: [],
+        visibility: { permissions: ["workspace.read"] }
+      }
+    ]
+  },
+  themes: [
+    {
+      id: "default",
+      brand: { name: "Responix", shortName: "R" },
+      colors: {
+        primary: "hsl(221.2 83.2% 53.3%)",
+        secondary: "hsl(210 40% 96.1%)"
+      }
+    }
+  ],
+  features: [],
+  plugins: [],
+  openApi: {}
+} as const;
+
+async function seedDevelopmentWorkspaceManifestOnly(): Promise<void> {
+  const workspace = await prisma.workspace.findUnique({
+    where: { slug: developmentAdministrator.workspaceSlug },
+    select: { id: true }
+  });
+  if (!workspace) {
+    throw new Error("The existing development workspace was not found");
+  }
+  await prisma.workspacePlatformManifest.upsert({
+    where: { workspaceId: workspace.id },
+    update: {
+      schemaVersion: developmentPlatformManifest.schemaVersion,
+      compatibilityVersion: "1.0",
+      manifest: developmentPlatformManifest
+    },
+    create: {
+      workspaceId: workspace.id,
+      schemaVersion: developmentPlatformManifest.schemaVersion,
+      compatibilityVersion: "1.0",
+      manifest: developmentPlatformManifest
+    }
+  });
+}
 
 const permissions = [
   "users.create",
@@ -154,6 +248,10 @@ const roles = [
 ];
 
 async function seed(): Promise<void> {
+  if (process.env.RESPONIX_SEED_MANIFEST_ONLY === "true") {
+    await seedDevelopmentWorkspaceManifestOnly();
+    return;
+  }
   for (const code of permissions) {
     await prisma.permission.upsert({
       where: { code },
@@ -174,14 +272,14 @@ async function seed(): Promise<void> {
     }
   }
 
-  const aiPermissions = await prisma.permission.findMany({
-    where: { code: { in: permissions.filter((code) => code.startsWith("ai.") || code.startsWith("platform.") || code.startsWith("studio.") || code.startsWith("prompt.") || code.startsWith("agent.") || code.startsWith("knowledge.") || code.startsWith("tool.") || code.startsWith("workflow.") || code.startsWith("runtime.orchestration.") || code.startsWith("execution.kernel.") || code.startsWith("provider.") || code.startsWith("retrieval.") || code.startsWith("conversation.")) } }
+  const seededPermissions = await prisma.permission.findMany({
+    where: { code: { in: permissions } }
   });
-  const aiAdministrators = await prisma.role.findMany({
+  const administratorRoles = await prisma.role.findMany({
     where: { workspaceId: null, name: { in: ["Owner", "Administrator"] } }
   });
-  for (const role of aiAdministrators) {
-    for (const permission of aiPermissions) {
+  for (const role of administratorRoles) {
+    for (const permission of seededPermissions) {
       await prisma.rolePermission.upsert({
         where: { roleId_permissionId: { roleId: role.id, permissionId: permission.id } },
         update: {},
@@ -190,7 +288,7 @@ async function seed(): Promise<void> {
     }
   }
 
-  await prisma.plan.upsert({
+  const starterPlan = await prisma.plan.upsert({
     where: { name: "Starter" },
     update: {},
     create: {
@@ -198,6 +296,100 @@ async function seed(): Promise<void> {
       monthlyPrice: 0,
       yearlyPrice: 0,
       featuresJson: []
+    }
+  });
+
+  const administratorRole = administratorRoles.find(
+    (role) => role.name === developmentAdministrator.roleName
+  );
+  if (!administratorRole) {
+    throw new Error("The canonical Administrator role was not seeded");
+  }
+
+  const passwordHash = await hash(developmentAdministrator.password);
+  const workspace = await prisma.workspace.upsert({
+    where: { slug: developmentAdministrator.workspaceSlug },
+    update: {
+      name: developmentAdministrator.workspaceName,
+      planId: starterPlan.id,
+      status: "ACTIVE",
+      deletedAt: null
+    },
+    create: {
+      name: developmentAdministrator.workspaceName,
+      slug: developmentAdministrator.workspaceSlug,
+      companyName: developmentAdministrator.workspaceName,
+      planId: starterPlan.id,
+      status: "ACTIVE"
+    }
+  });
+  const administrator = await prisma.user.upsert({
+    where: {
+      workspaceId_email: {
+        workspaceId: workspace.id,
+        email: developmentAdministrator.email
+      }
+    },
+    update: {
+      fullName: developmentAdministrator.fullName,
+      firstName: "Responix",
+      lastName: "Administrator",
+      passwordHash,
+      roleId: administratorRole.id,
+      status: "ACTIVE",
+      emailVerified: true,
+      deletedAt: null
+    },
+    create: {
+      workspaceId: workspace.id,
+      email: developmentAdministrator.email,
+      fullName: developmentAdministrator.fullName,
+      firstName: "Responix",
+      lastName: "Administrator",
+      passwordHash,
+      roleId: administratorRole.id,
+      status: "ACTIVE",
+      emailVerified: true
+    }
+  });
+  await prisma.workspace.update({
+    where: { id: workspace.id },
+    data: { ownerId: administrator.id }
+  });
+  await prisma.workspaceMembership.upsert({
+    where: {
+      workspaceId_userId: {
+        workspaceId: workspace.id,
+        userId: administrator.id
+      }
+    },
+    update: {
+      roleId: administratorRole.id,
+      status: "ACTIVE",
+      acceptedAt: new Date(),
+      suspendedAt: null,
+      removedAt: null
+    },
+    create: {
+      workspaceId: workspace.id,
+      userId: administrator.id,
+      roleId: administratorRole.id,
+      status: "ACTIVE",
+      acceptedAt: new Date()
+    }
+  });
+  await prisma.workspacePlatformManifest.upsert({
+    where: { workspaceId: workspace.id },
+    update: {
+      schemaVersion: developmentPlatformManifest.schemaVersion,
+      compatibilityVersion: "1.0",
+      manifest: developmentPlatformManifest
+    },
+    create: {
+      workspaceId: workspace.id,
+      schemaVersion: developmentPlatformManifest.schemaVersion,
+      compatibilityVersion: "1.0",
+      manifest: developmentPlatformManifest
     }
   });
 
@@ -284,6 +476,11 @@ async function seed(): Promise<void> {
       }
     });
   }
+
+  console.log(`Email: ${developmentAdministrator.email}`);
+  console.log(`Password: ${developmentAdministrator.password}`);
+  console.log(`Workspace: ${developmentAdministrator.workspaceName}`);
+  console.log(`Role: ${developmentAdministrator.roleName}`);
 }
 
 seed()

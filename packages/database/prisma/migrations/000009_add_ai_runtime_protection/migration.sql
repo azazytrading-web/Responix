@@ -1,12 +1,32 @@
-CREATE TYPE "AiRuntimeReservationStatus" AS ENUM ('QUEUED', 'ACTIVE', 'RELEASED');
-CREATE TYPE "AiRuntimeExecutionStatus" AS ENUM ('SUCCEEDED', 'FAILED', 'TIMED_OUT', 'CANCELLED', 'REJECTED');
-CREATE TYPE "AiRuntimeFinalizationKind" AS ENUM ('SUCCESS', 'FAILURE');
-CREATE TYPE "AiRuntimeFinalizationStatus" AS ENUM ('PENDING', 'COMPLETED');
+DO $$
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'airuntimereservationstatus') THEN
+        CREATE TYPE "AiRuntimeReservationStatus" AS ENUM ('QUEUED', 'ACTIVE', 'RELEASED');
+    END IF;
+END $$;
+DO $$
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'airuntimeexecutionstatus') THEN
+        CREATE TYPE "AiRuntimeExecutionStatus" AS ENUM ('SUCCEEDED', 'FAILED', 'TIMED_OUT', 'CANCELLED', 'REJECTED');
+    END IF;
+END $$;
+DO $$
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'airuntimefinalizationkind') THEN
+        CREATE TYPE "AiRuntimeFinalizationKind" AS ENUM ('SUCCESS', 'FAILURE');
+    END IF;
+END $$;
+DO $$
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'airuntimefinalizationstatus') THEN
+        CREATE TYPE "AiRuntimeFinalizationStatus" AS ENUM ('PENDING', 'COMPLETED');
+    END IF;
+END $$;
 
 ALTER TABLE "ai_models"
 ADD COLUMN "supports_json" BOOLEAN NOT NULL DEFAULT false;
 
-CREATE TABLE "ai_workspace_runtime_limits" (
+CREATE TABLE IF NOT EXISTS "ai_workspace_runtime_limits" (
   "id" UUID NOT NULL,
   "workspace_id" UUID NOT NULL,
   "daily_request_limit" INTEGER,
@@ -24,7 +44,7 @@ CREATE TABLE "ai_workspace_runtime_limits" (
   CONSTRAINT "ai_workspace_runtime_limits_pkey" PRIMARY KEY ("id")
 );
 
-CREATE TABLE "ai_runtime_reservations" (
+CREATE TABLE IF NOT EXISTS "ai_runtime_reservations" (
   "id" UUID NOT NULL,
   "workspace_id" UUID NOT NULL,
   "request_id" TEXT NOT NULL,
@@ -44,7 +64,7 @@ CREATE TABLE "ai_runtime_reservations" (
   CONSTRAINT "ai_runtime_reservations_pkey" PRIMARY KEY ("id")
 );
 
-CREATE TABLE "ai_runtime_accounting" (
+CREATE TABLE IF NOT EXISTS "ai_runtime_accounting" (
   "id" UUID NOT NULL,
   "workspace_id" UUID NOT NULL,
   "invocation_id" UUID,
@@ -75,7 +95,7 @@ CREATE TABLE "ai_runtime_accounting" (
   CONSTRAINT "ai_runtime_accounting_pkey" PRIMARY KEY ("id")
 );
 
-CREATE TABLE "ai_runtime_finalizations" (
+CREATE TABLE IF NOT EXISTS "ai_runtime_finalizations" (
   "id" UUID NOT NULL,
   "workspace_id" UUID NOT NULL,
   "invocation_id" UUID NOT NULL,
@@ -91,20 +111,20 @@ CREATE TABLE "ai_runtime_finalizations" (
   CONSTRAINT "ai_runtime_finalizations_pkey" PRIMARY KEY ("id")
 );
 
-CREATE UNIQUE INDEX "ai_workspace_runtime_limits_workspace_id_key" ON "ai_workspace_runtime_limits"("workspace_id");
-CREATE UNIQUE INDEX "ai_runtime_reservations_request_id_key" ON "ai_runtime_reservations"("request_id");
-CREATE INDEX "ai_runtime_reservations_workspace_id_status_created_at_idx" ON "ai_runtime_reservations"("workspace_id", "status", "created_at");
-CREATE INDEX "ai_runtime_reservations_expires_at_status_idx" ON "ai_runtime_reservations"("expires_at", "status");
-CREATE INDEX "ai_runtime_reservations_workspace_id_id_owner_token_status_idx" ON "ai_runtime_reservations"("workspace_id", "id", "owner_token", "status");
-CREATE UNIQUE INDEX "ai_runtime_accounting_invocation_id_key" ON "ai_runtime_accounting"("invocation_id");
-CREATE UNIQUE INDEX "ai_runtime_accounting_request_id_key" ON "ai_runtime_accounting"("request_id");
-CREATE INDEX "ai_runtime_accounting_workspace_id_recorded_at_status_idx" ON "ai_runtime_accounting"("workspace_id", "recorded_at", "status");
-CREATE INDEX "ai_runtime_accounting_provider_id_recorded_at_idx" ON "ai_runtime_accounting"("provider_id", "recorded_at");
-CREATE INDEX "ai_runtime_accounting_model_id_recorded_at_idx" ON "ai_runtime_accounting"("model_id", "recorded_at");
-CREATE UNIQUE INDEX "ai_runtime_finalizations_invocation_id_key" ON "ai_runtime_finalizations"("invocation_id");
-CREATE UNIQUE INDEX "ai_runtime_finalizations_request_id_key" ON "ai_runtime_finalizations"("request_id");
-CREATE INDEX "ai_runtime_finalizations_status_created_at_idx" ON "ai_runtime_finalizations"("status", "created_at");
-CREATE INDEX "ai_runtime_finalizations_workspace_id_status_created_at_idx" ON "ai_runtime_finalizations"("workspace_id", "status", "created_at");
+CREATE UNIQUE INDEX IF NOT EXISTS "ai_workspace_runtime_limits_workspace_id_key" ON "ai_workspace_runtime_limits"("workspace_id");
+CREATE UNIQUE INDEX IF NOT EXISTS "ai_runtime_reservations_request_id_key" ON "ai_runtime_reservations"("request_id");
+CREATE INDEX IF NOT EXISTS "ai_runtime_reservations_workspace_id_status_created_at_idx" ON "ai_runtime_reservations"("workspace_id", "status", "created_at");
+CREATE INDEX IF NOT EXISTS "ai_runtime_reservations_expires_at_status_idx" ON "ai_runtime_reservations"("expires_at", "status");
+CREATE INDEX IF NOT EXISTS "ai_runtime_reservations_workspace_id_id_owner_token_status_idx" ON "ai_runtime_reservations"("workspace_id", "id", "owner_token", "status");
+CREATE UNIQUE INDEX IF NOT EXISTS "ai_runtime_accounting_invocation_id_key" ON "ai_runtime_accounting"("invocation_id");
+CREATE UNIQUE INDEX IF NOT EXISTS "ai_runtime_accounting_request_id_key" ON "ai_runtime_accounting"("request_id");
+CREATE INDEX IF NOT EXISTS "ai_runtime_accounting_workspace_id_recorded_at_status_idx" ON "ai_runtime_accounting"("workspace_id", "recorded_at", "status");
+CREATE INDEX IF NOT EXISTS "ai_runtime_accounting_provider_id_recorded_at_idx" ON "ai_runtime_accounting"("provider_id", "recorded_at");
+CREATE INDEX IF NOT EXISTS "ai_runtime_accounting_model_id_recorded_at_idx" ON "ai_runtime_accounting"("model_id", "recorded_at");
+CREATE UNIQUE INDEX IF NOT EXISTS "ai_runtime_finalizations_invocation_id_key" ON "ai_runtime_finalizations"("invocation_id");
+CREATE UNIQUE INDEX IF NOT EXISTS "ai_runtime_finalizations_request_id_key" ON "ai_runtime_finalizations"("request_id");
+CREATE INDEX IF NOT EXISTS "ai_runtime_finalizations_status_created_at_idx" ON "ai_runtime_finalizations"("status", "created_at");
+CREATE INDEX IF NOT EXISTS "ai_runtime_finalizations_workspace_id_status_created_at_idx" ON "ai_runtime_finalizations"("workspace_id", "status", "created_at");
 
 ALTER TABLE "ai_workspace_runtime_limits" ADD CONSTRAINT "ai_workspace_runtime_limits_workspace_id_fkey" FOREIGN KEY ("workspace_id") REFERENCES "workspaces"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 ALTER TABLE "ai_runtime_reservations" ADD CONSTRAINT "ai_runtime_reservations_workspace_id_fkey" FOREIGN KEY ("workspace_id") REFERENCES "workspaces"("id") ON DELETE CASCADE ON UPDATE CASCADE;

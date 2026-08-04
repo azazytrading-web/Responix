@@ -1,0 +1,22 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "outDir": "dist",
+    "rootDir": "src",
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "paths": {
+      "@responix/types": ["packages/types/dist/index.d.ts"],
+      "@responix/utils": ["packages/utils/dist/index.d.ts"],
+      "@responix/shared": ["packages/shared/dist/index.d.ts"],
+      "@responix/design-system": ["packages/design-system/dist/index.d.ts"],
+      "@responix/ui": ["packages/ui/dist/index.d.ts"],
+      "@responix/auth": ["packages/auth/dist/index.d.ts"],
+      "@responix/state": ["packages/state/dist/index.d.ts"],
+      "@responix/api-client": ["packages/api-client/dist/index.d.ts"],
+      "@responix/config/*": ["packages/config/src/*"],
+      "@responix/database": ["packages/database/src/index.ts"]
+    }
+  },
+  "include": ["src/**/*.ts"]
+}

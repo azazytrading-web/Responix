@@ -28,7 +28,7 @@ export class WorkflowRuntimeService implements OnModuleInit, OnModuleDestroy {
   private expiryTimer?: ReturnType<typeof setInterval>;
   constructor(private readonly repository: WorkflowRuntimeRepository,
     private readonly validator: WorkflowRuntimeValidator, private readonly kernel: ExecutionKernelService,
-    private readonly agents: AgentExecutionService, private readonly streams: StreamingRuntimeService,
+    @Inject(forwardRef(() => AgentExecutionService)) private readonly agents: AgentExecutionService, private readonly streams: StreamingRuntimeService,
     private readonly memory: MemoryRuntimeService,
     @Inject(forwardRef(() => ToolRuntimeService)) private readonly tools: ToolRuntimeService,
     private readonly optimization: RuntimeOptimizationService) {}

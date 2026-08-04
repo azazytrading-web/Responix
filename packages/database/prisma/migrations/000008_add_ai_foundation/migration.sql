@@ -1,9 +1,29 @@
-CREATE TYPE "AiCredentialStatus" AS ENUM ('ACTIVE', 'DISABLED', 'REVOKED');
-CREATE TYPE "AiInvocationStatus" AS ENUM ('PENDING', 'SUCCEEDED', 'FAILED', 'CANCELLED', 'BLOCKED');
-CREATE TYPE "AiMemoryScope" AS ENUM ('WORKSPACE', 'CUSTOMER', 'CONVERSATION', 'AGENT', 'SESSION');
-CREATE TYPE "AiCacheStatus" AS ENUM ('ACTIVE', 'INVALIDATED', 'EXPIRED');
+DO $$
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'aicredentialstatus') THEN
+        CREATE TYPE "AiCredentialStatus" AS ENUM ('ACTIVE', 'DISABLED', 'REVOKED');
+    END IF;
+END $$;
+DO $$
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'aiinvocationstatus') THEN
+        CREATE TYPE "AiInvocationStatus" AS ENUM ('PENDING', 'SUCCEEDED', 'FAILED', 'CANCELLED', 'BLOCKED');
+    END IF;
+END $$;
+DO $$
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'aimemoryscope') THEN
+        CREATE TYPE "AiMemoryScope" AS ENUM ('WORKSPACE', 'CUSTOMER', 'CONVERSATION', 'AGENT', 'SESSION');
+    END IF;
+END $$;
+DO $$
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'aicachestatus') THEN
+        CREATE TYPE "AiCacheStatus" AS ENUM ('ACTIVE', 'INVALIDATED', 'EXPIRED');
+    END IF;
+END $$;
 
-CREATE TABLE "ai_provider_credentials" (
+CREATE TABLE IF NOT EXISTS "ai_provider_credentials" (
   "id" UUID NOT NULL,
   "workspace_id" UUID NOT NULL,
   "provider_id" UUID NOT NULL,
@@ -22,7 +42,7 @@ CREATE TABLE "ai_provider_credentials" (
   CONSTRAINT "ai_provider_credentials_pkey" PRIMARY KEY ("id")
 );
 
-CREATE TABLE "ai_provider_configurations" (
+CREATE TABLE IF NOT EXISTS "ai_provider_configurations" (
   "id" UUID NOT NULL,
   "workspace_id" UUID NOT NULL,
   "provider_id" UUID NOT NULL,
@@ -34,7 +54,7 @@ CREATE TABLE "ai_provider_configurations" (
   CONSTRAINT "ai_provider_configurations_pkey" PRIMARY KEY ("id")
 );
 
-CREATE TABLE "ai_provider_health_records" (
+CREATE TABLE IF NOT EXISTS "ai_provider_health_records" (
   "id" UUID NOT NULL,
   "workspace_id" UUID NOT NULL,
   "provider_id" UUID NOT NULL,
@@ -47,7 +67,7 @@ CREATE TABLE "ai_provider_health_records" (
   CONSTRAINT "ai_provider_health_records_pkey" PRIMARY KEY ("id")
 );
 
-CREATE TABLE "ai_prompt_templates" (
+CREATE TABLE IF NOT EXISTS "ai_prompt_templates" (
   "id" UUID NOT NULL,
   "workspace_id" UUID NOT NULL,
   "name" TEXT NOT NULL,
@@ -62,7 +82,7 @@ CREATE TABLE "ai_prompt_templates" (
   CONSTRAINT "ai_prompt_templates_pkey" PRIMARY KEY ("id")
 );
 
-CREATE TABLE "ai_invocation_logs" (
+CREATE TABLE IF NOT EXISTS "ai_invocation_logs" (
   "id" UUID NOT NULL,
   "request_id" TEXT NOT NULL,
   "workspace_id" UUID NOT NULL,
@@ -84,7 +104,7 @@ CREATE TABLE "ai_invocation_logs" (
   CONSTRAINT "ai_invocation_logs_pkey" PRIMARY KEY ("id")
 );
 
-CREATE TABLE "ai_usage_records" (
+CREATE TABLE IF NOT EXISTS "ai_usage_records" (
   "id" UUID NOT NULL,
   "workspace_id" UUID NOT NULL,
   "invocation_id" UUID NOT NULL,
@@ -100,7 +120,7 @@ CREATE TABLE "ai_usage_records" (
   CONSTRAINT "ai_usage_records_pkey" PRIMARY KEY ("id")
 );
 
-CREATE TABLE "ai_cost_records" (
+CREATE TABLE IF NOT EXISTS "ai_cost_records" (
   "id" UUID NOT NULL,
   "workspace_id" UUID NOT NULL,
   "invocation_id" UUID NOT NULL,
@@ -116,7 +136,7 @@ CREATE TABLE "ai_cost_records" (
   CONSTRAINT "ai_cost_records_pkey" PRIMARY KEY ("id")
 );
 
-CREATE TABLE "ai_memory_records" (
+CREATE TABLE IF NOT EXISTS "ai_memory_records" (
   "id" UUID NOT NULL,
   "workspace_id" UUID NOT NULL,
   "agent_id" UUID,
@@ -131,7 +151,7 @@ CREATE TABLE "ai_memory_records" (
   CONSTRAINT "ai_memory_records_pkey" PRIMARY KEY ("id")
 );
 
-CREATE TABLE "ai_routing_metadata" (
+CREATE TABLE IF NOT EXISTS "ai_routing_metadata" (
   "id" UUID NOT NULL,
   "workspace_id" UUID NOT NULL,
   "invocation_id" UUID NOT NULL,
@@ -144,7 +164,7 @@ CREATE TABLE "ai_routing_metadata" (
   CONSTRAINT "ai_routing_metadata_pkey" PRIMARY KEY ("id")
 );
 
-CREATE TABLE "ai_cache_metadata" (
+CREATE TABLE IF NOT EXISTS "ai_cache_metadata" (
   "id" UUID NOT NULL,
   "workspace_id" UUID NOT NULL,
   "provider_id" UUID,
@@ -158,78 +178,78 @@ CREATE TABLE "ai_cache_metadata" (
   CONSTRAINT "ai_cache_metadata_pkey" PRIMARY KEY ("id")
 );
 
-CREATE UNIQUE INDEX "ai_provider_credentials_workspace_id_provider_id_name_key"
+CREATE UNIQUE INDEX IF NOT EXISTS "ai_provider_credentials_workspace_id_provider_id_name_key"
   ON "ai_provider_credentials"("workspace_id", "provider_id", "name");
-CREATE UNIQUE INDEX "ai_provider_credentials_workspace_id_provider_id_key_fingerprint_key"
+CREATE UNIQUE INDEX IF NOT EXISTS "ai_provider_credentials_workspace_id_provider_id_key_fingerprint_key"
   ON "ai_provider_credentials"("workspace_id", "provider_id", "key_fingerprint");
-CREATE INDEX "ai_provider_credentials_workspace_id_provider_id_status_priority_idx"
+CREATE INDEX IF NOT EXISTS "ai_provider_credentials_workspace_id_provider_id_status_priority_idx"
   ON "ai_provider_credentials"("workspace_id", "provider_id", "status", "priority");
-CREATE INDEX "ai_provider_credentials_provider_id_status_idx"
+CREATE INDEX IF NOT EXISTS "ai_provider_credentials_provider_id_status_idx"
   ON "ai_provider_credentials"("provider_id", "status");
 
-CREATE UNIQUE INDEX "ai_provider_configurations_workspace_id_provider_id_key"
+CREATE UNIQUE INDEX IF NOT EXISTS "ai_provider_configurations_workspace_id_provider_id_key"
   ON "ai_provider_configurations"("workspace_id", "provider_id");
-CREATE INDEX "ai_provider_configurations_workspace_id_enabled_idx"
+CREATE INDEX IF NOT EXISTS "ai_provider_configurations_workspace_id_enabled_idx"
   ON "ai_provider_configurations"("workspace_id", "enabled");
 
-CREATE INDEX "ai_provider_health_records_workspace_id_provider_id_checked_at_idx"
+CREATE INDEX IF NOT EXISTS "ai_provider_health_records_workspace_id_provider_id_checked_at_idx"
   ON "ai_provider_health_records"("workspace_id", "provider_id", "checked_at");
-CREATE INDEX "ai_provider_health_records_credential_id_checked_at_idx"
+CREATE INDEX IF NOT EXISTS "ai_provider_health_records_credential_id_checked_at_idx"
   ON "ai_provider_health_records"("credential_id", "checked_at");
 
-CREATE UNIQUE INDEX "ai_prompt_templates_workspace_id_name_version_key"
+CREATE UNIQUE INDEX IF NOT EXISTS "ai_prompt_templates_workspace_id_name_version_key"
   ON "ai_prompt_templates"("workspace_id", "name", "version");
-CREATE INDEX "ai_prompt_templates_workspace_id_active_created_at_idx"
+CREATE INDEX IF NOT EXISTS "ai_prompt_templates_workspace_id_active_created_at_idx"
   ON "ai_prompt_templates"("workspace_id", "active", "created_at");
-CREATE INDEX "ai_prompt_templates_created_by_user_id_idx"
+CREATE INDEX IF NOT EXISTS "ai_prompt_templates_created_by_user_id_idx"
   ON "ai_prompt_templates"("created_by_user_id");
 
-CREATE UNIQUE INDEX "ai_invocation_logs_request_id_key" ON "ai_invocation_logs"("request_id");
-CREATE INDEX "ai_invocation_logs_workspace_id_created_at_idx"
+CREATE UNIQUE INDEX IF NOT EXISTS "ai_invocation_logs_request_id_key" ON "ai_invocation_logs"("request_id");
+CREATE INDEX IF NOT EXISTS "ai_invocation_logs_workspace_id_created_at_idx"
   ON "ai_invocation_logs"("workspace_id", "created_at");
-CREATE INDEX "ai_invocation_logs_workspace_id_status_created_at_idx"
+CREATE INDEX IF NOT EXISTS "ai_invocation_logs_workspace_id_status_created_at_idx"
   ON "ai_invocation_logs"("workspace_id", "status", "created_at");
-CREATE INDEX "ai_invocation_logs_provider_id_created_at_idx"
+CREATE INDEX IF NOT EXISTS "ai_invocation_logs_provider_id_created_at_idx"
   ON "ai_invocation_logs"("provider_id", "created_at");
-CREATE INDEX "ai_invocation_logs_model_id_created_at_idx"
+CREATE INDEX IF NOT EXISTS "ai_invocation_logs_model_id_created_at_idx"
   ON "ai_invocation_logs"("model_id", "created_at");
 
-CREATE UNIQUE INDEX "ai_usage_records_invocation_id_key" ON "ai_usage_records"("invocation_id");
-CREATE INDEX "ai_usage_records_workspace_id_recorded_at_idx"
+CREATE UNIQUE INDEX IF NOT EXISTS "ai_usage_records_invocation_id_key" ON "ai_usage_records"("invocation_id");
+CREATE INDEX IF NOT EXISTS "ai_usage_records_workspace_id_recorded_at_idx"
   ON "ai_usage_records"("workspace_id", "recorded_at");
-CREATE INDEX "ai_usage_records_provider_id_recorded_at_idx"
+CREATE INDEX IF NOT EXISTS "ai_usage_records_provider_id_recorded_at_idx"
   ON "ai_usage_records"("provider_id", "recorded_at");
-CREATE INDEX "ai_usage_records_model_id_recorded_at_idx"
+CREATE INDEX IF NOT EXISTS "ai_usage_records_model_id_recorded_at_idx"
   ON "ai_usage_records"("model_id", "recorded_at");
 
-CREATE UNIQUE INDEX "ai_cost_records_invocation_id_key" ON "ai_cost_records"("invocation_id");
-CREATE INDEX "ai_cost_records_workspace_id_recorded_at_idx"
+CREATE UNIQUE INDEX IF NOT EXISTS "ai_cost_records_invocation_id_key" ON "ai_cost_records"("invocation_id");
+CREATE INDEX IF NOT EXISTS "ai_cost_records_workspace_id_recorded_at_idx"
   ON "ai_cost_records"("workspace_id", "recorded_at");
-CREATE INDEX "ai_cost_records_provider_id_recorded_at_idx"
+CREATE INDEX IF NOT EXISTS "ai_cost_records_provider_id_recorded_at_idx"
   ON "ai_cost_records"("provider_id", "recorded_at");
-CREATE INDEX "ai_cost_records_model_id_recorded_at_idx"
+CREATE INDEX IF NOT EXISTS "ai_cost_records_model_id_recorded_at_idx"
   ON "ai_cost_records"("model_id", "recorded_at");
 
-CREATE UNIQUE INDEX "ai_memory_records_workspace_id_scope_subject_id_memory_key_key"
+CREATE UNIQUE INDEX IF NOT EXISTS "ai_memory_records_workspace_id_scope_subject_id_memory_key_key"
   ON "ai_memory_records"("workspace_id", "scope", "subject_id", "memory_key");
-CREATE INDEX "ai_memory_records_workspace_id_scope_subject_id_idx"
+CREATE INDEX IF NOT EXISTS "ai_memory_records_workspace_id_scope_subject_id_idx"
   ON "ai_memory_records"("workspace_id", "scope", "subject_id");
-CREATE INDEX "ai_memory_records_workspace_id_expires_at_idx"
+CREATE INDEX IF NOT EXISTS "ai_memory_records_workspace_id_expires_at_idx"
   ON "ai_memory_records"("workspace_id", "expires_at");
 
-CREATE UNIQUE INDEX "ai_routing_metadata_invocation_id_key" ON "ai_routing_metadata"("invocation_id");
-CREATE INDEX "ai_routing_metadata_workspace_id_created_at_idx"
+CREATE UNIQUE INDEX IF NOT EXISTS "ai_routing_metadata_invocation_id_key" ON "ai_routing_metadata"("invocation_id");
+CREATE INDEX IF NOT EXISTS "ai_routing_metadata_workspace_id_created_at_idx"
   ON "ai_routing_metadata"("workspace_id", "created_at");
-CREATE INDEX "ai_routing_metadata_selected_provider_id_created_at_idx"
+CREATE INDEX IF NOT EXISTS "ai_routing_metadata_selected_provider_id_created_at_idx"
   ON "ai_routing_metadata"("selected_provider_id", "created_at");
-CREATE INDEX "ai_routing_metadata_selected_model_id_created_at_idx"
+CREATE INDEX IF NOT EXISTS "ai_routing_metadata_selected_model_id_created_at_idx"
   ON "ai_routing_metadata"("selected_model_id", "created_at");
 
-CREATE UNIQUE INDEX "ai_cache_metadata_workspace_id_key_hash_key"
+CREATE UNIQUE INDEX IF NOT EXISTS "ai_cache_metadata_workspace_id_key_hash_key"
   ON "ai_cache_metadata"("workspace_id", "key_hash");
-CREATE INDEX "ai_cache_metadata_workspace_id_status_expires_at_idx"
+CREATE INDEX IF NOT EXISTS "ai_cache_metadata_workspace_id_status_expires_at_idx"
   ON "ai_cache_metadata"("workspace_id", "status", "expires_at");
-CREATE INDEX "ai_cache_metadata_provider_id_model_id_idx"
+CREATE INDEX IF NOT EXISTS "ai_cache_metadata_provider_id_model_id_idx"
   ON "ai_cache_metadata"("provider_id", "model_id");
 
 ALTER TABLE "ai_provider_credentials"

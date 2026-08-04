@@ -5,7 +5,12 @@ ALTER TYPE "RuntimeOptimizationPackageType" ADD VALUE IF NOT EXISTS 'TOOL_DEFINI
 ALTER TYPE "RuntimeOptimizationPackageType" ADD VALUE IF NOT EXISTS 'WORKFLOW_PACKAGE';
 ALTER TYPE "RuntimeOptimizationPackageType" ADD VALUE IF NOT EXISTS 'EXECUTION_PLAN';
 
-CREATE TYPE "RuntimeOptimizationPackageStatus" AS ENUM ('ACTIVE', 'INVALIDATED');
+DO $$
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'runtimeoptimizationpackagestatus') THEN
+        CREATE TYPE "RuntimeOptimizationPackageStatus" AS ENUM ('ACTIVE', 'INVALIDATED');
+    END IF;
+END $$;
 
 ALTER TABLE "runtime_optimization_packages"
   ADD COLUMN "status" "RuntimeOptimizationPackageStatus" NOT NULL DEFAULT 'ACTIVE',
@@ -17,11 +22,12 @@ ALTER TABLE "runtime_optimization_packages"
   ADD COLUMN "invalidation_reason" TEXT;
 
 ALTER TABLE "runtime_optimization_packages"
-  DROP CONSTRAINT "runtime_optimization_packages_workspace_type_key";
-CREATE UNIQUE INDEX "runtime_optimization_packages_active_key"
+  DROP CONSTRAINT IF EXISTS "runtime_optimization_packages_workspace_type_key";
+DROP INDEX IF EXISTS "runtime_optimization_packages_workspace_type_key";
+CREATE UNIQUE INDEX IF NOT EXISTS "runtime_optimization_packages_active_key"
   ON "runtime_optimization_packages"("workspace_id", "type", "key_hash")
   WHERE "status" = 'ACTIVE';
-CREATE INDEX "runtime_optimization_packages_workspace_type_key_idx"
+CREATE INDEX IF NOT EXISTS "runtime_optimization_packages_workspace_type_key_idx"
   ON "runtime_optimization_packages"("workspace_id", "type", "key_hash");
 
 ALTER TABLE "runtime_optimization_metrics"
@@ -31,7 +37,7 @@ ALTER TABLE "runtime_optimization_metrics"
   ADD COLUMN "estimated_latency_gain_ms" BIGINT NOT NULL DEFAULT 0,
   ADD COLUMN "compile_time_ms" INTEGER NOT NULL DEFAULT 0;
 
-CREATE TABLE "runtime_optimization_provider_outcomes" (
+CREATE TABLE IF NOT EXISTS "runtime_optimization_provider_outcomes" (
   "id" UUID NOT NULL,
   "package_id" UUID NOT NULL,
   "workspace_id" UUID NOT NULL,
@@ -47,11 +53,11 @@ CREATE TABLE "runtime_optimization_provider_outcomes" (
   CONSTRAINT "runtime_optimization_provider_outcomes_pkey" PRIMARY KEY ("id")
 );
 
-CREATE INDEX "runtime_optimization_packages_scope_status_idx"
+CREATE INDEX IF NOT EXISTS "runtime_optimization_packages_scope_status_idx"
   ON "runtime_optimization_packages"("workspace_id", "type", "scope_key", "status");
-CREATE INDEX "runtime_optimization_provider_outcomes_workspace_idx"
+CREATE INDEX IF NOT EXISTS "runtime_optimization_provider_outcomes_workspace_idx"
   ON "runtime_optimization_provider_outcomes"("workspace_id", "provider_id", "cache_hit", "created_at");
-CREATE INDEX "runtime_optimization_provider_outcomes_package_idx"
+CREATE INDEX IF NOT EXISTS "runtime_optimization_provider_outcomes_package_idx"
   ON "runtime_optimization_provider_outcomes"("package_id", "created_at");
 
 ALTER TABLE "runtime_optimization_provider_outcomes"

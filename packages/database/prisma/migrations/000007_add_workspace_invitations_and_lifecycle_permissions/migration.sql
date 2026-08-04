@@ -12,7 +12,7 @@ WHERE role."workspace_id" IS NULL
   AND role."name" IN ('Owner', 'Administrator')
 ON CONFLICT ("role_id", "permission_id") DO NOTHING;
 
-CREATE TABLE "workspace_invitations" (
+CREATE TABLE IF NOT EXISTS "workspace_invitations" (
   "id" UUID NOT NULL,
   "workspace_id" UUID NOT NULL,
   "membership_id" UUID NOT NULL,
@@ -28,12 +28,12 @@ CREATE TABLE "workspace_invitations" (
   CONSTRAINT "workspace_invitations_pkey" PRIMARY KEY ("id")
 );
 
-CREATE UNIQUE INDEX "workspace_invitations_token_hash_key" ON "workspace_invitations"("token_hash");
-CREATE INDEX "workspace_invitations_workspace_id_expires_at_idx"
+CREATE UNIQUE INDEX IF NOT EXISTS "workspace_invitations_token_hash_key" ON "workspace_invitations"("token_hash");
+CREATE INDEX IF NOT EXISTS "workspace_invitations_workspace_id_expires_at_idx"
   ON "workspace_invitations"("workspace_id", "expires_at");
-CREATE INDEX "workspace_invitations_membership_id_created_at_idx"
+CREATE INDEX IF NOT EXISTS "workspace_invitations_membership_id_created_at_idx"
   ON "workspace_invitations"("membership_id", "created_at");
-CREATE INDEX "workspace_invitations_target_user_id_expires_at_idx"
+CREATE INDEX IF NOT EXISTS "workspace_invitations_target_user_id_expires_at_idx"
   ON "workspace_invitations"("target_user_id", "expires_at");
 
 ALTER TABLE "workspace_invitations"
@@ -78,6 +78,6 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE TRIGGER "workspace_users_prevent_last_owner_change"
+DROP TRIGGER IF EXISTS workspace_users_prevent_last_owner_change ON workspace_users; CREATE TRIGGER "workspace_users_prevent_last_owner_change"
 BEFORE UPDATE OF "status", "role_id" ON "workspace_users"
 FOR EACH ROW EXECUTE FUNCTION "prevent_last_active_workspace_owner_change"();

@@ -12,21 +12,26 @@
     }
   },
   "scripts": {
-    "build": "tsc -p tsconfig.json",
+    "build": "tsc -p tsconfig.build.json",
     "lint": "eslint .",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "test": "tsc -p tsconfig.json --noEmit"
   },
   "dependencies": {
+    "@responix/design-system": "workspace:*",
+    "@responix/shared": "workspace:*",
+    "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "tailwind-merge": "^2.6.0"
   },
   "devDependencies": {
     "@responix/config": "workspace:*",
     "@types/react": "^19.0.7",
+    "@types/react-dom": "^19.0.3",
     "typescript": "^5.7.3"
   },
   "peerDependencies": {
-    "react": "^19.0.0"
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
   }
 }

@@ -1,0 +1,31 @@
+{
+  "name": "@responix/api-client",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "lint": "eslint .",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "vitest run",
+    "openapi:generate": "node ./scripts/generate-openapi.mjs"
+  },
+  "dependencies": {
+    "@responix/types": "workspace:*"
+  },
+  "devDependencies": {
+    "@responix/config": "workspace:*",
+    "@types/node": "^22.10.7",
+    "openapi-typescript": "^7.4.4",
+    "typescript": "^5.7.3",
+    "vitest": "^4.1.10"
+  }
+}

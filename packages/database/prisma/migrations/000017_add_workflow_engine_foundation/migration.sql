@@ -1,10 +1,20 @@
 ALTER TYPE "WorkflowStatus" ADD VALUE IF NOT EXISTS 'PUBLISHED';
-CREATE TYPE "WorkflowVisibility" AS ENUM ('PRIVATE', 'WORKSPACE');
-CREATE TYPE "WorkflowNodeType" AS ENUM (
+DO $$
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'workflowvisibility') THEN
+        CREATE TYPE "WorkflowVisibility" AS ENUM ('PRIVATE', 'WORKSPACE');
+    END IF;
+END $$;
+DO $$
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'workflownodetype') THEN
+        CREATE TYPE "WorkflowNodeType" AS ENUM (
   'START', 'END', 'AGENT', 'PROMPT', 'KNOWLEDGE', 'TOOL', 'WEBHOOK', 'REST',
   'CONDITION', 'DELAY', 'LOOP', 'MANUAL', 'DECISION', 'TRANSFORM', 'VARIABLE',
   'SUBFLOW', 'CUSTOM'
 );
+    END IF;
+END $$;
 
 ALTER TABLE "workflows"
   ADD COLUMN "category_id" UUID,
@@ -26,10 +36,10 @@ ALTER TABLE "workflows"
   ALTER COLUMN "workflow_json" SET DEFAULT '{}';
 
 DROP INDEX IF EXISTS "workflows_workspace_id_name_version_key";
-CREATE UNIQUE INDEX "workflows_workspace_id_slug_key" ON "workflows"("workspace_id", "slug");
-CREATE INDEX "workflows_workspace_id_category_id_idx" ON "workflows"("workspace_id", "category_id");
+CREATE UNIQUE INDEX IF NOT EXISTS "workflows_workspace_id_slug_key" ON "workflows"("workspace_id", "slug");
+CREATE INDEX IF NOT EXISTS "workflows_workspace_id_category_id_idx" ON "workflows"("workspace_id", "category_id");
 
-CREATE TABLE "workflow_categories" (
+CREATE TABLE IF NOT EXISTS "workflow_categories" (
   "id" UUID NOT NULL,
   "workspace_id" UUID NOT NULL,
   "name" TEXT NOT NULL,
@@ -40,10 +50,10 @@ CREATE TABLE "workflow_categories" (
   "updated_at" TIMESTAMP(3) NOT NULL,
   CONSTRAINT "workflow_categories_pkey" PRIMARY KEY ("id")
 );
-CREATE UNIQUE INDEX "workflow_categories_workspace_id_slug_key" ON "workflow_categories"("workspace_id", "slug");
-CREATE INDEX "workflow_categories_workspace_id_name_idx" ON "workflow_categories"("workspace_id", "name");
+CREATE UNIQUE INDEX IF NOT EXISTS "workflow_categories_workspace_id_slug_key" ON "workflow_categories"("workspace_id", "slug");
+CREATE INDEX IF NOT EXISTS "workflow_categories_workspace_id_name_idx" ON "workflow_categories"("workspace_id", "name");
 
-CREATE TABLE "workflow_variables" (
+CREATE TABLE IF NOT EXISTS "workflow_variables" (
   "id" UUID NOT NULL,
   "workflow_id" UUID NOT NULL,
   "name" TEXT NOT NULL,
@@ -56,9 +66,9 @@ CREATE TABLE "workflow_variables" (
   "updated_at" TIMESTAMP(3) NOT NULL,
   CONSTRAINT "workflow_variables_pkey" PRIMARY KEY ("id")
 );
-CREATE UNIQUE INDEX "workflow_variables_workflow_id_name_key" ON "workflow_variables"("workflow_id", "name");
+CREATE UNIQUE INDEX IF NOT EXISTS "workflow_variables_workflow_id_name_key" ON "workflow_variables"("workflow_id", "name");
 
-CREATE TABLE "workflow_parameters" (
+CREATE TABLE IF NOT EXISTS "workflow_parameters" (
   "id" UUID NOT NULL,
   "workflow_id" UUID NOT NULL,
   "name" TEXT NOT NULL,
@@ -70,9 +80,9 @@ CREATE TABLE "workflow_parameters" (
   "updated_at" TIMESTAMP(3) NOT NULL,
   CONSTRAINT "workflow_parameters_pkey" PRIMARY KEY ("id")
 );
-CREATE UNIQUE INDEX "workflow_parameters_workflow_id_name_key" ON "workflow_parameters"("workflow_id", "name");
+CREATE UNIQUE INDEX IF NOT EXISTS "workflow_parameters_workflow_id_name_key" ON "workflow_parameters"("workflow_id", "name");
 
-CREATE TABLE "workflow_inputs" (
+CREATE TABLE IF NOT EXISTS "workflow_inputs" (
   "id" UUID NOT NULL,
   "workflow_id" UUID NOT NULL,
   "name" TEXT NOT NULL,
@@ -84,9 +94,9 @@ CREATE TABLE "workflow_inputs" (
   "updated_at" TIMESTAMP(3) NOT NULL,
   CONSTRAINT "workflow_inputs_pkey" PRIMARY KEY ("id")
 );
-CREATE UNIQUE INDEX "workflow_inputs_workflow_id_name_key" ON "workflow_inputs"("workflow_id", "name");
+CREATE UNIQUE INDEX IF NOT EXISTS "workflow_inputs_workflow_id_name_key" ON "workflow_inputs"("workflow_id", "name");
 
-CREATE TABLE "workflow_outputs" (
+CREATE TABLE IF NOT EXISTS "workflow_outputs" (
   "id" UUID NOT NULL,
   "workflow_id" UUID NOT NULL,
   "name" TEXT NOT NULL,
@@ -97,9 +107,9 @@ CREATE TABLE "workflow_outputs" (
   "updated_at" TIMESTAMP(3) NOT NULL,
   CONSTRAINT "workflow_outputs_pkey" PRIMARY KEY ("id")
 );
-CREATE UNIQUE INDEX "workflow_outputs_workflow_id_name_key" ON "workflow_outputs"("workflow_id", "name");
+CREATE UNIQUE INDEX IF NOT EXISTS "workflow_outputs_workflow_id_name_key" ON "workflow_outputs"("workflow_id", "name");
 
-CREATE TABLE "workflow_nodes" (
+CREATE TABLE IF NOT EXISTS "workflow_nodes" (
   "id" UUID NOT NULL,
   "workflow_id" UUID NOT NULL,
   "node_key" TEXT NOT NULL,
@@ -114,11 +124,11 @@ CREATE TABLE "workflow_nodes" (
   "updated_at" TIMESTAMP(3) NOT NULL,
   CONSTRAINT "workflow_nodes_pkey" PRIMARY KEY ("id")
 );
-CREATE UNIQUE INDEX "workflow_nodes_workflow_id_node_key_key" ON "workflow_nodes"("workflow_id", "node_key");
-CREATE INDEX "workflow_nodes_workflow_id_type_idx" ON "workflow_nodes"("workflow_id", "type");
-CREATE INDEX "workflow_nodes_reference_id_idx" ON "workflow_nodes"("reference_id");
+CREATE UNIQUE INDEX IF NOT EXISTS "workflow_nodes_workflow_id_node_key_key" ON "workflow_nodes"("workflow_id", "node_key");
+CREATE INDEX IF NOT EXISTS "workflow_nodes_workflow_id_type_idx" ON "workflow_nodes"("workflow_id", "type");
+CREATE INDEX IF NOT EXISTS "workflow_nodes_reference_id_idx" ON "workflow_nodes"("reference_id");
 
-CREATE TABLE "workflow_edges" (
+CREATE TABLE IF NOT EXISTS "workflow_edges" (
   "id" UUID NOT NULL,
   "workflow_id" UUID NOT NULL,
   "edge_key" TEXT NOT NULL,
@@ -131,11 +141,11 @@ CREATE TABLE "workflow_edges" (
   "updated_at" TIMESTAMP(3) NOT NULL,
   CONSTRAINT "workflow_edges_pkey" PRIMARY KEY ("id")
 );
-CREATE UNIQUE INDEX "workflow_edges_workflow_id_edge_key_key" ON "workflow_edges"("workflow_id", "edge_key");
-CREATE INDEX "workflow_edges_workflow_id_source_node_key_idx" ON "workflow_edges"("workflow_id", "source_node_key");
-CREATE INDEX "workflow_edges_workflow_id_target_node_key_idx" ON "workflow_edges"("workflow_id", "target_node_key");
+CREATE UNIQUE INDEX IF NOT EXISTS "workflow_edges_workflow_id_edge_key_key" ON "workflow_edges"("workflow_id", "edge_key");
+CREATE INDEX IF NOT EXISTS "workflow_edges_workflow_id_source_node_key_idx" ON "workflow_edges"("workflow_id", "source_node_key");
+CREATE INDEX IF NOT EXISTS "workflow_edges_workflow_id_target_node_key_idx" ON "workflow_edges"("workflow_id", "target_node_key");
 
-CREATE TABLE "workflow_conditions" (
+CREATE TABLE IF NOT EXISTS "workflow_conditions" (
   "id" UUID NOT NULL,
   "workflow_id" UUID NOT NULL,
   "key" TEXT NOT NULL,
@@ -148,9 +158,9 @@ CREATE TABLE "workflow_conditions" (
   "updated_at" TIMESTAMP(3) NOT NULL,
   CONSTRAINT "workflow_conditions_pkey" PRIMARY KEY ("id")
 );
-CREATE UNIQUE INDEX "workflow_conditions_workflow_id_key_key" ON "workflow_conditions"("workflow_id", "key");
+CREATE UNIQUE INDEX IF NOT EXISTS "workflow_conditions_workflow_id_key_key" ON "workflow_conditions"("workflow_id", "key");
 
-CREATE TABLE "workflow_branches" (
+CREATE TABLE IF NOT EXISTS "workflow_branches" (
   "id" UUID NOT NULL,
   "workflow_id" UUID NOT NULL,
   "node_key" TEXT NOT NULL,
@@ -164,9 +174,9 @@ CREATE TABLE "workflow_branches" (
   "updated_at" TIMESTAMP(3) NOT NULL,
   CONSTRAINT "workflow_branches_pkey" PRIMARY KEY ("id")
 );
-CREATE UNIQUE INDEX "workflow_branches_workflow_id_node_key_branch_key_key" ON "workflow_branches"("workflow_id", "node_key", "branch_key");
+CREATE UNIQUE INDEX IF NOT EXISTS "workflow_branches_workflow_id_node_key_branch_key_key" ON "workflow_branches"("workflow_id", "node_key", "branch_key");
 
-CREATE TABLE "workflow_labels" (
+CREATE TABLE IF NOT EXISTS "workflow_labels" (
   "id" UUID NOT NULL,
   "workflow_id" UUID NOT NULL,
   "name" TEXT NOT NULL,
@@ -176,9 +186,9 @@ CREATE TABLE "workflow_labels" (
   "updated_at" TIMESTAMP(3) NOT NULL,
   CONSTRAINT "workflow_labels_pkey" PRIMARY KEY ("id")
 );
-CREATE UNIQUE INDEX "workflow_labels_workflow_id_name_key" ON "workflow_labels"("workflow_id", "name");
+CREATE UNIQUE INDEX IF NOT EXISTS "workflow_labels_workflow_id_name_key" ON "workflow_labels"("workflow_id", "name");
 
-CREATE TABLE "workflow_tags" (
+CREATE TABLE IF NOT EXISTS "workflow_tags" (
   "id" UUID NOT NULL,
   "workspace_id" UUID NOT NULL,
   "name" TEXT NOT NULL,
@@ -188,18 +198,18 @@ CREATE TABLE "workflow_tags" (
   "updated_at" TIMESTAMP(3) NOT NULL,
   CONSTRAINT "workflow_tags_pkey" PRIMARY KEY ("id")
 );
-CREATE UNIQUE INDEX "workflow_tags_workspace_id_slug_key" ON "workflow_tags"("workspace_id", "slug");
-CREATE INDEX "workflow_tags_workspace_id_name_idx" ON "workflow_tags"("workspace_id", "name");
+CREATE UNIQUE INDEX IF NOT EXISTS "workflow_tags_workspace_id_slug_key" ON "workflow_tags"("workspace_id", "slug");
+CREATE INDEX IF NOT EXISTS "workflow_tags_workspace_id_name_idx" ON "workflow_tags"("workspace_id", "name");
 
-CREATE TABLE "workflow_tag_assignments" (
+CREATE TABLE IF NOT EXISTS "workflow_tag_assignments" (
   "workflow_id" UUID NOT NULL,
   "tag_id" UUID NOT NULL,
   "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
   CONSTRAINT "workflow_tag_assignments_pkey" PRIMARY KEY ("workflow_id", "tag_id")
 );
-CREATE INDEX "workflow_tag_assignments_tag_id_idx" ON "workflow_tag_assignments"("tag_id");
+CREATE INDEX IF NOT EXISTS "workflow_tag_assignments_tag_id_idx" ON "workflow_tag_assignments"("tag_id");
 
-CREATE TABLE "workflow_notes" (
+CREATE TABLE IF NOT EXISTS "workflow_notes" (
   "id" UUID NOT NULL,
   "workflow_id" UUID NOT NULL,
   "content" TEXT NOT NULL,
@@ -210,7 +220,7 @@ CREATE TABLE "workflow_notes" (
   CONSTRAINT "workflow_notes_pkey" PRIMARY KEY ("id")
 );
 
-CREATE TABLE "workflow_permissions" (
+CREATE TABLE IF NOT EXISTS "workflow_permissions" (
   "id" UUID NOT NULL,
   "workflow_id" UUID NOT NULL,
   "permission_code" TEXT NOT NULL,
@@ -219,9 +229,9 @@ CREATE TABLE "workflow_permissions" (
   "updated_at" TIMESTAMP(3) NOT NULL,
   CONSTRAINT "workflow_permissions_pkey" PRIMARY KEY ("id")
 );
-CREATE UNIQUE INDEX "workflow_permissions_workflow_id_permission_code_key" ON "workflow_permissions"("workflow_id", "permission_code");
+CREATE UNIQUE INDEX IF NOT EXISTS "workflow_permissions_workflow_id_permission_code_key" ON "workflow_permissions"("workflow_id", "permission_code");
 
-CREATE TABLE "workflow_versions" (
+CREATE TABLE IF NOT EXISTS "workflow_versions" (
   "id" UUID NOT NULL,
   "workflow_id" UUID NOT NULL,
   "revision" INTEGER NOT NULL,
@@ -232,8 +242,8 @@ CREATE TABLE "workflow_versions" (
   "published_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
   CONSTRAINT "workflow_versions_pkey" PRIMARY KEY ("id")
 );
-CREATE UNIQUE INDEX "workflow_versions_workflow_id_revision_key" ON "workflow_versions"("workflow_id", "revision");
-CREATE INDEX "workflow_versions_workflow_id_published_at_idx" ON "workflow_versions"("workflow_id", "published_at");
+CREATE UNIQUE INDEX IF NOT EXISTS "workflow_versions_workflow_id_revision_key" ON "workflow_versions"("workflow_id", "revision");
+CREATE INDEX IF NOT EXISTS "workflow_versions_workflow_id_published_at_idx" ON "workflow_versions"("workflow_id", "published_at");
 
 ALTER TABLE "workflow_categories" ADD CONSTRAINT "workflow_categories_workspace_id_fkey"
   FOREIGN KEY ("workspace_id") REFERENCES "workspaces"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

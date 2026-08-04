@@ -1,84 +1,189 @@
 -- CreateEnum
-CREATE TYPE "WorkspaceStatus" AS ENUM ('ACTIVE', 'SUSPENDED', 'ARCHIVED');
+DO $$
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'workspacestatus') THEN
+        CREATE TYPE "WorkspaceStatus" AS ENUM ('ACTIVE', 'SUSPENDED', 'ARCHIVED');
+    END IF;
+END $$;
 
 -- CreateEnum
-CREATE TYPE "UserStatus" AS ENUM ('INVITED', 'ACTIVE', 'SUSPENDED');
+DO $$
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'userstatus') THEN
+        CREATE TYPE "UserStatus" AS ENUM ('INVITED', 'ACTIVE', 'SUSPENDED');
+    END IF;
+END $$;
 
 -- CreateEnum
-CREATE TYPE "ConversationChannel" AS ENUM ('WHATSAPP', 'EMAIL', 'WEB', 'SMS', 'API');
+DO $$
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'conversationchannel') THEN
+        CREATE TYPE "ConversationChannel" AS ENUM ('WHATSAPP', 'EMAIL', 'WEB', 'SMS', 'API');
+    END IF;
+END $$;
 
 -- CreateEnum
-CREATE TYPE "ConversationStatus" AS ENUM ('OPEN', 'PENDING', 'CLOSED');
+DO $$
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'conversationstatus') THEN
+        CREATE TYPE "ConversationStatus" AS ENUM ('OPEN', 'PENDING', 'CLOSED');
+    END IF;
+END $$;
 
 -- CreateEnum
-CREATE TYPE "ConversationPriority" AS ENUM ('LOW', 'NORMAL', 'HIGH', 'URGENT');
+DO $$
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'conversationpriority') THEN
+        CREATE TYPE "ConversationPriority" AS ENUM ('LOW', 'NORMAL', 'HIGH', 'URGENT');
+    END IF;
+END $$;
 
 -- CreateEnum
-CREATE TYPE "SenderType" AS ENUM ('CUSTOMER', 'USER', 'AGENT', 'SYSTEM');
+DO $$
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'sendertype') THEN
+        CREATE TYPE "SenderType" AS ENUM ('CUSTOMER', 'USER', 'AGENT', 'SYSTEM');
+    END IF;
+END $$;
 
 -- CreateEnum
-CREATE TYPE "MessageType" AS ENUM ('TEXT', 'IMAGE', 'AUDIO', 'VIDEO', 'FILE', 'TEMPLATE');
+DO $$
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'messagetype') THEN
+        CREATE TYPE "MessageType" AS ENUM ('TEXT', 'IMAGE', 'AUDIO', 'VIDEO', 'FILE', 'TEMPLATE');
+    END IF;
+END $$;
 
 -- CreateEnum
-CREATE TYPE "MessageStatus" AS ENUM ('QUEUED', 'SENT', 'DELIVERED', 'READ', 'FAILED');
+DO $$
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'messagestatus') THEN
+        CREATE TYPE "MessageStatus" AS ENUM ('QUEUED', 'SENT', 'DELIVERED', 'READ', 'FAILED');
+    END IF;
+END $$;
 
 -- CreateEnum
-CREATE TYPE "AgentStatus" AS ENUM ('DRAFT', 'ACTIVE', 'DISABLED');
+DO $$
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'agentstatus') THEN
+        CREATE TYPE "AgentStatus" AS ENUM ('DRAFT', 'ACTIVE', 'DISABLED');
+    END IF;
+END $$;
 
 -- CreateEnum
-CREATE TYPE "ProviderStatus" AS ENUM ('ACTIVE', 'DISABLED', 'UNHEALTHY');
+DO $$
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'providerstatus') THEN
+        CREATE TYPE "ProviderStatus" AS ENUM ('ACTIVE', 'DISABLED', 'UNHEALTHY');
+    END IF;
+END $$;
 
 -- CreateEnum
-CREATE TYPE "ModelStatus" AS ENUM ('ACTIVE', 'DISABLED', 'DEPRECATED');
+DO $$
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'modelstatus') THEN
+        CREATE TYPE "ModelStatus" AS ENUM ('ACTIVE', 'DISABLED', 'DEPRECATED');
+    END IF;
+END $$;
 
 -- CreateEnum
-CREATE TYPE "KnowledgeStatus" AS ENUM ('DRAFT', 'INDEXING', 'READY', 'FAILED', 'ARCHIVED');
+DO $$
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'knowledgestatus') THEN
+        CREATE TYPE "KnowledgeStatus" AS ENUM ('DRAFT', 'INDEXING', 'READY', 'FAILED', 'ARCHIVED');
+    END IF;
+END $$;
 
 -- CreateEnum
-CREATE TYPE "UploadStatus" AS ENUM ('PENDING', 'UPLOADED', 'FAILED');
+DO $$
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'uploadstatus') THEN
+        CREATE TYPE "UploadStatus" AS ENUM ('PENDING', 'UPLOADED', 'FAILED');
+    END IF;
+END $$;
 
 -- CreateEnum
-CREATE TYPE "IndexingStatus" AS ENUM ('PENDING', 'PROCESSING', 'COMPLETED', 'FAILED');
+DO $$
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'indexingstatus') THEN
+        CREATE TYPE "IndexingStatus" AS ENUM ('PENDING', 'PROCESSING', 'COMPLETED', 'FAILED');
+    END IF;
+END $$;
 
 -- CreateEnum
-CREATE TYPE "WorkflowStatus" AS ENUM ('DRAFT', 'ACTIVE', 'PAUSED', 'ARCHIVED');
+DO $$
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'workflowstatus') THEN
+        CREATE TYPE "WorkflowStatus" AS ENUM ('DRAFT', 'ACTIVE', 'PAUSED', 'ARCHIVED');
+    END IF;
+END $$;
 
 -- CreateEnum
-CREATE TYPE "ExecutionStatus" AS ENUM ('PENDING', 'RUNNING', 'COMPLETED', 'FAILED', 'CANCELLED');
+DO $$
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'executionstatus') THEN
+        CREATE TYPE "ExecutionStatus" AS ENUM ('PENDING', 'RUNNING', 'COMPLETED', 'FAILED', 'CANCELLED');
+    END IF;
+END $$;
 
 -- CreateEnum
-CREATE TYPE "BillingCycle" AS ENUM ('MONTHLY', 'YEARLY');
+DO $$
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'billingcycle') THEN
+        CREATE TYPE "BillingCycle" AS ENUM ('MONTHLY', 'YEARLY');
+    END IF;
+END $$;
 
 -- CreateEnum
-CREATE TYPE "SubscriptionStatus" AS ENUM ('TRIAL', 'ACTIVE', 'PAST_DUE', 'CANCELLED', 'EXPIRED');
+DO $$
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'subscriptionstatus') THEN
+        CREATE TYPE "SubscriptionStatus" AS ENUM ('TRIAL', 'ACTIVE', 'PAST_DUE', 'CANCELLED', 'EXPIRED');
+    END IF;
+END $$;
 
 -- CreateEnum
-CREATE TYPE "PaymentStatus" AS ENUM ('PENDING', 'SUCCEEDED', 'FAILED', 'REFUNDED');
+DO $$
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'paymentstatus') THEN
+        CREATE TYPE "PaymentStatus" AS ENUM ('PENDING', 'SUCCEEDED', 'FAILED', 'REFUNDED');
+    END IF;
+END $$;
 
 -- CreateEnum
-CREATE TYPE "ApiKeyStatus" AS ENUM ('ACTIVE', 'REVOKED', 'EXPIRED');
+DO $$
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'apikeystatus') THEN
+        CREATE TYPE "ApiKeyStatus" AS ENUM ('ACTIVE', 'REVOKED', 'EXPIRED');
+    END IF;
+END $$;
 
 -- CreateEnum
-CREATE TYPE "NotificationPriority" AS ENUM ('LOW', 'NORMAL', 'HIGH', 'URGENT');
+DO $$
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'notificationpriority') THEN
+        CREATE TYPE "NotificationPriority" AS ENUM ('LOW', 'NORMAL', 'HIGH', 'URGENT');
+    END IF;
+END $$;
 
 -- DropForeignKey
-ALTER TABLE "audit_logs" DROP CONSTRAINT "audit_logs_actor_id_fkey";
+ALTER TABLE "audit_logs" DROP CONSTRAINT IF EXISTS "audit_logs_actor_id_fkey";
 
 -- DropIndex
-DROP INDEX "users_workspace_id_idx";
+DROP INDEX IF EXISTS "users_workspace_id_idx";
 
 -- DropIndex
-DROP INDEX "users_status_idx";
+DROP INDEX IF EXISTS "users_status_idx";
 
 -- DropIndex
-DROP INDEX "audit_logs_actor_id_idx";
+DROP INDEX IF EXISTS "audit_logs_actor_id_idx";
 
 -- Preserve the Sprint 1 user and audit-log values before expanding the schema.
 ALTER TABLE "users" RENAME COLUMN "name" TO "full_name";
 ALTER TABLE "audit_logs" RENAME COLUMN "actor_id" TO "user_id";
 
 -- AlterTable
-ALTER TABLE "workspaces" ADD COLUMN     "ai_enabled" BOOLEAN NOT NULL DEFAULT true,
+ALTER TABLE "workspaces" ADD COLUMN IF NOT EXISTS     "ai_enabled" BOOLEAN NOT NULL DEFAULT true,
 ADD COLUMN     "api_enabled" BOOLEAN NOT NULL DEFAULT false,
 ADD COLUMN     "company_name" TEXT,
 ADD COLUMN     "country" TEXT,
@@ -103,7 +208,7 @@ ALTER COLUMN "status" TYPE "WorkspaceStatus" USING UPPER("status")::"WorkspaceSt
 ALTER COLUMN "status" SET DEFAULT 'ACTIVE';
 
 -- AlterTable
-ALTER TABLE "users" ADD COLUMN     "avatar" TEXT,
+ALTER TABLE "users" ADD COLUMN IF NOT EXISTS     "avatar" TEXT,
 ADD COLUMN     "department_id" UUID,
 ADD COLUMN     "email_verified" BOOLEAN NOT NULL DEFAULT false,
 ADD COLUMN     "first_name" TEXT,
@@ -119,7 +224,7 @@ ALTER COLUMN "status" TYPE "UserStatus" USING UPPER("status")::"UserStatus",
 ALTER COLUMN "status" SET DEFAULT 'INVITED';
 
 -- AlterTable
-ALTER TABLE "audit_logs" ADD COLUMN     "new_values" JSONB,
+ALTER TABLE "audit_logs" ADD COLUMN IF NOT EXISTS     "new_values" JSONB,
 ADD COLUMN     "old_values" JSONB,
 ADD COLUMN     "updated_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 ADD COLUMN     "user_agent" TEXT;
@@ -127,7 +232,7 @@ ADD COLUMN     "user_agent" TEXT;
 ALTER TABLE "audit_logs" ALTER COLUMN "updated_at" DROP DEFAULT;
 
 -- CreateTable
-CREATE TABLE "roles" (
+CREATE TABLE IF NOT EXISTS "roles" (
     "id" UUID NOT NULL,
     "workspace_id" UUID,
     "name" TEXT NOT NULL,
@@ -142,7 +247,7 @@ CREATE TABLE "roles" (
 );
 
 -- CreateTable
-CREATE TABLE "permissions" (
+CREATE TABLE IF NOT EXISTS "permissions" (
     "id" UUID NOT NULL,
     "code" TEXT NOT NULL,
     "description" TEXT,
@@ -153,7 +258,7 @@ CREATE TABLE "permissions" (
 );
 
 -- CreateTable
-CREATE TABLE "role_permissions" (
+CREATE TABLE IF NOT EXISTS "role_permissions" (
     "id" UUID NOT NULL,
     "role_id" UUID NOT NULL,
     "permission_id" UUID NOT NULL,
@@ -164,7 +269,7 @@ CREATE TABLE "role_permissions" (
 );
 
 -- CreateTable
-CREATE TABLE "customers" (
+CREATE TABLE IF NOT EXISTS "customers" (
     "id" UUID NOT NULL,
     "workspace_id" UUID NOT NULL,
     "full_name" TEXT NOT NULL,
@@ -192,7 +297,7 @@ CREATE TABLE "customers" (
 );
 
 -- CreateTable
-CREATE TABLE "conversations" (
+CREATE TABLE IF NOT EXISTS "conversations" (
     "id" UUID NOT NULL,
     "workspace_id" UUID NOT NULL,
     "customer_id" UUID NOT NULL,
@@ -219,7 +324,7 @@ CREATE TABLE "conversations" (
 );
 
 -- CreateTable
-CREATE TABLE "messages" (
+CREATE TABLE IF NOT EXISTS "messages" (
     "id" UUID NOT NULL,
     "conversation_id" UUID NOT NULL,
     "customer_id" UUID NOT NULL,
@@ -244,7 +349,7 @@ CREATE TABLE "messages" (
 );
 
 -- CreateTable
-CREATE TABLE "ai_providers" (
+CREATE TABLE IF NOT EXISTS "ai_providers" (
     "id" UUID NOT NULL,
     "provider_name" TEXT NOT NULL,
     "api_base_url" TEXT,
@@ -262,7 +367,7 @@ CREATE TABLE "ai_providers" (
 );
 
 -- CreateTable
-CREATE TABLE "ai_models" (
+CREATE TABLE IF NOT EXISTS "ai_models" (
     "id" UUID NOT NULL,
     "provider_id" UUID NOT NULL,
     "model_name" TEXT NOT NULL,
@@ -285,7 +390,7 @@ CREATE TABLE "ai_models" (
 );
 
 -- CreateTable
-CREATE TABLE "ai_agents" (
+CREATE TABLE IF NOT EXISTS "ai_agents" (
     "id" UUID NOT NULL,
     "workspace_id" UUID NOT NULL,
     "name" TEXT NOT NULL,
@@ -312,7 +417,7 @@ CREATE TABLE "ai_agents" (
 );
 
 -- CreateTable
-CREATE TABLE "knowledge_bases" (
+CREATE TABLE IF NOT EXISTS "knowledge_bases" (
     "id" UUID NOT NULL,
     "workspace_id" UUID NOT NULL,
     "name" TEXT NOT NULL,
@@ -331,7 +436,7 @@ CREATE TABLE "knowledge_bases" (
 );
 
 -- CreateTable
-CREATE TABLE "knowledge_documents" (
+CREATE TABLE IF NOT EXISTS "knowledge_documents" (
     "id" UUID NOT NULL,
     "knowledge_base_id" UUID NOT NULL,
     "workspace_id" UUID NOT NULL,
@@ -352,13 +457,12 @@ CREATE TABLE "knowledge_documents" (
 );
 
 -- CreateTable
-CREATE TABLE "embeddings" (
+CREATE TABLE IF NOT EXISTS "embeddings" (
     "id" UUID NOT NULL,
     "document_id" UUID NOT NULL,
     "chunk_number" INTEGER NOT NULL,
     "chunk_text" TEXT NOT NULL,
     "vector_id" TEXT NOT NULL,
-    "vector" vector(1536),
     "embedding_model" TEXT NOT NULL,
     "token_count" INTEGER NOT NULL DEFAULT 0,
     "metadata" JSONB,
@@ -368,8 +472,16 @@ CREATE TABLE "embeddings" (
     CONSTRAINT "embeddings_pkey" PRIMARY KEY ("id")
 );
 
+-- Conditionally add vector column when pgvector is available
+DO $$
+BEGIN
+    IF EXISTS (SELECT 1 FROM pg_available_extensions WHERE name = 'vector') THEN
+        ALTER TABLE "embeddings" ADD COLUMN IF NOT EXISTS "vector" vector(1536);
+    END IF;
+END $$;
+
 -- CreateTable
-CREATE TABLE "workflows" (
+CREATE TABLE IF NOT EXISTS "workflows" (
     "id" UUID NOT NULL,
     "workspace_id" UUID NOT NULL,
     "name" TEXT NOT NULL,
@@ -388,7 +500,7 @@ CREATE TABLE "workflows" (
 );
 
 -- CreateTable
-CREATE TABLE "workflow_runs" (
+CREATE TABLE IF NOT EXISTS "workflow_runs" (
     "id" UUID NOT NULL,
     "workflow_id" UUID NOT NULL,
     "customer_id" UUID,
@@ -405,7 +517,7 @@ CREATE TABLE "workflow_runs" (
 );
 
 -- CreateTable
-CREATE TABLE "plans" (
+CREATE TABLE IF NOT EXISTS "plans" (
     "id" UUID NOT NULL,
     "name" TEXT NOT NULL,
     "monthly_price" DECIMAL(14,2) NOT NULL,
@@ -425,7 +537,7 @@ CREATE TABLE "plans" (
 );
 
 -- CreateTable
-CREATE TABLE "subscriptions" (
+CREATE TABLE IF NOT EXISTS "subscriptions" (
     "id" UUID NOT NULL,
     "workspace_id" UUID NOT NULL,
     "plan_id" UUID NOT NULL,
@@ -443,7 +555,7 @@ CREATE TABLE "subscriptions" (
 );
 
 -- CreateTable
-CREATE TABLE "payments" (
+CREATE TABLE IF NOT EXISTS "payments" (
     "id" UUID NOT NULL,
     "workspace_id" UUID NOT NULL,
     "invoice_id" UUID,
@@ -460,7 +572,7 @@ CREATE TABLE "payments" (
 );
 
 -- CreateTable
-CREATE TABLE "api_keys" (
+CREATE TABLE IF NOT EXISTS "api_keys" (
     "id" UUID NOT NULL,
     "workspace_id" UUID NOT NULL,
     "name" TEXT NOT NULL,
@@ -477,7 +589,7 @@ CREATE TABLE "api_keys" (
 );
 
 -- CreateTable
-CREATE TABLE "notifications" (
+CREATE TABLE IF NOT EXISTS "notifications" (
     "id" UUID NOT NULL,
     "workspace_id" UUID NOT NULL,
     "user_id" UUID,
@@ -494,7 +606,7 @@ CREATE TABLE "notifications" (
 );
 
 -- CreateTable
-CREATE TABLE "usage_statistics" (
+CREATE TABLE IF NOT EXISTS "usage_statistics" (
     "id" UUID NOT NULL,
     "workspace_id" UUID NOT NULL,
     "date" DATE NOT NULL,
@@ -511,7 +623,7 @@ CREATE TABLE "usage_statistics" (
 );
 
 -- CreateTable
-CREATE TABLE "feature_flags" (
+CREATE TABLE IF NOT EXISTS "feature_flags" (
     "id" UUID NOT NULL,
     "workspace_id" UUID,
     "feature_name" TEXT NOT NULL,
@@ -525,7 +637,7 @@ CREATE TABLE "feature_flags" (
 );
 
 -- CreateTable
-CREATE TABLE "system_settings" (
+CREATE TABLE IF NOT EXISTS "system_settings" (
     "id" UUID NOT NULL,
     "key" TEXT NOT NULL,
     "value" JSONB NOT NULL,
@@ -536,7 +648,7 @@ CREATE TABLE "system_settings" (
 );
 
 -- CreateTable
-CREATE TABLE "channels" (
+CREATE TABLE IF NOT EXISTS "channels" (
     "id" UUID NOT NULL,
     "name" TEXT NOT NULL,
     "display_name" TEXT NOT NULL,
@@ -548,196 +660,196 @@ CREATE TABLE "channels" (
 );
 
 -- CreateIndex
-CREATE INDEX "roles_workspace_id_priority_idx" ON "roles"("workspace_id", "priority");
+CREATE INDEX IF NOT EXISTS "roles_workspace_id_priority_idx" ON "roles"("workspace_id", "priority");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "roles_workspace_id_name_key" ON "roles"("workspace_id", "name");
+CREATE UNIQUE INDEX IF NOT EXISTS "roles_workspace_id_name_key" ON "roles"("workspace_id", "name");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "permissions_code_key" ON "permissions"("code");
+CREATE UNIQUE INDEX IF NOT EXISTS "permissions_code_key" ON "permissions"("code");
 
 -- CreateIndex
-CREATE INDEX "role_permissions_permission_id_idx" ON "role_permissions"("permission_id");
+CREATE INDEX IF NOT EXISTS "role_permissions_permission_id_idx" ON "role_permissions"("permission_id");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "role_permissions_role_id_permission_id_key" ON "role_permissions"("role_id", "permission_id");
+CREATE UNIQUE INDEX IF NOT EXISTS "role_permissions_role_id_permission_id_key" ON "role_permissions"("role_id", "permission_id");
 
 -- CreateIndex
-CREATE INDEX "customers_workspace_id_created_at_idx" ON "customers"("workspace_id", "created_at");
+CREATE INDEX IF NOT EXISTS "customers_workspace_id_created_at_idx" ON "customers"("workspace_id", "created_at");
 
 -- CreateIndex
-CREATE INDEX "customers_workspace_id_phone_idx" ON "customers"("workspace_id", "phone");
+CREATE INDEX IF NOT EXISTS "customers_workspace_id_phone_idx" ON "customers"("workspace_id", "phone");
 
 -- CreateIndex
-CREATE INDEX "customers_workspace_id_email_idx" ON "customers"("workspace_id", "email");
+CREATE INDEX IF NOT EXISTS "customers_workspace_id_email_idx" ON "customers"("workspace_id", "email");
 
 -- CreateIndex
-CREATE INDEX "customers_assigned_user_id_idx" ON "customers"("assigned_user_id");
+CREATE INDEX IF NOT EXISTS "customers_assigned_user_id_idx" ON "customers"("assigned_user_id");
 
 -- CreateIndex
-CREATE INDEX "conversations_workspace_id_status_idx" ON "conversations"("workspace_id", "status");
+CREATE INDEX IF NOT EXISTS "conversations_workspace_id_status_idx" ON "conversations"("workspace_id", "status");
 
 -- CreateIndex
-CREATE INDEX "conversations_workspace_id_created_at_idx" ON "conversations"("workspace_id", "created_at");
+CREATE INDEX IF NOT EXISTS "conversations_workspace_id_created_at_idx" ON "conversations"("workspace_id", "created_at");
 
 -- CreateIndex
-CREATE INDEX "conversations_customer_id_workspace_id_idx" ON "conversations"("customer_id", "workspace_id");
+CREATE INDEX IF NOT EXISTS "conversations_customer_id_workspace_id_idx" ON "conversations"("customer_id", "workspace_id");
 
 -- CreateIndex
-CREATE INDEX "conversations_assigned_user_id_idx" ON "conversations"("assigned_user_id");
+CREATE INDEX IF NOT EXISTS "conversations_assigned_user_id_idx" ON "conversations"("assigned_user_id");
 
 -- CreateIndex
-CREATE INDEX "conversations_assigned_agent_id_idx" ON "conversations"("assigned_agent_id");
+CREATE INDEX IF NOT EXISTS "conversations_assigned_agent_id_idx" ON "conversations"("assigned_agent_id");
 
 -- CreateIndex
-CREATE INDEX "messages_conversation_id_created_at_idx" ON "messages"("conversation_id", "created_at");
+CREATE INDEX IF NOT EXISTS "messages_conversation_id_created_at_idx" ON "messages"("conversation_id", "created_at");
 
 -- CreateIndex
-CREATE INDEX "messages_customer_id_idx" ON "messages"("customer_id");
+CREATE INDEX IF NOT EXISTS "messages_customer_id_idx" ON "messages"("customer_id");
 
 -- CreateIndex
-CREATE INDEX "messages_workspace_id_created_at_idx" ON "messages"("workspace_id", "created_at");
+CREATE INDEX IF NOT EXISTS "messages_workspace_id_created_at_idx" ON "messages"("workspace_id", "created_at");
 
 -- CreateIndex
-CREATE INDEX "messages_status_idx" ON "messages"("status");
+CREATE INDEX IF NOT EXISTS "messages_status_idx" ON "messages"("status");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "ai_providers_provider_name_key" ON "ai_providers"("provider_name");
+CREATE UNIQUE INDEX IF NOT EXISTS "ai_providers_provider_name_key" ON "ai_providers"("provider_name");
 
 -- CreateIndex
-CREATE INDEX "ai_providers_status_priority_idx" ON "ai_providers"("status", "priority");
+CREATE INDEX IF NOT EXISTS "ai_providers_status_priority_idx" ON "ai_providers"("status", "priority");
 
 -- CreateIndex
-CREATE INDEX "ai_models_provider_id_status_idx" ON "ai_models"("provider_id", "status");
+CREATE INDEX IF NOT EXISTS "ai_models_provider_id_status_idx" ON "ai_models"("provider_id", "status");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "ai_models_provider_id_model_name_key" ON "ai_models"("provider_id", "model_name");
+CREATE UNIQUE INDEX IF NOT EXISTS "ai_models_provider_id_model_name_key" ON "ai_models"("provider_id", "model_name");
 
 -- CreateIndex
-CREATE INDEX "ai_agents_workspace_id_status_idx" ON "ai_agents"("workspace_id", "status");
+CREATE INDEX IF NOT EXISTS "ai_agents_workspace_id_status_idx" ON "ai_agents"("workspace_id", "status");
 
 -- CreateIndex
-CREATE INDEX "ai_agents_model_id_idx" ON "ai_agents"("model_id");
+CREATE INDEX IF NOT EXISTS "ai_agents_model_id_idx" ON "ai_agents"("model_id");
 
 -- CreateIndex
-CREATE INDEX "ai_agents_provider_id_idx" ON "ai_agents"("provider_id");
+CREATE INDEX IF NOT EXISTS "ai_agents_provider_id_idx" ON "ai_agents"("provider_id");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "ai_agents_workspace_id_name_key" ON "ai_agents"("workspace_id", "name");
+CREATE UNIQUE INDEX IF NOT EXISTS "ai_agents_workspace_id_name_key" ON "ai_agents"("workspace_id", "name");
 
 -- CreateIndex
-CREATE INDEX "knowledge_bases_workspace_id_status_idx" ON "knowledge_bases"("workspace_id", "status");
+CREATE INDEX IF NOT EXISTS "knowledge_bases_workspace_id_status_idx" ON "knowledge_bases"("workspace_id", "status");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "knowledge_bases_workspace_id_name_key" ON "knowledge_bases"("workspace_id", "name");
+CREATE UNIQUE INDEX IF NOT EXISTS "knowledge_bases_workspace_id_name_key" ON "knowledge_bases"("workspace_id", "name");
 
 -- CreateIndex
-CREATE INDEX "knowledge_documents_workspace_id_created_at_idx" ON "knowledge_documents"("workspace_id", "created_at");
+CREATE INDEX IF NOT EXISTS "knowledge_documents_workspace_id_created_at_idx" ON "knowledge_documents"("workspace_id", "created_at");
 
 -- CreateIndex
-CREATE INDEX "knowledge_documents_knowledge_base_id_indexing_status_idx" ON "knowledge_documents"("knowledge_base_id", "indexing_status");
+CREATE INDEX IF NOT EXISTS "knowledge_documents_knowledge_base_id_indexing_status_idx" ON "knowledge_documents"("knowledge_base_id", "indexing_status");
 
 -- CreateIndex
-CREATE INDEX "knowledge_documents_upload_status_idx" ON "knowledge_documents"("upload_status");
+CREATE INDEX IF NOT EXISTS "knowledge_documents_upload_status_idx" ON "knowledge_documents"("upload_status");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "embeddings_vector_id_key" ON "embeddings"("vector_id");
+CREATE UNIQUE INDEX IF NOT EXISTS "embeddings_vector_id_key" ON "embeddings"("vector_id");
 
 -- CreateIndex
-CREATE INDEX "embeddings_embedding_model_idx" ON "embeddings"("embedding_model");
+CREATE INDEX IF NOT EXISTS "embeddings_embedding_model_idx" ON "embeddings"("embedding_model");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "embeddings_document_id_chunk_number_key" ON "embeddings"("document_id", "chunk_number");
+CREATE UNIQUE INDEX IF NOT EXISTS "embeddings_document_id_chunk_number_key" ON "embeddings"("document_id", "chunk_number");
 
 -- CreateIndex
-CREATE INDEX "workflows_workspace_id_status_idx" ON "workflows"("workspace_id", "status");
+CREATE INDEX IF NOT EXISTS "workflows_workspace_id_status_idx" ON "workflows"("workspace_id", "status");
 
 -- CreateIndex
-CREATE INDEX "workflows_created_by_idx" ON "workflows"("created_by");
+CREATE INDEX IF NOT EXISTS "workflows_created_by_idx" ON "workflows"("created_by");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "workflows_workspace_id_name_version_key" ON "workflows"("workspace_id", "name", "version");
+CREATE UNIQUE INDEX IF NOT EXISTS "workflows_workspace_id_name_version_key" ON "workflows"("workspace_id", "name", "version");
 
 -- CreateIndex
-CREATE INDEX "workflow_runs_workflow_id_created_at_idx" ON "workflow_runs"("workflow_id", "created_at");
+CREATE INDEX IF NOT EXISTS "workflow_runs_workflow_id_created_at_idx" ON "workflow_runs"("workflow_id", "created_at");
 
 -- CreateIndex
-CREATE INDEX "workflow_runs_customer_id_idx" ON "workflow_runs"("customer_id");
+CREATE INDEX IF NOT EXISTS "workflow_runs_customer_id_idx" ON "workflow_runs"("customer_id");
 
 -- CreateIndex
-CREATE INDEX "workflow_runs_conversation_id_idx" ON "workflow_runs"("conversation_id");
+CREATE INDEX IF NOT EXISTS "workflow_runs_conversation_id_idx" ON "workflow_runs"("conversation_id");
 
 -- CreateIndex
-CREATE INDEX "workflow_runs_execution_status_idx" ON "workflow_runs"("execution_status");
+CREATE INDEX IF NOT EXISTS "workflow_runs_execution_status_idx" ON "workflow_runs"("execution_status");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "plans_name_key" ON "plans"("name");
+CREATE UNIQUE INDEX IF NOT EXISTS "plans_name_key" ON "plans"("name");
 
 -- CreateIndex
-CREATE INDEX "plans_active_idx" ON "plans"("active");
+CREATE INDEX IF NOT EXISTS "plans_active_idx" ON "plans"("active");
 
 -- CreateIndex
-CREATE INDEX "subscriptions_workspace_id_status_idx" ON "subscriptions"("workspace_id", "status");
+CREATE INDEX IF NOT EXISTS "subscriptions_workspace_id_status_idx" ON "subscriptions"("workspace_id", "status");
 
 -- CreateIndex
-CREATE INDEX "subscriptions_plan_id_idx" ON "subscriptions"("plan_id");
+CREATE INDEX IF NOT EXISTS "subscriptions_plan_id_idx" ON "subscriptions"("plan_id");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "payments_transaction_id_key" ON "payments"("transaction_id");
+CREATE UNIQUE INDEX IF NOT EXISTS "payments_transaction_id_key" ON "payments"("transaction_id");
 
 -- CreateIndex
-CREATE INDEX "payments_workspace_id_created_at_idx" ON "payments"("workspace_id", "created_at");
+CREATE INDEX IF NOT EXISTS "payments_workspace_id_created_at_idx" ON "payments"("workspace_id", "created_at");
 
 -- CreateIndex
-CREATE INDEX "payments_payment_status_idx" ON "payments"("payment_status");
+CREATE INDEX IF NOT EXISTS "payments_payment_status_idx" ON "payments"("payment_status");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "api_keys_api_key_hash_key" ON "api_keys"("api_key_hash");
+CREATE UNIQUE INDEX IF NOT EXISTS "api_keys_api_key_hash_key" ON "api_keys"("api_key_hash");
 
 -- CreateIndex
-CREATE INDEX "api_keys_workspace_id_status_idx" ON "api_keys"("workspace_id", "status");
+CREATE INDEX IF NOT EXISTS "api_keys_workspace_id_status_idx" ON "api_keys"("workspace_id", "status");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "api_keys_workspace_id_name_key" ON "api_keys"("workspace_id", "name");
+CREATE UNIQUE INDEX IF NOT EXISTS "api_keys_workspace_id_name_key" ON "api_keys"("workspace_id", "name");
 
 -- CreateIndex
-CREATE INDEX "notifications_workspace_id_created_at_idx" ON "notifications"("workspace_id", "created_at");
+CREATE INDEX IF NOT EXISTS "notifications_workspace_id_created_at_idx" ON "notifications"("workspace_id", "created_at");
 
 -- CreateIndex
-CREATE INDEX "notifications_user_id_read_at_idx" ON "notifications"("user_id", "read_at");
+CREATE INDEX IF NOT EXISTS "notifications_user_id_read_at_idx" ON "notifications"("user_id", "read_at");
 
 -- CreateIndex
-CREATE INDEX "usage_statistics_date_idx" ON "usage_statistics"("date");
+CREATE INDEX IF NOT EXISTS "usage_statistics_date_idx" ON "usage_statistics"("date");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "usage_statistics_workspace_id_date_key" ON "usage_statistics"("workspace_id", "date");
+CREATE UNIQUE INDEX IF NOT EXISTS "usage_statistics_workspace_id_date_key" ON "usage_statistics"("workspace_id", "date");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "feature_flags_feature_name_key" ON "feature_flags"("feature_name");
+CREATE UNIQUE INDEX IF NOT EXISTS "feature_flags_feature_name_key" ON "feature_flags"("feature_name");
 
 -- CreateIndex
-CREATE INDEX "feature_flags_workspace_id_idx" ON "feature_flags"("workspace_id");
+CREATE INDEX IF NOT EXISTS "feature_flags_workspace_id_idx" ON "feature_flags"("workspace_id");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "system_settings_key_key" ON "system_settings"("key");
+CREATE UNIQUE INDEX IF NOT EXISTS "system_settings_key_key" ON "system_settings"("key");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "channels_name_key" ON "channels"("name");
+CREATE UNIQUE INDEX IF NOT EXISTS "channels_name_key" ON "channels"("name");
 
 -- CreateIndex
-CREATE INDEX "workspaces_status_idx" ON "workspaces"("status");
+CREATE INDEX IF NOT EXISTS "workspaces_status_idx" ON "workspaces"("status");
 
 -- CreateIndex
-CREATE INDEX "workspaces_created_at_idx" ON "workspaces"("created_at");
+CREATE INDEX IF NOT EXISTS "workspaces_created_at_idx" ON "workspaces"("created_at");
 
 -- CreateIndex
-CREATE INDEX "users_workspace_id_status_idx" ON "users"("workspace_id", "status");
+CREATE INDEX IF NOT EXISTS "users_workspace_id_status_idx" ON "users"("workspace_id", "status");
 
 -- CreateIndex
-CREATE INDEX "users_phone_idx" ON "users"("phone");
+CREATE INDEX IF NOT EXISTS "users_phone_idx" ON "users"("phone");
 
 -- CreateIndex
-CREATE INDEX "audit_logs_user_id_idx" ON "audit_logs"("user_id");
+CREATE INDEX IF NOT EXISTS "audit_logs_user_id_idx" ON "audit_logs"("user_id");
 
 -- AddForeignKey
 ALTER TABLE "workspaces" ADD CONSTRAINT "workspaces_owner_user_id_fkey" FOREIGN KEY ("owner_user_id") REFERENCES "users"("id") ON DELETE SET NULL ON UPDATE CASCADE;
@@ -855,5 +967,10 @@ ALTER TABLE "feature_flags" ADD CONSTRAINT "feature_flags_workspace_id_fkey" FOR
 
 
 -- pgvector similarity-search index. The extension is enabled by migration 000001.
-CREATE INDEX "embeddings_vector_cosine_idx" ON "embeddings" USING hnsw ("vector" vector_cosine_ops);
+DO $$
+BEGIN
+    IF EXISTS (SELECT 1 FROM pg_available_extensions WHERE name = 'vector') THEN
+        CREATE INDEX "embeddings_vector_cosine_idx" ON "embeddings" USING hnsw ("vector" vector_cosine_ops);
+    END IF;
+END $$;
 

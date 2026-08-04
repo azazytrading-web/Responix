@@ -65,3 +65,11 @@ export class UpdateManifestDto {
   @ApiProperty({ type: "object", additionalProperties: true }) @IsObject() manifest!: Record<string, unknown>;
   @ApiPropertyOptional({ type: "object", additionalProperties: true }) @IsOptional() @IsObject() migrationMetadata?: Record<string, unknown>;
 }
+
+export class PlatformCurrentResponseDto {
+  @ApiProperty({ type: [String] }) permissions!: string[];
+  @ApiProperty({ type: [String] }) features!: string[];
+  @ApiProperty({ type: "object", additionalProperties: true }) license!: Record<string, unknown>;
+  @ApiProperty({ type: "object", additionalProperties: true }) branding!: Record<string, unknown>;
+  @ApiProperty({ type: "object", additionalProperties: true }) manifest!: Record<string, unknown>;
+}

@@ -31,7 +31,17 @@ import {
   WorkspaceResponseDto
 } from "./dto/workspace-response.dto";
 import { WorkspaceService } from "./workspace.service";
+import {
+  ApiBearerAuth,
+  ApiForbiddenResponse,
+  ApiOkResponse,
+  ApiOperation,
+  ApiTags,
+  ApiUnauthorizedResponse
+} from "@nestjs/swagger";
 
+@ApiTags("Workspaces")
+@ApiBearerAuth()
 @Controller("workspaces")
 export class WorkspaceController {
   constructor(private readonly service: WorkspaceService) {}
@@ -46,6 +56,10 @@ export class WorkspaceController {
   @Permissions("workspace.read")
   @Get("current")
   @Version("1")
+  @ApiOperation({ summary: "Return the workspace bound to the authenticated session" })
+  @ApiOkResponse({ type: WorkspaceResponseDto })
+  @ApiUnauthorizedResponse({ description: "A valid workspace-bound access token is required" })
+  @ApiForbiddenResponse({ description: "An active membership with workspace.read is required" })
   async get(@CurrentWorkspace() workspace: { id: string }, @CurrentUser() user: { id: string }) {
     return WorkspaceResponseDto.from(await this.service.workspace(workspace.id, user.id));
   }

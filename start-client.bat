@@ -1,0 +1,3 @@
+@echo off
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File "%~dp0scripts\dev-bootstrap.ps1" -Target client
+if errorlevel 1 pause

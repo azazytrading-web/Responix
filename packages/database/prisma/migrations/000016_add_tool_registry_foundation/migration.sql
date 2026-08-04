@@ -1,11 +1,41 @@
-CREATE TYPE "ToolRegistryStatus" AS ENUM ('DRAFT', 'PUBLISHED', 'ARCHIVED');
-CREATE TYPE "ToolDefinitionType" AS ENUM ('REST', 'WEBHOOK', 'OPENAPI', 'INTERNAL_SERVICE', 'FUNCTION', 'MCP');
-CREATE TYPE "ToolVisibility" AS ENUM ('PRIVATE', 'WORKSPACE');
-CREATE TYPE "ToolAuthenticationType" AS ENUM ('NONE', 'API_KEY', 'OAUTH2', 'BASIC', 'BEARER', 'CUSTOM');
-CREATE TYPE "ToolParameterLocation" AS ENUM ('PATH', 'QUERY', 'HEADER', 'BODY', 'COOKIE');
-CREATE TYPE "ToolSchemaKind" AS ENUM ('INPUT', 'OUTPUT');
+DO $$
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'toolregistrystatus') THEN
+        CREATE TYPE "ToolRegistryStatus" AS ENUM ('DRAFT', 'PUBLISHED', 'ARCHIVED');
+    END IF;
+END $$;
+DO $$
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'tooldefinitiontype') THEN
+        CREATE TYPE "ToolDefinitionType" AS ENUM ('REST', 'WEBHOOK', 'OPENAPI', 'INTERNAL_SERVICE', 'FUNCTION', 'MCP');
+    END IF;
+END $$;
+DO $$
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'toolvisibility') THEN
+        CREATE TYPE "ToolVisibility" AS ENUM ('PRIVATE', 'WORKSPACE');
+    END IF;
+END $$;
+DO $$
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'toolauthenticationtype') THEN
+        CREATE TYPE "ToolAuthenticationType" AS ENUM ('NONE', 'API_KEY', 'OAUTH2', 'BASIC', 'BEARER', 'CUSTOM');
+    END IF;
+END $$;
+DO $$
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'toolparameterlocation') THEN
+        CREATE TYPE "ToolParameterLocation" AS ENUM ('PATH', 'QUERY', 'HEADER', 'BODY', 'COOKIE');
+    END IF;
+END $$;
+DO $$
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'toolschemakind') THEN
+        CREATE TYPE "ToolSchemaKind" AS ENUM ('INPUT', 'OUTPUT');
+    END IF;
+END $$;
 
-CREATE TABLE "tool_categories" (
+CREATE TABLE IF NOT EXISTS "tool_categories" (
   "id" UUID NOT NULL,
   "workspace_id" UUID NOT NULL,
   "name" TEXT NOT NULL,
@@ -16,9 +46,9 @@ CREATE TABLE "tool_categories" (
   "updated_at" TIMESTAMP(3) NOT NULL,
   CONSTRAINT "tool_categories_pkey" PRIMARY KEY ("id")
 );
-CREATE UNIQUE INDEX "tool_categories_workspace_id_slug_key" ON "tool_categories"("workspace_id", "slug");
+CREATE UNIQUE INDEX IF NOT EXISTS "tool_categories_workspace_id_slug_key" ON "tool_categories"("workspace_id", "slug");
 
-CREATE TABLE "tool_groups" (
+CREATE TABLE IF NOT EXISTS "tool_groups" (
   "id" UUID NOT NULL,
   "workspace_id" UUID NOT NULL,
   "category_id" UUID,
@@ -30,10 +60,10 @@ CREATE TABLE "tool_groups" (
   "updated_at" TIMESTAMP(3) NOT NULL,
   CONSTRAINT "tool_groups_pkey" PRIMARY KEY ("id")
 );
-CREATE UNIQUE INDEX "tool_groups_workspace_id_slug_key" ON "tool_groups"("workspace_id", "slug");
-CREATE INDEX "tool_groups_workspace_id_category_id_idx" ON "tool_groups"("workspace_id", "category_id");
+CREATE UNIQUE INDEX IF NOT EXISTS "tool_groups_workspace_id_slug_key" ON "tool_groups"("workspace_id", "slug");
+CREATE INDEX IF NOT EXISTS "tool_groups_workspace_id_category_id_idx" ON "tool_groups"("workspace_id", "category_id");
 
-CREATE TABLE "tool_definitions" (
+CREATE TABLE IF NOT EXISTS "tool_definitions" (
   "id" UUID NOT NULL,
   "workspace_id" UUID NOT NULL,
   "category_id" UUID,
@@ -65,11 +95,11 @@ CREATE TABLE "tool_definitions" (
   "deleted_at" TIMESTAMP(3),
   CONSTRAINT "tool_definitions_pkey" PRIMARY KEY ("id")
 );
-CREATE UNIQUE INDEX "tool_definitions_workspace_id_slug_key" ON "tool_definitions"("workspace_id", "slug");
-CREATE INDEX "tool_definitions_workspace_id_status_visibility_deleted_at_idx" ON "tool_definitions"("workspace_id", "status", "visibility", "deleted_at");
-CREATE INDEX "tool_definitions_category_id_group_id_idx" ON "tool_definitions"("category_id", "group_id");
+CREATE UNIQUE INDEX IF NOT EXISTS "tool_definitions_workspace_id_slug_key" ON "tool_definitions"("workspace_id", "slug");
+CREATE INDEX IF NOT EXISTS "tool_definitions_workspace_id_status_visibility_deleted_at_idx" ON "tool_definitions"("workspace_id", "status", "visibility", "deleted_at");
+CREATE INDEX IF NOT EXISTS "tool_definitions_category_id_group_id_idx" ON "tool_definitions"("category_id", "group_id");
 
-CREATE TABLE "tool_parameters" (
+CREATE TABLE IF NOT EXISTS "tool_parameters" (
   "id" UUID NOT NULL,
   "tool_id" UUID NOT NULL,
   "name" TEXT NOT NULL,
@@ -82,10 +112,10 @@ CREATE TABLE "tool_parameters" (
   "updated_at" TIMESTAMP(3) NOT NULL,
   CONSTRAINT "tool_parameters_pkey" PRIMARY KEY ("id")
 );
-CREATE UNIQUE INDEX "tool_parameters_tool_id_name_location_key" ON "tool_parameters"("tool_id", "name", "location");
-CREATE INDEX "tool_parameters_tool_id_sort_order_idx" ON "tool_parameters"("tool_id", "sort_order");
+CREATE UNIQUE INDEX IF NOT EXISTS "tool_parameters_tool_id_name_location_key" ON "tool_parameters"("tool_id", "name", "location");
+CREATE INDEX IF NOT EXISTS "tool_parameters_tool_id_sort_order_idx" ON "tool_parameters"("tool_id", "sort_order");
 
-CREATE TABLE "tool_schemas" (
+CREATE TABLE IF NOT EXISTS "tool_schemas" (
   "id" UUID NOT NULL,
   "tool_id" UUID NOT NULL,
   "kind" "ToolSchemaKind" NOT NULL,
@@ -95,9 +125,9 @@ CREATE TABLE "tool_schemas" (
   "updated_at" TIMESTAMP(3) NOT NULL,
   CONSTRAINT "tool_schemas_pkey" PRIMARY KEY ("id")
 );
-CREATE UNIQUE INDEX "tool_schemas_tool_id_kind_key" ON "tool_schemas"("tool_id", "kind");
+CREATE UNIQUE INDEX IF NOT EXISTS "tool_schemas_tool_id_kind_key" ON "tool_schemas"("tool_id", "kind");
 
-CREATE TABLE "tool_capabilities" (
+CREATE TABLE IF NOT EXISTS "tool_capabilities" (
   "id" UUID NOT NULL,
   "tool_id" UUID NOT NULL,
   "code" TEXT NOT NULL,
@@ -107,9 +137,9 @@ CREATE TABLE "tool_capabilities" (
   "updated_at" TIMESTAMP(3) NOT NULL,
   CONSTRAINT "tool_capabilities_pkey" PRIMARY KEY ("id")
 );
-CREATE UNIQUE INDEX "tool_capabilities_tool_id_code_key" ON "tool_capabilities"("tool_id", "code");
+CREATE UNIQUE INDEX IF NOT EXISTS "tool_capabilities_tool_id_code_key" ON "tool_capabilities"("tool_id", "code");
 
-CREATE TABLE "tool_permissions" (
+CREATE TABLE IF NOT EXISTS "tool_permissions" (
   "id" UUID NOT NULL,
   "tool_id" UUID NOT NULL,
   "permission_code" TEXT NOT NULL,
@@ -118,9 +148,9 @@ CREATE TABLE "tool_permissions" (
   "updated_at" TIMESTAMP(3) NOT NULL,
   CONSTRAINT "tool_permissions_pkey" PRIMARY KEY ("id")
 );
-CREATE UNIQUE INDEX "tool_permissions_tool_id_permission_code_key" ON "tool_permissions"("tool_id", "permission_code");
+CREATE UNIQUE INDEX IF NOT EXISTS "tool_permissions_tool_id_permission_code_key" ON "tool_permissions"("tool_id", "permission_code");
 
-CREATE TABLE "tool_versions" (
+CREATE TABLE IF NOT EXISTS "tool_versions" (
   "id" UUID NOT NULL,
   "tool_id" UUID NOT NULL,
   "revision" INTEGER NOT NULL,
@@ -131,8 +161,8 @@ CREATE TABLE "tool_versions" (
   "published_at" TIMESTAMP(3) NOT NULL,
   CONSTRAINT "tool_versions_pkey" PRIMARY KEY ("id")
 );
-CREATE UNIQUE INDEX "tool_versions_tool_id_revision_key" ON "tool_versions"("tool_id", "revision");
-CREATE INDEX "tool_versions_tool_id_published_at_idx" ON "tool_versions"("tool_id", "published_at");
+CREATE UNIQUE INDEX IF NOT EXISTS "tool_versions_tool_id_revision_key" ON "tool_versions"("tool_id", "revision");
+CREATE INDEX IF NOT EXISTS "tool_versions_tool_id_published_at_idx" ON "tool_versions"("tool_id", "published_at");
 
 ALTER TABLE "tool_categories" ADD CONSTRAINT "tool_categories_workspace_id_fkey" FOREIGN KEY ("workspace_id") REFERENCES "workspaces"("id") ON DELETE CASCADE;
 ALTER TABLE "tool_groups" ADD CONSTRAINT "tool_groups_workspace_id_fkey" FOREIGN KEY ("workspace_id") REFERENCES "workspaces"("id") ON DELETE CASCADE;

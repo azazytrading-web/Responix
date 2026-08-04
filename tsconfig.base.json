@@ -22,7 +22,12 @@
       "@responix/database": ["packages/database/src/index.ts"],
       "@responix/types": ["packages/types/src/index.ts"],
       "@responix/ui": ["packages/ui/src/index.ts"],
-      "@responix/utils": ["packages/utils/src/index.ts"]
+      "@responix/utils": ["packages/utils/src/index.ts"],
+      "@responix/shared": ["packages/shared/src/index.ts"],
+      "@responix/design-system": ["packages/design-system/src/index.ts"],
+      "@responix/auth": ["packages/auth/src/index.ts"],
+      "@responix/state": ["packages/state/src/index.ts"],
+      "@responix/api-client": ["packages/api-client/src/index.ts"]
     }
   }
 }

@@ -1,5 +1,12 @@
 # Architecture Decisions
 
+## ADR-018 - Canonical Platform Bootstrap and Application Readiness
+
+- **Status:** Accepted
+- **Context:** Platform current-state, dashboard bootstrap, feature flags, permissions, workspace metadata, and navigation require deterministic initialization without duplicated HTTP ownership or partially initialized consumers.
+- **Decision:** Centralize `platform/current` and `dashboard-runtime/bootstrap` in the workspace-keyed `@responix/state` bootstrap service. Compose Theme, Query, Auth, and Platform bootstrap boundaries and publish platform state atomically only after bootstrap succeeds, with explicit idle, loading, ready, error, and retry behavior.
+- **Consequences:** Protected content waits for platform readiness; production navigation no longer owns the mock manifest; logout, workspace switch, and authentication loss invalidate bootstrap caches; requests continue through `@responix/api-client`.
+
 ## ADR-021 - Provider-Neutral Multi-Channel Boundary
 
 - **Status:** Accepted
@@ -142,3 +149,10 @@ This ADR register records accepted decisions established by the repository throu
 - **Context:** Future dashboards, studios, plugins, and API documentation need a common description of visible platform capabilities without coupling the backend to a frontend framework.
 - **Decision:** Place versioned, JSON-compatible platform DTO contracts and a small extension registry in `@responix/types`. Keep rendering, action execution, data loading, authorization enforcement, OpenAPI publication, and persistence outside these contracts.
 - **Consequences:** Consumers share one typed metadata vocabulary, custom widget and field kinds require explicit registration, and existing Nest guards remain the authorization authority.
+
+## ADR-017 - Canonical Frontend API Transport
+
+- **Status:** Accepted
+- **Context:** Frontend API responsibilities were duplicated between `@responix/api-client`, Dashboard-local resources, and shared endpoint constants. Several resources assumed a response envelope or endpoints not implemented by the NestJS backend.
+- **Decision:** Make `@responix/api-client` the sole frontend HTTP transport owner. Consume raw NestJS DTOs, generate contract types from the backend `/docs-json` document, normalize actual backend errors, and expose request/response interceptor boundaries with replay support. Keep authentication lifecycle and feature resources outside FM-2.
+- **Consequences:** Applications and later feature services must consume the canonical client instead of creating transport clients or endpoint catalogs. Dashboard-local API resources remain removed. FM-3 may attach authentication behavior through the interceptor boundary without replacing transport ownership.

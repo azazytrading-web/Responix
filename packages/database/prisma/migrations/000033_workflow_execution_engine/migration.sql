@@ -3,18 +3,28 @@ ALTER TYPE "WorkflowNodeType" ADD VALUE IF NOT EXISTS 'PARALLEL';
 ALTER TYPE "WorkflowNodeType" ADD VALUE IF NOT EXISTS 'MERGE';
 ALTER TYPE "WorkflowNodeType" ADD VALUE IF NOT EXISTS 'APPROVAL';
 
-CREATE TYPE "WorkflowRuntimeStatus" AS ENUM (
+DO $$
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'workflowruntimestatus') THEN
+        CREATE TYPE "WorkflowRuntimeStatus" AS ENUM (
   'CREATED','QUEUED','PREPARING','RUNNING','WAITING','PAUSED','COMPLETED',
   'CANCELLED','FAILED','TIMED_OUT','COMPENSATED'
 );
-CREATE TYPE "WorkflowNodeRuntimeStatus" AS ENUM (
+    END IF;
+END $$;
+DO $$
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'workflownoderuntimestatus') THEN
+        CREATE TYPE "WorkflowNodeRuntimeStatus" AS ENUM (
   'PENDING','PREPARING','RUNNING','WAITING','COMPLETED','SKIPPED','CANCELLED',
   'FAILED','TIMED_OUT','COMPENSATED'
 );
+    END IF;
+END $$;
 
-ALTER TABLE "workflow_versions" ADD COLUMN "snapshot_hash" TEXT;
-ALTER TABLE "workflow_versions" ADD COLUMN "checksum" TEXT;
-ALTER TABLE "workflow_versions" ADD COLUMN "compatibility_version" TEXT;
+ALTER TABLE "workflow_versions" ADD COLUMN IF NOT EXISTS "snapshot_hash" TEXT;
+ALTER TABLE "workflow_versions" ADD COLUMN IF NOT EXISTS "checksum" TEXT;
+ALTER TABLE "workflow_versions" ADD COLUMN IF NOT EXISTS "compatibility_version" TEXT;
 
 -- Historical versions predate canonical application-level hashing. Mark them as
 -- unverified and non-executable while enforcing integrity metadata for every row.
@@ -29,7 +39,7 @@ ALTER TABLE "workflow_versions" ALTER COLUMN "snapshot_hash" SET NOT NULL;
 ALTER TABLE "workflow_versions" ALTER COLUMN "checksum" SET NOT NULL;
 ALTER TABLE "workflow_versions" ALTER COLUMN "compatibility_version" SET NOT NULL;
 
-CREATE TABLE "workflow_runtime_executions" (
+CREATE TABLE IF NOT EXISTS "workflow_runtime_executions" (
   "id" UUID NOT NULL, "workspace_id" UUID NOT NULL, "created_by" UUID NOT NULL,
   "workflow_id" UUID NOT NULL, "workflow_version_id" UUID NOT NULL,
   "execution_request_id" UUID NOT NULL, "execution_run_id" UUID NOT NULL,
@@ -52,13 +62,13 @@ CREATE TABLE "workflow_runtime_executions" (
   CONSTRAINT "workflow_runtime_executions_request_fkey" FOREIGN KEY ("execution_request_id") REFERENCES "execution_requests"("id") ON DELETE RESTRICT ON UPDATE CASCADE,
   CONSTRAINT "workflow_runtime_executions_run_fkey" FOREIGN KEY ("execution_run_id") REFERENCES "execution_runs"("id") ON DELETE RESTRICT ON UPDATE CASCADE
 );
-CREATE UNIQUE INDEX "workflow_runtime_executions_execution_run_id_key" ON "workflow_runtime_executions"("execution_run_id");
-CREATE UNIQUE INDEX "workflow_runtime_executions_workspace_idempotency_key" ON "workflow_runtime_executions"("workspace_id","idempotency_key");
-CREATE INDEX "workflow_runtime_executions_workspace_status_idx" ON "workflow_runtime_executions"("workspace_id","status","created_at");
-CREATE INDEX "workflow_runtime_executions_workspace_workflow_idx" ON "workflow_runtime_executions"("workspace_id","workflow_id","created_at");
-CREATE INDEX "workflow_runtime_executions_parent_idx" ON "workflow_runtime_executions"("parent_execution_id");
+CREATE UNIQUE INDEX IF NOT EXISTS "workflow_runtime_executions_execution_run_id_key" ON "workflow_runtime_executions"("execution_run_id");
+CREATE UNIQUE INDEX IF NOT EXISTS "workflow_runtime_executions_workspace_idempotency_key" ON "workflow_runtime_executions"("workspace_id","idempotency_key");
+CREATE INDEX IF NOT EXISTS "workflow_runtime_executions_workspace_status_idx" ON "workflow_runtime_executions"("workspace_id","status","created_at");
+CREATE INDEX IF NOT EXISTS "workflow_runtime_executions_workspace_workflow_idx" ON "workflow_runtime_executions"("workspace_id","workflow_id","created_at");
+CREATE INDEX IF NOT EXISTS "workflow_runtime_executions_parent_idx" ON "workflow_runtime_executions"("parent_execution_id");
 
-CREATE TABLE "workflow_runtime_node_executions" (
+CREATE TABLE IF NOT EXISTS "workflow_runtime_node_executions" (
   "id" UUID NOT NULL, "execution_id" UUID NOT NULL, "node_key" TEXT NOT NULL,
   "node_type" "WorkflowNodeType" NOT NULL, "attempt" INTEGER NOT NULL DEFAULT 1,
   "status" "WorkflowNodeRuntimeStatus" NOT NULL DEFAULT 'PENDING', "input" JSONB NOT NULL DEFAULT '{}',
@@ -70,10 +80,10 @@ CREATE TABLE "workflow_runtime_node_executions" (
   CONSTRAINT "workflow_runtime_node_executions_pkey" PRIMARY KEY ("id"),
   CONSTRAINT "workflow_runtime_nodes_execution_fkey" FOREIGN KEY ("execution_id") REFERENCES "workflow_runtime_executions"("id") ON DELETE RESTRICT ON UPDATE CASCADE
 );
-CREATE UNIQUE INDEX "workflow_runtime_nodes_execution_node_attempt_key" ON "workflow_runtime_node_executions"("execution_id","node_key","attempt");
-CREATE INDEX "workflow_runtime_nodes_execution_status_idx" ON "workflow_runtime_node_executions"("execution_id","status","created_at");
+CREATE UNIQUE INDEX IF NOT EXISTS "workflow_runtime_nodes_execution_node_attempt_key" ON "workflow_runtime_node_executions"("execution_id","node_key","attempt");
+CREATE INDEX IF NOT EXISTS "workflow_runtime_nodes_execution_status_idx" ON "workflow_runtime_node_executions"("execution_id","status","created_at");
 
-CREATE TABLE "workflow_runtime_state_history" (
+CREATE TABLE IF NOT EXISTS "workflow_runtime_state_history" (
   "id" UUID NOT NULL, "execution_id" UUID NOT NULL, "sequence" INTEGER NOT NULL,
   "from_status" "WorkflowRuntimeStatus", "to_status" "WorkflowRuntimeStatus" NOT NULL,
   "actor_id" UUID, "reason" TEXT, "metadata" JSONB NOT NULL DEFAULT '{}',
@@ -81,18 +91,18 @@ CREATE TABLE "workflow_runtime_state_history" (
   CONSTRAINT "workflow_runtime_state_history_pkey" PRIMARY KEY ("id"),
   CONSTRAINT "workflow_runtime_states_execution_fkey" FOREIGN KEY ("execution_id") REFERENCES "workflow_runtime_executions"("id") ON DELETE RESTRICT ON UPDATE CASCADE
 );
-CREATE UNIQUE INDEX "workflow_runtime_states_execution_sequence_key" ON "workflow_runtime_state_history"("execution_id","sequence");
+CREATE UNIQUE INDEX IF NOT EXISTS "workflow_runtime_states_execution_sequence_key" ON "workflow_runtime_state_history"("execution_id","sequence");
 
-CREATE TABLE "workflow_runtime_diagnostics" (
+CREATE TABLE IF NOT EXISTS "workflow_runtime_diagnostics" (
   "id" UUID NOT NULL, "execution_id" UUID NOT NULL, "node_key" TEXT,
   "severity" TEXT NOT NULL, "code" TEXT NOT NULL, "message" TEXT NOT NULL,
   "metadata" JSONB NOT NULL DEFAULT '{}', "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
   CONSTRAINT "workflow_runtime_diagnostics_pkey" PRIMARY KEY ("id"),
   CONSTRAINT "workflow_runtime_diagnostics_execution_fkey" FOREIGN KEY ("execution_id") REFERENCES "workflow_runtime_executions"("id") ON DELETE RESTRICT ON UPDATE CASCADE
 );
-CREATE INDEX "workflow_runtime_diagnostics_execution_idx" ON "workflow_runtime_diagnostics"("execution_id","severity","created_at");
+CREATE INDEX IF NOT EXISTS "workflow_runtime_diagnostics_execution_idx" ON "workflow_runtime_diagnostics"("execution_id","severity","created_at");
 
-CREATE TABLE "workflow_runtime_metrics" (
+CREATE TABLE IF NOT EXISTS "workflow_runtime_metrics" (
   "id" UUID NOT NULL, "execution_id" UUID NOT NULL, "node_count" INTEGER NOT NULL DEFAULT 0,
   "completed_node_count" INTEGER NOT NULL DEFAULT 0, "failed_node_count" INTEGER NOT NULL DEFAULT 0,
   "retry_count" INTEGER NOT NULL DEFAULT 0, "parallel_branch_count" INTEGER NOT NULL DEFAULT 0,

@@ -1,4 +1,4 @@
-CREATE TABLE "compiled_prompts" (
+CREATE TABLE IF NOT EXISTS "compiled_prompts" (
     "id" UUID NOT NULL,
     "workspace_id" UUID NOT NULL,
     "created_by" UUID NOT NULL,
@@ -26,15 +26,15 @@ CREATE TABLE "compiled_prompts" (
     CONSTRAINT "compiled_prompts_pkey" PRIMARY KEY ("id")
 );
 
-CREATE INDEX "compiled_prompts_workspace_compiled_idx"
+CREATE INDEX IF NOT EXISTS "compiled_prompts_workspace_compiled_idx"
     ON "compiled_prompts"("workspace_id", "compiled_at");
-CREATE INDEX "compiled_prompts_workspace_prompt_idx"
+CREATE INDEX IF NOT EXISTS "compiled_prompts_workspace_prompt_idx"
     ON "compiled_prompts"("workspace_id", "prompt_id", "compiled_at");
-CREATE INDEX "compiled_prompts_workspace_prompt_version_idx"
+CREATE INDEX IF NOT EXISTS "compiled_prompts_workspace_prompt_version_idx"
     ON "compiled_prompts"("workspace_id", "prompt_version_id");
-CREATE INDEX "compiled_prompts_workspace_agent_version_idx"
+CREATE INDEX IF NOT EXISTS "compiled_prompts_workspace_agent_version_idx"
     ON "compiled_prompts"("workspace_id", "agent_version_id");
-CREATE INDEX "compiled_prompts_workspace_hash_idx"
+CREATE INDEX IF NOT EXISTS "compiled_prompts_workspace_hash_idx"
     ON "compiled_prompts"("workspace_id", "hash");
 
 ALTER TABLE "compiled_prompts"

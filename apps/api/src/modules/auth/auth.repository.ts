@@ -46,8 +46,42 @@ export class AuthRepository {
       where: { id, userId, workspaceId, revokedAt: null, expiresAt: { gt: new Date() } }
     });
   }
+  findActiveMembershipByIdForUser(id: string, userId: string) {
+    return this.prisma.workspaceMembership.findFirst({
+      where: {
+        id,
+        userId,
+        status: "ACTIVE",
+        workspace: { is: { status: "ACTIVE", deletedAt: null } },
+        user: { is: { status: "ACTIVE", deletedAt: null } },
+        role: { is: { deletedAt: null } }
+      },
+      include: {
+        user: { select: { id: true, email: true, fullName: true, status: true } },
+        workspace: { select: { id: true, name: true, slug: true, status: true } },
+        role: { include: { rolePermissions: { include: { permission: true } } } }
+      }
+    });
+  }
+  findActiveMembershipForUserWorkspace(userId: string, workspaceId: string) {
+    return this.prisma.workspaceMembership.findFirst({
+      where: {
+        userId,
+        workspaceId,
+        status: "ACTIVE",
+        workspace: { is: { status: "ACTIVE", deletedAt: null } },
+        user: { is: { status: "ACTIVE", deletedAt: null } },
+        role: { is: { deletedAt: null } }
+      },
+      include: {
+        user: { select: { id: true, email: true, fullName: true, status: true } },
+        workspace: { select: { id: true, name: true, slug: true, status: true } },
+        role: { include: { rolePermissions: { include: { permission: true } } } }
+      }
+    });
+  }
   async rotateRefreshSession(
-    previousSessionId: string,
+    previous: { id: string; userId: string; workspaceId: string },
     data: {
       id: string;
       userId: string;
@@ -59,9 +93,9 @@ export class AuthRepository {
     return this.prisma.$transaction(async (transaction) => {
       const revoked = await transaction.session.updateMany({
         where: {
-          id: previousSessionId,
-          userId: data.userId,
-          workspaceId: data.workspaceId,
+          id: previous.id,
+          userId: previous.userId,
+          workspaceId: previous.workspaceId,
           revokedAt: null
         },
         data: { revokedAt: new Date() }

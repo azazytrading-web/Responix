@@ -1,4 +1,4 @@
-CREATE TABLE "workspaces" (
+CREATE TABLE IF NOT EXISTS "workspaces" (
     "id" UUID NOT NULL,
     "name" TEXT NOT NULL,
     "slug" TEXT NOT NULL,
@@ -12,7 +12,7 @@ CREATE TABLE "workspaces" (
     CONSTRAINT "workspaces_pkey" PRIMARY KEY ("id")
 );
 
-CREATE TABLE "users" (
+CREATE TABLE IF NOT EXISTS "users" (
     "id" UUID NOT NULL,
     "workspace_id" UUID NOT NULL,
     "email" TEXT NOT NULL,
@@ -26,7 +26,7 @@ CREATE TABLE "users" (
     CONSTRAINT "users_pkey" PRIMARY KEY ("id")
 );
 
-CREATE TABLE "audit_logs" (
+CREATE TABLE IF NOT EXISTS "audit_logs" (
     "id" UUID NOT NULL,
     "workspace_id" UUID,
     "actor_id" UUID,
@@ -40,15 +40,15 @@ CREATE TABLE "audit_logs" (
     CONSTRAINT "audit_logs_pkey" PRIMARY KEY ("id")
 );
 
-CREATE UNIQUE INDEX "workspaces_slug_key" ON "workspaces"("slug");
-CREATE INDEX "workspaces_status_idx" ON "workspaces"("status");
-CREATE INDEX "users_workspace_id_idx" ON "users"("workspace_id");
-CREATE INDEX "users_email_idx" ON "users"("email");
-CREATE INDEX "users_status_idx" ON "users"("status");
-CREATE UNIQUE INDEX "users_workspace_id_email_key" ON "users"("workspace_id", "email");
-CREATE INDEX "audit_logs_workspace_id_created_at_idx" ON "audit_logs"("workspace_id", "created_at");
-CREATE INDEX "audit_logs_actor_id_idx" ON "audit_logs"("actor_id");
-CREATE INDEX "audit_logs_action_idx" ON "audit_logs"("action");
+CREATE UNIQUE INDEX IF NOT EXISTS "workspaces_slug_key" ON "workspaces"("slug");
+CREATE INDEX IF NOT EXISTS "workspaces_status_idx" ON "workspaces"("status");
+CREATE INDEX IF NOT EXISTS "users_workspace_id_idx" ON "users"("workspace_id");
+CREATE INDEX IF NOT EXISTS "users_email_idx" ON "users"("email");
+CREATE INDEX IF NOT EXISTS "users_status_idx" ON "users"("status");
+CREATE UNIQUE INDEX IF NOT EXISTS "users_workspace_id_email_key" ON "users"("workspace_id", "email");
+CREATE INDEX IF NOT EXISTS "audit_logs_workspace_id_created_at_idx" ON "audit_logs"("workspace_id", "created_at");
+CREATE INDEX IF NOT EXISTS "audit_logs_actor_id_idx" ON "audit_logs"("actor_id");
+CREATE INDEX IF NOT EXISTS "audit_logs_action_idx" ON "audit_logs"("action");
 
 ALTER TABLE "users" ADD CONSTRAINT "users_workspace_id_fkey" FOREIGN KEY ("workspace_id") REFERENCES "workspaces"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 ALTER TABLE "audit_logs" ADD CONSTRAINT "audit_logs_workspace_id_fkey" FOREIGN KEY ("workspace_id") REFERENCES "workspaces"("id") ON DELETE SET NULL ON UPDATE CASCADE;

@@ -1,5 +1,15 @@
 # Responix AI Context
 
+## Frontend Foundation Status - FM-4 - 2026-08-02
+
+FM-4 is complete. `@responix/state` owns the canonical workspace-keyed platform bootstrap service for `platform/current` and `dashboard-runtime/bootstrap`. The Dashboard composes Theme, Query, Auth, and Platform bootstrap providers and waits for authentication and bootstrap readiness before rendering protected content. Permissions, features, workspace metadata, and navigation are exposed atomically. Bootstrap caches invalidate on logout, workspace switch, and authentication loss. FM-5 is not started.
+
+## Authoritative Frontend State — Sprint FM-2 — 2026-08-01
+
+FM-2 is **complete** and FM-3 is **not started**. `@responix/api-client` is the sole frontend HTTP transport owner. It consumes raw NestJS DTOs, exports the generated OpenAPI contract, and provides query serialization, request metadata, timeout/abort behavior, empty-response handling, backend error normalization, and replay-capable interceptor integration points. The duplicate Dashboard API layer and unsupported shared endpoint catalog were removed.
+
+FM-2-owned packages pass typecheck, lint, tests, and build. Dashboard validation passes. Workspace typecheck, tests, build, and diff check pass; root lint has one unrelated deferred authentication-package unused constant recorded in `KNOWN_ISSUES.md`. Older sprint descriptions below are historical and do not authorize FM-3 work.
+
 ## Current State
 
 | Item                | Current state                                                                  |
@@ -46,6 +56,7 @@ Read only the official documents named by the approved active-sprint request. Do
 | Workspace        | pnpm workspaces with Turborepo and strict TypeScript                                                                        |
 | Dashboard        | Next.js 15 dashboard foundation                                                                                             |
 | API              | NestJS 11 with validation, structured logging, security middleware, and health endpoints                                    |
+| Frontend API     | Canonical `@responix/api-client` using raw NestJS DTOs and generated OpenAPI types; no Dashboard-local client               |
 | Data             | Prisma 6, PostgreSQL, pgvector, UUIDs, migrations, and audit records                                                        |
 | Identity         | Argon2id passwords, JWT access/refresh tokens, persisted revocable sessions                                                 |
 | Authorization    | WorkspaceMembership is authoritative; tenant context, membership guards, RBAC, and permission guards scope protected access |

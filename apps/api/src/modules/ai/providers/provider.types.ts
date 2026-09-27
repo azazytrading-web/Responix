@@ -16,9 +16,11 @@ export interface WorkspaceProvider {
   status: "ACTIVE" | "DISABLED" | "UNHEALTHY";
   priority: number;
   configuration: {
+    id: string;
     enabled: boolean;
     settings: Record<string, unknown>;
   } | null;
+  credentialConfigured?: boolean;
   models: ProviderModel[];
 }
 

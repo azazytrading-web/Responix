@@ -1,0 +1,44 @@
+{
+   "action": {
+      "default_icon": {
+         "16": "skin/icons/app_icon_unlogin_16.png",
+         "24": "skin/icons/app_icon_unlogin_24.png",
+         "32": "skin/icons/app_icon_unlogin_32.png"
+      },
+      "default_title": "DualSafe Password Manager"
+   },
+   "author": "ITOP",
+   "background": {
+      "service_worker": "background.service_worker.js"
+   },
+   "content_scripts": [ {
+      "all_frames": true,
+      "js": [ "polyfill/polyfill-firefox.js", "events.js", "ini.js", "document_start.js" ],
+      "matches": [ "*://*/*" ],
+      "run_at": "document_start"
+   }, {
+      "all_frames": true,
+      "js": [ "document_end.js" ],
+      "matches": [ "*://*/*" ],
+      "run_at": "document_end"
+   } ],
+   "default_locale": "en",
+   "description": "__MSG_extDesc__",
+   "host_permissions": [ "\u003Call_urls>" ],
+   "icons": {
+      "128": "skin/icons/app_icon_128.png",
+      "48": "skin/icons/app_icon_48.png",
+      "64": "skin/icons/app_icon_64.png"
+   },
+   "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA4x9A9fiTQv/dJvOphTT1/g8x3wDH8x9b+nqlt7trnobb4/aRgtYWQkCF7c54Pi5Ad18nZJcK14Ym/bTWJkvm96g6M2T4uJmEsC1d6rr0B06iREsUr5Z2beth/yAISFKsxb5E+PO8ESfluqbmWuhmr10/DPFxRio+AEPNPDPMIkhZXdmuGJvBpenk9FsvmNUFjvtgH0PrEGRhYuSsYkHWx/vnKe8VWczVQjXBru4lRipQByi8T7c1Ke0IDwrvw+R3e1xCDPl1b64xcN3Yy+ZvUG1dsFdZo9g/ks/CYyLGMgRccLvyKzefzVSO5NADbxE0lFlfHPIsn9o14hB/s+jxLwIDAQAB",
+   "manifest_version": 3,
+   "minimum_chrome_version": "88.0.0.0",
+   "name": "__MSG_extName__",
+   "permissions": [ "privacy", "tabs", "idle", "storage", "alarms" ],
+   "update_url": "https://edge.microsoft.com/extensionwebstorebase/v1/crx",
+   "version": "1.4.28",
+   "web_accessible_resources": [ {
+      "matches": [ "\u003Call_urls>" ],
+      "resources": [ "assist.dyn.json", "skin/*.png", "inject/*.png", "*.css", "inject/*.html", "inject/*.js", "inject/*.svg", "popup/*svg" ]
+   } ]
+}

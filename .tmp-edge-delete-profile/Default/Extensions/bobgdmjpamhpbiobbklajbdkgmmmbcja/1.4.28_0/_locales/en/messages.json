@@ -1,0 +1,1500 @@
+{
+   "Checkbox_Keep_signed": {
+      "message": "Keep me signed in for"
+   },
+   "Checkbox_Keep_signed_Hint": {
+      "message": "You will be signed in automatically during the specified time period. Please make sure your computer environment is safe. When using a public computer, please do not check this option."
+   },
+   "Delete_Exclude_website": {
+      "message": "Delete & Exclude this website"
+   },
+   "Emergency_Desc": {
+      "message": "Make it easy and safe to access your account again in case of emergency like passwords lost or stolen."
+   },
+   "Emergency_Title": {
+      "message": "\u003Cb>Emergency Access\u003C/b> In Case Of Accident"
+   },
+   "Enable_Now": {
+      "message": "Enable Now"
+   },
+   "Enter_your_email": {
+      "message": "Enter your email"
+   },
+   "Exclude_website_new": {
+      "message": "Exclude this website"
+   },
+   "Invalid_Recovery_Code_New": {
+      "message": "Invalid Recovery Code. Please make sure to enter the correct or latest one. Or \u003Ca class=\"btn-link contactUsLink\">contact us.\u003C/a>"
+   },
+   "Keep_Safe_Desc": {
+      "message": "Enable Password Health to take a password checkup and strengthen your weak, old, and reused passwords."
+   },
+   "Keep_Safe_Title": {
+      "message": "Keep All Passwords \u003Cb>Safe\u003C/b>"
+   },
+   "M_Apr": {
+      "message": "April"
+   },
+   "M_Aug": {
+      "message": "August"
+   },
+   "M_Dec": {
+      "message": "December"
+   },
+   "M_Feb": {
+      "message": "February"
+   },
+   "M_Jan": {
+      "message": "January"
+   },
+   "M_Jul": {
+      "message": "July"
+   },
+   "M_Jun": {
+      "message": "June"
+   },
+   "M_Mar": {
+      "message": "March"
+   },
+   "M_May": {
+      "message": "May"
+   },
+   "M_Nov": {
+      "message": "November"
+   },
+   "M_Oct": {
+      "message": "October"
+   },
+   "M_Sep": {
+      "message": "September"
+   },
+   "No_Worries_Desc": {
+      "message": "Enable Dark Web Monitoring to receive notifications if your personal information has suffered a databreach."
+   },
+   "No_Worries_Title": {
+      "message": "\u003Cb>No\u003C/b> Worries About \u003Cb>Data Breaches\u003C/b>"
+   },
+   "No_thanks": {
+      "message": "No, thanks"
+   },
+   "Password_Generator": {
+      "message": "Password Generator"
+   },
+   "Password_Generator_Dec": {
+      "message": "Create strong and secure passwords with just 1-click"
+   },
+   "Suggested_Password": {
+      "message": "Suggested Password"
+   },
+   "Suggested_Password_Dec": {
+      "message": "Show suggested password for all password input boxes"
+   },
+   "Suggested_password_Case": {
+      "message": "Suggested password"
+   },
+   "TOTP_Tips": {
+      "message": "The local time of your PC is incorrect, which may cause the one-time password to become invalid."
+   },
+   "TOTP_placeholder": {
+      "message": "Enter the secret key or URL like otpauth://*"
+   },
+   "Unlimited_Desc": {
+      "message": "Easily manage, store, and create secure passwords across any device or platform with just one account."
+   },
+   "Unlimited_Title": {
+      "message": "Sync Data Across \u003Cb>Unlimited Devices\u003C/b>"
+   },
+   "Website": {
+      "message": "Website"
+   },
+   "about": {
+      "message": "About"
+   },
+   "about_Acknowledgements": {
+      "message": "Acknowledgements"
+   },
+   "about_Copyright": {
+      "message": "© iTop Inc. All rights reserved."
+   },
+   "about_EULA": {
+      "message": "EULA"
+   },
+   "about_Privacy_Policy": {
+      "message": "Privacy Policy"
+   },
+   "about_Version": {
+      "message": "Version"
+   },
+   "account_blocked_disabled": {
+      "message": "This account has been blocked or disabled. Please contact support team for help."
+   },
+   "add": {
+      "message": "Add"
+   },
+   "addNew": {
+      "message": "Add New"
+   },
+   "addNewAccount": {
+      "message": "Add a new account"
+   },
+   "add_Login": {
+      "message": "Add login"
+   },
+   "add_Logins": {
+      "message": "Add Logins"
+   },
+   "add_Notes": {
+      "message": "Add Notes"
+   },
+   "add_Payment_Info": {
+      "message": "Add Payment Info"
+   },
+   "add_Payment_Info_Case": {
+      "message": "Add payment info"
+   },
+   "add_Personal_Info": {
+      "message": "Add Personal Info"
+   },
+   "add_Personal_Info_Case": {
+      "message": "Add personal info"
+   },
+   "add_exclude": {
+      "message": "Add websites to exclude"
+   },
+   "add_items": {
+      "message": "Add Items"
+   },
+   "add_new_website": {
+      "message": "Add a new website"
+   },
+   "add_secure_note": {
+      "message": "Add a secure note"
+   },
+   "add_tag": {
+      "message": "Add tag"
+   },
+   "add_to_favorites": {
+      "message": "Add to Favorites"
+   },
+   "add_to_favorites_succ": {
+      "message": "Added to Favorites"
+   },
+   "add_to_onetime_pwd": {
+      "message": "Add to One-time Password"
+   },
+   "add_totp": {
+      "message": "Add one-time password?"
+   },
+   "add_website": {
+      "message": "Add website"
+   },
+   "add_website_placeholder": {
+      "message": "Enter website"
+   },
+   "address": {
+      "message": "Address"
+   },
+   "address_copied": {
+      "message": "Address copied"
+   },
+   "advancedOptions": {
+      "message": "Advanced Options"
+   },
+   "all_Item": {
+      "message": "All Items"
+   },
+   "alreadyAccount": {
+      "message": "* If you already have an iTop account, please sign in directly."
+   },
+   "already_saved": {
+      "message": "I've already saved"
+   },
+   "americanexpress": {
+      "message": "American Express"
+   },
+   "appName": {
+      "message": "DualSafe Password Manager"
+   },
+   "auth_bottom_desc": {
+      "message": "Once you finish the authorization, you can sign into DualSafe Password Manager."
+   },
+   "auth_desc": {
+      "message": "Please authorize the login of DualSafe Password Manager in the newly opened browser tab."
+   },
+   "auth_subtitle": {
+      "message": "Waiting for authorization…"
+   },
+   "auth_title": {
+      "message": "Authorization"
+   },
+   "autoFillFailed": {
+      "message": "Failed to find login input fields. Please try to copy & paste login info manually."
+   },
+   "auto_save_confirm_desc": {
+      "message": "Automatically save my usernames and passwords for all websites in future."
+   },
+   "auto_save_passwords": {
+      "message": "Auto save passwords"
+   },
+   "auto_save_passwords_desc": {
+      "message": "Automatically save my usernames and passwords for all websites"
+   },
+   "auto_saved_successfully": {
+      "message": "Auto saved successfully"
+   },
+   "average": {
+      "message": "Average"
+   },
+   "back": {
+      "message": "Back"
+   },
+   "bannerExpiredPurchase": {
+      "message": "Oops! Your Premium has \u003Cb>expired.\u003C/b>"
+   },
+   "bannerFreePurchase": {
+      "message": "Upgrade to enjoy full Premium access"
+   },
+   "bannerPremiumPurchase": {
+      "message": "You have  %s \u003Cspan class=\"day-words\">days\u003C/span> left in Premium."
+   },
+   "birthday": {
+      "message": "Birthday"
+   },
+   "birthday_copied": {
+      "message": "Birthday copied"
+   },
+   "browserReboot": {
+      "message": "Browser reboot"
+   },
+   "browser_extension": {
+      "message": "Browser Extension"
+   },
+   "cancel": {
+      "message": "Cancel"
+   },
+   "capitalize": {
+      "message": "Capital letters (A-Z)"
+   },
+   "cardNumber": {
+      "message": "Card number"
+   },
+   "cardType": {
+      "message": "Card type"
+   },
+   "cardType_placeholder": {
+      "message": "Enter or select the card type"
+   },
+   "card_number_copied": {
+      "message": "Card number copied"
+   },
+   "card_type_copied": {
+      "message": "Card type copied"
+   },
+   "cardholderName": {
+      "message": "Cardholder name"
+   },
+   "cardholder_name_copied": {
+      "message": "Cardholder name copied"
+   },
+   "cardother": {
+      "message": "Other"
+   },
+   "carteblanche": {
+      "message": "Carte Blanche"
+   },
+   "change_desc": {
+      "message": "You are changing your master password..."
+   },
+   "change_master_password": {
+      "message": "Change master password"
+   },
+   "change_now": {
+      "message": "Change Now"
+   },
+   "change_title": {
+      "message": "Change Master Password"
+   },
+   "cityTown": {
+      "message": "City/Town"
+   },
+   "clear": {
+      "message": "Clear"
+   },
+   "clear_allpass_desc": {
+      "message": "They cannot be restored once cleared."
+   },
+   "clear_allpass_title": {
+      "message": "Are you sure you want to clear all the passwords?"
+   },
+   "clear_deleted_desc": {
+      "message": "They cannot be restored once deleted."
+   },
+   "clear_deleted_title": {
+      "message": "Are you sure to delete all the items from Deleted Items?"
+   },
+   "clear_password": {
+      "message": "Clear password"
+   },
+   "cleared_successfully": {
+      "message": "Cleared successfully."
+   },
+   "close": {
+      "message": "Close"
+   },
+   "code_desc": {
+      "message": "Please enter your master password to reset your recovery code"
+   },
+   "code_pairing_desc": {
+      "message": "Confirm the code from the PC app popup and click the Connect button to authorize auto signin & unlock."
+   },
+   "code_pairing_title": {
+      "message": "Connection Code"
+   },
+   "code_title": {
+      "message": "Reset Recovery Code"
+   },
+   "comma": {
+      "message": ":"
+   },
+   "comprehensive_pwd_Desc": {
+      "message": "Comprehensive Password Health Check"
+   },
+   "confirmMasterNewPass": {
+      "message": "Confirm new master password"
+   },
+   "confirmMasterPass": {
+      "message": "Confirm your master password"
+   },
+   "continue": {
+      "message": "Continue"
+   },
+   "continue_sign_in": {
+      "message": "Continue Sign In"
+   },
+   "copied": {
+      "message": "copied"
+   },
+   "copy": {
+      "message": "Copy"
+   },
+   "copy_generator_password": {
+      "message": "Copy password"
+   },
+   "copy_notes": {
+      "message": "Copy Notes"
+   },
+   "copy_one_time_Password": {
+      "message": "Copy One-time Password"
+   },
+   "copy_password": {
+      "message": "password"
+   },
+   "copy_username": {
+      "message": "Copy Username"
+   },
+   "countryRegion": {
+      "message": "Country or Region"
+   },
+   "countryRegion_placeholder": {
+      "message": "Select your country or region"
+   },
+   "createNewAccount": {
+      "message": "Create an Account"
+   },
+   "create_new_account": {
+      "message": "Create an account"
+   },
+   "createdAt": {
+      "message": "Created at"
+   },
+   "currentMasterPass": {
+      "message": "Current master password"
+   },
+   "day": {
+      "message": "Day"
+   },
+   "days": {
+      "message": "Days"
+   },
+   "days_case": {
+      "message": "days"
+   },
+   "default_password_manager": {
+      "message": "Default Password Manager"
+   },
+   "delete": {
+      "message": "Delete"
+   },
+   "delete_all": {
+      "message": "Delete All"
+   },
+   "delete_at": {
+      "message": "Deleted at"
+   },
+   "delete_item": {
+      "message": "Are you sure to delete this item to Deleted Items?"
+   },
+   "delete_item_Recycle_Bin": {
+      "message": "Are you sure to delete this item from Deleted Items?"
+   },
+   "delete_item_Recycle_Bin_Dec": {
+      "message": "It cannot be restored once deleted."
+   },
+   "delete_item_dec": {
+      "message": "You can restore it from Deleted Items as long as it is not permanently deleted."
+   },
+   "deletedSuccessfully": {
+      "message": "Deleted successfully."
+   },
+   "deleted_this_item": {
+      "message": "Delete this item"
+   },
+   "desktop": {
+      "message": "Desktop"
+   },
+   "desktop_app": {
+      "message": "Desktop App"
+   },
+   "details": {
+      "message": "Details"
+   },
+   "device_limit_desc": {
+      "message": "You have reached the maximum limit for signing in on 3 devices. Upgrade Now to enjoy Unlimited Device Access and all advantages below:"
+   },
+   "device_limit_tips": {
+      "message": "* You will be signed out from this device:"
+   },
+   "device_limit_title": {
+      "message": "Device limit reached!"
+   },
+   "dinersclub": {
+      "message": "Diners Club"
+   },
+   "dir": {
+      "message": "ltr"
+   },
+   "discard": {
+      "message": "Discard"
+   },
+   "discard_change": {
+      "message": "Are you sure to discard the unsaved changes?"
+   },
+   "discover": {
+      "message": "Discover"
+   },
+   "downloadApp": {
+      "message": "Download App"
+   },
+   "edit": {
+      "message": "Edit"
+   },
+   "editInfo": {
+      "message": "Edit info"
+   },
+   "emailAddress": {
+      "message": "Email address"
+   },
+   "emailOrPassIncorrect": {
+      "message": "Incorrect email address or password."
+   },
+   "emailVerfy": {
+      "message": "Verify This Email"
+   },
+   "email_address_copied": {
+      "message": "Email address copied"
+   },
+   "emergency_contact": {
+      "message": "Emergency Access"
+   },
+   "emergency_contact_Desc": {
+      "message": "When you lose access to your data, the person you give emergency access can request to export your data or change your Master Password."
+   },
+   "enterMasterNewPass": {
+      "message": "Enter new master password"
+   },
+   "enterMasterPass": {
+      "message": "Enter your master password"
+   },
+   "enterRecoveryCass": {
+      "message": "Enter recovery code"
+   },
+   "enterYourPass": {
+      "message": "Enter your password"
+   },
+   "enter_email_desc": {
+      "message": "Please enter your email address to receive the Recovery Code!"
+   },
+   "enter_email_tips": {
+      "message": "Invalid email address. Please check and re-enter!"
+   },
+   "enter_your_email_address": {
+      "message": "Enter your email address"
+   },
+   "exclude_website": {
+      "message": "Exclude Website"
+   },
+   "exclude_website_list": {
+      "message": "Excluded website list"
+   },
+   "exit": {
+      "message": "Exit"
+   },
+   "expOptionDate": {
+      "message": "Expiration date"
+   },
+   "expiration_date_copied": {
+      "message": "Expiration date copied"
+   },
+   "expired": {
+      "message": "EXPIRED"
+   },
+   "extDesc": {
+      "message": "DualSafe Password Manager extension lets you safely manage passwords in one place to autosave, autofill & access them anytime."
+   },
+   "extName": {
+      "description": "DualSafe Password Manager & Digital Vault",
+      "message": "DualSafe Password Manager & Digital Vault"
+   },
+   "extension": {
+      "message": "Extension"
+   },
+   "failedToDelete": {
+      "message": "Failed to delete."
+   },
+   "failedToOpenLoading_DPM": {
+      "message": "Loading the desktop version"
+   },
+   "failedToOpenLoading_Dark_Web_Monitor_Dec": {
+      "message": "Dark Web Monitor is only available in the desktop version. Please click \"Open\" in the confirmation popup to run the desktop version. Or click the %s button below to re-open the popup."
+   },
+   "failedToOpenLoading_Emergency_Contact_Dec": {
+      "message": "Emergency Access is only available in the desktop version. Please click \"Open\" in the confirmation popup to run the desktop version. Or click the %s button below to re-open the popup."
+   },
+   "failedToOpenLoading_Import_Export_Dec": {
+      "message": "Import and Export is only available in the desktop version. Please click \"Open\" in the confirmation popup to run the desktop version. Or click the %s button below to re-open the popup."
+   },
+   "failedToOpenLoading_Password_Health_Dec": {
+      "message": "Password Health is only available in the desktop version. Please click \"Open\" in the confirmation popup to run the desktop version. Or click the %s button below to re-open the popup."
+   },
+   "failedToOpen_DPM": {
+      "message": "Failed to open the desktop version"
+   },
+   "failedToOpen_Dark_Web_Monitor_Dec": {
+      "message": "Dark Web Monitor is only available in the desktop version. Click the %d button to download and install the desktop version. Or click the %s button to open again."
+   },
+   "failedToOpen_Emergency_Contact_Dec": {
+      "message": "Emergency Access is only available in the desktop version. Click the %d button to download and install the desktop version. Or click the %s button to open again."
+   },
+   "failedToOpen_Import_Export_Dec": {
+      "message": "Import and Export is only available in the desktop version. Click the %d button to download and install the desktop version. Or click the %s button to open again."
+   },
+   "failedToOpen_Password_Health_Dec": {
+      "message": "Password Health is only available in the desktop version. Click the %d button to download and install the desktop version. Or click the %s button to open again."
+   },
+   "failedToRestore": {
+      "message": "Failed to restore."
+   },
+   "failed_send_desc": {
+      "message": "Failed to send the recovery code email. Please try again."
+   },
+   "failed_send_title": {
+      "message": "Failed to send."
+   },
+   "favoties": {
+      "message": "Favorites"
+   },
+   "feedback": {
+      "message": "Feedback"
+   },
+   "fill": {
+      "message": "Fill"
+   },
+   "firstName": {
+      "message": "First name"
+   },
+   "fiveMinutes": {
+      "message": "Every 5 minutes"
+   },
+   "forgotYourPass": {
+      "message": "Forgot your password?"
+   },
+   "fourHours": {
+      "message": "Every 4 hours"
+   },
+   "fourteenDays": {
+      "message": "14 days"
+   },
+   "free": {
+      "message": "FREE"
+   },
+   "gender": {
+      "message": "Gender"
+   },
+   "genderFemale": {
+      "message": "Female"
+   },
+   "genderMale": {
+      "message": "Male"
+   },
+   "genderNone": {
+      "message": "None"
+   },
+   "genderOther": {
+      "message": "Other"
+   },
+   "gender_copied": {
+      "message": "Gender copied"
+   },
+   "goPremiumBtn": {
+      "message": "Go Premium"
+   },
+   "go_back_to_signin": {
+      "message": "Go back to Sign in"
+   },
+   "hideCode": {
+      "message": "Hide security code"
+   },
+   "hidePass": {
+      "message": "Hide password"
+   },
+   "ignore_website": {
+      "message": "Ignore this website"
+   },
+   "installDesktopApp": {
+      "message": "Install Desktop App"
+   },
+   "invalid_email": {
+      "message": "Invalid email address. Please enter the email address you verified."
+   },
+   "invalid_master_pass": {
+      "message": "Invalid master password!"
+   },
+   "invalid_master_tips": {
+      "message": "Invalid master password. Please check and try again."
+   },
+   "invalid_recovery_code": {
+      "message": "Invalid recovery code. Please check and try again."
+   },
+   "invalid_secret_key": {
+      "message": "Invalid secret key!"
+   },
+   "item_remove_from_favorites": {
+      "message": "Remove from Favorites"
+   },
+   "jcb": {
+      "message": "JCB"
+   },
+   "lang": {
+      "message": "en"
+   },
+   "lastModifiedAt": {
+      "message": "Modified at"
+   },
+   "lastName": {
+      "message": "Last name"
+   },
+   "lastPasswordChangedAt": {
+      "message": "Password changed at"
+   },
+   "learn_more": {
+      "message": "Learn more"
+   },
+   "length": {
+      "message": "Length"
+   },
+   "loading": {
+      "message": "Loading ..."
+   },
+   "loading_data_error": {
+      "message": "Failed to load. Please check your network connection."
+   },
+   "lock": {
+      "message": "Lock"
+   },
+   "lock_comfirm_btn": {
+      "message": "Unlock manually"
+   },
+   "login_comfirm_btn": {
+      "message": "Sign in manually"
+   },
+   "login_comfirm_desc": {
+      "message": "Click your account to authorize auto signin & unlock from the desktop app."
+   },
+   "login_feature_auto": {
+      "message": "\u003Cb>Auto\u003C/b> - Access across unlimited devices with auto sync"
+   },
+   "login_feature_easy": {
+      "message": "\u003Cb>Easy\u003C/b> - Autosave and autofill passwords in simple clicks"
+   },
+   "login_feature_safe": {
+      "message": "\u003Cb>Safe\u003C/b> - Store your data with best-in-class encryption"
+   },
+   "login_feature_secure": {
+      "message": "\u003Cb>Secure\u003C/b> - Generate strong, unique passwords"
+   },
+   "login_feature_unlimited": {
+      "message": "\u003Cb>Unlimited\u003C/b> - Save unlimited passwords, payments, etc."
+   },
+   "login_left_title": {
+      "message": "A secure, simple but free way to manage passwords, essential for your digital life."
+   },
+   "login_waiting_title": {
+      "message": "Waiting for authorization from the desktop app…"
+   },
+   "logins": {
+      "message": "Logins"
+   },
+   "lower_case": {
+      "message": "Lowercase (a-z)"
+   },
+   "maestro": {
+      "message": "Maestro"
+   },
+   "mastercard": {
+      "message": "Mastercard"
+   },
+   "masterpassIncorrect": {
+      "message": "Invalid master password."
+   },
+   "match_change_pass": {
+      "message": "Password does not meet requirements."
+   },
+   "match_master_pass": {
+      "message": "Passwords do not match."
+   },
+   "middleName": {
+      "message": "Middle name"
+   },
+   "month": {
+      "message": "Month"
+   },
+   "more": {
+      "message": "More"
+   },
+   "name": {
+      "message": "Name"
+   },
+   "name_copied": {
+      "message": "Name copied"
+   },
+   "networkError": {
+      "message": "Network connection error."
+   },
+   "never": {
+      "message": "Never"
+   },
+   "newUser": {
+      "message": "New user?"
+   },
+   "new_password": {
+      "message": "New password"
+   },
+   "new_tag": {
+      "message": "New tag"
+   },
+   "new_tag_number": {
+      "message": "New tag"
+   },
+   "ninetyDays": {
+      "message": "90 days"
+   },
+   "noItemsAddAllItem": {
+      "message": "No items are added."
+   },
+   "noItemsAddLoginItem": {
+      "message": "No logins are added."
+   },
+   "noItemsAddNotesItem": {
+      "message": "No secure notes are added."
+   },
+   "noItemsAddPayItem": {
+      "message": "No payment info is added."
+   },
+   "noItemsAddPersonalItem": {
+      "message": "No personal info is added."
+   },
+   "noItemsAddRecycleItem": {
+      "message": "No items here."
+   },
+   "noItemsFound": {
+      "message": "No items are found."
+   },
+   "noResult": {
+      "message": "No Result!"
+   },
+   "noSaved": {
+      "message": "No logins saved for this site."
+   },
+   "noSavedPrss": {
+      "message": "No saved password!"
+   },
+   "no_excluded_websites": {
+      "message": "No excluded websites have been added yet."
+   },
+   "no_password_history": {
+      "message": "No password history."
+   },
+   "no_valid_secret_key_found": {
+      "message": "No valid secret key found!"
+   },
+   "notNow": {
+      "message": "Not now"
+   },
+   "not_have_code": {
+      "message": "Don't have a recovery code?"
+   },
+   "notes": {
+      "message": "Notes"
+   },
+   "notes_characters_tips": {
+      "message": "%s characters left"
+   },
+   "notes_copied": {
+      "message": "Notes copied"
+   },
+   "notes_placeholder": {
+      "message": "Enter some notes for this item (Max limit: %s characters)"
+   },
+   "numWords": {
+      "message": "Digits (0-9)"
+   },
+   "offer_to_save_passwords": {
+      "message": "Offer to save passwords"
+   },
+   "offer_to_save_passwords_desc": {
+      "message": "Prompt to save passwords when you log in or sign up"
+   },
+   "ok": {
+      "message": "OK"
+   },
+   "okIgotIt": {
+      "message": "OK. I got it."
+   },
+   "oneHour": {
+      "message": "Every 1 hour"
+   },
+   "oneMinute": {
+      "message": "Every 1 minute"
+   },
+   "one_time_Password": {
+      "message": "One-time Password"
+   },
+   "one_time_pass_copied": {
+      "message": "One-time Password copied"
+   },
+   "only": {
+      "message": "Only"
+   },
+   "open": {
+      "message": "Open"
+   },
+   "options": {
+      "message": "Options"
+   },
+   "passIncorrect": {
+      "message": "Incorrect password."
+   },
+   "password": {
+      "message": "Password"
+   },
+   "password_copied": {
+      "message": "Password copied"
+   },
+   "password_history_item": {
+      "message": "Password history"
+   },
+   "password_history_tips": {
+      "message": "Here shows the recent %s passwords."
+   },
+   "password_history_title": {
+      "message": "Password History"
+   },
+   "password_same": {
+      "message": "New master password cannot be the same as the old one."
+   },
+   "password_tip_note": {
+      "message": "\u003Cb>Note:\u003C/b> Do not use any of your current passwords."
+   },
+   "password_tip_one": {
+      "message": "At least 8 characters. More than 16 characters are recommended."
+   },
+   "password_tip_three": {
+      "message": "At least one symbol."
+   },
+   "password_tip_two": {
+      "message": "At least one number."
+   },
+   "payment_Info": {
+      "message": "Payment Info"
+   },
+   "personal_Info": {
+      "message": "Personal Info"
+   },
+   "phoneNumber": {
+      "message": "Phone number"
+   },
+   "phone_number_copied": {
+      "message": "Phone number copied"
+   },
+   "premiumExpiredPurchase": {
+      "message": "Your Premium has \u003Cb class='text-red'>Expired!\u003C/b>"
+   },
+   "premiumExpiredPurchaseAlert": {
+      "message": "The advanced features are now unavailable. Upgrade to continue Premium access, and easily keep your passwords secure."
+   },
+   "premiumExpiringSoonPurchase": {
+      "message": "Only \u003Cb class=\"text-yellow\">%s Days\u003C/b> of Premium Left!"
+   },
+   "premiumExpiringSoonPurchaseAlert": {
+      "message": "Upgrade to stay Premium access to the following advanced features:"
+   },
+   "premiumFreePurchase": {
+      "message": "An Easier, Safer Way to Manage Your Passwords"
+   },
+   "premiumFreePurchaseAlert": {
+      "message": "Start Premium today and keep these advanced features:"
+   },
+   "premiumFreePurchaseAlert_New": {
+      "message": "Start Premium today and keep these advanced features:"
+   },
+   "premiumFreePurchase_New": {
+      "message": "An Easier, Safer Way to Manage Your Passwords"
+   },
+   "premiumPurchase": {
+      "message": "You've got a 30-day of Premium!"
+   },
+   "premiumPurchaseAlert": {
+      "message": "Now please enjoy the following advanced features:"
+   },
+   "premiun": {
+      "message": "PREMIUM"
+   },
+   "purchase_Dark_Web_Monitor": {
+      "message": "Dark Web Monitoring & Alerts"
+   },
+   "purchase_Password_Health": {
+      "message": "Password Health Check"
+   },
+   "purchase_Password_Health_Check": {
+      "message": "Password Health Check"
+   },
+   "purchase_Unlimited_Devices": {
+      "message": "Sync Across Unlimited Devices"
+   },
+   "questionMark": {
+      "message": "?"
+   },
+   "recovery_code_copied": {
+      "message": "Recovery code copied"
+   },
+   "recycle_Bin": {
+      "message": "Deleted Items"
+   },
+   "refresh": {
+      "message": "Refresh"
+   },
+   "rememberMeOnThisDevice": {
+      "message": "Remember me on this device"
+   },
+   "remindExpirationDate": {
+      "message": "Remind me 2 months before the expiration date"
+   },
+   "remind_me_after_days": {
+      "message": "Remind me after 7 days"
+   },
+   "remind_me_tomorrow": {
+      "message": "Remind me tomorrow"
+   },
+   "remind_password": {
+      "message": "Remind me to change the password after 90 days"
+   },
+   "remove": {
+      "message": "Remove"
+   },
+   "remove_from_favorites": {
+      "message": "Remove from Favorites"
+   },
+   "remove_from_favorites_succ": {
+      "message": "Removed from Favorites"
+   },
+   "resend": {
+      "message": "Resend"
+   },
+   "reset": {
+      "message": "Reset"
+   },
+   "reset_code_desc": {
+      "message": "Please enter your recovery code to reset your master password. Your recovery code was saved as a PDF file."
+   },
+   "reset_code_title": {
+      "message": "Enter Recovery Code"
+   },
+   "reset_desc": {
+      "message": "Please enter your verified email address to reset password."
+   },
+   "reset_email_place": {
+      "message": "Enter your verified email address"
+   },
+   "reset_master_title": {
+      "message": "Reset Master Password"
+   },
+   "reset_recovery_code": {
+      "message": "Reset recovery code"
+   },
+   "reset_success_desc": {
+      "message": "Your master password has been reset. Please sign in with the new master password."
+   },
+   "reset_success_title": {
+      "message": "Success!"
+   },
+   "reset_title": {
+      "message": "Reset Password"
+   },
+   "restore": {
+      "message": "Restore"
+   },
+   "restoreSuccessfully": {
+      "message": "Restored successfully."
+   },
+   "retry": {
+      "message": "Retry"
+   },
+   "save": {
+      "message": "Save"
+   },
+   "saveIn_DPM": {
+      "message": "Save in DualSafe Password Manager"
+   },
+   "save_as_pdf": {
+      "message": "Save as PDF"
+   },
+   "save_code_desc_login": {
+      "message": "Please save your recovery code as PDF."
+   },
+   "save_code_desc_one": {
+      "message": "Please save your recovery code as PDF."
+   },
+   "save_code_desc_options": {
+      "message": "Your previous recovery code is invalid from now on. Please save your new recovery code as PDF and print it to keep it safe."
+   },
+   "save_code_desc_two": {
+      "message": "Your previous recovery code is invalid from now on. Please save your recovery code as PDF and print it to keep it safe."
+   },
+   "save_code_new_title": {
+      "message": "Save Your New Recovery Code"
+   },
+   "save_code_tips": {
+      "message": "\u003Cb>Important:\u003C/b> Recovery Code is the only way to help you access to DualSafe Password Manager again if you forget your master password."
+   },
+   "save_code_title": {
+      "message": "Save Recovery Code"
+   },
+   "save_totp": {
+      "message": "Save one-time password? "
+   },
+   "savedFailedData": {
+      "message": "The latest data has been synced from the server."
+   },
+   "savedFailedSynced": {
+      "message": "Save failed! The latest data has been synced from the server."
+   },
+   "savedSuccessfully": {
+      "message": "Saved successfully."
+   },
+   "scan_web_page_QRCode": {
+      "message": "Scan web page QR code"
+   },
+   "search": {
+      "message": "Search"
+   },
+   "secure": {
+      "message": "Secure"
+   },
+   "secureNotes": {
+      "message": "Secure Notes"
+   },
+   "secure_notes_placeholder": {
+      "message": "Enter your important notes here (Max limit: %s characters)"
+   },
+   "securityCode": {
+      "message": "Security code"
+   },
+   "security_code_copied": {
+      "message": "Security code copied"
+   },
+   "send": {
+      "message": "Send"
+   },
+   "send_email_hint": {
+      "message": "Send to your email"
+   },
+   "sending_desc": {
+      "message": "Sending Recovery Code to your email address."
+   },
+   "sending_title": {
+      "message": "Sending"
+   },
+   "sent_succ_desc": {
+      "message": "Your Recovery code has been sent to the email address %s. If it is not in your Inbox, please check the Spam. Or you can \u003Cbutton class=\"resndbtn\">resend\u003C/button>."
+   },
+   "sent_succ_title": {
+      "message": "Sent Successfully!"
+   },
+   "set_master_password": {
+      "message": "Set master password"
+   },
+   "set_master_password_tips": {
+      "message": "For your account safety, please set a master password."
+   },
+   "set_master_tips": {
+      "message": "\u003Cb>Important:\u003C/b> The master password will be the only valid password to access your DualSafe Password Manager."
+   },
+   "set_master_title": {
+      "message": "Set Master Password"
+   },
+   "set_success_desc": {
+      "message": "Master password has been set and recovery code has been saved successfully. Please sign in with your master password."
+   },
+   "settings": {
+      "message": "Settings"
+   },
+   "settings_Auto_Fill": {
+      "message": "Autofill"
+   },
+   "settings_Auto_Fill_Dec": {
+      "message": "Automatically fill the saved logins, payment info, etc."
+   },
+   "settings_Auto_Fill_Password": {
+      "message": "Auto-fill Password"
+   },
+   "settings_Auto_Fill_Password_Dec": {
+      "message": "Automatically fill accounts and passwords when you are logging into your saved websites."
+   },
+   "settings_Auto_Lock": {
+      "message": "Auto Lock"
+   },
+   "settings_Auto_Lock_Dec": {
+      "message": "Lock DualSafe Password Manager automatically at the specified frequency"
+   },
+   "settings_Auto_Save": {
+      "message": "Autosave"
+   },
+   "settings_Auto_Save_Dec": {
+      "message": "Automatically save the entered usernames and passwords"
+   },
+   "settings_Autofill_and_Autosave": {
+      "message": "Autofill and Autosave"
+   },
+   "settings_Clear_Clipboard": {
+      "message": "Clear Clipboard"
+   },
+   "settings_Clear_Clipboard_Dec": {
+      "message": "Automatically clear clipboard at the specified time after copying a password"
+   },
+   "settings_Fill_Payments": {
+      "message": "Fill Payments Info"
+   },
+   "settings_Fill_Payments_Desc": {
+      "message": "Help you fill your saved Payment Info like card number, card holder, and expiration date with just one click"
+   },
+   "settings_Fill_Personal_Infol": {
+      "message": "Fill Personal Info"
+   },
+   "settings_Fill_Personal_Infol_Desc": {
+      "message": "Help you fill your saved Personal Info like email, telephone number, and address with just one click"
+   },
+   "settings_General": {
+      "message": "General"
+   },
+   "settings_General_Dec": {
+      "message": "Set DualSafe Password Manager as the default password manager"
+   },
+   "settings_Limited_time_free": {
+      "message": "(Time Limited Offer)"
+   },
+   "settings_Security_Options": {
+      "message": "Security Options"
+   },
+   "settings_Show_Icon": {
+      "message": "Show Icon"
+   },
+   "settings_Show_Icon_Dec": {
+      "message": "Show the icon of DualSafe Password Manager in all password input boxes to save your logins with just one-click"
+   },
+   "sevenDays": {
+      "message": "7 days"
+   },
+   "showCode": {
+      "message": "Show security code"
+   },
+   "showPass": {
+      "message": "Show password"
+   },
+   "signIn": {
+      "message": "Sign In"
+   },
+   "signInAutoNow": {
+      "message": "Sign in now to auto fill your logins, personal info, or payment info."
+   },
+   "signInLocked": {
+      "message": "Your account has been locked. Try again in 5 minutes."
+   },
+   "signInNow": {
+      "message": "Sign in now to autofill logins for this site."
+   },
+   "signInSave": {
+      "message": "Sign in & Save"
+   },
+   "signInTimeout": {
+      "message": "Sign-in timeout! Please check your network and try again!"
+   },
+   "signIn_DPM": {
+      "message": "Sign in DualSafe Password Manager"
+   },
+   "signIn_Desc": {
+      "message": "Sign in now to save the logins of \u003Ca class=\"btn-link btn-name\">\u003C/a> and autofill them for you in future."
+   },
+   "signOut": {
+      "message": "Sign out"
+   },
+   "sign_in_again_desc": {
+      "message": "You haven't set a password yet as you signed in with Google / Facebook before. You can click OK to sign in with Google / Facebook."
+   },
+   "sign_in_now": {
+      "message": "Sign In Now"
+   },
+   "sign_in_with": {
+      "message": "Or sign in with"
+   },
+   "sign_in_with_app": {
+      "message": "Sign in with the desktop app"
+   },
+   "sign_in_with_facebook": {
+      "message": "Sign in with Facebook"
+   },
+   "sign_in_with_google": {
+      "message": "Sign in with Google"
+   },
+   "sixtyDays": {
+      "message": "60 days"
+   },
+   "skip_for_now": {
+      "message": "Skip for now"
+   },
+   "sort_by": {
+      "message": "Sort by"
+   },
+   "sort_date_created": {
+      "message": "Date Created"
+   },
+   "sort_date_modified": {
+      "message": "Date Modified"
+   },
+   "sort_newest_first": {
+      "message": "Newest First"
+   },
+   "sort_oldest_first": {
+      "message": "Oldest First"
+   },
+   "sort_show_az": {
+      "message": "A-Z"
+   },
+   "sort_show_favorites": {
+      "message": "Show Favorites"
+   },
+   "sort_show_title_az": {
+      "message": "Title: A to Z"
+   },
+   "sort_show_title_za": {
+      "message": "Title: Z to A"
+   },
+   "sort_show_za": {
+      "message": "Z-A"
+   },
+   "sort_title": {
+      "message": "Title"
+   },
+   "state": {
+      "message": "State"
+   },
+   "strong": {
+      "message": "Strong"
+   },
+   "success_desc": {
+      "message": "Click the extension icon \u003Cspan class=\"succ-icon\">\u003C/span> and pin DualSafe Password Manager to toolbar. Then you can click \u003Cspan class=\"succ-icon dpm\">\u003C/span> to use DualSafe Password Manager anytime."
+   },
+   "success_title": {
+      "message": "Congratulations 🎉🎉🎉 \u003Cbr>DualSafe Password Manager is ready to go!"
+   },
+   "suggestion": {
+      "message": "Suggestion"
+   },
+   "suggestion_tips": {
+      "message": "Here shows the saved login data for the currently open website."
+   },
+   "symbols": {
+      "message": "Symbols (%s)"
+   },
+   "systemLocks": {
+      "message": "System Lock"
+   },
+   "tags": {
+      "message": "Tags"
+   },
+   "tenMinutes": {
+      "message": "Every 10 minutes"
+   },
+   "thirtyDays": {
+      "message": "30 days"
+   },
+   "thirtyMinutes": {
+      "message": "Every 30 minutes"
+   },
+   "title": {
+      "message": "Title"
+   },
+   "title_placeholder": {
+      "message": "Please enter a title"
+   },
+   "token_invalid_desc": {
+      "message": "Your session has expired. Please sign in again."
+   },
+   "tools": {
+      "message": "Tools"
+   },
+   "tools_Dark_Web_Monitor": {
+      "message": "Dark Web Monitor"
+   },
+   "tools_Dark_Web_Monitor_Dec": {
+      "message": "Help you monitor sensitive data leaks in Dark Web"
+   },
+   "tools_Import_Export": {
+      "message": "Import and Export"
+   },
+   "tools_Import_Export_Dec": {
+      "message": "Import data from your browsers or other password tools & export your saved data to a CSV file with just 1-click"
+   },
+   "tools_Password_Health": {
+      "message": "Password Health"
+   },
+   "tools_Password_Health_Dec": {
+      "message": "Help you check vulnerable passwords such as weak, reused, or compromised ones"
+   },
+   "tools_Unlimited_Passwords": {
+      "message": "Unlimited Passwords"
+   },
+   "tools_Unlimited_Passwords_Only": {
+      "message": "(Only 50 on Free Plan)"
+   },
+   "twoMinutes": {
+      "message": "Every 2 minutes"
+   },
+   "type": {
+      "message": "Type"
+   },
+   "unionpay": {
+      "message": "UnionPay"
+   },
+   "unknown": {
+      "message": "Unknown"
+   },
+   "unlock": {
+      "message": "Unlock"
+   },
+   "unlockAutoNow": {
+      "message": "Unlock now to auto fill your logins, personal info, or payment info."
+   },
+   "unlockDPM": {
+      "message": "Unlock DualSafe Password Manager"
+   },
+   "unlockDPM_Desc": {
+      "message": "Unlock now to save the logins of \u003Ca class=\"btn-link btn-name\">\u003C/a> and autofill them for you in future."
+   },
+   "unlockNow": {
+      "message": "Unlock now to autofill logins for this site."
+   },
+   "unlockSave": {
+      "message": "Unlock & Save"
+   },
+   "unlock_now": {
+      "message": "Unlock Now"
+   },
+   "until_sign_out": {
+      "message": "Until I sign out"
+   },
+   "update": {
+      "message": "Update"
+   },
+   "updateFailed": {
+      "message": "Updated failed."
+   },
+   "updateLogins": {
+      "message": "Update Logins"
+   },
+   "updateSuccessfully": {
+      "message": "Updated successfully."
+   },
+   "upgradeBtn": {
+      "message": "Upgrade"
+   },
+   "upgradeNowBtn": {
+      "message": "Upgrade Now"
+   },
+   "upper_case": {
+      "message": "Uppercase (A-Z)"
+   },
+   "url": {
+      "message": "url"
+   },
+   "url_copied": {
+      "message": "Website copied"
+   },
+   "use": {
+      "message": "Use"
+   },
+   "use_generator_password": {
+      "message": "Use password"
+   },
+   "user_manual": {
+      "message": "User manual"
+   },
+   "username": {
+      "message": "Username"
+   },
+   "username_copied": {
+      "message": "Username copied"
+   },
+   "username_placeholder": {
+      "message": "Email / Username / Phone Number"
+   },
+   "view": {
+      "message": "View"
+   },
+   "visa": {
+      "message": "Visa"
+   },
+   "visaelectron": {
+      "message": "Visa Electron"
+   },
+   "weak": {
+      "message": "Weak"
+   },
+   "web_password_sync": {
+      "message": "Note: Please make sure to update the password for the website"
+   },
+   "welcomeTo": {
+      "message": "WELCOME TO"
+   },
+   "year": {
+      "message": "Year"
+   },
+   "yes": {
+      "message": "Yes"
+   },
+   "zip": {
+      "message": "ZIP"
+   },
+   "zipPostalCode": {
+      "message": "ZIP/Postal code"
+   }
+}

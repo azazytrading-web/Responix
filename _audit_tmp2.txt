@@ -1,0 +1,6 @@
+﻿6: const providers = { discover: jest.fn() };
+10: const controller = new AiController(providers as never, providerManagement as never, routing as never, invocations as never);
+14: it("discovers providers only for the authenticated workspace", async () => {
+15: providers.discover.mockResolvedValue([]);
+18: expect(providers.discover).toHaveBeenCalledWith("trusted-workspace");
+26: expect(Reflect.getMetadata("permissions",AiController.prototype.providerConfiguration)).toEqual(["ai.providers.read"]);expect(Reflect.getMetadata("permissions",AiController.prototype.configureProvider)).toEqual(["ai.providers.write"]);expect(Reflect.getMetadata("permissions",AiController.prototype.validateProvider)).toEqual(["ai.providers.validate"]);

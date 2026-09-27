@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
+  <g id="icon_home_drop_down" transform="translate(-2503.011 -2687.185)">
+    <g id="arrow-up" transform="translate(2503.011 2687.185)">
+      <path id="Vector" d="M2516.654,2695.335l-1.665-1.665-1.017-1.02a1.105,1.105,0,0,0-1.562,0l-2.687,2.685a.56.56,0,0,0,.394.955h6.142a.559.559,0,0,0,.394-.955Z" transform="translate(-2505.188 -2688.897)" fill="#a9b2cb"/>
+      <path id="Vector-2" data-name="Vector" d="M2509.726,2701.044l1.665,1.665,1.017,1.021a1.1,1.1,0,0,0,1.561,0l2.687-2.685a.559.559,0,0,0-.394-.954h-6.142a.558.558,0,0,0-.394.954Z" transform="translate(-2505.188 -2691.482)" fill="#a9b2cb"/>
+      <path id="Vector-2-2" data-name="Vector-2" d="M2519.011,2703.185h-16v-16h16Z" transform="translate(-2503.011 -2687.185)" fill="#a9b2cb" opacity="0"/>
+    </g>
+  </g>
+</svg>

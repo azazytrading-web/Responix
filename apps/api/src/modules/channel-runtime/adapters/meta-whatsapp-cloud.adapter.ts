@@ -3,6 +3,8 @@ import { ChannelMessageType } from "@prisma/client";
 import { createHash, createHmac, timingSafeEqual } from "node:crypto";
 import type { ChannelProviderAdapter, ChannelProviderConnection, ChannelSendResult } from "../contracts/channel-provider.contract";
 import type { ChannelWebhookVerification } from "../contracts/channel-webhook.contract";
+import { ProviderDestinationRejectedError } from "../../ai/security/provider-destination-policy.service";
+import { ProviderNetworkTimeoutError, ProviderResponseTooLargeError } from "../../ai/security/provider-http-client.service";
 import { ChannelCapability, type ChannelProviderCapabilities, type NormalizedChannelAttachment, type NormalizedChannelEvent, type NormalizedChannelMessage } from "../channel-runtime.types";
 
 type Json = Record<string, unknown>;
@@ -104,45 +106,66 @@ export class MetaWhatsappCloudAdapter implements ChannelProviderAdapter {
     }
   }
   async health(connection: ChannelProviderConnection, signal: AbortSignal): Promise<Readonly<Record<string, unknown>>> {
-    this.assert(connection); const response = await connection.transport.request({ label: "Meta WhatsApp Cloud",
-      url: `https://graph.facebook.com/${this.config(connection, "apiVersion")}/${this.config(connection, "phoneNumberId")}?fields=id,display_phone_number,verified_name,quality_rating`,
-      method: "GET", headers: { authorization: `Bearer ${connection.credentials.get("accessToken")}` }, maximumResponseBytes: 1024 * 1024, signal });
-    if (response.status < 200 || response.status >= 300) throw new BadGatewayException("WhatsApp connection health check failed");
-    return Object.freeze(this.parse(response.body));
+    this.assert(connection);
+    try {
+      const response = await connection.transport.request({ label: "Meta WhatsApp Cloud",
+        url: `https://graph.facebook.com/${this.config(connection, "apiVersion")}/${this.config(connection, "phoneNumberId")}?fields=id,display_phone_number,verified_name,quality_rating`,
+        method: "GET", headers: { authorization: `Bearer ${connection.credentials.get("accessToken")}` }, maximumResponseBytes: 1024 * 1024, signal });
+      if (response.status < 200 || response.status >= 300) throw new BadGatewayException("WhatsApp connection health check failed");
+      return Object.freeze(this.parse(response.body));
+    } catch (error) {
+      this.translateTransportError(error, "WhatsApp connection health check failed");
+    }
   }
   async send(connection: ChannelProviderConnection, payload: Readonly<Record<string, unknown>>, signal: AbortSignal): Promise<ChannelSendResult> {
-    this.assert(connection); const response = await connection.transport.request({ label: "Meta WhatsApp Cloud",
-      url: `https://graph.facebook.com/${this.config(connection, "apiVersion")}/${this.config(connection, "phoneNumberId")}/messages`, method: "POST",
-      headers: { authorization: `Bearer ${connection.credentials.get("accessToken")}` }, body: JSON.stringify(payload), contentType: "application/json",
-      maximumResponseBytes: 2 * 1024 * 1024, signal });
-    if (response.status < 200 || response.status >= 300) throw new BadGatewayException("WhatsApp message was rejected");
-    const raw = this.parse(response.body); const first = this.object(this.array(raw.messages)[0]);
-    if (!first.id) throw new BadGatewayException("WhatsApp response did not contain a message identifier");
-    return { providerMessageId: this.string(first.id), acceptedAt: new Date(), raw: Object.freeze(raw) };
+    this.assert(connection);
+    try {
+      const response = await connection.transport.request({ label: "Meta WhatsApp Cloud",
+        url: `https://graph.facebook.com/${this.config(connection, "apiVersion")}/${this.config(connection, "phoneNumberId")}/messages`, method: "POST",
+        headers: { authorization: `Bearer ${connection.credentials.get("accessToken")}` }, body: JSON.stringify(payload), contentType: "application/json",
+        maximumResponseBytes: 2 * 1024 * 1024, signal });
+      if (response.status < 200 || response.status >= 300) throw new BadGatewayException("WhatsApp message was rejected");
+      const raw = this.parse(response.body); const first = this.object(this.array(raw.messages)[0]);
+      if (!first.id) throw new BadGatewayException("WhatsApp response did not contain a message identifier");
+      return { providerMessageId: this.string(first.id), acceptedAt: new Date(), raw: Object.freeze(raw) };
+    } catch (error) {
+      this.translateTransportError(error, "WhatsApp message was rejected");
+    }
   }
   async uploadMedia(connection: ChannelProviderConnection, input: { content: Buffer; mimeType: string; fileName?: string }, signal: AbortSignal) {
-    this.assert(connection); const boundary = `responix-${createHmac("sha256", connection.credentials.get("appSecret")).update(input.content).digest("hex").slice(0, 32)}`;
-    const prefix = Buffer.from(`--${boundary}\r\nContent-Disposition: form-data; name="messaging_product"\r\n\r\nwhatsapp\r\n--${boundary}\r\nContent-Disposition: form-data; name="file"; filename="${this.safeFileName(input.fileName ?? "attachment.bin")}"\r\nContent-Type: ${input.mimeType}\r\n\r\n`);
-    const suffix = Buffer.from(`\r\n--${boundary}--\r\n`); const body = Buffer.concat([prefix, input.content, suffix]);
-    const response = await connection.transport.request({ label: "Meta WhatsApp Cloud", url: `https://graph.facebook.com/${this.config(connection, "apiVersion")}/${this.config(connection, "phoneNumberId")}/media`,
-      method: "POST", headers: { authorization: `Bearer ${connection.credentials.get("accessToken")}` }, body, contentType: `multipart/form-data; boundary=${boundary}`,
-      maximumResponseBytes: 1024 * 1024, signal });
-    if (response.status < 200 || response.status >= 300) throw new BadGatewayException("WhatsApp media upload failed");
-    const id = this.string(this.parse(response.body).id); if (!id) throw new BadGatewayException("WhatsApp media upload returned no identifier");
-    return { providerMediaId: id };
+    this.assert(connection);
+    try {
+      const boundary = `responix-${createHmac("sha256", connection.credentials.get("appSecret")).update(input.content).digest("hex").slice(0, 32)}`;
+      const prefix = Buffer.from(`--${boundary}\r\nContent-Disposition: form-data; name="messaging_product"\r\n\r\nwhatsapp\r\n--${boundary}\r\nContent-Disposition: form-data; name="file"; filename="${this.safeFileName(input.fileName ?? "attachment.bin")}"\r\nContent-Type: ${input.mimeType}\r\n\r\n`);
+      const suffix = Buffer.from(`\r\n--${boundary}--\r\n`);
+      const body = Buffer.concat([prefix, input.content, suffix]);
+      const response = await connection.transport.request({ label: "Meta WhatsApp Cloud", url: `https://graph.facebook.com/${this.config(connection, "apiVersion")}/${this.config(connection, "phoneNumberId")}/media`,
+        method: "POST", headers: { authorization: `Bearer ${connection.credentials.get("accessToken")}` }, body, contentType: `multipart/form-data; boundary=${boundary}`,
+        maximumResponseBytes: 1024 * 1024, signal });
+      if (response.status < 200 || response.status >= 300) throw new BadGatewayException("WhatsApp media upload failed");
+      const id = this.string(this.parse(response.body).id); if (!id) throw new BadGatewayException("WhatsApp media upload returned no identifier");
+      return { providerMediaId: id };
+    } catch (error) {
+      this.translateTransportError(error, "WhatsApp media upload failed");
+    }
   }
   async downloadMedia(connection: ChannelProviderConnection, providerMediaId: string, signal: AbortSignal) {
-    this.assert(connection); if (!/^[A-Za-z0-9._:-]{1,256}$/.test(providerMediaId)) throw new BadRequestException("Invalid WhatsApp media identifier");
-    const metadataResponse = await connection.transport.request({ label: "Meta WhatsApp Cloud", url: `https://graph.facebook.com/${this.config(connection, "apiVersion")}/${providerMediaId}`,
-      method: "GET", headers: { authorization: `Bearer ${connection.credentials.get("accessToken")}` }, maximumResponseBytes: 1024 * 1024, signal });
-    if (metadataResponse.status < 200 || metadataResponse.status >= 300) throw new BadGatewayException("WhatsApp media metadata failed");
-    const metadata = this.parse(metadataResponse.body); const url = this.string(metadata.url); const mimeType = this.string(metadata.mime_type, "application/octet-stream");
-    if (!url) throw new BadGatewayException("WhatsApp media URL was absent");
-    const media = await connection.transport.request({ label: "Meta WhatsApp Cloud", url, method: "GET", headers: { authorization: `Bearer ${connection.credentials.get("accessToken")}` },
-      responseType: "binary", maximumResponseBytes: 100 * 1024 * 1024, signal });
-    if (media.status < 200 || media.status >= 300) throw new BadGatewayException("WhatsApp media download failed");
-    const content = Buffer.from(media.body, "base64"); const checksum = createHash("sha256").update(content).digest("hex");
-    return { content, mimeType, checksum };
+    this.assert(connection);
+    if (!/^[A-Za-z0-9._:-]{1,256}$/.test(providerMediaId)) throw new BadRequestException("Invalid WhatsApp media identifier");
+    try {
+      const metadataResponse = await connection.transport.request({ label: "Meta WhatsApp Cloud", url: `https://graph.facebook.com/${this.config(connection, "apiVersion")}/${providerMediaId}`,
+        method: "GET", headers: { authorization: `Bearer ${connection.credentials.get("accessToken")}` }, maximumResponseBytes: 1024 * 1024, signal });
+      if (metadataResponse.status < 200 || metadataResponse.status >= 300) throw new BadGatewayException("WhatsApp media metadata failed");
+      const metadata = this.parse(metadataResponse.body); const url = this.string(metadata.url); const mimeType = this.string(metadata.mime_type, "application/octet-stream");
+      if (!url) throw new BadGatewayException("WhatsApp media URL was absent");
+      const media = await connection.transport.request({ label: "Meta WhatsApp Cloud", url, method: "GET", headers: { authorization: `Bearer ${connection.credentials.get("accessToken")}` },
+        responseType: "binary", maximumResponseBytes: 100 * 1024 * 1024, signal });
+      if (media.status < 200 || media.status >= 300) throw new BadGatewayException("WhatsApp media download failed");
+      const content = Buffer.from(media.body, "base64"); const checksum = createHash("sha256").update(content).digest("hex");
+      return { content, mimeType, checksum };
+    } catch (error) {
+      this.translateTransportError(error, "WhatsApp media download failed");
+    }
   }
   private assert(connection: ChannelProviderConnection) { const failures = [...this.validateConfiguration(connection.configuration)];
     for (const name of ["accessToken", "appSecret"]) if (!connection.credentials.has(name)) failures.push(name);
@@ -164,4 +187,37 @@ export class MetaWhatsappCloudAdapter implements ChannelProviderAdapter {
   private string(value: unknown, fallback = ""): string { return typeof value === "string" || typeof value === "number" ? String(value) : fallback; }
   private safeFileName(value: string): string { return value.replace(/[^A-Za-z0-9._-]/g, "_").slice(0, 180) || "attachment.bin"; }
   private config(connection: ChannelProviderConnection, name: string): string { return this.string(connection.configuration[name]); }
+  private translateTransportError(error: unknown, fallback: string): never {
+    // Extract safe diagnostic info from provider error for server logs (no secrets)
+    try {
+      const asAny = error as any;
+      const safe: Record<string, unknown> = {};
+      if (asAny && typeof asAny === "object") {
+        safe.name = asAny.name;
+        safe.message = asAny.message;
+        safe.status = asAny.status ?? asAny.statusCode ?? asAny.response?.status ?? asAny.response?.statusCode;
+        safe.code = asAny.code ?? asAny.response?.code;
+        const body = asAny.response?.body ?? asAny.response?.data ?? asAny.body ?? asAny.data;
+        if (body && typeof body === "string") {
+          try { safe.providerBody = JSON.parse(body); } catch { safe.providerBody = body.slice(0, 200); }
+        } else if (body) safe.providerBody = body;
+        if (typeof asAny.reason === "string") safe.reason = asAny.reason;
+        if (typeof asAny.url === "string") safe.url = asAny.url;
+        if (typeof asAny.hostname === "string") safe.hostname = asAny.hostname;
+      }
+      // eslint-disable-next-line no-console
+      console.error("[MetaWhatsappCloudAdapter] transport error (sanitized):", safe);
+    } catch (e) {
+      // ignore logging errors
+    }
+    if (error instanceof BadRequestException || error instanceof BadGatewayException) throw error;
+    if (error instanceof ProviderDestinationRejectedError) {
+      throw new BadGatewayException(`${fallback}: ${error.reason}`);
+    }
+    if (error instanceof ProviderNetworkTimeoutError || error instanceof ProviderResponseTooLargeError) {
+      throw new BadGatewayException(fallback);
+    }
+    if (error instanceof Error) throw new BadGatewayException(error.message || fallback);
+    throw new BadGatewayException(fallback);
+  }
 }

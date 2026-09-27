@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="20" height="20" viewBox="0 0 20 20">
+  <defs>
+    <clipPath id="clip-path">
+      <rect id="google_30412" data-name="google 30412" width="20" height="20" transform="translate(285 176)" fill="#fff" stroke="#707070" stroke-width="1"/>
+    </clipPath>
+  </defs>
+  <g id="google" transform="translate(-285 -176)" clip-path="url(#clip-path)">
+    <g id="google_5657" data-name="google 5657" transform="translate(280.92 165.608)">
+      <path id="google_24481" data-name="google 24481" d="M8.622,294.38a5.465,5.465,0,0,1,.288-1.743l-3.232-2.417a9.284,9.284,0,0,0,0,8.319l3.231-2.421a5.451,5.451,0,0,1-.285-1.736" transform="translate(0 -273.596)" fill="#fbbc05"/>
+      <path id="google_24482" data-name="google 24482" d="M65.794,15.234a5.629,5.629,0,0,1,3.536,1.238l2.794-2.732a9.715,9.715,0,0,0-14.951,2.883l3.234,2.417a5.649,5.649,0,0,1,5.387-3.806" transform="translate(-51.496)" fill="#ea4335"/>
+      <path id="google_24483" data-name="google 24483" d="M65.794,608.734a5.651,5.651,0,0,1-5.389-3.806l-3.232,2.417a9.6,9.6,0,0,0,8.621,5.231,9.265,9.265,0,0,0,6.258-2.341l-3.069-2.323a6.038,6.038,0,0,1-3.19.821" transform="translate(-51.496 -582.4)" fill="#34a853"/>
+      <path id="google_24484" data-name="google 24484" d="M525.821,422.7a7.651,7.651,0,0,0-.219-1.707h-8.951v3.629H521.8a4.227,4.227,0,0,1-1.961,2.807l3.068,2.323a9.245,9.245,0,0,0,2.911-7.051" transform="translate(-502.353 -401.915)" fill="#4285f4"/>
+    </g>
+  </g>
+</svg>

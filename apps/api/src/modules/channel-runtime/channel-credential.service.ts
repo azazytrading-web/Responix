@@ -1,5 +1,6 @@
 import { ConflictException, Injectable, NotFoundException } from "@nestjs/common";
 import { Prisma } from "@prisma/client";
+import { randomUUID } from "node:crypto";
 import { PrismaService } from "../../database/prisma.service";
 import { ProviderCredentialCryptoService } from "../ai/security/provider-credential-crypto.service";
 import type { ChannelCredentialAccessor, ChannelCredentialReference, ChannelCredentialStore } from "./contracts/channel-credential.contract";
@@ -37,5 +38,18 @@ export class ChannelCredentialService implements ChannelCredentialStore {
       await tx.auditLog.create({ data: { workspaceId, userId: actorId, action: "channel.credential.rotated", entityType: "ChannelConnection",
         entityId: connectionId, oldValues: Prisma.JsonNull, newValues: { name, version: value.version, fingerprint: value.fingerprint, expiresAt: expiresAt?.toISOString() } } });
       return { id: value.id, connectionId, name, fingerprint: value.fingerprint, version: value.version, ...(expiresAt ? { expiresAt } : {}) }; });
+  }
+  async regenerate(workspaceId: string, actorId: string, connectionId: string, name: string): Promise<{ reference: ChannelCredentialReference; secret: string }> {
+    return this.prisma.$transaction(async (tx) => { const connection = await tx.channelConnection.findFirst({ where: { id: connectionId, workspaceId } });
+      if (!connection) throw new NotFoundException("Channel connection was not found");
+      const current = await tx.channelCredentialReference.findFirst({ where: { connectionId, name, revokedAt: null }, orderBy: { version: "desc" } });
+      const nextVersion = (current?.version ?? 0) + 1;
+      if (current) await tx.channelCredentialReference.update({ where: { id: current.id }, data: { revokedAt: new Date() } });
+      const secret = randomUUID().replace(/-/g, "").slice(0, 32);
+      const value = await tx.channelCredentialReference.create({ data: { workspaceId, connectionId, name, version: nextVersion,
+        encryptedSecret: this.crypto.encrypt(secret), fingerprint: this.crypto.fingerprint(secret), createdById: actorId } });
+      await tx.auditLog.create({ data: { workspaceId, userId: actorId, action: "channel.credential.regenerated", entityType: "ChannelConnection",
+        entityId: connectionId, oldValues: Prisma.JsonNull, newValues: { name, version: value.version, fingerprint: value.fingerprint } } });
+      return { reference: { id: value.id, connectionId, name, fingerprint: value.fingerprint, version: value.version }, secret }; });
   }
 }

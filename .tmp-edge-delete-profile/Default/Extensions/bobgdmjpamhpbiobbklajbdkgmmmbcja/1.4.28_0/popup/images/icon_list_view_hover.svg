@@ -1,0 +1,12 @@
+<svg id="icon_list_view" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
+  <g  fill="#fff" stroke="#707070" stroke-width="1" opacity="0">
+    <rect width="32" height="32" stroke="none"/>
+    <rect x="0.5" y="0.5" width="31" height="31" fill="none"/>
+  </g>
+  <g id="icon_home_view" transform="translate(-1382.111 172.453)">
+    <rect width="20" height="20" transform="translate(1388.112 -166.453)" fill="#fff" opacity="0"/>
+    <path id="Vector" d="M1404.323-158.112v-2.776a2.811,2.811,0,0,0-1.691-2.446l-4.038-1.51a4.064,4.064,0,0,0-2.443,0l-4.038,1.522a2.809,2.809,0,0,0-1.691,2.434v6.012a3.939,3.939,0,0,0,1.4,2.784l3.48,2.6a3.411,3.411,0,0,0,2.072.648" transform="translate(0.739 0.486)" fill="none" stroke="#2b64e8" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/>
+    <path id="Vector-2" d="M1402.3-155.5a3.237,3.237,0,0,1-3.237,3.236,3.236,3.236,0,0,1-3.236-3.236,3.237,3.237,0,0,1,3.236-3.238A3.238,3.238,0,0,1,1402.3-155.5Z" transform="translate(2.282 2.282)" fill="none" stroke="#2b64e8" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/>
+    <path id="Vector-4" d="M1401.5-153.068h0" transform="translate(3.898 3.898)" fill="none" stroke="#2b64e8" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+  </g>
+</svg>

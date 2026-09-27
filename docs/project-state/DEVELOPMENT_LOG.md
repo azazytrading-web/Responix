@@ -1,5 +1,88 @@
 # Development Log
 
+## WhatsApp Connection Management — Edit, Callback URL, Verify Token - 2026-08-09
+
+- **Backend:** Added `GET /connections/:id`, `PATCH /connections/:id`, and `POST /connections/:id/verify-token/regenerate` endpoints to Channel Runtime with `whatsapp.connection.read`, `whatsapp.connection.write`, and `whatsapp.connection.admin` permissions.
+- **Frontend API:** Added `getWhatsAppConnection`, `updateWhatsAppConnection`, and `regenerateVerifyToken` to `whatsapp-api.ts` with canonical `@responix/api-client` transport.
+- **Frontend UI:** Rewrote `/channels/whatsapp` page with:
+  - `WebhookCallback` component displaying the full Meta Webhook Callback URL constructed from `env.webhookBaseUrl` + `/api/v1/channel-runtime/webhooks/whatsapp/${webhookPathKey}`
+  - Localhost warning when `NEXT_PUBLIC_WEBHOOK_BASE_URL` is not configured
+  - Copy-to-clipboard for the Callback URL
+  - `VerifyTokenDisplay` component showing newly regenerated verify tokens with one-time display and dismiss
+  - `EditConnectionForm` for updating business account ID, phone number ID, display number, API version, and optionally rotating access token, verify token, or app secret
+  - `ConnectionStatus` with Edit, Validate, Disconnect, and Regenerate Verify Token actions
+- **Security:** Credentials remain write-only; no access token, app secret, or verify token is rendered from query data. The verify token is returned only once immediately after regeneration and is dismissed permanently. Blank secret fields in edits preserve existing encrypted credentials.
+- **Tests:** 12 tests across 2 files — 3 API contract tests and 9 page behavior tests covering connection creation, credential submission, connected state, callback URL display, copy action, edit form, update submission, verify token regeneration, dismissal, disconnection, permission denial, and error recovery.
+- **Validation:** Dashboard typecheck, lint, production build, focused tests, and `git diff --check` all pass.
+
+## WhatsApp Onboarding and Real-Agent Gate - 2026-08-09
+
+## WhatsApp Onboarding and Real-Agent Gate - 2026-08-09
+
+- Added `/channels/whatsapp` as a real, permission-gated plugin and revision-5 development-manifest entry.
+- Integrated existing Channel Runtime list/create channel, list/create connection, health validation, and state-transition contracts. Meta credentials remain write-only and never enter query cache or response UI.
+- Added loading, disconnected, connected, validation, authorization, error, and success states. The current backend boundary is manual Meta Cloud configuration; OAuth/Embedded Signup is not implemented.
+- Real DeepSeek validation and one full published-Agent execution succeeded. The exact model response was `DEEPSEEK_SMOKE_OK`; provider/model/usage and kernel success were persisted without secret exposure.
+- Fixed the pinned-DNS Node 22 `all` lookup contract, PostgreSQL advisory-lock result deserialization, and Agent Studio propagation of `providerConfigurationId`.
+- Validation: API typecheck/build and focused runtime tests PASS; Dashboard typecheck/lint, 16 focused/regression tests, production build, database typecheck, targeted seeds, authenticated bootstrap/API/route smoke, and diff check PASS.
+
+## FM-7 Live Smoke Attempt - 2026-08-09
+
+- Runtime recovered: API health `ok`, PostgreSQL `up`, Redis `up`, Dashboard HTTP 200.
+- Authenticated development workspace bootstrap passed at manifest revision 4 with Providers and Agents visible; 149 permissions resolved, including provider read/write/validate.
+- `GET /api/v1/ai/providers` returned six providers/models; all six safe configuration reads succeeded and returned no credential/encrypted-secret fields.
+- Workspace state has zero configured providers and zero provider credentials. No supported external provider credential is available in environment configuration.
+- Unconfigured validation correctly returned HTTP 409; Agent Studio listing returned 200 with zero Agents.
+- Real provider validation and Agent execution were not attempted because fabricating or exposing a credential is prohibited. No next milestone was started.
+
+## FM-7 Provider & Prompt Library Resource Configuration - 2026-08-09
+
+- Added permission-gated Provider discovery at `/ai/providers`, showing only backend-returned status, configured/enabled state, models, limits, and capabilities. No secret is returned or rendered.
+- Added Prompt Library list/create/detail routes with real workspace API integration for search, pagination, draft JSON, variables, metadata, categories/tags, publishing, favorite, archive, and restore.
+- Added Providers and Prompt Library to built-in plugins and the backend-authoritative development manifest using registered `grid` layouts; the manifest-only seed completed successfully.
+- Agent provider selection now reuses the canonical Provider API implementation; prompt mutations invalidate the workspace prompt query root used by Agent options.
+- Validation: Dashboard typecheck and lint PASS; 12 focused/regression files, 30 tests PASS; Dashboard production build PASS; database typecheck and manifest-only seed PASS.
+- **Provider blocker closed:** added safe configuration read/upsert and validation endpoints, transactional encrypted credential rotation, omitted-credential preservation, optimistic `updatedAt` checks, safe health history, and secret-free audits. Provider discovery now includes disabled workspace configurations and credential readiness while execution still rejects disabled providers.
+- **Status: COMPLETE.** Focused backend tests pass 25/25 and focused Provider/Agent frontend tests pass 14/14; API/Dashboard typecheck, targeted lint, API/Dashboard builds, Prisma validation, database typecheck, targeted permission seed, and diff check pass.
+
+## Dashboard Initialization Recovery - 2026-08-09
+
+- **Root cause:** the revision-2 development manifest used `layout: "list"` for Team and Agents, but Dashboard Runtime accepts only registered renderer layouts. Auth and `platform/current` succeeded; `dashboard-runtime/bootstrap` returned 404 `Unknown dashboard layout 'list'`, causing `PlatformBootstrapProvider` to enter `ERROR`.
+- Replaced only those two manifest page layouts with registered `grid` layouts and applied the manifest-only seed. The active manifest is revision 3.
+- The targeted development permission seed now increments `workspace.permissionRevision`, preventing cached permission snapshots after role-permission upserts. The development Administrator resolves 146 permissions, including Team read/manage permissions.
+- **Live verification:** API health is `ok`; authenticated `platform/current` and `dashboard-runtime/bootstrap` return 200; resolved navigation is Dashboard, Company, Platform, Team, and Agents; all six requested Dashboard URLs return 200.
+
+## FM-5/FM-6 Discoverability Closeout - 2026-08-09
+
+- **Root cause:** the active development workspace still stored revision 1 of the platform manifest, containing only Dashboard, Company, and Platform Control. Team and Agents existed in source, plugin registration, App Router, tests, and builds, but the production sidebar is intentionally sourced only from the backend-resolved persisted manifest.
+- Added manifest revision increments to both development manifest upsert paths so updates invalidate Dashboard Runtime cache keys.
+- Applied the existing manifest-only seed path to the development workspace. The persisted manifest is now revision 2 and contains Dashboard, Company, Platform Control, Team, and Agents with their existing permission visibility rules.
+- Replaced the command palette's obsolete hardcoded links to unfinished screens with the same backend-resolved, permission/feature-filtered manifest navigation used by the sidebar.
+- Confirmed `Features: 0` is expected: these core modules are permission-gated and have no optional feature-entitlement requirement. Platform Control now labels feature entitlements and the authorization snapshot more explicitly.
+- **Validation:** Dashboard and database typecheck pass; Dashboard lint passes; 9 focused navigation/platform/plugin files pass 19/19 tests; Dashboard production build passes with all FM-5/FM-6 routes; `git diff --check` passes.
+
+## Sprint FM-6 - Agent Creation & Configuration Foundation - 2026-08-09
+
+- **Status:** Complete in the working tree; runtime monitoring, Inbox, WhatsApp UI, Workflow Builder, Prompt Studio, and resource-management screens were not started.
+- Added the Agent Studio plugin, manifest navigation, and physical list/create/edit routes.
+- Integrated real Agent Studio list, detail, create, update, and publish endpoints through the canonical API client.
+- Added workspace-scoped TanStack Query keys, mutation invalidation, persisted-value reopening, draft-only editing, unsaved-change warning, validation, feedback, and permission-aware actions.
+- Provider/model selection consumes the authoritative AI provider catalog and capability metadata. Instructions use existing Prompt Library bindings. Memory, Retrieval, Tools, and model capabilities use only supported boolean DTO fields.
+- **Validation:** Dashboard typecheck and lint pass; 20 Dashboard test files pass 72/72 tests, including 13 focused FM-6 tests; Dashboard production build and `git diff --check` pass.
+- **Environment note:** the first focused Vitest attempt was blocked by sandbox child-process `EPERM`; the approved outside-sandbox runner passed.
+
+## Sprint FM-5 - Core Dashboard Feature Modules - 2026-08-09
+
+- **Status:** Complete in the working tree; Agent UI not started.
+- Replaced the Dashboard Home placeholder with real workspace, permission, navigation, feature, and runtime-bootstrap state.
+- Added Workspace Management at `/company` with permission-aware real current-workspace GET/PATCH integration, changed-field validation, cache synchronization, and bootstrap refresh.
+- Added read-only Platform Control at `/platform` for resolved license, features, permissions, manifest, and branding state.
+- Completed Team Management at `/company/members` using existing workspace-member and platform-role APIs: listing, pagination, invitations for existing users, role changes, suspend/restore, invitation cancellation, removal, and read/manage permission boundaries.
+- Registered all four built-in plugins and synchronized the development manifest and required workspace-member permissions.
+- Corrected workspace storage BigInt response serialization and added focused coverage.
+- **Validation:** Dashboard typecheck and lint pass; 10 focused feature files pass 33/33 tests; the final Team subset passes 9/9 tests; Dashboard production build passes. Database typecheck, the focused workspace DTO test, and `git diff --check` pass.
+- **Environment note:** Initial test/build attempts hit Windows sandbox child-process `EPERM`, and one build retry hit transient native Node memory exhaustion. The unchanged source passed when the focused runners and final Dashboard build were rerun outside the sandbox with the repository's Windows-stable heap setting.
+
 ## Sprint FM-4 - Platform Bootstrap and Application Composition - 2026-08-02
 
 - Established the canonical workspace-keyed platform bootstrap service in `@responix/state`.

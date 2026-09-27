@@ -1,0 +1,1449 @@
+{
+   "Checkbox_Keep_signed": {
+      "message": "Maradjon bejelentkezve a következőhöz"
+   },
+   "Checkbox_Keep_signed_Hint": {
+      "message": "A megadott időtartam alatt automatikusan bejelentkezik. Kérjük, győződjön meg arról, hogy számítógépe környezete biztonságos. Ha nyilvános számítógépet használ, ne jelölje be ezt a lehetőséget."
+   },
+   "Delete_Exclude_website": {
+      "message": " A webhely törlése és kizárása"
+   },
+   "Emergency_Desc": {
+      "message": " Tegye egyszerűvé és biztonságossá a hozzáférést fiókjához vészhelyzet esetén, például elveszett vagy ellopott jelszavak esetén."
+   },
+   "Emergency_Title": {
+      "message": "\u003Cb> Vészhelyzeti hozzáférés\u003C/b>baleset esetén "
+   },
+   "Enable_Now": {
+      "message": " Engedélyezés most"
+   },
+   "Enter_your_email": {
+      "message": " Adja meg e-mail címét"
+   },
+   "Exclude_website_new": {
+      "message": " A webhely kizárása"
+   },
+   "Invalid_Recovery_Code_New": {
+      "message": " Érvénytelen helyreállítási kód. Ügyeljen arra, hogy a helyes vagy a legújabbat írja be. Vagy \u003Ca class=\"btn-link contactUsLink\">vegye fel velünk a kapcsolatot.\u003C/a>"
+   },
+   "Keep_Safe_Desc": {
+      "message": " Jelszó állapotának ellenőrzése, hogy megerősítse gyenge, régi és újrafelhasznált jelszavait."
+   },
+   "Keep_Safe_Title": {
+      "message": " Tartsa az összes jelszót \u003Cb>biztonságban \u003C/b>"
+   },
+   "No_Worries_Desc": {
+      "message": "Sötét Web Monitoring szolgáltatás engedélyezése, hogy értesítéseket kapjon, ha személyes adatai adatvédelmi incidenst szenvedtek el."
+   },
+   "No_Worries_Title": {
+      "message": "\u003Cb>Nincs\u003C/b> aggódás az \u003Cb>adatvédelmi incidensek miatt\u003C/b>"
+   },
+   "No_thanks": {
+      "message": " Nem köszönöm"
+   },
+   "Password_Generator": {
+      "message": "Jelszógenerátor"
+   },
+   "Password_Generator_Dec": {
+      "message": "Hozzon létre erős és biztonságos jelszavakat mindössze 1 kattintással"
+   },
+   "Suggested_Password": {
+      "message": "Javasolt jelszó"
+   },
+   "Suggested_Password_Dec": {
+      "message": "Javasolt jelszó megjelenítése az összes jelszóbeviteli mezőhöz"
+   },
+   "Suggested_password_Case": {
+      "message": "Javasolt jelszó"
+   },
+   "TOTP_Tips": {
+      "message": "A számítógép helyi ideje helytelen, ezért az egyszeri jelszó érvénytelenné válhat."
+   },
+   "TOTP_placeholder": {
+      "message": "Írja be a titkos kulcsot vagy URL-t, például az otpauth-ot://*"
+   },
+   "Unlimited_Desc": {
+      "message": " Egyszerűen kezelheti, tárolhatja és létrehozhat biztonságos jelszavakat bármely eszközön vagy platformon egyetlen fiókkal."
+   },
+   "Unlimited_Title": {
+      "message": " Adatok szinkronizálása \u003Cb>korlátlan számú eszköz között \u003C/b>"
+   },
+   "Website": {
+      "message": "Weboldal"
+   },
+   "about": {
+      "message": "Névjegy"
+   },
+   "about_Acknowledgements": {
+      "message": "Köszönetnyilvánítás"
+   },
+   "about_Copyright": {
+      "message": "© iTop Inc. Minden jog fenntartva."
+   },
+   "about_EULA": {
+      "message": "EULA"
+   },
+   "about_Privacy_Policy": {
+      "message": "Adatvédelmi irányelvek"
+   },
+   "about_Version": {
+      "message": "Verzió"
+   },
+   "add": {
+      "message": " Hozzáadás"
+   },
+   "addNew": {
+      "message": "Új hozzáadása"
+   },
+   "addNewAccount": {
+      "message": "Új fiók hozzáadása"
+   },
+   "add_Login": {
+      "message": "Bejelentkezések hozzáadása"
+   },
+   "add_Logins": {
+      "message": "Bejelentkezések hozzáadása"
+   },
+   "add_Notes": {
+      "message": "Jegyzetek hozzáadása"
+   },
+   "add_Payment_Info": {
+      "message": "Fizetési adatok hozzáadása"
+   },
+   "add_Payment_Info_Case": {
+      "message": "Fizetési adatok hozzáadása"
+   },
+   "add_Personal_Info": {
+      "message": "Személyes adatok hozzáadása"
+   },
+   "add_Personal_Info_Case": {
+      "message": "Személyes adatok hozzáadása"
+   },
+   "add_exclude": {
+      "message": "Adjon hozzá webhelyeket a kizáráshoz"
+   },
+   "add_items": {
+      "message": "Elemek hozzáadása"
+   },
+   "add_new_website": {
+      "message": "Új webhely hozzáadása"
+   },
+   "add_secure_note": {
+      "message": "Adjon hozzá egy biztonságos megjegyzést"
+   },
+   "add_tag": {
+      "message": "Címke hozzáadása"
+   },
+   "add_to_favorites": {
+      "message": "Hozzáadás a kedvencekhez"
+   },
+   "add_to_favorites_succ": {
+      "message": "Hozzáadás a kedvencekhez"
+   },
+   "add_to_onetime_pwd": {
+      "message": "Hozzáadás az egyszeri jelszóhoz"
+   },
+   "add_totp": {
+      "message": "Egyszeri jelszó hozzáadása?"
+   },
+   "add_website": {
+      "message": "Webhely hozzáadása"
+   },
+   "add_website_placeholder": {
+      "message": " Webhely megadása"
+   },
+   "address": {
+      "message": "Cím"
+   },
+   "address_copied": {
+      "message": "Cím másolva"
+   },
+   "advancedOptions": {
+      "message": "Haladó beállítások"
+   },
+   "all_Item": {
+      "message": "Minden elem"
+   },
+   "alreadyAccount": {
+      "message": "* Ha már rendelkezik iTop fiókkal, jelentkezzen be közvetlenül."
+   },
+   "already_saved": {
+      "message": "már mentettem"
+   },
+   "americanexpress": {
+      "message": "American Express"
+   },
+   "appName": {
+      "message": "DualSafe Password Manager"
+   },
+   "auth_bottom_desc": {
+      "message": "Miután befejezte az engedélyezést, bejelentkezhet a DualSafe Password Managerbe."
+   },
+   "auth_desc": {
+      "message": "Kérjük, engedélyezze a DualSafe Password Manager bejelentkezését az újonnan megnyílt böngészőlapon."
+   },
+   "auth_subtitle": {
+      "message": "Várakozás az engedélyezésreâ€¦"
+   },
+   "auth_title": {
+      "message": "Engedélyezés"
+   },
+   "autoFillFailed": {
+      "message": "Nem sikerült megtalálni a bejelentkezéshez szükséges beviteli mezoket. Kérjük, próbálja meg manuálisan másolni és beilleszteni a bejelentkezési adatokat."
+   },
+   "auto_save_confirm_desc": {
+      "message": "Felhasználónevem és jelszavaim automatikus mentése az összes webhelyhez a jövőben."
+   },
+   "auto_save_passwords": {
+      "message": "Jelszavak automatikus mentése"
+   },
+   "auto_save_passwords_desc": {
+      "message": "Felhasználónevem és jelszavam automatikus mentése az összes webhelyhez"
+   },
+   "auto_saved_successfully": {
+      "message": "Automatikus mentés sikeres"
+   },
+   "average": {
+      "message": "Átlagos"
+   },
+   "back": {
+      "message": "Vissza"
+   },
+   "bannerExpiredPurchase": {
+      "message": "Hoppá! Prémiumod \u003Cb>lejárt.\u003C/b>"
+   },
+   "bannerFreePurchase": {
+      "message": "Frissítsen, hogy teljes prémium szintu hozzáférést élvezhessen"
+   },
+   "bannerPremiumPurchase": {
+      "message": "Neked van %s \u003Cspan class=\"day-words\">napja\u003C/span> maradt a Premiumból."
+   },
+   "birthday": {
+      "message": "Születésnap"
+   },
+   "birthday_copied": {
+      "message": "Születésnap másolva"
+   },
+   "browserReboot": {
+      "message": "Böngésző újraindítása"
+   },
+   "browser_extension": {
+      "message": "Böngészőbővítmény"
+   },
+   "cancel": {
+      "message": "Mégsem"
+   },
+   "capitalize": {
+      "message": "Nagybetűk (A-Z)"
+   },
+   "cardNumber": {
+      "message": "Kártyaszám"
+   },
+   "cardType": {
+      "message": "Kártyatípus"
+   },
+   "cardType_placeholder": {
+      "message": "Írja be vagy válassza ki a kártya típusát"
+   },
+   "card_number_copied": {
+      "message": "Kártyaszám másolva"
+   },
+   "card_type_copied": {
+      "message": "A kártya típusa másolva"
+   },
+   "cardholderName": {
+      "message": "Kártyatulajdonos neve"
+   },
+   "cardholder_name_copied": {
+      "message": "A kártyatulajdonos neve másolva"
+   },
+   "cardother": {
+      "message": "Egyéb"
+   },
+   "carteblanche": {
+      "message": "Carte Blanche"
+   },
+   "change_desc": {
+      "message": "Mesterjelszó módosítása..."
+   },
+   "change_master_password": {
+      "message": "Mesterjelszó módosítása"
+   },
+   "change_now": {
+      "message": "Változtatás most"
+   },
+   "change_title": {
+      "message": "Mesterjelszó módosítása"
+   },
+   "cityTown": {
+      "message": "Város/Község"
+   },
+   "clear": {
+      "message": "Törlés"
+   },
+   "clear_allpass_desc": {
+      "message": "A törlést követően nem állíthatók vissza."
+   },
+   "clear_allpass_title": {
+      "message": "Biztosan törölni szeretné az összes jelszót?"
+   },
+   "clear_deleted_desc": {
+      "message": "Törlés után nem állíthatók vissza."
+   },
+   "clear_deleted_title": {
+      "message": "Biztosan törli az összes elemet a Törölt elemek közül?"
+   },
+   "clear_password": {
+      "message": "Jelszó törlése"
+   },
+   "cleared_successfully": {
+      "message": "Sikeresen törölve."
+   },
+   "close": {
+      "message": "Bezárás"
+   },
+   "code_desc": {
+      "message": "Kérjük, adja meg mesterjelszavát a helyreállítási kód visszaállításához"
+   },
+   "code_pairing_desc": {
+      "message": "Erősítse meg a kódot a PC-alkalmazás előugró ablakában, majd kattintson a Csatlakozás gombra az automatikus bejelentkezés és feloldás engedélyezéséhez."
+   },
+   "code_pairing_title": {
+      "message": "Csatlakozási kód"
+   },
+   "code_title": {
+      "message": "Helyreállítási kód visszaállítása"
+   },
+   "comma": {
+      "message": ":"
+   },
+   "comprehensive_pwd_Desc": {
+      "message": "Átfogó jelszó állapotellenőrzés"
+   },
+   "confirmMasterNewPass": {
+      "message": "Az új mesterjelszó megerősítése"
+   },
+   "confirmMasterPass": {
+      "message": "Mesterjelszó megerősítése"
+   },
+   "continue": {
+      "message": "Tovább"
+   },
+   "continue_sign_in": {
+      "message": "Folytatás, Bejelentkezés"
+   },
+   "copied": {
+      "message": "Másolt"
+   },
+   "copy": {
+      "message": "Másolás"
+   },
+   "copy_generator_password": {
+      "message": "Jelszó másolása"
+   },
+   "copy_notes": {
+      "message": "Jegyzetek másolása"
+   },
+   "copy_one_time_Password": {
+      "message": "Egyszeri jelszó másolása"
+   },
+   "copy_password": {
+      "message": "Jelszó"
+   },
+   "copy_username": {
+      "message": "Felhasználónév másolása"
+   },
+   "countryRegion": {
+      "message": "Ország vagy régió"
+   },
+   "countryRegion_placeholder": {
+      "message": "Válassza ki országát vagy régióját"
+   },
+   "createNewAccount": {
+      "message": "Fiók létrehozása"
+   },
+   "create_new_account": {
+      "message": "Felhasználói fiók létrehozása"
+   },
+   "createdAt": {
+      "message": "Létrehozva"
+   },
+   "currentMasterPass": {
+      "message": "Jelenlegi mester jelszó"
+   },
+   "day": {
+      "message": "Nap"
+   },
+   "days": {
+      "message": "Napok"
+   },
+   "days_case": {
+      "message": "Napok"
+   },
+   "default_password_manager": {
+      "message": "Default Password Manager"
+   },
+   "delete": {
+      "message": "Törlés"
+   },
+   "delete_all": {
+      "message": "Összes törlése"
+   },
+   "delete_at": {
+      "message": "Törölve"
+   },
+   "delete_item": {
+      "message": "Biztosan törli ezt az elemet a Lomtárból?"
+   },
+   "delete_item_Recycle_Bin": {
+      "message": "Biztosan törli ezt az elemet a Lomtárból??"
+   },
+   "delete_item_Recycle_Bin_Dec": {
+      "message": "Törlés után nem lehet visszaállítani."
+   },
+   "delete_item_dec": {
+      "message": "Visszaállíthatja a Lomtárból, amíg nem törli véglegesend."
+   },
+   "deletedSuccessfully": {
+      "message": "Sikeresen törölve."
+   },
+   "deleted_this_item": {
+      "message": "Az elem törlése"
+   },
+   "desktop": {
+      "message": "Asztal"
+   },
+   "desktop_app": {
+      "message": "Asztali alkalmazás"
+   },
+   "details": {
+      "message": "Részletek"
+   },
+   "device_limit_desc": {
+      "message": "Elérte a bejelentkezés maximális korlátját 3 eszközön. Frissítsen most, hogy élvezze a korlátlan eszközhozzáférést és az alábbi előnyöket:"
+   },
+   "device_limit_tips": {
+      "message": "*A rendszer kijelentkezik erről az eszközről:"
+   },
+   "device_limit_title": {
+      "message": "Elérte az eszközkorlátot!"
+   },
+   "dinersclub": {
+      "message": "Diners Club"
+   },
+   "dir": {
+      "message": "ltr"
+   },
+   "discard": {
+      "message": "Yes"
+   },
+   "discard_change": {
+      "message": "Biztosan elveti a nem mentett módosításokat??"
+   },
+   "discover": {
+      "message": "Discover"
+   },
+   "downloadApp": {
+      "message": "Alkalmazás letöltése"
+   },
+   "edit": {
+      "message": "Szerkesztés"
+   },
+   "editInfo": {
+      "message": "Információk szerkesztése"
+   },
+   "emailAddress": {
+      "message": "Email cím"
+   },
+   "emailOrPassIncorrect": {
+      "message": "Helytelen e-mail cím vagy jelszó."
+   },
+   "emailVerfy": {
+      "message": "E-mail megerősítésa"
+   },
+   "email_address_copied": {
+      "message": "E-mail cím másolva"
+   },
+   "emergency_contact": {
+      "message": "Vészhelyzeti hozzáférés"
+   },
+   "emergency_contact_Desc": {
+      "message": "Ha elveszíti hozzáférését az adataihoz, a vészhelyzeti hozzáférést biztosító személy kérheti az adatok exportálását vagy a fő jelszó megváltoztatását."
+   },
+   "enterMasterNewPass": {
+      "message": "Új mesterjelszó megadása"
+   },
+   "enterMasterPass": {
+      "message": "Mesterjelszó megadása"
+   },
+   "enterRecoveryCass": {
+      "message": "Írja be a helyreállítási kódot"
+   },
+   "enterYourPass": {
+      "message": "Adja meg a jelszavát"
+   },
+   "enter_email_desc": {
+      "message": " Kérjük, adja meg e-mail címét, hogy megkapja a helyreállítási kódot!"
+   },
+   "enter_email_tips": {
+      "message": " Érvénytelen e-mail cím. Kérjük, ellenőrizze, és írja be újra!"
+   },
+   "exclude_website": {
+      "message": "Webhely kizárása"
+   },
+   "exclude_website_list": {
+      "message": "Kizárt webhelyek listája"
+   },
+   "exit": {
+      "message": "Kilépés"
+   },
+   "expOptionDate": {
+      "message": "Lejárati dátum"
+   },
+   "expiration_date_copied": {
+      "message": "Lejárati dátum másolva"
+   },
+   "expired": {
+      "message": "EXPIRED"
+   },
+   "extDesc": {
+      "message": "A DualSafe Password Manager bővítmény segítségével biztonságosan kezelheti a jelszavakat egy helyen, és lehetővé teszi a jelszavak automatikus mentését, automatikus kitöltését és bármikor történő elérését."
+   },
+   "extName": {
+      "description": "DualSafe Password Manager & Digital Vault",
+      "message": "DualSafe Password Manager & Digital Vault"
+   },
+   "extension": {
+      "message": "Kiterjesztés"
+   },
+   "failedToDelete": {
+      "message": "Nem sikerült törölni."
+   },
+   "failedToOpenLoading_DPM": {
+      "message": "Az asztali verzió betöltése"
+   },
+   "failedToOpenLoading_Dark_Web_Monitor_Dec": {
+      "message": "A Dark Web Monitor csak asztali verzióban érhető el. Az asztali verzió futtatásához kattintson a \"Megnyitás\" gombra a megerősítést kérő felugró ablakban. Vagy kattintson az alábbi %s gombra a felugró ablak újbóli megnyitásához."
+   },
+   "failedToOpenLoading_Emergency_Contact_Dec": {
+      "message": "Emergency Contact csak asztali verzióban érhető el. Az asztali verzió futtatásához kattintson a \"Megnyitás\" gombra a megerősítést kérő felugró ablakban. Vagy kattintson az alábbi %s gombra a felugró ablak újbóli megnyitásához."
+   },
+   "failedToOpenLoading_Import_Export_Dec": {
+      "message": "Az importálás és exportálás csak az asztali verzióban érhető el. Az asztali verzió futtatásához kattintson a \"Megnyitás\" gombra a megerősítést kérő felugró ablakban. Vagy kattintson az alábbi %s gombra a felugró ablak újbóli megnyitásához."
+   },
+   "failedToOpenLoading_Password_Health_Dec": {
+      "message": "A Jelszó állapota csak az asztali verzióban érhető el. Az asztali verzió futtatásához kattintson a \"Megnyitás\" gombra a megerősítést kérő felugró ablakban. Vagy kattintson az alábbi %s gombra a felugró ablak újbóli megnyitásához."
+   },
+   "failedToOpen_DPM": {
+      "message": "Nem sikerült megnyitni az asztali verziót"
+   },
+   "failedToOpen_Dark_Web_Monitor_Dec": {
+      "message": "A Dark Web Monitor csak asztali verzióban érhető el. Kattintson a %d gombra az asztali verzió letöltéséhez és telepítéséhez. Vagy kattintson a %s gombra az újbóli megnyitáshoz."
+   },
+   "failedToOpen_Emergency_Contact_Dec": {
+      "message": "Emergency Contact csak asztali verzióban érhető el. Kattintson a %d gombra az asztali verzió letöltéséhez és telepítéséhez. Vagy kattintson a %s gombra az újbóli megnyitáshoz."
+   },
+   "failedToOpen_Import_Export_Dec": {
+      "message": "Az importálás és exportálás csak az asztali verzióban érhető el. Kattintson a %d gombra az asztali verzió letöltéséhez és telepítéséhez. Vagy kattintson a %s gombra az újbóli megnyitáshoz."
+   },
+   "failedToOpen_Password_Health_Dec": {
+      "message": "A Jelszó állapota csak az asztali verzióban érhető el. Kattintson a %d gombra az asztali verzió letöltéséhez és telepítéséhez. Vagy kattintson a %s gombra az újbóli megnyitáshoz."
+   },
+   "failedToRestore": {
+      "message": "Nem sikerült visszaállítani."
+   },
+   "failed_send_desc": {
+      "message": "Nem sikerült elküldeni a helyreállítási kódot tartalmazó e-mailt. Kérlek próbáld újra."
+   },
+   "failed_send_title": {
+      "message": "Nem sikerült elküldeni."
+   },
+   "favoties": {
+      "message": "Kedvencek"
+   },
+   "feedback": {
+      "message": "Visszajelzés"
+   },
+   "fill": {
+      "message": "Kitöltés"
+   },
+   "firstName": {
+      "message": "Keresztnév"
+   },
+   "fiveMinutes": {
+      "message": "5 perc"
+   },
+   "forgotYourPass": {
+      "message": "Elfelejtette a jelszavát?"
+   },
+   "fourHours": {
+      "message": "4 óra"
+   },
+   "fourteenDays": {
+      "message": "14nap"
+   },
+   "free": {
+      "message": "INGYENES"
+   },
+   "gender": {
+      "message": "Nem"
+   },
+   "genderFemale": {
+      "message": "Nő"
+   },
+   "genderMale": {
+      "message": "Férfi"
+   },
+   "genderNone": {
+      "message": "Egyik sem"
+   },
+   "genderOther": {
+      "message": "Egyéb"
+   },
+   "gender_copied": {
+      "message": "Nem másolva"
+   },
+   "goPremiumBtn": {
+      "message": "Menj a Premiumra"
+   },
+   "go_back_to_signin": {
+      "message": "Menjen vissza a Bejelentkezéshez"
+   },
+   "hideCode": {
+      "message": "Biztonsági kód elrejtése"
+   },
+   "hidePass": {
+      "message": "Jelszó elrejtésed"
+   },
+   "ignore_website": {
+      "message": "Hagyja figyelmen kívül ezt a webhelyet"
+   },
+   "installDesktopApp": {
+      "message": "Az asztali alkalmazás telepítése"
+   },
+   "invalid_email": {
+      "message": "Érvénytelen e-mail cím. Kérjük, adja meg az ellenőrzött e-mail címet."
+   },
+   "invalid_master_pass": {
+      "message": "Érvénytelen mester jelszó!"
+   },
+   "invalid_master_tips": {
+      "message": "Érvénytelen mester jelszó. Kérjük, ellenőrizze, és próbálja újra."
+   },
+   "invalid_recovery_code": {
+      "message": "Érvénytelen helyreállítási kód. Kérjük, ellenőrizze, és próbálja újra."
+   },
+   "invalid_secret_key": {
+      "message": "Érvénytelen titkos kulcs!"
+   },
+   "item_remove_from_favorites": {
+      "message": "Eltávolítás a Kedvencek közül"
+   },
+   "jcb": {
+      "message": "JCB"
+   },
+   "lang": {
+      "message": "hu"
+   },
+   "lastModifiedAt": {
+      "message": "Módosítva"
+   },
+   "lastName": {
+      "message": "Vezetéknév"
+   },
+   "lastPasswordChangedAt": {
+      "message": "A jelszó megváltozott"
+   },
+   "learn_more": {
+      "message": "Tudjon meg többet"
+   },
+   "length": {
+      "message": "Hosszúság"
+   },
+   "loading": {
+      "message": "Betöltés ..."
+   },
+   "loading_data_error": {
+      "message": "Sikertelen betöltés. Kérjük, ellenőrizze a hálózati kapcsolatot."
+   },
+   "lock": {
+      "message": "Zár"
+   },
+   "lock_comfirm_btn": {
+      "message": "Feloldás manuálisan"
+   },
+   "login_comfirm_btn": {
+      "message": "Bejelentkezés manuálisan"
+   },
+   "login_comfirm_desc": {
+      "message": "Kattintson a fiókjára, hogy\u003Clegyen jogosult automatikus bejelentkezni és feloldani az asztali alkalmazásból."
+   },
+   "login_feature_auto": {
+      "message": "\u003Cb>Auto\u003C/b> - - Hozzáférés korlátlan számú eszközhöz automatikus szinkronizálással"
+   },
+   "login_feature_easy": {
+      "message": "\u003Cb>Easy\u003C/b> - A jelszavak automatikus mentése és automatikus kitöltése egyetlen kattintással"
+   },
+   "login_feature_safe": {
+      "message": "\u003Cb>Safe\u003C/b> - Tárolja adatait kategóriájában a legjobb titkosítással"
+   },
+   "login_feature_secure": {
+      "message": "\u003Cb>Secure\u003C/b> - Erős, egyedi jelszavakat generál "
+   },
+   "login_feature_unlimited": {
+      "message": "\u003Cb>Unlimited\u003C/b> - Korlátlan számú jelszavat, fizetést stb. menthet el."
+   },
+   "login_left_title": {
+      "message": "Biztonságos, egyszerű, de ingyenes módja a jelszavak kezelésének, elengedhetetlen a digitális élethez."
+   },
+   "login_waiting_title": {
+      "message": "Várakozás az asztali alkalmazás engedélyezéséreâ€¦"
+   },
+   "logins": {
+      "message": "Bejelentkezések"
+   },
+   "lower_case": {
+      "message": "Kisbetű (a-z)"
+   },
+   "maestro": {
+      "message": "Maestro"
+   },
+   "mastercard": {
+      "message": "Mastercard"
+   },
+   "masterpassIncorrect": {
+      "message": "Érvénytelen mesterjelszó."
+   },
+   "match_change_pass": {
+      "message": "A jelszó nem felel meg az elvárásoknak."
+   },
+   "match_master_pass": {
+      "message": "A jelszavak nem egyeznek."
+   },
+   "middleName": {
+      "message": "Középső név"
+   },
+   "month": {
+      "message": "Hónap"
+   },
+   "more": {
+      "message": "Továbbiak"
+   },
+   "name": {
+      "message": "Név"
+   },
+   "name_copied": {
+      "message": "Név másolva"
+   },
+   "networkError": {
+      "message": "Hálózati kapcsolat hiba."
+   },
+   "never": {
+      "message": "Soha"
+   },
+   "newUser": {
+      "message": "Új felhasználó?"
+   },
+   "new_password": {
+      "message": "Új jelszó"
+   },
+   "new_tag": {
+      "message": "Új címke"
+   },
+   "new_tag_number": {
+      "message": "Új címke"
+   },
+   "ninetyDays": {
+      "message": "90 nap"
+   },
+   "noItemsAddAllItem": {
+      "message": "Nincsenek hozzáadva elemek."
+   },
+   "noItemsAddLoginItem": {
+      "message": "Nincsenek bejelentkezési adatok."
+   },
+   "noItemsAddNotesItem": {
+      "message": "Nem adunk hozzá biztonságos megjegyzéseket."
+   },
+   "noItemsAddPayItem": {
+      "message": "Nem adunk hozzá fizetési információkat."
+   },
+   "noItemsAddPersonalItem": {
+      "message": "Nem adunk hozzá személyes adatokat."
+   },
+   "noItemsAddRecycleItem": {
+      "message": "Itt nincsenek elemek."
+   },
+   "noItemsFound": {
+      "message": "Nincsenek elemek."
+   },
+   "noResult": {
+      "message": "Nincs eredmény!"
+   },
+   "noSaved": {
+      "message": "Nincsenek mentve bejelentkezési adatok ehhez az oldalhoz."
+   },
+   "noSavedPrss": {
+      "message": "Nincs mentett jelszó!"
+   },
+   "no_excluded_websites": {
+      "message": "Nincsenek kizárt webhelyek."
+   },
+   "no_password_history": {
+      "message": "Nincs jelszó előzmény."
+   },
+   "no_valid_secret_key_found": {
+      "message": "Nem található érvényes titkos kulcs!"
+   },
+   "notNow": {
+      "message": "Most nem"
+   },
+   "not_have_code": {
+      "message": "Nincs helyreállítási kódja?"
+   },
+   "notes": {
+      "message": "Jegyzetek"
+   },
+   "notes_characters_tips": {
+      "message": "%s karakter maradt"
+   },
+   "notes_copied": {
+      "message": "Jegyzetek másolva"
+   },
+   "notes_placeholder": {
+      "message": "Írjon be néhány megjegyzést ehhez az elemhez (Maximális korlát: %s karakter)"
+   },
+   "numWords": {
+      "message": "Számok (0-9)"
+   },
+   "offer_to_save_passwords": {
+      "message": "Jelszavak mentésének felajánlása"
+   },
+   "offer_to_save_passwords_desc": {
+      "message": "Jelszavak mentése bejelentkezéskor vagy regisztrációkor"
+   },
+   "ok": {
+      "message": "OK"
+   },
+   "okIgotIt": {
+      "message": "OK.értem."
+   },
+   "oneHour": {
+      "message": "1 óra"
+   },
+   "oneMinute": {
+      "message": "1 perc"
+   },
+   "one_time_Password": {
+      "message": "Egyszer használatos jelszó"
+   },
+   "one_time_pass_copied": {
+      "message": "Egyszeri jelszó másolva"
+   },
+   "only": {
+      "message": "Mindössze"
+   },
+   "open": {
+      "message": "Megnyitás"
+   },
+   "options": {
+      "message": "Opciók"
+   },
+   "passIncorrect": {
+      "message": "Helytelen jelszó."
+   },
+   "password": {
+      "message": "Jelszó"
+   },
+   "password_copied": {
+      "message": "Jelszó másolva"
+   },
+   "password_history_item": {
+      "message": "Jelszóelőzmények"
+   },
+   "password_history_tips": {
+      "message": "Itt láthatók a legutóbbi %s jelszavak."
+   },
+   "password_history_title": {
+      "message": "Jelszó előzmények"
+   },
+   "password_tip_one": {
+      "message": "Legalább 8 karakter. Több mint 16 karakter ajánlott."
+   },
+   "password_tip_three": {
+      "message": "Legalább egy szimbólum."
+   },
+   "password_tip_two": {
+      "message": "Legalább egy szám."
+   },
+   "payment_Info": {
+      "message": "Fizetési információ"
+   },
+   "personal_Info": {
+      "message": "Személyes adatok"
+   },
+   "phoneNumber": {
+      "message": "Telefonszám"
+   },
+   "phone_number_copied": {
+      "message": "Telefonszám másolva"
+   },
+   "premiumExpiredPurchase": {
+      "message": "Prémiumod \u003Cb class='text-red'>lejárt!\u003C/b>"
+   },
+   "premiumExpiredPurchaseAlert": {
+      "message": "A speciális funkciók most nem érhetők el. Frissítsen, hogy továbbra is prémium szintű hozzáférést biztosítson, és könnyedén biztonságban tartsa jelszavait."
+   },
+   "premiumExpiringSoonPurchase": {
+      "message": "Már csak \u003Cb class=\"text-yellow\">%s nap\u003C/b> maradt a prémiumból!"
+   },
+   "premiumExpiringSoonPurchaseAlert": {
+      "message": "Frissítsen, hogy továbbra is prémium szinten hozzáférjen a következő speciális funkciókhoz:"
+   },
+   "premiumFreePurchase": {
+      "message": "A jelszavak kezelésének egyszerűbb és biztonságosabb módja"
+   },
+   "premiumFreePurchaseAlert": {
+      "message": "Indítsa el a Premium szolgáltatást még ma, és tartsa meg ezeket a fejlett funkciókat:"
+   },
+   "premiumFreePurchaseAlert_New": {
+      "message": "Indítsa el a Premiumot még ma, és tartsa meg ezeket a speciális funkciókat:"
+   },
+   "premiumFreePurchase_New": {
+      "message": "Egyszerubb és biztonságosabb módja a jelszavak kezelésének"
+   },
+   "premiumPurchase": {
+      "message": "30 napos prémiumot kap!"
+   },
+   "premiumPurchaseAlert": {
+      "message": "Most, kérjük, élvezze a következő speciális szolgáltatásokat"
+   },
+   "premiun": {
+      "message": "PREMIUM"
+   },
+   "purchase_Dark_Web_Monitor": {
+      "message": "Dark Web Monitoring & Alerts"
+   },
+   "purchase_Password_Health": {
+      "message": "Jelszó állapotának ellenőrzése"
+   },
+   "purchase_Password_Health_Check": {
+      "message": "Password Health Check"
+   },
+   "purchase_Unlimited_Devices": {
+      "message": "Sync Across Unlimited Devices"
+   },
+   "questionMark": {
+      "message": "?"
+   },
+   "recovery_code_copied": {
+      "message": "A helyreállítási kód másolása"
+   },
+   "recycle_Bin": {
+      "message": "Újrahasznosító kuka"
+   },
+   "refresh": {
+      "message": "Frissítés"
+   },
+   "rememberMeOnThisDevice": {
+      "message": "Emlékezzen rám ezen az eszközön"
+   },
+   "remindExpirationDate": {
+      "message": "Emlékeztessen 2 hónappal a lejárati dátum előtt"
+   },
+   "remind_me_after_days": {
+      "message": "Emlékeztessen 7 nap múlva"
+   },
+   "remind_me_tomorrow": {
+      "message": "Emlékeztessen holnap"
+   },
+   "remind_password": {
+      "message": "Emlékeztessen a jelszó megváltoztatására 90 nap elteltével"
+   },
+   "remove": {
+      "message": "Eltávolítás"
+   },
+   "remove_from_favorites": {
+      "message": "Eltávolítás a Kedvencek közül"
+   },
+   "remove_from_favorites_succ": {
+      "message": "Eltávolítás a Kedvencek közül"
+   },
+   "resend": {
+      "message": "Újraküldés "
+   },
+   "reset": {
+      "message": "Visszaállítás"
+   },
+   "reset_code_desc": {
+      "message": "Kérjük, adja meg helyreállítási kódját a mesterjelszó visszaállításához. A helyreállítási kódot PDF-fájlként mentettük."
+   },
+   "reset_code_title": {
+      "message": "Írja be a helyreállítási kódot"
+   },
+   "reset_desc": {
+      "message": "Kérjük, adja meg ellenőrzött e-mail címét a jelszó visszaállításához"
+   },
+   "reset_email_place": {
+      "message": "Adja meg ellenőrzött e-mail címét"
+   },
+   "reset_master_title": {
+      "message": "Mesterjelszó visszaállítása"
+   },
+   "reset_recovery_code": {
+      "message": "A helyreállítási kód visszaállítása"
+   },
+   "reset_success_desc": {
+      "message": "Your master password has been reset. Please sign in with the new master password."
+   },
+   "reset_success_title": {
+      "message": "Siker!"
+   },
+   "reset_title": {
+      "message": "Jelszó visszaállítása"
+   },
+   "restore": {
+      "message": "Visszaállítás"
+   },
+   "restoreSuccessfully": {
+      "message": "Sikeresen visszaállítva."
+   },
+   "retry": {
+      "message": "Próbáld újra"
+   },
+   "save": {
+      "message": "Mentés"
+   },
+   "saveIn_DPM": {
+      "message": "Mentés a DualSafe Password Managerbe"
+   },
+   "save_as_pdf": {
+      "message": "Mentés PDF-ként"
+   },
+   "save_code_desc_login": {
+      "message": "Kérjük, mentse el a helyreállítási kódot PDF-ként."
+   },
+   "save_code_desc_one": {
+      "message": "Mentse el a helyreállítási kódot PDF formátumban, és nyomtassa ki a biztonság érdekében."
+   },
+   "save_code_desc_options": {
+      "message": "Korábbi helyreállítási kódja mostantól érvénytelen. Kérjük, mentse el az új helyreállítási kódot PDF formátumban, és nyomtassa ki a biztonság érdekében."
+   },
+   "save_code_desc_two": {
+      "message": "Lehetővé teszi, hogy visszaszerezze a hozzáférést a DualSafe Password Managerhez, ha elfelejtette mesterjelszavát."
+   },
+   "save_code_new_title": {
+      "message": "Új helyreállítási kód mentése"
+   },
+   "save_code_tips": {
+      "message": "\u003Cb>Important:\u003C/b> A helyreállítási kód az egyetlen módja annak, hogy újra hozzáférjen a DualSafe Password Managerhez, ha elfelejti mesterjelszavát."
+   },
+   "save_code_title": {
+      "message": "Helyreállítási kód mentése"
+   },
+   "save_totp": {
+      "message": "Egyszeri jelszó mentése? "
+   },
+   "savedFailedData": {
+      "message": "A legfrissebb adatok szinkronizálva lettek a szerverről."
+   },
+   "savedFailedSynced": {
+      "message": "A mentés nem sikerült! A legfrissebb adatok szinkronizálva lettek a szerverről."
+   },
+   "savedSuccessfully": {
+      "message": "Sikeres mentés."
+   },
+   "scan_web_page_QRCode": {
+      "message": "A weboldal QR-kódjának beolvasása"
+   },
+   "search": {
+      "message": "Keresés"
+   },
+   "secure": {
+      "message": "Biztonságos"
+   },
+   "secureNotes": {
+      "message": "Biztonságos jegyzetek"
+   },
+   "secure_notes_placeholder": {
+      "message": "Ide írja be fontos megjegyzéseit (maximális korlát: %s karakter)"
+   },
+   "securityCode": {
+      "message": "Biztonsági kód"
+   },
+   "security_code_copied": {
+      "message": "Biztonsági kód másolva"
+   },
+   "send": {
+      "message": " Küldés "
+   },
+   "send_email_hint": {
+      "message": "Küldje el az e-mail címére"
+   },
+   "sending_desc": {
+      "message": "Helyreállítási kód elküldése az Ön e-mail címére."
+   },
+   "sending_title": {
+      "message": "Küldés"
+   },
+   "sent_succ_desc": {
+      "message": "Helyreállítási kódját elküldtük a %s e-mail címre. Ha nincs a Beérkezett üzenetek mappájában, ellenőrizze a Spam mappát. Vagy \u003Cbutton class=\"resndbtn\">újraküldheti\u003C/buttont >."
+   },
+   "sent_succ_title": {
+      "message": "Sikeresen elküldve!"
+   },
+   "set_master_password": {
+      "message": "Mesterjelszó beállítása"
+   },
+   "set_master_password_tips": {
+      "message": "Fiókja biztonsága érdekében javasoljuk, hogy állítson be egy fő jelszót a DualSafe Password Manger számára."
+   },
+   "set_master_tips": {
+      "message": "\u003Cb>Fontos:\u003C/b> A mesterjelszó lesz az egyetlen érvényes jelszó a DualSafe Password Manager eléréséhez."
+   },
+   "set_master_title": {
+      "message": "Mester jelszó beállítása"
+   },
+   "set_success_desc": {
+      "message": "A mesterjelszó be van állítva, és a helyreállítási kód sikeresen mentve. Kérjük, jelentkezzen be mesterjelszavával."
+   },
+   "settings": {
+      "message": "Beállítások"
+   },
+   "settings_Auto_Fill": {
+      "message": "Automatikus kitöltés"
+   },
+   "settings_Auto_Fill_Dec": {
+      "message": "Automatikusan töltse ki a mentett bejelentkezési adatokat, fizetési információkat stb."
+   },
+   "settings_Auto_Fill_Password": {
+      "message": "Automatikus kitöltési jelszó"
+   },
+   "settings_Auto_Fill_Password_Dec": {
+      "message": "A fiókok és jelszavak automatikus kitöltése, amikor bejelentkezik a mentett webhelyekre."
+   },
+   "settings_Auto_Lock": {
+      "message": "Automatikus zár"
+   },
+   "settings_Auto_Lock_Dec": {
+      "message": "A DualSafe Password Manager automatikus zárolása a megadott gyakorisággal"
+   },
+   "settings_Auto_Save": {
+      "message": "Automatikus mentés"
+   },
+   "settings_Auto_Save_Dec": {
+      "message": "A megadott felhasználónevek és jelszavak automatikus mentése"
+   },
+   "settings_Autofill_and_Autosave": {
+      "message": "Automatikus kitöltés és automatikus mentés"
+   },
+   "settings_Clear_Clipboard": {
+      "message": "Vágólap törlése"
+   },
+   "settings_Clear_Clipboard_Dec": {
+      "message": "A vágólap automatikus törlése a megadott időpontban a jelszó másolása után"
+   },
+   "settings_Fill_Payments": {
+      "message": "Fizetési adatok kitöltése"
+   },
+   "settings_Fill_Payments_Desc": {
+      "message": "Segítségével egyetlen kattintással kitöltheti elmentett fizetési adatait, például a kártyaszámot, a kártyatulajdonost és a lejárati dátumot"
+   },
+   "settings_Fill_Personal_Infol": {
+      "message": "Személyes adatok kitöltése"
+   },
+   "settings_Fill_Personal_Infol_Desc": {
+      "message": "Segítségével egyetlen kattintással kitöltheti mentett személyes adatait, például e-mail-címét, telefonszámát és címét"
+   },
+   "settings_General": {
+      "message": "Általános"
+   },
+   "settings_General_Dec": {
+      "message": "A DualSafe Password Manager beállítása alapértelmezett jelszókezelőként"
+   },
+   "settings_Limited_time_free": {
+      "message": "(Időben korlátozott ajánlat)"
+   },
+   "settings_Security_Options": {
+      "message": "Biztonsági beállítások"
+   },
+   "settings_Show_Icon": {
+      "message": "Ikon megjelenítése"
+   },
+   "settings_Show_Icon_Dec": {
+      "message": "A DualSafe Password Manager ikonjnak megjelenítése az összes jelszóbeviteli mezőben, hogy egyetlen kattintással elmentse bejelentkezéseit"
+   },
+   "sevenDays": {
+      "message": "7 nap"
+   },
+   "showCode": {
+      "message": "Biztonsági kód megjelenítése"
+   },
+   "showPass": {
+      "message": "Jelszó megjelenítése"
+   },
+   "signIn": {
+      "message": "Bejelentkezés"
+   },
+   "signInAutoNow": {
+      "message": "Jelentkezzen be most, hogy automatikusan kitöltse bejelentkezési adatait, személyes adatait vagy fizetési adatait."
+   },
+   "signInLocked": {
+      "message": "A fiókod zárolva lett. Próbálja újra 5 perc múlva."
+   },
+   "signInNow": {
+      "message": "Jelentkezzen be most a webhely bejelentkezési adatainak automatikus kitöltéséhez."
+   },
+   "signInSave": {
+      "message": "Bejelentkezés és mentés"
+   },
+   "signInTimeout": {
+      "message": "Bejelentkezési időtúllépés! Kérjük, ellenőrizze a hálózatot, és próbálja újra!"
+   },
+   "signIn_DPM": {
+      "message": "Bejelentkezés a DualSafe Password Managerbe"
+   },
+   "signIn_Desc": {
+      "message": "Jelentkezzen be, hogy elmentse a(z) \u003Ca class=\"btn-link btn-name\">\u003C/a> bejelentkezési adatait, és a jövőben automatikusan kitöltse azokat.."
+   },
+   "signOut": {
+      "message": "Kijelentkezés"
+   },
+   "sign_in_again_desc": {
+      "message": "Még nem állított be jelszót, mivel korábban bejelentkezett a Google/Facebook-fiókjába. Az OK gombra kattintva bejelentkezhet a Google / Facebook fiókkal."
+   },
+   "sign_in_now": {
+      "message": "Bejelentkezés most"
+   },
+   "sign_in_with": {
+      "message": "Vagy jelentkezzen be"
+   },
+   "sign_in_with_app": {
+      "message": "Jelentkezzen be az asztali alkalmazással"
+   },
+   "sign_in_with_facebook": {
+      "message": "Jelentkezzen be Facebook-al"
+   },
+   "sign_in_with_google": {
+      "message": "Jelentkezzen be a Google-vel"
+   },
+   "sixtyDays": {
+      "message": "60 nap"
+   },
+   "skip_for_now": {
+      "message": "Most nem"
+   },
+   "sort_by": {
+      "message": "Sorrend"
+   },
+   "sort_date_created": {
+      "message": "Létrehozás dátuma"
+   },
+   "sort_date_modified": {
+      "message": "Módosítás dátuma"
+   },
+   "sort_newest_first": {
+      "message": "A legújabbak előre"
+   },
+   "sort_oldest_first": {
+      "message": "A legrégebbiek elöre"
+   },
+   "sort_show_az": {
+      "message": "A-Z"
+   },
+   "sort_show_favorites": {
+      "message": "Kedvencek megjelenítése"
+   },
+   "sort_show_title_az": {
+      "message": "Cím: A-tól Z-ig"
+   },
+   "sort_show_title_za": {
+      "message": "Cím: Z-től A-ig"
+   },
+   "sort_show_za": {
+      "message": "Z-A"
+   },
+   "sort_title": {
+      "message": "Cím"
+   },
+   "state": {
+      "message": "Állam"
+   },
+   "strong": {
+      "message": "Erős"
+   },
+   "success_desc": {
+      "message": "Kattintson a \u003Cspan class=\"succ-icon\">\u003C/span> bővítmény ikonra, és rögzítse a DualSafe Password Managert az eszköztárhoz. Ezután a \u003Cspan class=\"succ-icon dpm\">\u003C/span> elemre kattintva bármikor használhatja a DualSafe Password Managert."
+   },
+   "success_title": {
+      "message": "Gratulálunk 🎉🎉🎉 \u003Cbr>A DualSafe Password Manager használatra kész!"
+   },
+   "suggestion": {
+      "message": "Javaslat"
+   },
+   "suggestion_tips": {
+      "message": "Itt láthatók az aktuálisan megnyitott webhely mentett bejelentkezési adatai."
+   },
+   "symbols": {
+      "message": "Szimbólumok (%s)"
+   },
+   "systemLocks": {
+      "message": "Rendszerzár"
+   },
+   "tags": {
+      "message": "Címkék"
+   },
+   "tenMinutes": {
+      "message": "10 perc"
+   },
+   "thirtyDays": {
+      "message": "30 nap"
+   },
+   "thirtyMinutes": {
+      "message": "30 perc"
+   },
+   "title": {
+      "message": "Cím"
+   },
+   "title_placeholder": {
+      "message": "Adjon meg egy címet"
+   },
+   "tools": {
+      "message": "Eszközök"
+   },
+   "tools_Dark_Web_Monitor": {
+      "message": "Dark Web Monitor"
+   },
+   "tools_Dark_Web_Monitor_Dec": {
+      "message": "Segít figyelemmel kísérni az érzékeny adatok szivárgását a Dark Webben"
+   },
+   "tools_Import_Export": {
+      "message": "Importálás és Exportálás"
+   },
+   "tools_Import_Export_Dec": {
+      "message": "Importáljon adatokat a böngészőkből vagy más jelszóeszközökből, és exportálja a mentett adatokat CSV-fájlba mindössze 1 kattintással"
+   },
+   "tools_Password_Health": {
+      "message": "Jelszó állapota"
+   },
+   "tools_Password_Health_Dec": {
+      "message": "Segít ellenőrizni a sebezhető jelszavakat, például a gyenge, újrafelhasznált vagy feltört jelszavakat"
+   },
+   "tools_Unlimited_Passwords": {
+      "message": "Korlátlan jelszavak"
+   },
+   "tools_Unlimited_Passwords_Only": {
+      "message": "(Csak 50 ingyenes előfizetéssel)"
+   },
+   "twoMinutes": {
+      "message": "2 perc"
+   },
+   "type": {
+      "message": "Tipus"
+   },
+   "unionpay": {
+      "message": "UnionPay"
+   },
+   "unknown": {
+      "message": "Ismeretlen"
+   },
+   "unlock": {
+      "message": "Zárolás feloldása"
+   },
+   "unlockAutoNow": {
+      "message": "Oldja fel most, hogy automatikusan kitöltse bejelentkezési adatait, személyes adatait vagy fizetési adatait."
+   },
+   "unlockDPM": {
+      "message": "A DualSafe Password Manager zárolás feloldása"
+   },
+   "unlockDPM_Desc": {
+      "message": "Oldja fel most, hogy mentse a(z) \u003Ca class=\"btn-link btn-name\">\u003C/a> bejelentkezési adatait, és a jövőben automatikusan kitöltse őket."
+   },
+   "unlockNow": {
+      "message": "Oldja fel a zárolást most, hogy automatikusan kitöltse a bejelentkezéseket erre a webhelyre."
+   },
+   "unlockSave": {
+      "message": "Feloldás és mentés"
+   },
+   "unlock_now": {
+      "message": "Feloldás most"
+   },
+   "until_sign_out": {
+      "message": "Amíg ki nem jelentkezem"
+   },
+   "update": {
+      "message": "Frissítés"
+   },
+   "updateFailed": {
+      "message": "Frissítés sikertelen."
+   },
+   "updateLogins": {
+      "message": "Bejelentkezések frissítése"
+   },
+   "updateSuccessfully": {
+      "message": "Sikeresen frissítve."
+   },
+   "upgradeBtn": {
+      "message": "Frissítés"
+   },
+   "upgradeNowBtn": {
+      "message": "Frissíts most"
+   },
+   "upper_case": {
+      "message": "Nagybetű (A-Z)"
+   },
+   "url": {
+      "message": "url"
+   },
+   "url_copied": {
+      "message": "Weboldal másolva"
+   },
+   "use": {
+      "message": "Használat"
+   },
+   "use_generator_password": {
+      "message": "Jelszó használata"
+   },
+   "user_manual": {
+      "message": "Használati útmutató"
+   },
+   "username": {
+      "message": "Felhasználónév"
+   },
+   "username_copied": {
+      "message": "Felhasználónév másolva"
+   },
+   "username_placeholder": {
+      "message": "E-mail / Felhasználónév / Telefonszám"
+   },
+   "view": {
+      "message": "Nézet"
+   },
+   "visa": {
+      "message": "Visa"
+   },
+   "visaelectron": {
+      "message": "Visa Electron"
+   },
+   "weak": {
+      "message": "Gyenge"
+   },
+   "web_password_sync": {
+      "message": "Megjegyzés: Kérjük, frissítse a webhely jelszavát"
+   },
+   "welcomeTo": {
+      "message": "Üdvözlöllek"
+   },
+   "year": {
+      "message": "Év"
+   },
+   "yes": {
+      "message": "Igen"
+   },
+   "zip": {
+      "message": "ZIP"
+   },
+   "zipPostalCode": {
+      "message": "ZIP/irányítószám"
+   }
+}

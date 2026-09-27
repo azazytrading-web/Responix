@@ -52,7 +52,7 @@ export class PromptLibraryRepository {
             slug: input.slug,
             description: input.description,
             categoryId: input.categoryId,
-            draft: json(input.draft ?? {}),
+            draft: json(this.normalizeDraft(input.draft ?? {})),
             variables: json(input.variables ?? []),
             metadata: json(input.metadata ?? {}),
             createdById: input.actorId,
@@ -97,7 +97,7 @@ export class PromptLibraryRepository {
             name: input.name,
             description: input.description,
             categoryId: input.categoryId,
-            draft: input.draft === undefined ? undefined : json(input.draft),
+            draft: input.draft === undefined ? undefined : json(this.normalizeDraft(input.draft)),
             variables: input.variables === undefined ? undefined : json(input.variables),
             metadata: input.metadata === undefined ? undefined : json(input.metadata),
             updatedById: input.actorId,
@@ -144,6 +144,7 @@ export class PromptLibraryRepository {
     return this.prisma.$transaction(async (tx) => {
       const current = await this.requirePrompt(tx, input.workspaceId, input.id);
       this.assertDraft(current.status);
+      this.assertCompilableDraft(current.draft);
       const revision = current.revision + 1;
       const snapshot = this.snapshot(current);
       const publishedAt = new Date();
@@ -370,6 +371,25 @@ export class PromptLibraryRepository {
       });
       await this.audit(tx, workspaceId, actorId, "prompt.restored", id, current, prompt);
       return prompt;
+    });
+  }
+
+  async deleteDraft(workspaceId: string, actorId: string, id: string) {
+    return this.prisma.$transaction(async (tx) => {
+      const current = await this.requirePrompt(tx, workspaceId, id, true);
+      if (current.status !== "DRAFT" && current.status !== "ARCHIVED") {
+        throw new BadRequestException("Only draft or archived prompts can be deleted");
+      }
+      const activeBindings = await tx.agentPromptBinding.count({
+        where: { promptId: id, agent: { deletedAt: null } }
+      });
+      if (activeBindings) throw new ConflictException("Referenced prompt drafts cannot be deleted");
+      await tx.agentPromptBinding.deleteMany({
+        where: { promptId: id, agent: { deletedAt: { not: null } } }
+      });
+      await tx.promptLibraryItem.delete({ where: { id } });
+      await this.audit(tx, workspaceId, actorId, current.status === "DRAFT" ? "prompt.draft_deleted" : "prompt.archived_deleted", id, current, null);
+      return { id, deleted: true };
     });
   }
 
@@ -618,6 +638,46 @@ export class PromptLibraryRepository {
 
   private assertDraft(status: StudioProjectStatus) {
     if (status !== "DRAFT") throw new BadRequestException("Only draft prompts can be modified");
+  }
+
+  private normalizeDraft(value: PromptJson): PromptJson {
+    const nested = value.sections;
+    const sections = nested !== null && typeof nested === "object" && !Array.isArray(nested)
+      ? nested as PromptJson
+      : {};
+    const first = (...values: unknown[]) => values.find(
+      (item): item is string => typeof item === "string" && item.trim().length > 0
+    );
+    const systemPrompt = first(sections.systemPrompt, value.systemPrompt, value.system_prompt);
+    const developerPrompt = first(
+      sections.developerPrompt, value.developerPrompt, value.developer_prompt
+    );
+    const userPrompt = first(
+      sections.userPrompt, value.userPrompt, value.user_prompt, value.content, value.template
+    );
+    return {
+      ...value,
+      sections: {
+        ...sections,
+        ...(systemPrompt ? { systemPrompt } : {}),
+        ...(developerPrompt ? { developerPrompt } : {}),
+        ...(userPrompt ? { userPrompt } : {})
+      }
+    };
+  }
+
+  private assertCompilableDraft(value: Prisma.JsonValue) {
+    const draft = value !== null && typeof value === "object" && !Array.isArray(value)
+      ? this.normalizeDraft(value as PromptJson)
+      : { sections: {} };
+    const sections = draft.sections as PromptJson;
+    if (typeof sections.userPrompt !== "string" || sections.userPrompt.trim().length === 0) {
+      throw new BadRequestException({
+        message: "Prompt cannot be published without a non-empty sections.userPrompt",
+        code: "USER_PROMPT_MISSING",
+        path: "sections.userPrompt"
+      });
+    }
   }
 
   private snapshot(prompt: Awaited<ReturnType<PromptLibraryRepository["requirePrompt"]>>) {

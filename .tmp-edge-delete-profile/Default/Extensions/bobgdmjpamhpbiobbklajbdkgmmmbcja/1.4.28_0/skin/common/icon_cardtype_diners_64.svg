@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64">
+  <g id="icon_cardtype_diners_64" transform="translate(-304 -137)">
+    <rect id="矩形_1400" data-name="矩形 1400" width="64" height="64" transform="translate(304 137)" fill="#fff"/>
+    <g id="icon_cardtype_diners" transform="translate(-4967.841 -127.655)">
+      <rect id="矩形_1381" data-name="矩形 1381" width="56" height="56" transform="translate(5275.841 268.655)" fill="#61bded" opacity="0"/>
+      <g id="组_1096" data-name="组 1096" transform="translate(5280.875 278.49)">
+        <path id="路径_1375" data-name="路径 1375" d="M5304.729,309.016c9.956,0,19.04-8.035,19.04-17.989,0-10.83-9.084-18.34-19.04-18.34h-8.557a17.905,17.905,0,0,0-18.338,18.34,18.263,18.263,0,0,0,18.338,17.989h8.557" transform="translate(-5277.835 -272.688)" fill="#0c4e97"/>
+        <path id="路径_1376" data-name="路径 1376" d="M5299.009,299.73V279.994a10.557,10.557,0,0,1,0,19.736m-14.321-9.782a10.348,10.348,0,0,1,6.811-9.78V299.9a10.748,10.748,0,0,1-6.811-9.956m10.479-16.59a16.592,16.592,0,1,0,16.592,16.59,16.366,16.366,0,0,0-16.592-16.59" transform="translate(-5276.83 -271.785)" fill="#fff"/>
+      </g>
+    </g>
+  </g>
+</svg>

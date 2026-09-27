@@ -20,7 +20,10 @@
     "knowledge": "Knowledge Base",
     "members": "Team",
     "membersDescription": "Manage workspace members and access.",
-    "platform": "Platform"
+    "platform": "Platform",
+    "agents": "Agents",
+    "providers": "Providers",
+    "whatsapp": "WhatsApp Business"
   },
   "auth": {
     "signIn": "Sign In",
@@ -98,6 +101,11 @@
     "dark": "Dark",
     "system": "System"
   },
+  "language": {
+    "switch": "Switch language",
+    "arabic": "Arabic",
+    "english": "English"
+  },
   "workspace": {
     "switch": "Switch workspace",
     "current": "Current workspace",
@@ -122,6 +130,23 @@
     "admin": "Admin",
     "agent": "Agent",
     "viewer": "Viewer"
+  },
+  "personality": {
+    "title": "Responix Personality Console",
+    "description": "Base values are authoritative. Knobs only control how strongly each selected behaviour is expressed.",
+    "warmth": "Warmth",
+    "enthusiasm": "Enthusiasm",
+    "formality": "Formality",
+    "intensity": "{name} intensity",
+    "base": "Base",
+    "active": "Active: {value}% / {base}%",
+    "soul": "RESPONIX SOUL",
+    "save": "Save personality",
+    "saving": "Saving…",
+    "high": "Distinctly expressive and engaging.",
+    "balanced": "Balanced, clear and approachable.",
+    "reserved": "Reserved and deliberately restrained.",
+    "responseLengthUnavailable": "Response-length intensity is unavailable: this Agent stores only a maximum output-token constraint, not a persisted minimum/maximum range."
   },
   "commandPalette": {
     "title": "Command Palette",

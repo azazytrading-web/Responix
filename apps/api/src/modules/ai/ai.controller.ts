@@ -5,6 +5,8 @@ import {
   HttpCode,
   HttpStatus,
   Post,
+  Put,
+  Param,
   Query,
   Req,
   UseFilters,
@@ -41,6 +43,9 @@ import {
 } from "./dto/ai-response.dto";
 import { InvocationService } from "./invocation/invocation.service";
 import { ProviderDiscoveryService } from "./providers/provider-discovery.service";
+import { ProviderManagementService } from "./providers/provider-management.service";
+import { ConfigureProviderDto, ProviderConfigurationResponseDto, ProviderValidationResponseDto } from "./dto/provider-configuration.dto";
+import type { TenantRequest } from "../tenant/tenant-context.service";
 import { RoutingService } from "./router/routing.service";
 
 @ApiTags("AI")
@@ -57,6 +62,7 @@ import { RoutingService } from "./router/routing.service";
 export class AiController {
   constructor(
     private readonly providers: ProviderDiscoveryService,
+    private readonly providerManagement: ProviderManagementService,
     private readonly routing: RoutingService,
     private readonly invocations: InvocationService
   ) {}
@@ -74,6 +80,21 @@ export class AiController {
     const providers = await this.providers.discover(workspace.id);
     return providers.map((provider) => AiProviderResponseDto.from(provider));
   }
+
+  @Permissions("ai.providers.read") @Get("providers/:providerId/configuration") @Version("1")
+  @ApiOperation({summary:"Get safe workspace provider configuration"})
+  @ApiOkResponse({type:ProviderConfigurationResponseDto})
+  providerConfiguration(@CurrentWorkspace() workspace:{id:string},@Param("providerId")providerId:string){return this.providerManagement.get(workspace.id,providerId);}
+
+  @Permissions("ai.providers.write") @Put("providers/:providerId/configuration") @Version("1")
+  @ApiOperation({summary:"Create or update encrypted workspace provider configuration"})
+  @ApiOkResponse({type:ProviderConfigurationResponseDto})
+  configureProvider(@Req()request:TenantRequest,@Param("providerId")providerId:string,@Body()dto:ConfigureProviderDto){const context=request.tenantContext!;return this.providerManagement.configure(context.workspace.id,context.user.id,providerId,dto);}
+
+  @Permissions("ai.providers.validate") @Post("providers/:providerId/validate") @Version("1") @HttpCode(HttpStatus.OK)
+  @ApiOperation({summary:"Validate workspace provider credentials using a minimal provider request"})
+  @ApiOkResponse({type:ProviderValidationResponseDto})
+  validateProvider(@Req()request:TenantRequest,@Param("providerId")providerId:string){const context=request.tenantContext!;return this.providerManagement.validate(context.workspace.id,context.user.id,providerId);}
 
   @Permissions("ai.invoke")
   @Post("routing/resolve")

@@ -43,6 +43,8 @@ export class AiProviderResponseDto {
     "ACTIVE" | "DISABLED" | "UNHEALTHY";
   @ApiProperty() priority!: number;
   @ApiProperty() configured!: boolean;
+  @ApiPropertyOptional() providerConfigurationId?: string;
+  @ApiProperty() credentialConfigured!: boolean;
   @ApiProperty() enabled!: boolean;
   @ApiProperty({ type: [AiModelResponseDto] }) models!: AiModelResponseDto[];
 
@@ -53,6 +55,8 @@ export class AiProviderResponseDto {
       status: provider.status,
       priority: provider.priority,
       configured: provider.configuration !== null,
+      ...(provider.configuration ? { providerConfigurationId: provider.configuration.id } : {}),
+      credentialConfigured: provider.credentialConfigured ?? false,
       enabled: provider.configuration?.enabled ?? false,
       models: provider.models.map((model) => AiModelResponseDto.from(model))
     });

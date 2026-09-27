@@ -1,0 +1,129 @@
+"use client";
+
+import { useEffect, useMemo, useState, type FormEvent, type ReactNode } from "react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { ApiError } from "@responix/api-client";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { Badge, Button, Card, CardContent, CardDescription, CardHeader, CardTitle, ErrorFallback, Input, Label, PageSkeleton, Textarea } from "@responix/ui";
+import { usePlatformBootstrap } from "../../platform";
+import { cloneAgent, createAgent, getAgent, listExecutionPipelines, listExecutionProfiles, listPrompts, listProviders, publishAgent, updateAgent, updateConversationHistory, updateOperationalPersonality, type AgentCapabilities, type AgentRecord, type AgentVisibility, type AgentWriteInput, type OperationalPersonality } from "./agent-api";
+import { AgentKnowledgeSection } from "./knowledge-section";
+import { PersonalityConsole, personalityOrDefault } from "./personality-console";
+
+type State = { name:string; slug:string; description:string; category:string; visibility:AgentVisibility; providerId:string; modelId:string; executionPipelineId:string; executionProfileId:string; temperature:string; topP:string; maxTokens:string; timeoutMs:string; promptId:string; capabilities:Required<AgentCapabilities>; conversationHistory:boolean };
+const caps: Required<AgentCapabilities> = { knowledgeEnabled:false, toolsEnabled:false, memoryEnabled:false, visionEnabled:false, reasoningEnabled:false, voiceEnabled:false, imageEnabled:false, streamingEnabled:false, moderationEnabled:false };
+const blank: State = { name:"", slug:"", description:"", category:"", visibility:"WORKSPACE", providerId:"", modelId:"", executionPipelineId:"", executionProfileId:"", temperature:"0.7", topP:"", maxTokens:"1024", timeoutMs:"30000", promptId:"", capabilities:caps, conversationHistory:false };
+const mapAgent = (a:AgentRecord):State => ({ name:a.name, slug:a.slug, description:a.description??"", category:a.category??"", visibility:a.visibility, providerId:a.providerId, modelId:a.modelId, executionPipelineId:a.runtimeConfiguration?.executionPipelineId??"", executionProfileId:a.runtimeConfiguration?.executionProfileId??"", temperature:String(a.temperature), topP:a.topP==null?"":String(a.topP), maxTokens:String(a.maxTokens), timeoutMs:String(a.timeoutMs), promptId:a.promptBindings.find((p)=>p.role==="SYSTEM")?.promptId??"", capabilities:{ knowledgeEnabled:a.knowledgeEnabled, toolsEnabled:a.toolsEnabled, memoryEnabled:a.memoryEnabled, visionEnabled:a.visionEnabled, reasoningEnabled:a.reasoningEnabled, voiceEnabled:a.voiceEnabled, imageEnabled:a.imageEnabled, streamingEnabled:a.streamingEnabled, moderationEnabled:a.moderationEnabled }, conversationHistory:a.runtimeConfiguration?.conversationHistory?.enabled??false });
+const isCompilablePrompt=(prompt:{status:string;draft:Record<string,unknown>})=>{
+ const sections=prompt.draft.sections;
+ if(prompt.status!=="PUBLISHED"||!sections||typeof sections!=="object"||Array.isArray(sections))return false;
+ const userPrompt=(sections as Record<string,unknown>).userPrompt;
+ return typeof userPrompt==="string"&&userPrompt.trim().length>0;
+};
+const errorText = (e:unknown) => e instanceof ApiError ? e.message : "The agent configuration could not be saved.";
+const historyDescription = (enabled:boolean) => enabled
+  ? "ON: Prior turns may be read as working context, with other Responix turns kept attributed."
+  : "OFF: Prior turns are not loaded into Agent context. Messages remain stored and are not deleted.";
+const slugify = (v:string) => v.toLowerCase().trim().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"").slice(0,160);
+
+export function AgentCreatePage(){ return <AgentForm />; }
+export function AgentEditPage({agentId}:{agentId:string}){ return <AgentForm agentId={agentId}/>; }
+
+function AgentForm({agentId}:{agentId?:string}){
+  const platform=usePlatformBootstrap(), router=useRouter(), queryClient=useQueryClient();
+  const workspaceId=platform.snapshot?.workspace.id;
+  const canRead=platform.hasPermission("agent.studio.read"), canWrite=platform.hasPermission("agent.studio.write"), canPublish=platform.hasPermission("agent.studio.publish"), canAi=platform.hasPermission("ai.configure"), canPrompts=platform.hasPermission("prompt.library.read");
+  const agent=useQuery({queryKey:["workspace",workspaceId,"agent",agentId],queryFn:()=>getAgent(agentId!),enabled:Boolean(agentId&&workspaceId&&canRead&&platform.state==="READY")});
+  const providers=useQuery({queryKey:["workspace",workspaceId,"ai-providers"],queryFn:listProviders,enabled:Boolean(workspaceId&&canAi&&platform.state==="READY")});
+  const prompts=useQuery({queryKey:["workspace",workspaceId,"prompts","agent-options"],queryFn:listPrompts,enabled:Boolean(workspaceId&&canPrompts&&platform.state==="READY")});
+  const pipelines=useQuery({queryKey:["workspace",workspaceId,"execution-pipelines","agent-options"],queryFn:listExecutionPipelines,enabled:Boolean(workspaceId&&platform.state==="READY")});
+  const profiles=useQuery({queryKey:["workspace",workspaceId,"execution-profiles","agent-options"],queryFn:listExecutionProfiles,enabled:Boolean(workspaceId&&platform.state==="READY")});
+  const [form,setForm]=useState<State>(blank), [baseline,setBaseline]=useState(JSON.stringify(blank)), [slugTouched,setSlugTouched]=useState(false), [notice,setNotice]=useState(""), [failure,setFailure]=useState("");
+  const promptOptions=(prompts.data?.data??[]).filter(isCompilablePrompt);
+  const selectedInvalidPrompt=(prompts.data?.data??[]).find((prompt)=>prompt.id===form.promptId&&!isCompilablePrompt(prompt));
+  const dirty=JSON.stringify(form)!==baseline;
+  const providerOptions=(providers.data??[]).filter((p)=>p.configured&&p.credentialConfigured!==false&&p.enabled&&p.status==="ACTIVE"), selectedProvider=providerOptions.find((p)=>p.id===form.providerId), models=(selectedProvider?.models??[]).filter((m)=>m.status==="ACTIVE"), model=models.find((m)=>m.modelId===form.modelId);
+  useEffect(()=>{ if(agent.data){const next=mapAgent(agent.data);setForm(next);setBaseline(JSON.stringify(next));setSlugTouched(true)} },[agent.data]);
+  useEffect(()=>{
+    if (!model) return;
+    const unsupported: Array<[keyof AgentCapabilities, boolean]> = [
+      ["toolsEnabled", !model.supportsTools], ["visionEnabled", !model.supportsVision],
+      ["reasoningEnabled", !model.supportsReasoning], ["voiceEnabled", !model.supportsAudio],
+      ["streamingEnabled", !model.supportsStreaming]
+    ];
+    setForm((current) => {
+      const capabilities = { ...current.capabilities };
+      let changed = false;
+      for (const [key, incompatible] of unsupported) {
+        if (incompatible && capabilities[key]) { capabilities[key] = false; changed = true; }
+      }
+      return changed ? { ...current, capabilities } : current;
+    });
+    }, [model?.supportsAudio,model?.supportsReasoning,model?.supportsStreaming,model?.supportsTools,model?.supportsVision]);
+  useEffect(()=>{const guard=(e:BeforeUnloadEvent)=>{if(dirty)e.preventDefault()};window.addEventListener("beforeunload",guard);return()=>window.removeEventListener("beforeunload",guard)},[dirty]);
+  const readOnly=Boolean(agent.data&&agent.data.status!=="DRAFT");
+  const validation=useMemo(()=>{const temperature=Number(form.temperature), topP=form.topP===""?undefined:Number(form.topP), tokens=Number(form.maxTokens), timeout=Number(form.timeoutMs);if(!form.name.trim())return "Agent name is required.";if(!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(form.slug))return "Slug must use lowercase letters, numbers, and single hyphens.";if(!form.providerId||!form.modelId)return "Provider and model are required.";if(!Number.isFinite(temperature)||temperature<0||temperature>2)return "Temperature must be between 0 and 2.";if(topP!==undefined&&(!Number.isFinite(topP)||topP<0||topP>1))return "Top P must be between 0 and 1.";if(!Number.isInteger(tokens)||tokens<1)return "Max tokens must be a positive integer.";if(model?.maxOutputTokens&&tokens>model.maxOutputTokens)return `Max tokens cannot exceed ${model.maxOutputTokens} for this model.`;if(!Number.isInteger(timeout)||timeout<100||timeout>600000)return "Timeout must be between 100 and 600000 ms.";return ""},[form,model]);
+  const payload=():AgentWriteInput=>({name:form.name.trim(),slug:form.slug,...(form.description.trim()?{description:form.description.trim()}:{}),...(form.category.trim()?{category:form.category.trim()}:{}),visibility:form.visibility,configuration:{providerId:form.providerId,modelId:form.modelId,...(selectedProvider?.providerConfigurationId?{providerConfigurationId:selectedProvider.providerConfigurationId}:{}),runtimeConfiguration:{...(form.executionPipelineId?{executionPipelineId:form.executionPipelineId}:{}),...(form.executionProfileId?{executionProfileId:form.executionProfileId}:{})},temperature:Number(form.temperature),...(form.topP===""?{}:{topP:Number(form.topP)}),maxTokens:Number(form.maxTokens),streaming:form.capabilities.streamingEnabled,timeoutMs:Number(form.timeoutMs)},capabilities:form.capabilities,conversationHistory:{enabled:form.conversationHistory},promptBindings:form.promptId?[{role:"SYSTEM",promptId:form.promptId}]:[]});
+  const save=useMutation({mutationFn:()=>agentId?updateAgent(agentId,payload()):createAgent(payload()),onSuccess:async(a)=>{const next=mapAgent(a);setForm(next);setBaseline(JSON.stringify(next));setNotice(agentId?"Agent configuration saved.":"Agent created.");await queryClient.invalidateQueries({queryKey:["workspace",workspaceId,"agents"]});queryClient.setQueryData(["workspace",workspaceId,"agent",a.id],a);if(!agentId)router.replace(`/ai/agents/${a.id}`)}});
+  const publish=useMutation({mutationFn:()=>publishAgent(agentId!),onSuccess:async({agent:published})=>{queryClient.setQueryData(["workspace",workspaceId,"agent",agentId],published);await queryClient.invalidateQueries({queryKey:["workspace",workspaceId,"agents"]});setNotice("Agent published.")}});
+  const clone=useMutation({mutationFn:()=>{const suffix=Date.now();return cloneAgent(agentId!,{name:`${agent.data!.name} Draft`,slug:`${agent.data!.slug}-draft-${suffix}`.slice(0,160)})},onSuccess:(draft)=>{router.replace(`/ai/agents/${draft.id}`)}});
+  const [personality,setPersonality]=useState<OperationalPersonality>();
+  useEffect(()=>{if(agent.data)setPersonality(personalityOrDefault(agent.data.runtimeConfiguration?.personality))},[agent.data]);
+  const savePersonality=useMutation({mutationFn:()=>updateOperationalPersonality(agentId!,personalityOrDefault(personality)),onSuccess:async(updated)=>{setPersonality(personalityOrDefault(updated.runtimeConfiguration?.personality));queryClient.setQueryData(["workspace",workspaceId,"agent",agentId],updated);await queryClient.invalidateQueries({queryKey:["workspace",workspaceId,"agents"]});setNotice("Operational personality saved.")}});
+  const [conversationHistoryEnabled,setConversationHistoryEnabled]=useState(false);
+  const [conversationHistoryBaseline,setConversationHistoryBaseline]=useState(false);
+  useEffect(()=>{if(agent.data){const enabled=agent.data.runtimeConfiguration?.conversationHistory?.enabled??false;setConversationHistoryEnabled(enabled);setConversationHistoryBaseline(enabled)}},[agent.data]);
+  const conversationHistoryDirty=conversationHistoryEnabled!==conversationHistoryBaseline;
+  const saveConversationHistory=useMutation({mutationFn:()=>updateConversationHistory(agentId!,conversationHistoryEnabled),onSuccess:async(updated)=>{const enabled=updated.runtimeConfiguration?.conversationHistory?.enabled??false;setConversationHistoryEnabled(enabled);setConversationHistoryBaseline(enabled);queryClient.setQueryData(["workspace",workspaceId,"agent",agentId],updated);await queryClient.invalidateQueries({queryKey:["workspace",workspaceId,"agents"]});setNotice("Conversation history setting saved.")}});
+  if(platform.state==="IDLE"||platform.state==="LOADING")return <PageSkeleton rows={6}/>;
+  if(platform.state==="ERROR"||!platform.snapshot)return <ErrorFallback title="Agent configuration unavailable" description="The workspace platform state could not be loaded." onRetry={platform.retry}/>;
+  if(!canRead||(!agentId&&!canWrite))return <ErrorFallback title="Access denied" description={`The ${agentId?"agent.studio.read":"agent.studio.write"} permission is required.`} code={agentId?"agent.studio.read":"agent.studio.write"}/>;
+  if(agentId&&agent.isPending)return <PageSkeleton rows={6}/>;
+  if(agentId&&(agent.isError||!agent.data))return <ErrorFallback title="Agent unavailable" description="The requested workspace agent could not be loaded." onRetry={()=>{void agent.refetch()}}/>;
+  const submit=async(e:FormEvent)=>{e.preventDefault();setFailure("");setNotice("");if(validation){setFailure(validation);return}try{await save.mutateAsync()}catch(err){setFailure(errorText(err))}};
+  const setCap=(key:keyof AgentCapabilities,value:boolean)=>setForm((s)=>({...s,capabilities:{...s.capabilities,[key]:value}}));
+  const busy=save.isPending||publish.isPending;
+  return <section className="space-y-6 p-6" data-testid={agentId?"agent-edit":"agent-create"}>
+    <div className="flex flex-wrap items-start justify-between gap-3"><div><Link href="/ai/agents" className="text-sm text-muted-foreground hover:text-foreground">← Agents</Link><h1 className="mt-1 text-2xl font-semibold">{agentId?form.name||"Agent configuration":"Create Agent"}</h1><p className="text-sm text-muted-foreground">Workspace-scoped identity, model, instructions, and capabilities.</p></div><div className="flex gap-2">{dirty&&<Badge variant="secondary">Unsaved changes</Badge>}{agent.data&&<Badge>{agent.data.status}</Badge>}</div></div>
+    {!canAi&&<p role="alert" className="rounded-md border border-destructive/40 p-3 text-sm text-destructive">Provider configuration requires ai.configure permission.</p>}{readOnly&&<p className="rounded-md border p-3 text-sm text-muted-foreground">Published or archived agents are read-only; the backend only permits draft updates.</p>}
+    <form className="space-y-6" noValidate onSubmit={(e)=>{void submit(e)}}>
+      <Section title="General" description="Core identity visible throughout the workspace"><div className="grid gap-4 md:grid-cols-2"><Field label="Name" id="agent-name"><Input id="agent-name" value={form.name} maxLength={160} disabled={readOnly||busy} onChange={(e)=>{const name=e.target.value;setForm((s)=>({...s,name,...(!slugTouched?{slug:slugify(name)}:{})}))}} required/></Field><Field label="Slug" id="agent-slug"><Input id="agent-slug" value={form.slug} maxLength={160} disabled={readOnly||busy} onChange={(e)=>{setSlugTouched(true);setForm((s)=>({...s,slug:e.target.value}))}} required/></Field><Field label="Description" id="agent-description" className="md:col-span-2"><Textarea id="agent-description" value={form.description} maxLength={2000} disabled={readOnly||busy} onChange={(e)=>setForm((s)=>({...s,description:e.target.value}))}/></Field><Field label="Category" id="agent-category"><Input id="agent-category" value={form.category} maxLength={120} disabled={readOnly||busy} onChange={(e)=>setForm((s)=>({...s,category:e.target.value}))}/></Field><Field label="Visibility" id="agent-visibility"><Select id="agent-visibility" value={form.visibility} disabled={readOnly||busy} onChange={(v)=>setForm((s)=>({...s,visibility:v as AgentVisibility}))}><option value="WORKSPACE">Workspace</option><option value="PRIVATE">Private</option></Select></Field></div></Section>
+      <Section title="Model" description="Configured providers and active models are loaded from the backend"><div className="grid gap-4 md:grid-cols-2"><Field label="Provider" id="agent-provider"><Select id="agent-provider" value={form.providerId} disabled={readOnly||busy||!canAi||providers.isPending} onChange={(v)=>setForm((s)=>({...s,providerId:v,modelId:""}))}><option value="">Select configured provider</option>{providerOptions.map((p)=><option key={p.id} value={p.id}>{p.providerName}</option>)}</Select></Field><Field label="Model" id="agent-model"><Select id="agent-model" value={form.modelId} disabled={readOnly||busy||!form.providerId} onChange={(v)=>setForm((s)=>({...s,modelId:v}))}><option value="">Select active model</option>{models.map((m)=><option key={m.modelId} value={m.modelId}>{m.displayName||m.modelName}</option>)}</Select></Field><NumberField label="Temperature" id="agent-temperature" value={form.temperature} min="0" max="2" step="0.1" disabled={readOnly||busy} change={(v)=>setForm((s)=>({...s,temperature:v}))}/><NumberField label="Top P (optional)" id="agent-top-p" value={form.topP} min="0" max="1" step="0.05" disabled={readOnly||busy} change={(v)=>setForm((s)=>({...s,topP:v}))}/><NumberField label="Max output tokens" id="agent-max-tokens" value={form.maxTokens} min="1" max={model?.maxOutputTokens} disabled={readOnly||busy} change={(v)=>setForm((s)=>({...s,maxTokens:v}))}/><NumberField label="Timeout (ms)" id="agent-timeout" value={form.timeoutMs} min="100" max="600000" disabled={readOnly||busy} change={(v)=>setForm((s)=>({...s,timeoutMs:v}))}/>{providers.isError&&<p role="alert" className="text-sm text-destructive md:col-span-2">Provider options could not be loaded.</p>}{canAi&&!providers.isPending&&!providers.isError&&providerOptions.length===0&&<p className="text-sm text-muted-foreground md:col-span-2">No configured, enabled provider is available.</p>}</div></Section>
+      <Section title="Instructions" description="Bind an existing Prompt Library resource as the system prompt"><Field label="System prompt" id="agent-prompt"><Select id="agent-prompt" value={form.promptId} disabled={readOnly||busy||!canPrompts||prompts.isPending} onChange={(v)=>setForm((s)=>({...s,promptId:v}))}><option value="">No system prompt binding</option>{selectedInvalidPrompt&&<option value={selectedInvalidPrompt.id} disabled>{selectedInvalidPrompt.name} (Invalid: USER_PROMPT_MISSING)</option>}{promptOptions.map((p)=><option key={p.id} value={p.id}>{p.name} ({p.status})</option>)}</Select></Field>{selectedInvalidPrompt&&<p role="alert" className="mt-2 text-sm text-destructive">This Prompt cannot be used until sections.userPrompt is added and a valid version is published.</p>}{!canPrompts&&<p className="mt-2 text-sm text-muted-foreground">Prompt selection requires prompt.library.read permission.</p>}{prompts.isError&&<p role="alert" className="mt-2 text-sm text-destructive">Prompt options could not be loaded.</p>}</Section>
+      <Section title="Runtime" description="Published runtime resources used to prepare this Agent"><div className="grid gap-4 md:grid-cols-2"><Field label="Execution pipeline" id="agent-execution-pipeline"><Select id="agent-execution-pipeline" value={form.executionPipelineId} disabled={readOnly||busy||pipelines.isPending} onChange={(v)=>setForm((s)=>({...s,executionPipelineId:v}))}><option value="">Select published pipeline</option>{(pipelines.data?.data??[]).map((p)=><option key={p.id} value={p.id}>{p.name}</option>)}</Select></Field><Field label="Execution profile" id="agent-execution-profile"><Select id="agent-execution-profile" value={form.executionProfileId} disabled={readOnly||busy||profiles.isPending} onChange={(v)=>setForm((s)=>({...s,executionProfileId:v}))}><option value="">Select published profile</option>{(profiles.data?.data??[]).map((p)=><option key={p.id} value={p.id}>{p.name}</option>)}</Select></Field></div></Section>
+      <Section title="Capabilities" description="Memory OFF prevents stored memory snapshots from being read into context; explicit memory writes may still be saved, and stored memories are retained. Knowledge Retrieval requires this capability and a connected published Knowledge Space; OFF skips retrieval without changing Knowledge data. Other supported capabilities can be enabled here."><div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">{([["memoryEnabled","Memory",false],["knowledgeEnabled","Knowledge Retrieval",false],["toolsEnabled","Tools",model?!model.supportsTools:true],["visionEnabled","Vision",model?!model.supportsVision:true],["reasoningEnabled","Reasoning",model?!model.supportsReasoning:true],["voiceEnabled","Voice / audio",model?!model.supportsAudio:true],["streamingEnabled","Streaming",model?!model.supportsStreaming:true],["imageEnabled","Image generation",false],["moderationEnabled","Moderation",false]] as Array<[keyof AgentCapabilities,string,boolean]>).map(([key,label,incompatible])=><label key={key} className="flex items-center gap-3 rounded-md border p-3 text-sm"><input type="checkbox" checked={Boolean(form.capabilities[key])} disabled={readOnly||busy||incompatible} onChange={(e)=>setCap(key,e.target.checked)}/><span>{label}</span><span className="ml-auto text-xs text-muted-foreground">{incompatible?"Unsupported by selected model":"Supported"}</span></label>)}</div></Section>
+      {agent.data&&<AgentKnowledgeSection agent={agent.data} workspaceId={workspaceId} canWrite={canWrite}/>} 
+      {agent.data&&<PersonalityConsole value={personality} disabled={!canWrite} saving={savePersonality.isPending} onChange={setPersonality} onSave={()=>{setFailure("");setNotice("");void savePersonality.mutateAsync().catch((error)=>setFailure(errorText(error)))}}/>}
+      <Section title="Conversation History" description="Allow this Responix to use conversation history as working context. The stored conversation is always retained; this only controls whether history is available to the Agent at execution time.">
+        {agentId ? (
+          <div className="space-y-3">
+            <label className="flex items-center gap-3 rounded-md border p-3 text-sm">
+              <input type="checkbox" checked={conversationHistoryEnabled} disabled={!canWrite||saveConversationHistory.isPending} onChange={(e)=>setConversationHistoryEnabled(e.target.checked)}/>
+              <span>Allow this Responix to use conversation history as context</span>
+            </label>
+            <p className="text-xs text-muted-foreground">{historyDescription(conversationHistoryEnabled)}</p>
+            <Button type="button" variant="outline" disabled={!canWrite||saveConversationHistory.isPending||!conversationHistoryDirty} onClick={()=>{setFailure("");void saveConversationHistory.mutateAsync().catch((error)=>setFailure(errorText(error)))}}>{saveConversationHistory.isPending?"Saving…":"Save conversation history"}</Button>
+          </div>
+        ) : (
+          <div className="space-y-3">
+            <label className="flex items-center gap-3 rounded-md border p-3 text-sm">
+              <input type="checkbox" checked={form.conversationHistory} disabled={busy} onChange={(e)=>setForm((s)=>({...s,conversationHistory:e.target.checked}))}/>
+              <span>Allow this Responix to use conversation history as context</span>
+            </label>
+            <p className="text-xs text-muted-foreground">{historyDescription(form.conversationHistory)}</p>
+          </div>
+        )}
+        <p className="mt-3 text-xs text-muted-foreground">The checkbox reflects the persisted setting after save or reload. History is independent of Memory and Knowledge Retrieval.</p>
+      </Section>
+      <Section title="Resource assignment boundary" description="Memory, retrieval, and tools are runtime flags here. Agent Studio exposes no resource IDs or workflow assignment, so FM-6 does not fabricate those associations."/>
+      {failure&&<p role="alert" className="text-sm text-destructive">{failure}</p>}{notice&&<p role="status" className="text-sm text-green-700">{notice}</p>}
+      <div className="flex flex-wrap gap-2"><Button type="submit" disabled={!canWrite||readOnly||busy||!canAi}>{save.isPending?"Saving…":agentId?"Save changes":"Create agent"}</Button>{agentId&&canWrite&&readOnly&&<Button type="button" variant="outline" disabled={clone.isPending} onClick={()=>{void (async()=>{setFailure("");try{await clone.mutateAsync()}catch(e){setFailure(errorText(e))}})()}}>{clone.isPending?"Creating draft…":"Edit as new draft"}</Button>}{agentId&&canPublish&&agent.data?.status==="DRAFT"&&<Button type="button" variant="outline" disabled={dirty||busy} onClick={()=>{void (async()=>{setFailure("");try{await publish.mutateAsync()}catch(e){setFailure(errorText(e))}})()}}>{publish.isPending?"Publishing…":"Publish"}</Button>}<Button type="button" variant="ghost" disabled={!dirty||busy} onClick={()=>{const next=agent.data?mapAgent(agent.data):blank;setForm(next);setBaseline(JSON.stringify(next))}}>Reset</Button></div>
+    </form>
+  </section>
+}
+
+function Section({title,description,children}:{title:string;description:string;children?:ReactNode}){return <Card><CardHeader><CardTitle>{title}</CardTitle><CardDescription>{description}</CardDescription></CardHeader>{children&&<CardContent>{children}</CardContent>}</Card>}
+function Field({label,id,className,children}:{label:string;id:string;className?:string;children:ReactNode}){return <div className={`space-y-2 ${className??""}`}><Label htmlFor={id}>{label}</Label>{children}</div>}
+function Select({id,value,disabled,onChange,children}:{id:string;value:string;disabled?:boolean;onChange:(value:string)=>void;children:ReactNode}){return <select id={id} value={value} disabled={disabled} onChange={(e)=>onChange(e.target.value)} className="h-9 w-full rounded-md border border-border bg-background px-3 text-sm">{children}</select>}
+function NumberField({label,id,value,min,max,step,disabled,change}:{label:string;id:string;value:string;min:string;max?:string|number;step?:string;disabled:boolean;change:(v:string)=>void}){return <Field label={label} id={id}><Input id={id} type="number" value={value} min={min} max={max} step={step} disabled={disabled} onChange={(e)=>change(e.target.value)}/></Field>}

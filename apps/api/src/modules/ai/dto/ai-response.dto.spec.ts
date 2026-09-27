@@ -9,11 +9,12 @@ describe("AI response DTOs", () => {
       authenticationType: "secret",
       status: "ACTIVE",
       priority: 1,
-      configuration: { enabled: true, settings: { secret: "hidden" } },
+      configuration: { id: "configuration-id", enabled: true, settings: { secret: "hidden" } },
       models: []
     });
 
     const serialized = JSON.stringify(response);
+    expect(response.providerConfigurationId).toBe("configuration-id");
     expect(serialized).not.toContain("apiBaseUrl");
     expect(serialized).not.toContain("authenticationType");
     expect(serialized).not.toContain("settings");

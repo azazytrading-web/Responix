@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
+  <g id="icon_home_delete" transform="translate(-181.774 -385)">
+    <rect width="16" height="16" transform="translate(181.774 385)" fill="#fff" opacity="0"/>
+    <g transform="translate(-1339.124 544.139)">
+      <path id="Vector" d="M1534.523-154.9c-2.082-.206-4.175-.313-6.263-.313a37.1,37.1,0,0,0-3.712.188l-1.275.125" fill="none" stroke="#4d5670" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/>
+      <path id="Vector-2" d="M1526.71-155.532l.138-.819c.1-.594.175-1.038,1.231-1.038h1.637c1.057,0,1.138.469,1.232,1.044l.137.813" fill="none" stroke="#4d5670" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/>
+      <path id="Vector-3" d="M1533.179-152.926l-.406,6.294c-.069.981-.125,1.743-1.869,1.743h-4.013c-1.743,0-1.8-.762-1.868-1.743l-.407-6.294" fill="none" stroke="#4d5670" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/>
+      <path id="Vector-4" d="M1527.854-148.326h2.081" fill="none" stroke="#4d5670" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/>
+      <path id="Vector-5" d="M1527.335-150.826h3.125" fill="none" stroke="#4d5670" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/>
+    </g>
+  </g>
+</svg>

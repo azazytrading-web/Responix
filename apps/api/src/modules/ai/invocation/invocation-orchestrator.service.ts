@@ -209,7 +209,13 @@ export class InvocationOrchestratorService {
         event: "ai.invocation.failed",
         requestId: request.requestId,
         workspaceId: request.workspaceId,
-        errorCode: normalized.code
+        errorCode: normalized.code,
+        ...(normalized.code === "UNKNOWN"
+          ? {
+              errorName: error instanceof Error ? error.name : typeof error,
+              errorMessage: error instanceof Error ? error.message : "Unknown invocation failure"
+            }
+          : {})
       });
       throw new AiContractError(normalized.code, normalized.message);
     } finally {

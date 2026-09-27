@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+  <g id="icon_login_logout" transform="translate(-311 -253)">
+    <rect width="24" height="24" rx="4" transform="translate(311 253)" fill="#fff" opacity="0"/>
+    <g transform="translate(1881.068 118.642) rotate(180)">
+      <path id="Vector" d="M1554.569-150c.258-3,1.8-4.225,5.175-4.225h.108c3.725,0,5.217,1.492,5.217,5.217v5.433c0,3.725-1.492,5.217-5.217,5.217h-.108c-3.35,0-4.892-1.208-5.167-4.158" fill="none" stroke="#1a1b1e" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/>
+      <path id="Vector-2" d="M1559.652-146.3h-9.483" fill="none" stroke="#1a1b1e" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/>
+      <path id="Vector-3" d="M1552.027-149.091l-2.792,2.791,2.792,2.792" fill="none" stroke="#1a1b1e" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/>
+    </g>
+  </g>
+</svg>

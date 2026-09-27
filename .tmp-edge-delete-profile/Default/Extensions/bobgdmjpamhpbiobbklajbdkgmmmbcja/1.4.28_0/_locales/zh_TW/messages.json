@@ -1,0 +1,1500 @@
+{
+   "Checkbox_Keep_signed": {
+      "message": "讓我保持登入"
+   },
+   "Checkbox_Keep_signed_Hint": {
+      "message": "您將在指定時間段內自動登入。 請確保您的電腦環境安全。 使用公用電腦時，請不要勾選這個選項。"
+   },
+   "Delete_Exclude_website": {
+      "message": "刪除 & 排除這個網站"
+   },
+   "Emergency_Desc": {
+      "message": "在密碼遺失或遭竊等緊急情況下，可以輕鬆安全地再次存取您的帳戶。"
+   },
+   "Emergency_Title": {
+      "message": "發生事故時的\u003Cb>緊急存取\u003C/b>"
+   },
+   "Enable_Now": {
+      "message": "立即啟用"
+   },
+   "Enter_your_email": {
+      "message": "輸入您的電子郵件"
+   },
+   "Exclude_website_new": {
+      "message": "排除這個網站"
+   },
+   "Invalid_Recovery_Code_New": {
+      "message": "恢復碼無效。 請確認輸入正確的或最新的。 或者\u003Ca class=\"btn-link contactUsLink\">聯絡我們\u003C/a>。"
+   },
+   "Keep_Safe_Desc": {
+      "message": "啟用「密碼健康」以進行密碼檢查並加強您的弱密碼、舊密碼和重複使用的密碼。"
+   },
+   "Keep_Safe_Title": {
+      "message": "保持所有密碼\u003Cb>安全\u003C/b>"
+   },
+   "M_Apr": {
+      "message": "4月"
+   },
+   "M_Aug": {
+      "message": "8月"
+   },
+   "M_Dec": {
+      "message": "12月"
+   },
+   "M_Feb": {
+      "message": "2月"
+   },
+   "M_Jan": {
+      "message": "1月"
+   },
+   "M_Jul": {
+      "message": "7月"
+   },
+   "M_Jun": {
+      "message": "6月"
+   },
+   "M_Mar": {
+      "message": "3月"
+   },
+   "M_May": {
+      "message": "5月"
+   },
+   "M_Nov": {
+      "message": "11月"
+   },
+   "M_Oct": {
+      "message": "10月"
+   },
+   "M_Sep": {
+      "message": "9月"
+   },
+   "No_Worries_Desc": {
+      "message": "如果您的個人資訊遭受資料洩漏，啟用「暗網監視器」以接收通知。"
+   },
+   "No_Worries_Title": {
+      "message": "\u003Cb>不用\u003C/b> 擔心\u003Cb>資料洩漏\u003C/b>"
+   },
+   "No_thanks": {
+      "message": "否，謝謝"
+   },
+   "Password_Generator": {
+      "message": "密碼產生器"
+   },
+   "Password_Generator_Dec": {
+      "message": "只需按一鍵，即可建立強大且安全的密碼"
+   },
+   "Suggested_Password": {
+      "message": "建議的密碼"
+   },
+   "Suggested_Password_Dec": {
+      "message": "對所有密碼輸入框顯示建議的密碼"
+   },
+   "Suggested_password_Case": {
+      "message": "建議的密碼"
+   },
+   "TOTP_Tips": {
+      "message": "您的電腦本機時間不正確，可能造成一次性密碼失效。"
+   },
+   "TOTP_placeholder": {
+      "message": "輸入密碼或 URL，如 otpauth://*"
+   },
+   "Unlimited_Desc": {
+      "message": "只需一個帳戶即可在任何裝置或平台上輕鬆管理、存儲和建立安全密碼。"
+   },
+   "Unlimited_Title": {
+      "message": "跨\u003Cb>無限裝置\u003C/b>同步資料"
+   },
+   "Website": {
+      "message": "網站"
+   },
+   "about": {
+      "message": "關於"
+   },
+   "about_Acknowledgements": {
+      "message": "致謝"
+   },
+   "about_Copyright": {
+      "message": "© iTop Inc. All rights reserved."
+   },
+   "about_EULA": {
+      "message": "EULA"
+   },
+   "about_Privacy_Policy": {
+      "message": "隱私權政策"
+   },
+   "about_Version": {
+      "message": "版本"
+   },
+   "account_blocked_disabled": {
+      "message": "這個帳戶已封鎖或停用。 請聯絡支援小組取得協助。"
+   },
+   "add": {
+      "message": "加入"
+   },
+   "addNew": {
+      "message": "新增"
+   },
+   "addNewAccount": {
+      "message": "新增帳戶"
+   },
+   "add_Login": {
+      "message": "加入登入"
+   },
+   "add_Logins": {
+      "message": "加入登入"
+   },
+   "add_Notes": {
+      "message": "加入註釋"
+   },
+   "add_Payment_Info": {
+      "message": "加入付款資訊"
+   },
+   "add_Payment_Info_Case": {
+      "message": "加入付款資訊"
+   },
+   "add_Personal_Info": {
+      "message": "加入個人資訊"
+   },
+   "add_Personal_Info_Case": {
+      "message": "加入個人資訊"
+   },
+   "add_exclude": {
+      "message": "將網站加入到排除"
+   },
+   "add_items": {
+      "message": "加入項目"
+   },
+   "add_new_website": {
+      "message": "新增網站"
+   },
+   "add_secure_note": {
+      "message": "加入安全筆記"
+   },
+   "add_tag": {
+      "message": "加入標籤"
+   },
+   "add_to_favorites": {
+      "message": "加入到最愛"
+   },
+   "add_to_favorites_succ": {
+      "message": "已加入到最愛"
+   },
+   "add_to_onetime_pwd": {
+      "message": "加入到一次性密碼"
+   },
+   "add_totp": {
+      "message": "加入一次性密碼?"
+   },
+   "add_website": {
+      "message": "加入網站"
+   },
+   "add_website_placeholder": {
+      "message": "輸入網站"
+   },
+   "address": {
+      "message": "地址"
+   },
+   "address_copied": {
+      "message": "地址已複製"
+   },
+   "advancedOptions": {
+      "message": "進階選項"
+   },
+   "all_Item": {
+      "message": "所有項目"
+   },
+   "alreadyAccount": {
+      "message": "* 如果您已經有 iTop 賬號，請直接登入。"
+   },
+   "already_saved": {
+      "message": "我已經儲存"
+   },
+   "americanexpress": {
+      "message": "American Express"
+   },
+   "appName": {
+      "message": "DualSafe Password Manager"
+   },
+   "auth_bottom_desc": {
+      "message": "一旦完成授權，您可以登入到 DualSafe Password Manager。"
+   },
+   "auth_desc": {
+      "message": "請在新開啟的瀏覽器索引標籤中授權 DualSafe Password Manager 的登入。"
+   },
+   "auth_subtitle": {
+      "message": "正在等待授權…"
+   },
+   "auth_title": {
+      "message": "授權"
+   },
+   "autoFillFailed": {
+      "message": "尋找登入輸入欄位失敗。 請嘗試手動複製 & 貼上登入資訊。"
+   },
+   "auto_save_confirm_desc": {
+      "message": "以後對所有網站自動儲存我的使用者名稱和密碼。"
+   },
+   "auto_save_passwords": {
+      "message": "自動儲存密碼"
+   },
+   "auto_save_passwords_desc": {
+      "message": "對所有網站自動儲存我的使用者名稱和密碼"
+   },
+   "auto_saved_successfully": {
+      "message": "自動儲存成功"
+   },
+   "average": {
+      "message": "平均"
+   },
+   "back": {
+      "message": "返回"
+   },
+   "bannerExpiredPurchase": {
+      "message": "哎呀! 您的 Premium \u003Cb>已過期。\u003C/b>"
+   },
+   "bannerFreePurchase": {
+      "message": "升級以享用完全 Premium 存取"
+   },
+   "bannerPremiumPurchase": {
+      "message": "您在 Premium 中還剩下 %s \u003Cspan class=\"day-words\">天\u003C/span>。"
+   },
+   "birthday": {
+      "message": "生日"
+   },
+   "birthday_copied": {
+      "message": "生日已複製"
+   },
+   "browserReboot": {
+      "message": "瀏覽器重啟"
+   },
+   "browser_extension": {
+      "message": "瀏覽器擴充功能"
+   },
+   "cancel": {
+      "message": "取消"
+   },
+   "capitalize": {
+      "message": "大寫字母 (A-Z)"
+   },
+   "cardNumber": {
+      "message": "卡號"
+   },
+   "cardType": {
+      "message": "信用卡類型"
+   },
+   "cardType_placeholder": {
+      "message": "輸入或選取卡片類型"
+   },
+   "card_number_copied": {
+      "message": "卡號已複製"
+   },
+   "card_type_copied": {
+      "message": "信用卡類型已複製"
+   },
+   "cardholderName": {
+      "message": "持卡人姓名"
+   },
+   "cardholder_name_copied": {
+      "message": "持卡人姓名已複製"
+   },
+   "cardother": {
+      "message": "其它"
+   },
+   "carteblanche": {
+      "message": "Carte Blanche"
+   },
+   "change_desc": {
+      "message": "您正在變更主密碼..."
+   },
+   "change_master_password": {
+      "message": "變更主密碼"
+   },
+   "change_now": {
+      "message": "立即變更"
+   },
+   "change_title": {
+      "message": "變更主密碼"
+   },
+   "cityTown": {
+      "message": "城市/城鎮"
+   },
+   "clear": {
+      "message": "清除"
+   },
+   "clear_allpass_desc": {
+      "message": "一旦清除，它們無法恢復。"
+   },
+   "clear_allpass_title": {
+      "message": "您確定要清除所有密碼嗎?"
+   },
+   "clear_deleted_desc": {
+      "message": "一旦刪除，它們無法恢復。"
+   },
+   "clear_deleted_title": {
+      "message": "您確定要從「刪除的項目」中刪除所有項目嗎?"
+   },
+   "clear_password": {
+      "message": "清除密碼"
+   },
+   "cleared_successfully": {
+      "message": "清除成功。"
+   },
+   "close": {
+      "message": "關閉"
+   },
+   "code_desc": {
+      "message": "請輸入您的主密碼以重設您的恢復碼"
+   },
+   "code_pairing_desc": {
+      "message": "從電腦 App 快顯確認代碼，並按一下 [連線] 按鈕以授權自動登入 & 解鎖。"
+   },
+   "code_pairing_title": {
+      "message": "連線碼"
+   },
+   "code_title": {
+      "message": "重設恢復碼"
+   },
+   "comma": {
+      "message": ":"
+   },
+   "comprehensive_pwd_Desc": {
+      "message": "全面的密碼健康檢查"
+   },
+   "confirmMasterNewPass": {
+      "message": "確認新的主密碼"
+   },
+   "confirmMasterPass": {
+      "message": "確認您的主密碼"
+   },
+   "continue": {
+      "message": "繼續"
+   },
+   "continue_sign_in": {
+      "message": "繼續登入"
+   },
+   "copied": {
+      "message": "已複製"
+   },
+   "copy": {
+      "message": "複製"
+   },
+   "copy_generator_password": {
+      "message": "複製密碼"
+   },
+   "copy_notes": {
+      "message": "複製筆記"
+   },
+   "copy_one_time_Password": {
+      "message": "複製一次性密碼"
+   },
+   "copy_password": {
+      "message": "密碼"
+   },
+   "copy_username": {
+      "message": "複製使用者名稱"
+   },
+   "countryRegion": {
+      "message": "國家或地區"
+   },
+   "countryRegion_placeholder": {
+      "message": "選取您的國家或地區"
+   },
+   "createNewAccount": {
+      "message": "建立帳戶"
+   },
+   "create_new_account": {
+      "message": "建立帳戶"
+   },
+   "createdAt": {
+      "message": "建立日期"
+   },
+   "currentMasterPass": {
+      "message": "目前主密碼"
+   },
+   "day": {
+      "message": "日"
+   },
+   "days": {
+      "message": "天"
+   },
+   "days_case": {
+      "message": "天"
+   },
+   "default_password_manager": {
+      "message": "預設密碼管理員"
+   },
+   "delete": {
+      "message": "刪除"
+   },
+   "delete_all": {
+      "message": "刪除全部"
+   },
+   "delete_at": {
+      "message": "刪除日期"
+   },
+   "delete_item": {
+      "message": "您確定要刪除這個項目到「刪除的項目」嗎?"
+   },
+   "delete_item_Recycle_Bin": {
+      "message": "您確定要從「刪除的項目」中刪除這個項目嗎?"
+   },
+   "delete_item_Recycle_Bin_Dec": {
+      "message": "刪除後無法恢復。"
+   },
+   "delete_item_dec": {
+      "message": "只要它沒有永久刪除，您就可以從「刪除的項目」中恢復它。"
+   },
+   "deletedSuccessfully": {
+      "message": "刪除成功。"
+   },
+   "deleted_this_item": {
+      "message": "刪除這個項目"
+   },
+   "desktop": {
+      "message": "桌面"
+   },
+   "desktop_app": {
+      "message": "桌面 App"
+   },
+   "details": {
+      "message": "詳細資料"
+   },
+   "device_limit_desc": {
+      "message": "您已達到在 3 台裝置上登入的最大限制。 立即升級以享受無限裝置存取和以下所有優勢:"
+   },
+   "device_limit_tips": {
+      "message": "* 您將從這個裝置登出:"
+   },
+   "device_limit_title": {
+      "message": "已達到裝置限制!"
+   },
+   "dinersclub": {
+      "message": "Diners Club"
+   },
+   "dir": {
+      "message": "ltr"
+   },
+   "discard": {
+      "message": "放棄"
+   },
+   "discard_change": {
+      "message": "您確定要放棄未儲存的變更嗎?"
+   },
+   "discover": {
+      "message": "Discover"
+   },
+   "downloadApp": {
+      "message": "下載應用程序"
+   },
+   "edit": {
+      "message": "編輯"
+   },
+   "editInfo": {
+      "message": "編輯資訊"
+   },
+   "emailAddress": {
+      "message": "電子郵件地址"
+   },
+   "emailOrPassIncorrect": {
+      "message": "電子郵件地址或密碼不正確。"
+   },
+   "emailVerfy": {
+      "message": "驗證這個電子郵件"
+   },
+   "email_address_copied": {
+      "message": "電子郵件地址已複製"
+   },
+   "emergency_contact": {
+      "message": "緊急訪問"
+   },
+   "emergency_contact_Desc": {
+      "message": "當您無法存取您的資料時，您授予緊急訪問權限的人，可以請求匯出您的資料或變更您的主密碼。"
+   },
+   "enterMasterNewPass": {
+      "message": "輸入新的主密碼"
+   },
+   "enterMasterPass": {
+      "message": "輸入您的主密碼"
+   },
+   "enterRecoveryCass": {
+      "message": "輸入恢復碼"
+   },
+   "enterYourPass": {
+      "message": "輸入您的密碼"
+   },
+   "enter_email_desc": {
+      "message": "請輸入您的電子郵件地址以接收恢復碼!"
+   },
+   "enter_email_tips": {
+      "message": "電子郵件地址無效。 請檢查並重新輸入!"
+   },
+   "enter_your_email_address": {
+      "message": "輸入您的電子郵件地址"
+   },
+   "exclude_website": {
+      "message": "排除網站"
+   },
+   "exclude_website_list": {
+      "message": "排除的網站清單"
+   },
+   "exit": {
+      "message": "退出"
+   },
+   "expOptionDate": {
+      "message": "到期日"
+   },
+   "expiration_date_copied": {
+      "message": "到期日已複製"
+   },
+   "expired": {
+      "message": "過期"
+   },
+   "extDesc": {
+      "message": "DualSafe Password Manager 擴充功能使您在一個地方安全地管理密碼，以隨時自動儲存、自動填寫 & 存取它們。"
+   },
+   "extName": {
+      "description": "DualSafe Password Manager & Digital Vault",
+      "message": "DualSafe Password Manager & Digital Vault"
+   },
+   "extension": {
+      "message": "擴充"
+   },
+   "failedToDelete": {
+      "message": "刪除失敗。"
+   },
+   "failedToOpenLoading_DPM": {
+      "message": "載入桌面版本"
+   },
+   "failedToOpenLoading_Dark_Web_Monitor_Dec": {
+      "message": "「暗網監視器」只在桌面版本中可用。 請在確認快顯視窗中按一下 [開啟] 以執行桌面版本。 或者按一下以下的 %s 按鈕重新開啟快顯視窗。"
+   },
+   "failedToOpenLoading_Emergency_Contact_Dec": {
+      "message": "「緊急聯繫人」只在桌面版本中可用。 請在確認快顯視窗中按一下 [開啟] 以執行桌面版本。 或者按一下以下的 %s 按鈕重新開啟快顯視窗。"
+   },
+   "failedToOpenLoading_Import_Export_Dec": {
+      "message": "「匯入和匯出」只在桌面版本中可用。 請在確認快顯視窗中按一下 [開啟] 以執行桌面版本。 或者按一下以下的 %s 按鈕重新開啟快顯視窗。"
+   },
+   "failedToOpenLoading_Password_Health_Dec": {
+      "message": "「密碼健康」只在桌面版本中可用。 請在確認快顯視窗中按一下 [開啟] 以執行桌面版本。 或者按一下以下的 %s 按鈕重新開啟快顯視窗。"
+   },
+   "failedToOpen_DPM": {
+      "message": "開啟桌面版失敗"
+   },
+   "failedToOpen_Dark_Web_Monitor_Dec": {
+      "message": "「暗網監視器」只在桌面版本中可用。 按一下 %d 按鈕下載並安裝桌面版本。 或者按一下 %s 按鈕再次開啟。"
+   },
+   "failedToOpen_Emergency_Contact_Dec": {
+      "message": "「緊急聯繫人」只在桌面版本中可用。 按一下 %d 按鈕下載並安裝桌面版本。 或者按一下 %s 按鈕再次開啟。"
+   },
+   "failedToOpen_Import_Export_Dec": {
+      "message": "「匯入和匯出」只在桌面版本中可用。 按一下 %d 按鈕下載並安裝桌面版本。 或者按一下 %s 按鈕再次開啟。"
+   },
+   "failedToOpen_Password_Health_Dec": {
+      "message": "「密碼健康」只在桌面版本中可用。 按一下 %d 按鈕下載並安裝桌面版本。 或者按一下 %s 按鈕再次開啟。"
+   },
+   "failedToRestore": {
+      "message": "恢復失敗。"
+   },
+   "failed_send_desc": {
+      "message": "無法傳送恢復碼電子郵件。 請再試一次。"
+   },
+   "failed_send_title": {
+      "message": "傳送失敗。"
+   },
+   "favoties": {
+      "message": "最愛"
+   },
+   "feedback": {
+      "message": "意見反應"
+   },
+   "fill": {
+      "message": "填寫"
+   },
+   "firstName": {
+      "message": "名字"
+   },
+   "fiveMinutes": {
+      "message": "每隔 5 分鐘"
+   },
+   "forgotYourPass": {
+      "message": "忘記密碼?"
+   },
+   "fourHours": {
+      "message": "每隔 4 小時"
+   },
+   "fourteenDays": {
+      "message": "14 天"
+   },
+   "free": {
+      "message": "免費"
+   },
+   "gender": {
+      "message": "性別"
+   },
+   "genderFemale": {
+      "message": "女"
+   },
+   "genderMale": {
+      "message": "男"
+   },
+   "genderNone": {
+      "message": "無"
+   },
+   "genderOther": {
+      "message": "其它"
+   },
+   "gender_copied": {
+      "message": "性別已複製"
+   },
+   "goPremiumBtn": {
+      "message": "轉成 Premium"
+   },
+   "go_back_to_signin": {
+      "message": "返回以登入"
+   },
+   "hideCode": {
+      "message": "隱藏安全碼"
+   },
+   "hidePass": {
+      "message": "隱藏密碼"
+   },
+   "ignore_website": {
+      "message": "忽略這個網站"
+   },
+   "installDesktopApp": {
+      "message": "安裝桌面 App"
+   },
+   "invalid_email": {
+      "message": "無效的電子郵件地址。 請輸入已驗證的電子郵件地址。"
+   },
+   "invalid_master_pass": {
+      "message": "主密碼無效!"
+   },
+   "invalid_master_tips": {
+      "message": "主密碼無效。 請檢查並重試。"
+   },
+   "invalid_recovery_code": {
+      "message": "恢復碼無效。 請檢查並重試。"
+   },
+   "invalid_secret_key": {
+      "message": "安全金鑰無效!"
+   },
+   "item_remove_from_favorites": {
+      "message": "從最愛移除"
+   },
+   "jcb": {
+      "message": "JCB"
+   },
+   "lang": {
+      "message": "zh-tw"
+   },
+   "lastModifiedAt": {
+      "message": "修改日期"
+   },
+   "lastName": {
+      "message": "姓氏"
+   },
+   "lastPasswordChangedAt": {
+      "message": "密碼變更日期"
+   },
+   "learn_more": {
+      "message": "深入了解"
+   },
+   "length": {
+      "message": "長度"
+   },
+   "loading": {
+      "message": "正在載入..."
+   },
+   "loading_data_error": {
+      "message": "載入失敗。 請檢查您的網路連線。"
+   },
+   "lock": {
+      "message": "鎖定"
+   },
+   "lock_comfirm_btn": {
+      "message": "手動解鎖"
+   },
+   "login_comfirm_btn": {
+      "message": "手動登入"
+   },
+   "login_comfirm_desc": {
+      "message": "按一下您的帳戶以\u003Cbr>授權從桌面 App 自動登入 & 解鎖。"
+   },
+   "login_feature_auto": {
+      "message": "\u003Cb>自動\u003C/b> - 以自動同步存取無限裝置"
+   },
+   "login_feature_easy": {
+      "message": "\u003Cb>簡單\u003C/b> - 只需按一下即可自動儲存和自動填充密碼"
+   },
+   "login_feature_safe": {
+      "message": "\u003Cb>安全\u003C/b> - 以一流的加密方式存儲您的資料"
+   },
+   "login_feature_secure": {
+      "message": "\u003Cb>安全\u003C/b> - 產生強而獨特的密碼"
+   },
+   "login_feature_unlimited": {
+      "message": "\u003Cb>無限制\u003C/b> - 儲存無限制的密碼、付款等。"
+   },
+   "login_left_title": {
+      "message": "安全、簡單但免費的管理密碼方式， 對您的數位生活至關重要。"
+   },
+   "login_waiting_title": {
+      "message": "正在等待從桌面 App 授權…"
+   },
+   "logins": {
+      "message": "登入"
+   },
+   "lower_case": {
+      "message": "小寫 (a-z)"
+   },
+   "maestro": {
+      "message": "Maestro"
+   },
+   "mastercard": {
+      "message": "Mastercard"
+   },
+   "masterpassIncorrect": {
+      "message": "主密碼無效。"
+   },
+   "match_change_pass": {
+      "message": "密碼不符合需求。"
+   },
+   "match_master_pass": {
+      "message": "密碼不相符。"
+   },
+   "middleName": {
+      "message": "中間名"
+   },
+   "month": {
+      "message": "月"
+   },
+   "more": {
+      "message": "更多"
+   },
+   "name": {
+      "message": "名稱"
+   },
+   "name_copied": {
+      "message": "姓名已複製"
+   },
+   "networkError": {
+      "message": "網路連線錯誤。"
+   },
+   "never": {
+      "message": "永不"
+   },
+   "newUser": {
+      "message": "新的使用者?"
+   },
+   "new_password": {
+      "message": "新密碼"
+   },
+   "new_tag": {
+      "message": "新標籤"
+   },
+   "new_tag_number": {
+      "message": "新標籤"
+   },
+   "ninetyDays": {
+      "message": "90 天"
+   },
+   "noItemsAddAllItem": {
+      "message": "沒有加入項目。"
+   },
+   "noItemsAddLoginItem": {
+      "message": "沒有加入登入。"
+   },
+   "noItemsAddNotesItem": {
+      "message": "沒有加入安全筆記。"
+   },
+   "noItemsAddPayItem": {
+      "message": "沒有加入付款資訊。"
+   },
+   "noItemsAddPersonalItem": {
+      "message": "沒有加入個人資訊。"
+   },
+   "noItemsAddRecycleItem": {
+      "message": "這裡沒有項目。"
+   },
+   "noItemsFound": {
+      "message": "找不到項目。"
+   },
+   "noResult": {
+      "message": "沒有結果!"
+   },
+   "noSaved": {
+      "message": "這個站台沒有儲存的登入資訊。"
+   },
+   "noSavedPrss": {
+      "message": "沒有儲存的密碼!"
+   },
+   "no_excluded_websites": {
+      "message": "沒有排除的網站。"
+   },
+   "no_password_history": {
+      "message": "沒有密碼歷程記錄。"
+   },
+   "no_valid_secret_key_found": {
+      "message": "找不到有效的安全金鑰!"
+   },
+   "notNow": {
+      "message": "現在不要"
+   },
+   "not_have_code": {
+      "message": "沒有恢復碼?"
+   },
+   "notes": {
+      "message": "筆記"
+   },
+   "notes_characters_tips": {
+      "message": "還剩 %s 個字元"
+   },
+   "notes_copied": {
+      "message": "筆記已複製"
+   },
+   "notes_placeholder": {
+      "message": "為此項目輸入一些註釋 (最大限制: %s 個字元)"
+   },
+   "numWords": {
+      "message": "數字 (0-9)"
+   },
+   "offer_to_save_passwords": {
+      "message": "提議儲存密碼"
+   },
+   "offer_to_save_passwords_desc": {
+      "message": "登入或註冊時提示儲存密碼"
+   },
+   "ok": {
+      "message": "確定"
+   },
+   "okIgotIt": {
+      "message": "好的，我明白。"
+   },
+   "oneHour": {
+      "message": "每隔 1 小時"
+   },
+   "oneMinute": {
+      "message": "每隔 1 分鐘"
+   },
+   "one_time_Password": {
+      "message": "一次性密碼"
+   },
+   "one_time_pass_copied": {
+      "message": "一次性密碼已複製"
+   },
+   "only": {
+      "message": "只有"
+   },
+   "open": {
+      "message": "開啟"
+   },
+   "options": {
+      "message": "選項"
+   },
+   "passIncorrect": {
+      "message": "密碼不正確。"
+   },
+   "password": {
+      "message": "密碼"
+   },
+   "password_copied": {
+      "message": "密碼已複製"
+   },
+   "password_history_item": {
+      "message": "密碼歷程記錄"
+   },
+   "password_history_tips": {
+      "message": "在此顯示最近的 %s 個密碼。"
+   },
+   "password_history_title": {
+      "message": "密碼歷程記錄"
+   },
+   "password_same": {
+      "message": "新的主密碼不能和舊的相同。"
+   },
+   "password_tip_note": {
+      "message": "\u003Cb>注意:\u003C/b> 不要使用您的上層 iTop 密碼。"
+   },
+   "password_tip_one": {
+      "message": "至少 8 個字元。 建議超過 16 個字元。"
+   },
+   "password_tip_three": {
+      "message": "至少一個符號。"
+   },
+   "password_tip_two": {
+      "message": "至少一個數字。"
+   },
+   "payment_Info": {
+      "message": "付款資訊"
+   },
+   "personal_Info": {
+      "message": "個人資訊"
+   },
+   "phoneNumber": {
+      "message": "電話號碼"
+   },
+   "phone_number_copied": {
+      "message": "電話號碼已複製"
+   },
+   "premiumExpiredPurchase": {
+      "message": "您的 Premium \u003Cb class='text-red'>已過期!\u003C/b>"
+   },
+   "premiumExpiredPurchaseAlert": {
+      "message": "進階功能現在不可用。 升級以繼續 Premium 存取，並輕鬆保護您的密碼安全。"
+   },
+   "premiumExpiringSoonPurchase": {
+      "message": "只剩 \u003Cb class=\"text-yellow\">%s 天\u003C/b> 的 Premium!"
+   },
+   "premiumExpiringSoonPurchaseAlert": {
+      "message": "升級以保持 Premium 存取以下進階功能:"
+   },
+   "premiumFreePurchase": {
+      "message": "一種更簡單、更安全的密碼管理方式"
+   },
+   "premiumFreePurchaseAlert": {
+      "message": "立即開始 Premium 並保留這些進階功能:"
+   },
+   "premiumFreePurchaseAlert_New": {
+      "message": "立即開始 Premium 並保留這些進階功能:"
+   },
+   "premiumFreePurchase_New": {
+      "message": "一種更簡單、更安全的密碼管理方式"
+   },
+   "premiumPurchase": {
+      "message": "您已取得 30 天 Premium!"
+   },
+   "premiumPurchaseAlert": {
+      "message": "現在請享用以下進階功能:"
+   },
+   "premiun": {
+      "message": "Premium"
+   },
+   "purchase_Dark_Web_Monitor": {
+      "message": "暗網監視器 & 警示"
+   },
+   "purchase_Password_Health": {
+      "message": "密碼健康檢查"
+   },
+   "purchase_Password_Health_Check": {
+      "message": "密碼健康檢查"
+   },
+   "purchase_Unlimited_Devices": {
+      "message": "跨無限裝置同步"
+   },
+   "questionMark": {
+      "message": "?"
+   },
+   "recovery_code_copied": {
+      "message": "恢復碼已複製"
+   },
+   "recycle_Bin": {
+      "message": "刪除的項目"
+   },
+   "refresh": {
+      "message": "重新整理"
+   },
+   "rememberMeOnThisDevice": {
+      "message": "在這個裝置記住我"
+   },
+   "remindExpirationDate": {
+      "message": "到期日前 2 個月提醒我"
+   },
+   "remind_me_after_days": {
+      "message": "7 天後提醒我"
+   },
+   "remind_me_tomorrow": {
+      "message": "明天提醒我"
+   },
+   "remind_password": {
+      "message": "90 天後提醒我變更密碼"
+   },
+   "remove": {
+      "message": "移除"
+   },
+   "remove_from_favorites": {
+      "message": "從最愛移除"
+   },
+   "remove_from_favorites_succ": {
+      "message": "已從最愛移除"
+   },
+   "resend": {
+      "message": "重新傳送"
+   },
+   "reset": {
+      "message": "重設"
+   },
+   "reset_code_desc": {
+      "message": "請輸入您的恢復碼以重設您的主密碼。 您的恢復碼已儲存為 PDF 檔案。"
+   },
+   "reset_code_title": {
+      "message": "輸入恢復碼"
+   },
+   "reset_desc": {
+      "message": "請輸入您的已驗證電子郵件地址以重設密碼"
+   },
+   "reset_email_place": {
+      "message": "輸入您的已驗證電子郵件地址"
+   },
+   "reset_master_title": {
+      "message": "重設主密碼"
+   },
+   "reset_recovery_code": {
+      "message": "重設恢復碼"
+   },
+   "reset_success_desc": {
+      "message": "您的主密碼已重設。 請使用新的主密碼登入。"
+   },
+   "reset_success_title": {
+      "message": "成功!"
+   },
+   "reset_title": {
+      "message": "重設密碼"
+   },
+   "restore": {
+      "message": "還原"
+   },
+   "restoreSuccessfully": {
+      "message": "恢復成功。"
+   },
+   "retry": {
+      "message": "重試"
+   },
+   "save": {
+      "message": "儲存"
+   },
+   "saveIn_DPM": {
+      "message": "儲存在 DualSafe Password Manager"
+   },
+   "save_as_pdf": {
+      "message": "另存為 PDF"
+   },
+   "save_code_desc_login": {
+      "message": "請將您的恢復碼另存為 PDF。"
+   },
+   "save_code_desc_one": {
+      "message": "請將您的恢復碼儲存為 PDF 並印列以確保安全。"
+   },
+   "save_code_desc_options": {
+      "message": "從現在開始，您先前的恢復碼無效。 請將您的新恢復碼另存為 PDF 並列印，以確保安全。"
+   },
+   "save_code_desc_two": {
+      "message": "如果您忘記了主密碼，它允許您重新取得對 DualSafe Password Manager 的存取。"
+   },
+   "save_code_new_title": {
+      "message": "儲存您的新恢復碼"
+   },
+   "save_code_tips": {
+      "message": "\u003Cb>重要提示:\u003C/b> 如果您忘記了主密碼，恢復碼是協助您再次存取 DualSafe Password Manager 的唯一方法。"
+   },
+   "save_code_title": {
+      "message": "儲存恢復碼"
+   },
+   "save_totp": {
+      "message": "儲存一次性密碼? "
+   },
+   "savedFailedData": {
+      "message": "最新資料已從伺服器同步。"
+   },
+   "savedFailedSynced": {
+      "message": "儲存失敗! 最新資料已從伺服器同步。"
+   },
+   "savedSuccessfully": {
+      "message": "儲存成功。"
+   },
+   "scan_web_page_QRCode": {
+      "message": "掃描網頁二維碼"
+   },
+   "search": {
+      "message": "搜尋"
+   },
+   "secure": {
+      "message": "安全"
+   },
+   "secureNotes": {
+      "message": "安全筆記"
+   },
+   "secure_notes_placeholder": {
+      "message": "在此處輸入您的重要筆記 (最大限制: %s 個字元)"
+   },
+   "securityCode": {
+      "message": "安全碼"
+   },
+   "security_code_copied": {
+      "message": "安全碼已複製"
+   },
+   "send": {
+      "message": "傳送"
+   },
+   "send_email_hint": {
+      "message": "傳送到您的電子郵件"
+   },
+   "sending_desc": {
+      "message": "將恢復碼傳送到您的電子郵件地址。"
+   },
+   "sending_title": {
+      "message": "正在傳送"
+   },
+   "sent_succ_desc": {
+      "message": "您的恢復碼已傳送到電子郵件地址 %s。 如果它不在您的收件匣中，請檢查垃圾郵件。 或者您可以\u003Cbutton class=\"resndbtn\">重新傳送\u003C/button>。"
+   },
+   "sent_succ_title": {
+      "message": "傳送成功!"
+   },
+   "set_master_password": {
+      "message": "設定主密碼"
+   },
+   "set_master_password_tips": {
+      "message": "為了您的帳戶安全，建議為 DualSafe Password Manger 設定主密碼。"
+   },
+   "set_master_tips": {
+      "message": "\u003Cb>重要提示:\u003C/b> 主密碼將是存取 DualSafe Password Manager 的唯一有效密碼。"
+   },
+   "set_master_title": {
+      "message": "設定主密碼"
+   },
+   "set_success_desc": {
+      "message": "主密碼已設定，且恢復碼儲存成功。 請使用您的主密碼登入。"
+   },
+   "settings": {
+      "message": "設定"
+   },
+   "settings_Auto_Fill": {
+      "message": "自動填寫"
+   },
+   "settings_Auto_Fill_Dec": {
+      "message": "自動填寫已儲存的登入資訊、付款資訊等。"
+   },
+   "settings_Auto_Fill_Password": {
+      "message": "自動填寫密碼"
+   },
+   "settings_Auto_Fill_Password_Dec": {
+      "message": "當您登入儲存的網站時，自動填寫帳戶和密碼。"
+   },
+   "settings_Auto_Lock": {
+      "message": "自動鎖定"
+   },
+   "settings_Auto_Lock_Dec": {
+      "message": "在指定的頻率自動鎖定 DualSafe Password Manager"
+   },
+   "settings_Auto_Save": {
+      "message": "自動儲存"
+   },
+   "settings_Auto_Save_Dec": {
+      "message": "自動儲存輸入的使用者名稱和密碼"
+   },
+   "settings_Autofill_and_Autosave": {
+      "message": "自動填寫和自動儲存"
+   },
+   "settings_Clear_Clipboard": {
+      "message": "清除剪貼簿"
+   },
+   "settings_Clear_Clipboard_Dec": {
+      "message": "複製密碼後在指定的時間自動清除剪貼簿"
+   },
+   "settings_Fill_Payments": {
+      "message": "填寫付款資訊"
+   },
+   "settings_Fill_Payments_Desc": {
+      "message": "協助您按一鍵填寫已儲存的付款資訊，例如卡號、持卡人和到期日"
+   },
+   "settings_Fill_Personal_Infol": {
+      "message": "填寫個人資訊"
+   },
+   "settings_Fill_Personal_Infol_Desc": {
+      "message": "協助您按一鍵填寫已儲存的個人資訊，例如電子郵件、電話號碼和地址"
+   },
+   "settings_General": {
+      "message": "一般"
+   },
+   "settings_General_Dec": {
+      "message": "設定 DualSafe Password Manager 為預設密碼管理員"
+   },
+   "settings_Limited_time_free": {
+      "message": "(限時優惠)"
+   },
+   "settings_Security_Options": {
+      "message": "安全性選項"
+   },
+   "settings_Show_Icon": {
+      "message": "顯示圖示"
+   },
+   "settings_Show_Icon_Dec": {
+      "message": "在所有密碼輸入框中顯示 DualSafe Password Manager 的圖示，按一鍵儲存您的登入資訊"
+   },
+   "sevenDays": {
+      "message": "7 天"
+   },
+   "showCode": {
+      "message": "顯示安全碼"
+   },
+   "showPass": {
+      "message": "顯示密碼"
+   },
+   "signIn": {
+      "message": "登入"
+   },
+   "signInAutoNow": {
+      "message": "立即登入以自動填寫您的登入資訊、個人資訊或付款資訊。"
+   },
+   "signInLocked": {
+      "message": "您的帳戶已鎖定。 請在 5 分鐘後重試。"
+   },
+   "signInNow": {
+      "message": "立即登入以自動填寫這個站台的登入資訊。"
+   },
+   "signInSave": {
+      "message": "登入 & 儲存"
+   },
+   "signInTimeout": {
+      "message": "登入逾時! 請檢查您的網路，然後重試!"
+   },
+   "signIn_DPM": {
+      "message": "登入 DualSafe Password Manager"
+   },
+   "signIn_Desc": {
+      "message": "立即登入以儲存 \u003Ca class=\"btn-link btn-name\">\u003C/a> 的登入資訊，並在以後為您自動填寫。"
+   },
+   "signOut": {
+      "message": "登出"
+   },
+   "sign_in_again_desc": {
+      "message": "您尚未設定密碼，因為之前使用 Google / Facebook 登入。 您可以按一下 [確定] 以使用 Google / Facebook 登入。"
+   },
+   "sign_in_now": {
+      "message": "立即登入"
+   },
+   "sign_in_with": {
+      "message": "或登入以"
+   },
+   "sign_in_with_app": {
+      "message": "使用桌面 App 登入"
+   },
+   "sign_in_with_facebook": {
+      "message": "使用 Facebook 登入"
+   },
+   "sign_in_with_google": {
+      "message": "使用 Google 登入"
+   },
+   "sixtyDays": {
+      "message": "60 天"
+   },
+   "skip_for_now": {
+      "message": "立即略過"
+   },
+   "sort_by": {
+      "message": "排序方式"
+   },
+   "sort_date_created": {
+      "message": "建立日期"
+   },
+   "sort_date_modified": {
+      "message": "修改日期"
+   },
+   "sort_newest_first": {
+      "message": "新的優先"
+   },
+   "sort_oldest_first": {
+      "message": "舊的優先"
+   },
+   "sort_show_az": {
+      "message": "A-Z"
+   },
+   "sort_show_favorites": {
+      "message": "顯示最愛"
+   },
+   "sort_show_title_az": {
+      "message": "標題: A 到 Z"
+   },
+   "sort_show_title_za": {
+      "message": "標題: Z 到 A"
+   },
+   "sort_show_za": {
+      "message": "Z-A"
+   },
+   "sort_title": {
+      "message": "標題"
+   },
+   "state": {
+      "message": "狀態"
+   },
+   "strong": {
+      "message": "強"
+   },
+   "success_desc": {
+      "message": "按一下擴充功能圖示\u003Cspan class=\"succ-icon\">\u003C/span>，並將 DualSafe Password Manager 釘選工具列。 接著您可以按一下 \u003Cspan class=\"succ-icon dpm\">\u003C/span> 以隨時使用 DualSafe Password Manager。"
+   },
+   "success_title": {
+      "message": "恭喜 🎉🎉🎉 \u003Cbr>DualSafe Password Manager 準備就緒!"
+   },
+   "suggestion": {
+      "message": "建議"
+   },
+   "suggestion_tips": {
+      "message": "在此顯示目前開啟網站的已儲存登入資料。"
+   },
+   "symbols": {
+      "message": "符號 (%s)"
+   },
+   "systemLocks": {
+      "message": "系統鎖定"
+   },
+   "tags": {
+      "message": "標籤"
+   },
+   "tenMinutes": {
+      "message": "每隔 10 分鐘"
+   },
+   "thirtyDays": {
+      "message": "30 天"
+   },
+   "thirtyMinutes": {
+      "message": "每隔 30 分鐘"
+   },
+   "title": {
+      "message": "標題"
+   },
+   "title_placeholder": {
+      "message": "請輸入標題"
+   },
+   "token_invalid_desc": {
+      "message": "您的工作階段已過期，請重新登入。"
+   },
+   "tools": {
+      "message": "工具"
+   },
+   "tools_Dark_Web_Monitor": {
+      "message": "暗網監視器"
+   },
+   "tools_Dark_Web_Monitor_Dec": {
+      "message": "協助您監控暗網中的敏感資料洩露"
+   },
+   "tools_Import_Export": {
+      "message": "匯入和匯出"
+   },
+   "tools_Import_Export_Dec": {
+      "message": "只需按一鍵，從您的瀏覽器或其它密碼工具匯入資料 & 將您儲存的資料匯出為 CSV 檔案"
+   },
+   "tools_Password_Health": {
+      "message": "密碼健康"
+   },
+   "tools_Password_Health_Dec": {
+      "message": "協助您檢查易受攻擊的密碼，例如弱密碼、重複使用密碼或洩露密碼"
+   },
+   "tools_Unlimited_Passwords": {
+      "message": "無限的密碼"
+   },
+   "tools_Unlimited_Passwords_Only": {
+      "message": "(免費方案只有 50 個)"
+   },
+   "twoMinutes": {
+      "message": "每隔 2 分鐘"
+   },
+   "type": {
+      "message": "類型"
+   },
+   "unionpay": {
+      "message": "UnionPay"
+   },
+   "unknown": {
+      "message": "未知"
+   },
+   "unlock": {
+      "message": "解鎖"
+   },
+   "unlockAutoNow": {
+      "message": "立即解鎖以自動填寫您的登入資訊、個人資訊或付款資訊。"
+   },
+   "unlockDPM": {
+      "message": "解鎖 DualSafe Password Manager"
+   },
+   "unlockDPM_Desc": {
+      "message": "立即解鎖以儲存 \u003Ca class=\"btn-link btn-name\">\u003C/a> 的登入資訊，並在以後為您自動填寫。"
+   },
+   "unlockNow": {
+      "message": "立即解鎖以自動填寫這個站台的登入資訊。"
+   },
+   "unlockSave": {
+      "message": "解鎖 & 儲存"
+   },
+   "unlock_now": {
+      "message": "立即解鎖"
+   },
+   "until_sign_out": {
+      "message": "直到登出"
+   },
+   "update": {
+      "message": "更新"
+   },
+   "updateFailed": {
+      "message": "更新失敗。"
+   },
+   "updateLogins": {
+      "message": "更新登入"
+   },
+   "updateSuccessfully": {
+      "message": "更新成功。"
+   },
+   "upgradeBtn": {
+      "message": "升級"
+   },
+   "upgradeNowBtn": {
+      "message": "立即升級"
+   },
+   "upper_case": {
+      "message": "大寫 (A-Z)"
+   },
+   "url": {
+      "message": "URL"
+   },
+   "url_copied": {
+      "message": "網站已複製"
+   },
+   "use": {
+      "message": "使用"
+   },
+   "use_generator_password": {
+      "message": "使用密碼"
+   },
+   "user_manual": {
+      "message": "使用者手冊"
+   },
+   "username": {
+      "message": "使用者名稱"
+   },
+   "username_copied": {
+      "message": "使用者名稱已複製"
+   },
+   "username_placeholder": {
+      "message": "電子郵件 / 使用者名稱 / 電話號碼"
+   },
+   "view": {
+      "message": "檢視"
+   },
+   "visa": {
+      "message": "Visa"
+   },
+   "visaelectron": {
+      "message": "Visa Electron"
+   },
+   "weak": {
+      "message": "弱"
+   },
+   "web_password_sync": {
+      "message": "注意: 請確認更新網站的密碼"
+   },
+   "welcomeTo": {
+      "message": "歡迎使用"
+   },
+   "year": {
+      "message": "年"
+   },
+   "yes": {
+      "message": "是"
+   },
+   "zip": {
+      "message": "ZIP"
+   },
+   "zipPostalCode": {
+      "message": "郵編/郵遞區號"
+   }
+}

@@ -1,0 +1,888 @@
+{
+   "M_Apr": {
+      "message": "Април"
+   },
+   "M_Aug": {
+      "message": "Август"
+   },
+   "M_Dec": {
+      "message": "Декември"
+   },
+   "M_Feb": {
+      "message": "Февруари"
+   },
+   "M_Jan": {
+      "message": "Януари"
+   },
+   "M_Jul": {
+      "message": "Юли"
+   },
+   "M_Jun": {
+      "message": "Юни"
+   },
+   "M_Mar": {
+      "message": "Март"
+   },
+   "M_May": {
+      "message": "Май"
+   },
+   "M_Nov": {
+      "message": "Ноември"
+   },
+   "M_Oct": {
+      "message": "Октомври"
+   },
+   "M_Sep": {
+      "message": "Септември"
+   },
+   "Password_Generator": {
+      "message": "Генератор пароли"
+   },
+   "Password_Generator_Dec": {
+      "message": "Създава силни и сигурни пароли само с 1-клик"
+   },
+   "Suggested_Password": {
+      "message": "Предложена парола"
+   },
+   "Suggested_Password_Dec": {
+      "message": "Показвай предложена парола за вс. полета за въвод на парола"
+   },
+   "Suggested_password_Case": {
+      "message": "Предложена парола"
+   },
+   "TOTP_Tips": {
+      "message": "Локалното PC време е грешно, което може да доведе до грешна парола."
+   },
+   "TOTP_placeholder": {
+      "message": "Въведи таен ключ или URL като otpauth://*"
+   },
+   "Website": {
+      "message": "Уебсайт"
+   },
+   "about": {
+      "message": "За"
+   },
+   "about_Acknowledgements": {
+      "message": "Благодарности"
+   },
+   "about_Copyright": {
+      "message": "© iTop Inc. Всички права запазени."
+   },
+   "about_EULA": {
+      "message": "EULA"
+   },
+   "about_Privacy_Policy": {
+      "message": "Политика за поверителност"
+   },
+   "about_Version": {
+      "message": "Версия"
+   },
+   "addNew": {
+      "message": "Добави нова"
+   },
+   "addNewAccount": {
+      "message": "Добавете нов акаунт"
+   },
+   "add_Login": {
+      "message": "Добави логин"
+   },
+   "add_Logins": {
+      "message": "Добави логини"
+   },
+   "add_Notes": {
+      "message": "Добави бележки"
+   },
+   "add_Payment_Info": {
+      "message": "Добави инфо плащане"
+   },
+   "add_Payment_Info_Case": {
+      "message": "Добави инфо плащане"
+   },
+   "add_Personal_Info": {
+      "message": "Добави лично инфо"
+   },
+   "add_Personal_Info_Case": {
+      "message": "Добави лично инфо"
+   },
+   "add_items": {
+      "message": "Добави обекти"
+   },
+   "add_new_website": {
+      "message": "Добави нов уебсайт"
+   },
+   "add_secure_note": {
+      "message": "Добави бележки защита"
+   },
+   "address": {
+      "message": "Адрес"
+   },
+   "address_copied": {
+      "message": "Копиран адрес"
+   },
+   "advancedOptions": {
+      "message": "Разширени опции"
+   },
+   "all_Item": {
+      "message": "Вс. обекти"
+   },
+   "alreadyAccount": {
+      "message": "* If you already have an iTop account, please sign in directly."
+   },
+   "americanexpress": {
+      "message": "American Express"
+   },
+   "appName": {
+      "message": "DualSafe Password Manager"
+   },
+   "autoFillFailed": {
+      "message": "Failed to find login input fields. Please try to copy & paste login info manually."
+   },
+   "average": {
+      "message": "Средна"
+   },
+   "back": {
+      "message": "Назад"
+   },
+   "bannerExpiredPurchase": {
+      "message": "Опа! Твоят Premium е \u003Cb>изтекъл.\u003C/b>"
+   },
+   "bannerFreePurchase": {
+      "message": "Upgrade to enjoy full Premium access"
+   },
+   "bannerPremiumPurchase": {
+      "message": "Имаш %s \u003Cspan class=\"day-words\">дни\u003C/span> в Premium."
+   },
+   "birthday": {
+      "message": "Рожден ден"
+   },
+   "birthday_copied": {
+      "message": "Копиран рожден ден"
+   },
+   "browserReboot": {
+      "message": "Рестарт браузъра"
+   },
+   "cancel": {
+      "message": "Отказ"
+   },
+   "capitalize": {
+      "message": "Главни букви (A-Z)"
+   },
+   "cardNumber": {
+      "message": "Номер карта"
+   },
+   "cardType": {
+      "message": "Тип карта"
+   },
+   "cardType_placeholder": {
+      "message": "Въведи или избери тип карта"
+   },
+   "card_number_copied": {
+      "message": "Копиран е номер карта"
+   },
+   "card_type_copied": {
+      "message": "Копиран е тип карта"
+   },
+   "cardholderName": {
+      "message": "Картодържател име"
+   },
+   "cardholder_name_copied": {
+      "message": "Копирано е картодържател име"
+   },
+   "cardother": {
+      "message": "Други"
+   },
+   "carteblanche": {
+      "message": "Carte Blanche"
+   },
+   "cityTown": {
+      "message": "Град/Място"
+   },
+   "close": {
+      "message": "Затвори"
+   },
+   "comma": {
+      "message": ":"
+   },
+   "copied": {
+      "message": "копирано"
+   },
+   "copy": {
+      "message": "Копие"
+   },
+   "copy_generator_password": {
+      "message": "Копие парола"
+   },
+   "copy_notes": {
+      "message": "Копие бележки"
+   },
+   "copy_one_time_Password": {
+      "message": "Копие еднократна парола"
+   },
+   "copy_password": {
+      "message": "парола"
+   },
+   "copy_username": {
+      "message": "Копие юзър име"
+   },
+   "countryRegion": {
+      "message": "Страна или регион"
+   },
+   "countryRegion_placeholder": {
+      "message": "Избери страна или регион"
+   },
+   "createNewAccount": {
+      "message": "Създай акаунт"
+   },
+   "createdAt": {
+      "message": "Създаден в"
+   },
+   "day": {
+      "message": "Ден"
+   },
+   "days": {
+      "message": "Дни"
+   },
+   "days_case": {
+      "message": "дни"
+   },
+   "delete": {
+      "message": "Изтрий"
+   },
+   "delete_item": {
+      "message": "Махаш ли този обект в Коша?"
+   },
+   "delete_item_Recycle_Bin": {
+      "message": "Махаш ли този обект от Коша?"
+   },
+   "delete_item_Recycle_Bin_Dec": {
+      "message": "Веднъж изтрит, не може да се върне."
+   },
+   "delete_item_dec": {
+      "message": "Може да го върнеш от Коша, ако не е изтрит трайно."
+   },
+   "deletedSuccessfully": {
+      "message": "Успешно изтрит."
+   },
+   "details": {
+      "message": "Детайли"
+   },
+   "dinersclub": {
+      "message": "Diners Club"
+   },
+   "dir": {
+      "message": "ltr"
+   },
+   "discard": {
+      "message": "Откажи"
+   },
+   "discard_change": {
+      "message": "Отхвърляш ли незапазените промени?"
+   },
+   "discover": {
+      "message": "Discover"
+   },
+   "downloadApp": {
+      "message": "Свали ап"
+   },
+   "edit": {
+      "message": "Редакция"
+   },
+   "editInfo": {
+      "message": "Редакция инфо"
+   },
+   "emailAddress": {
+      "message": "Имейл адрес"
+   },
+   "emailOrPassIncorrect": {
+      "message": "Грешен имейл адрес или парола."
+   },
+   "emailVerfy": {
+      "message": "Потвърди този имейл"
+   },
+   "email_address_copied": {
+      "message": "Копиран имейл адрес"
+   },
+   "enterYourPass": {
+      "message": "Въведи парола"
+   },
+   "enter_your_email_address": {
+      "message": "Имейл адрес"
+   },
+   "expOptionDate": {
+      "message": "Крайна дата"
+   },
+   "expiration_date_copied": {
+      "message": "Копирана е крайна дата"
+   },
+   "expired": {
+      "message": "ИЗТЕКЪЛ"
+   },
+   "extDesc": {
+      "message": "Екстензията DualSafe Password Manager помага за безопасен контрол на пароли на едно място и допуска авто запис, автопопълване и достъп до тях по всяко време."
+   },
+   "extName": {
+      "description": "DualSafe Password Manager & Digital Vault",
+      "message": "DualSafe Password Manager & Digital Vault"
+   },
+   "failedToDelete": {
+      "message": "Гаф в триене."
+   },
+   "failedToOpenLoading_DPM": {
+      "message": "Зареждане настолна версията"
+   },
+   "failedToOpenLoading_Dark_Web_Monitor_Dec": {
+      "message": "Тъмен Уеб монитор има само в настолна версия. Клик \"Отвори\" в поп-ъпа за потвърждение за старт на настолна версия. Или клик бутона %s по-долу да отвориш пак поп-ъпа."
+   },
+   "failedToOpenLoading_Emergency_Contact_Dec": {
+      "message": "Emergency Contac има само в настолна версия. Клик \"Отвори\" в поп-ъпа за потвърждение за старт на настолна версия. Или клик бутона %s по-долу да отвориш пак поп-ъпа."
+   },
+   "failedToOpenLoading_Import_Export_Dec": {
+      "message": "Внос и износ има само в настолна версия. Клик \"Отвори\" в поп-ъпа за потвърждение за старт на настолна версия. Или клик бутона %s по-долу да отвориш пак поп-ъпа."
+   },
+   "failedToOpenLoading_Password_Health_Dec": {
+      "message": "Годност на парола има само в настолна версия. Клик \"Отвори\" в поп-ъпа за потвърждение за старт на настолна версия. Или клик бутона %s по-долу да отвориш пак поп-ъпа."
+   },
+   "failedToOpen_DPM": {
+      "message": "Настолната версия не се отвори"
+   },
+   "failedToOpen_Dark_Web_Monitor_Dec": {
+      "message": "Тъмен Уеб монитор има само в настолна версия. Клик бутона %d да свалиш и качиш настолна версия. Или клик бутона %s да отвориш пак."
+   },
+   "failedToOpen_Emergency_Contact_Dec": {
+      "message": "Emergency Contact има само в настолна версия. Клик бутона %d да свалиш и качиш настолна версия. Или клик бутона %s да отвориш пак."
+   },
+   "failedToOpen_Import_Export_Dec": {
+      "message": "Внос и износ има само в настолна версия. Клик бутона %d да свалиш и качиш настолна версия. Или клик бутона %s да отвориш пак."
+   },
+   "failedToOpen_Password_Health_Dec": {
+      "message": "Годност на парола има само в настолна версия. Клик бутона %d да Клик бутона %d да свалиш и качиш настолна версия. Или клик бутона %s да отвориш пак."
+   },
+   "failedToRestore": {
+      "message": "Гаф с връщане"
+   },
+   "feedback": {
+      "message": "Отзив"
+   },
+   "fill": {
+      "message": "Запълни"
+   },
+   "firstName": {
+      "message": "Първо име"
+   },
+   "fiveMinutes": {
+      "message": "5 минути"
+   },
+   "forgotYourPass": {
+      "message": "Забравена парола?"
+   },
+   "fourHours": {
+      "message": "4 часа"
+   },
+   "free": {
+      "message": "FREE"
+   },
+   "gender": {
+      "message": "Пол"
+   },
+   "genderFemale": {
+      "message": "Женски"
+   },
+   "genderMale": {
+      "message": "Мъжки"
+   },
+   "genderNone": {
+      "message": "Няма"
+   },
+   "genderOther": {
+      "message": "Друго"
+   },
+   "gender_copied": {
+      "message": "Копиран е полът"
+   },
+   "goPremiumBtn": {
+      "message": "Мини на Premium"
+   },
+   "hideCode": {
+      "message": "Hide security code"
+   },
+   "hidePass": {
+      "message": "Крий парола"
+   },
+   "installDesktopApp": {
+      "message": "Качи Desktop App"
+   },
+   "invalid_secret_key": {
+      "message": "Грешен таен ключ!"
+   },
+   "jcb": {
+      "message": "JCB"
+   },
+   "lang": {
+      "message": "bg"
+   },
+   "lastModifiedAt": {
+      "message": "Променен в"
+   },
+   "lastName": {
+      "message": "Фамилия"
+   },
+   "lastPasswordChangedAt": {
+      "message": "Променена парола в"
+   },
+   "learn_more": {
+      "message": "Виж още"
+   },
+   "length": {
+      "message": "Дължина"
+   },
+   "lock": {
+      "message": "Заключи"
+   },
+   "logins": {
+      "message": "Логини"
+   },
+   "maestro": {
+      "message": "Maestro"
+   },
+   "mastercard": {
+      "message": "Mastercard"
+   },
+   "middleName": {
+      "message": "Презиме"
+   },
+   "month": {
+      "message": "Месец"
+   },
+   "more": {
+      "message": "Още"
+   },
+   "name": {
+      "message": "Име"
+   },
+   "name_copied": {
+      "message": "Копирано име"
+   },
+   "networkError": {
+      "message": "Грешка в мрежова връзка."
+   },
+   "never": {
+      "message": "Никога"
+   },
+   "newUser": {
+      "message": "Нов юзър?"
+   },
+   "noItemsAddAllItem": {
+      "message": "Не са добавени обекти."
+   },
+   "noItemsAddLoginItem": {
+      "message": "Не са добавени логини."
+   },
+   "noItemsAddNotesItem": {
+      "message": "Не са добавени бележки защита."
+   },
+   "noItemsAddPayItem": {
+      "message": "Не е добавено инфо плащане."
+   },
+   "noItemsAddPersonalItem": {
+      "message": "Не е добавено лично инфо."
+   },
+   "noItemsAddRecycleItem": {
+      "message": "Тук няма обекти."
+   },
+   "noItemsFound": {
+      "message": "Не са открити обекти."
+   },
+   "noResult": {
+      "message": "Без резултат!"
+   },
+   "noSaved": {
+      "message": "Няма запис логини за този сайт."
+   },
+   "noSavedPrss": {
+      "message": "Няма запис парола!"
+   },
+   "notNow": {
+      "message": "Не сега"
+   },
+   "notes": {
+      "message": "Бележки"
+   },
+   "notes_characters_tips": {
+      "message": "Остават %s знака"
+   },
+   "notes_copied": {
+      "message": "Копирани са бележки"
+   },
+   "notes_placeholder": {
+      "message": "Въведи бележки за този обект (Макс лимит: %s знака)"
+   },
+   "numWords": {
+      "message": "Цифри (0-9)"
+   },
+   "okIgotIt": {
+      "message": "OK. Разбрах."
+   },
+   "oneHour": {
+      "message": "1 час"
+   },
+   "oneMinute": {
+      "message": "1 минута"
+   },
+   "one_time_Password": {
+      "message": "Еднократна парола"
+   },
+   "one_time_pass_copied": {
+      "message": "Копирана е еднократна парола"
+   },
+   "only": {
+      "message": "Само"
+   },
+   "open": {
+      "message": "Отвори"
+   },
+   "options": {
+      "message": "Опции"
+   },
+   "passIncorrect": {
+      "message": "Грешна парола."
+   },
+   "password": {
+      "message": "Парола"
+   },
+   "password_copied": {
+      "message": "Копирана е парола"
+   },
+   "payment_Info": {
+      "message": "Инфо плащане"
+   },
+   "personal_Info": {
+      "message": "Лично инфо"
+   },
+   "phoneNumber": {
+      "message": "Телефон"
+   },
+   "phone_number_copied": {
+      "message": "Копиран телефон"
+   },
+   "premiumExpiredPurchase": {
+      "message": "Твоят Premium е \u003Cb class='text-red'>изтекъл!\u003C/b>"
+   },
+   "premiumExpiredPurchaseAlert": {
+      "message": "Разширени функции вече не са достъпни. Надстрой да продължи Premium достъпа и лесно да пазиш паролите защитени."
+   },
+   "premiumExpiringSoonPurchase": {
+      "message": "Остават само \u003Cb class=\"text-yellow\">%s дни\u003C/b> Premium !"
+   },
+   "premiumExpiringSoonPurchaseAlert": {
+      "message": "Надстрой да си с Premium достъп до тези разширени функции:"
+   },
+   "premiumFreePurchase": {
+      "message": "По-лек и сигурен начин за контрол на пароли"
+   },
+   "premiumFreePurchaseAlert": {
+      "message": "Старт Premium днес и пази тези разширени функции:"
+   },
+   "premiumFreePurchaseAlert_New": {
+      "message": "Start Premium today and keep these advanced features:"
+   },
+   "premiumFreePurchase_New": {
+      "message": "An Easier, Safer Way to Manage Your Passwords"
+   },
+   "premiumPurchase": {
+      "message": "Имаш 30 дни Premium!"
+   },
+   "premiumPurchaseAlert": {
+      "message": "Сега работи с тези разширени функции:"
+   },
+   "premiun": {
+      "message": "ПРЕМИУМ"
+   },
+   "purchase_Dark_Web_Monitor": {
+      "message": "Dark Web Monitoring & Alerts"
+   },
+   "purchase_Password_Health": {
+      "message": "Проверка годност на парола"
+   },
+   "purchase_Password_Health_Check": {
+      "message": "Password Health Check"
+   },
+   "purchase_Unlimited_Devices": {
+      "message": "Sync Across Unlimited Devices"
+   },
+   "questionMark": {
+      "message": "?"
+   },
+   "recycle_Bin": {
+      "message": "Кош"
+   },
+   "refresh": {
+      "message": "Освежи"
+   },
+   "rememberMeOnThisDevice": {
+      "message": "Помни ме на това устр-во"
+   },
+   "remindExpirationDate": {
+      "message": "Напомни 2 месеца преди крайната дата"
+   },
+   "remind_password": {
+      "message": "Напомни да сменя паролата след 90 дни"
+   },
+   "restore": {
+      "message": "Върнѝ"
+   },
+   "restoreSuccessfully": {
+      "message": "Успешно върнат."
+   },
+   "retry": {
+      "message": "Повтори"
+   },
+   "save": {
+      "message": "Запис"
+   },
+   "saveIn_DPM": {
+      "message": "Запис в DualSafe Password Manager"
+   },
+   "savedFailedData": {
+      "message": "Най-новите данни са в синхрон от сървъра."
+   },
+   "savedFailedSynced": {
+      "message": "Гаф в запис! Най-новите данни са в синхрон от сървъра."
+   },
+   "savedSuccessfully": {
+      "message": "Успешен запис."
+   },
+   "search": {
+      "message": "Търси"
+   },
+   "secure": {
+      "message": "Сигурна"
+   },
+   "secureNotes": {
+      "message": "Бележки защита"
+   },
+   "secure_notes_placeholder": {
+      "message": "Въведи важни бележки тук (Макс лимит: %s знака)"
+   },
+   "securityCode": {
+      "message": "Код защита"
+   },
+   "security_code_copied": {
+      "message": "Копиран е код защита"
+   },
+   "settings": {
+      "message": "Настройки"
+   },
+   "settings_Auto_Fill": {
+      "message": "Автопопълване"
+   },
+   "settings_Auto_Fill_Dec": {
+      "message": "Автоматично попълва запазени логини, инфо плащане и т.н."
+   },
+   "settings_Auto_Lock": {
+      "message": "Авто заключи"
+   },
+   "settings_Auto_Lock_Dec": {
+      "message": "Автоматично Заключи DualSafe Password Manager на указана честота"
+   },
+   "settings_Auto_Save": {
+      "message": "Автозапис"
+   },
+   "settings_Auto_Save_Dec": {
+      "message": "Автоматично запазва въведени юзър имена и пароли"
+   },
+   "settings_Autofill_and_Autosave": {
+      "message": "Автопопълване и автозапис"
+   },
+   "settings_Clear_Clipboard": {
+      "message": "Изчисти буфера"
+   },
+   "settings_Clear_Clipboard_Dec": {
+      "message": "Автоматично изчисти буфера в указано време след копиране парола"
+   },
+   "settings_General": {
+      "message": "Общи"
+   },
+   "settings_General_Dec": {
+      "message": "Задай DualSafe Password Manager като базов мениджър пароли"
+   },
+   "settings_Security_Options": {
+      "message": "Опции защита"
+   },
+   "settings_Show_Icon": {
+      "message": "Показ икона"
+   },
+   "settings_Show_Icon_Dec": {
+      "message": "Дай иконата на DualSafe Password Manager във вс. полета за въвод на пароли за запис на входни данни само с 1-клик"
+   },
+   "showCode": {
+      "message": "Show security code"
+   },
+   "showPass": {
+      "message": "Показ парола"
+   },
+   "signIn": {
+      "message": "Влез"
+   },
+   "signInLocked": {
+      "message": "Your account has been locked. Try again in 5 minutes."
+   },
+   "signInNow": {
+      "message": "Влез сега за автопопълване логини за този сайт."
+   },
+   "signInSave": {
+      "message": "Влез & запис"
+   },
+   "signInTimeout": {
+      "message": "Таймаут за вход! Виж мрежата и опитай пак!"
+   },
+   "signIn_DPM": {
+      "message": "Влез в DualSafe Password Manager"
+   },
+   "signIn_Desc": {
+      "message": "Влез сега за запис логини на \u003Ca class=\"btn-link btn-name\">\u003C/a> и  автопопълване за теб в бъдеще."
+   },
+   "signOut": {
+      "message": "Излез"
+   },
+   "state": {
+      "message": "Щат"
+   },
+   "strong": {
+      "message": "Силна"
+   },
+   "suggestion": {
+      "message": "Идея"
+   },
+   "symbols": {
+      "message": "Символи (%s)"
+   },
+   "systemLocks": {
+      "message": "Заключи система"
+   },
+   "tenMinutes": {
+      "message": "10 минути"
+   },
+   "thirtyMinutes": {
+      "message": "30 минути"
+   },
+   "title": {
+      "message": "Заглавие"
+   },
+   "title_placeholder": {
+      "message": "Въведи заглавие"
+   },
+   "tools": {
+      "message": "Пособия"
+   },
+   "tools_Dark_Web_Monitor": {
+      "message": "Тъмен Уеб монитор"
+   },
+   "tools_Dark_Web_Monitor_Dec": {
+      "message": "Помага за следене теч на прецизни данни в Dark Web"
+   },
+   "tools_Import_Export": {
+      "message": "Внос и износ"
+   },
+   "tools_Import_Export_Dec": {
+      "message": "Внася данни от браузъри или други пособия за пароли & изнася запазени данни в CSV файл само с 1-клик"
+   },
+   "tools_Password_Health": {
+      "message": "Годност на парола"
+   },
+   "tools_Password_Health_Dec": {
+      "message": "Помага за проверка на уязвими пароли, като слаби, повтаряни или компрометирани"
+   },
+   "tools_Unlimited_Passwords": {
+      "message": "Пароли без лимит"
+   },
+   "tools_Unlimited_Passwords_Only": {
+      "message": "(Само 50 на план Free)"
+   },
+   "twoMinutes": {
+      "message": "2 минути"
+   },
+   "unionpay": {
+      "message": "UnionPay"
+   },
+   "unlock": {
+      "message": "Отключи"
+   },
+   "unlockDPM": {
+      "message": "Отключи DualSafe Password Manager"
+   },
+   "unlockDPM_Desc": {
+      "message": "Отключи сега за запис логини на \u003Ca class=\"btn-link btn-name\">\u003C/a> и  автопопълване за теб в бъдеще."
+   },
+   "unlockNow": {
+      "message": "Отключи сега за автопопълване логини за този сайт."
+   },
+   "unlockSave": {
+      "message": "Отключи & запис"
+   },
+   "update": {
+      "message": "Обнови"
+   },
+   "updateFailed": {
+      "message": "Гаф с ъпдейт"
+   },
+   "updateLogins": {
+      "message": "Обнови логини"
+   },
+   "updateSuccessfully": {
+      "message": "Обновен успешно."
+   },
+   "upgradeBtn": {
+      "message": "Надстрой"
+   },
+   "upgradeNowBtn": {
+      "message": "Надстрой сега"
+   },
+   "url": {
+      "message": "url"
+   },
+   "url_copied": {
+      "message": "Копирана е уебсайт"
+   },
+   "use": {
+      "message": "Ползвай"
+   },
+   "use_generator_password": {
+      "message": "Ползвай парола"
+   },
+   "username": {
+      "message": "Юзър име"
+   },
+   "username_copied": {
+      "message": "Копирано е юзър име"
+   },
+   "username_placeholder": {
+      "message": "Имейл / Юзър име / Телефон"
+   },
+   "view": {
+      "message": "Вид"
+   },
+   "visa": {
+      "message": "Visa"
+   },
+   "visaelectron": {
+      "message": "Visa Electron"
+   },
+   "weak": {
+      "message": "Слаба"
+   },
+   "welcomeTo": {
+      "message": "Заповядай в"
+   },
+   "year": {
+      "message": "Година"
+   },
+   "yes": {
+      "message": "Да"
+   },
+   "zip": {
+      "message": "Пощенски код"
+   },
+   "zipPostalCode": {
+      "message": "Пощенски код"
+   }
+}

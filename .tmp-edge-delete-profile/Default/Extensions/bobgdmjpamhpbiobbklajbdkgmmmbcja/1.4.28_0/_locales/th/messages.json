@@ -1,0 +1,900 @@
+{
+   "M_Apr": {
+      "message": "เมษายน"
+   },
+   "M_Aug": {
+      "message": "สิงหาคม"
+   },
+   "M_Dec": {
+      "message": "ธันวาคม"
+   },
+   "M_Feb": {
+      "message": "กุมภาพันธ์"
+   },
+   "M_Jan": {
+      "message": "มกราคม"
+   },
+   "M_Jul": {
+      "message": "มิถุนายน"
+   },
+   "M_Jun": {
+      "message": "มิถุนายน"
+   },
+   "M_Mar": {
+      "message": "มีนาคม"
+   },
+   "M_May": {
+      "message": "พฤษภาคม"
+   },
+   "M_Nov": {
+      "message": "พฤศจิกายน"
+   },
+   "M_Oct": {
+      "message": "ตุลาคม"
+   },
+   "M_Sep": {
+      "message": "กันยายน"
+   },
+   "Password_Generator": {
+      "message": "สร้างรหัสผ่าน"
+   },
+   "Password_Generator_Dec": {
+      "message": "สร้างรหัสผ่านที่รัดกุมและปลอดภัยด้วยการคลิกเพียงครั้งเดียว"
+   },
+   "Suggested_Password": {
+      "message": "รหัสผ่านที่แนะนำ"
+   },
+   "Suggested_Password_Dec": {
+      "message": "แสดงรหัสผ่านที่แนะนำสำหรับช่องป้อนรหัสผ่านทั้งหมด"
+   },
+   "Suggested_password_Case": {
+      "message": "รหัสผ่านที่แนะนำ"
+   },
+   "TOTP_Tips": {
+      "message": "เวลาทามโซนของพีซีของคุณไม่ถูกต้อง ซึ่งอาจทำให้รหัสผ่านแบบใช้ครั้งเดียวไม่ถูกต้อง"
+   },
+   "TOTP_placeholder": {
+      "message": "Enter the secret key or URL like otpauth://*"
+   },
+   "Website": {
+      "message": "เว็บไซต์"
+   },
+   "about": {
+      "message": "เกี่ยวกับ"
+   },
+   "about_Acknowledgements": {
+      "message": "Acknowledgements"
+   },
+   "about_Copyright": {
+      "message": "© iTop Inc. All rights reserved."
+   },
+   "about_EULA": {
+      "message": "EULA"
+   },
+   "about_Privacy_Policy": {
+      "message": "นโยบายความเป็นส่วนตัว"
+   },
+   "about_Version": {
+      "message": "เวอร์ชั่น"
+   },
+   "account_blocked_disabled": {
+      "message": "This account has been blocked or disabled. Please contact support team for help."
+   },
+   "addNew": {
+      "message": "เพิ่มใหม่"
+   },
+   "addNewAccount": {
+      "message": "เพิ่มบัญชีใหม่"
+   },
+   "add_Login": {
+      "message": "เพิ่มการเข้าสู่ระบบ"
+   },
+   "add_Logins": {
+      "message": "เพิ่มการเข้าสู่ระบบ"
+   },
+   "add_Notes": {
+      "message": "เพิ่มโน็ต"
+   },
+   "add_Payment_Info": {
+      "message": "เพิ่มข้อมูลการชำระเงิน"
+   },
+   "add_Payment_Info_Case": {
+      "message": "เพิ่มข้อมูลการชำระเงิน"
+   },
+   "add_Personal_Info": {
+      "message": "เพิ่มข้อมูลส่วนตัว"
+   },
+   "add_Personal_Info_Case": {
+      "message": "เพิ่มข้อมูลส่วนตัว"
+   },
+   "add_items": {
+      "message": "เพิ่มรายการ"
+   },
+   "add_new_website": {
+      "message": "เพิ่มเว็บไซต์ใหม่"
+   },
+   "add_secure_note": {
+      "message": "เพิ่มโน็ตลับ"
+   },
+   "address": {
+      "message": "ที่อยู่"
+   },
+   "address_copied": {
+      "message": "คัดลอกที่อยู่แล้ว"
+   },
+   "advancedOptions": {
+      "message": "ตั้งค่าขั้นสูง"
+   },
+   "all_Item": {
+      "message": "รายการทั้งหมด"
+   },
+   "alreadyAccount": {
+      "message": "* If you already have an iTop account, please sign in directly."
+   },
+   "americanexpress": {
+      "message": "American Express"
+   },
+   "appName": {
+      "message": "DualSafe Password Manager"
+   },
+   "autoFillFailed": {
+      "message": "Failed to find login input fields. Please try to copy & paste login info manually."
+   },
+   "average": {
+      "message": "เฉยๆ"
+   },
+   "back": {
+      "message": "กลับ"
+   },
+   "bannerExpiredPurchase": {
+      "message": "ไม่นะ! Premium ของคุณ \u003Cb>หมดอายุ\u003C/b> ชะแล้ว"
+   },
+   "bannerFreePurchase": {
+      "message": "Upgrade to enjoy full Premium access"
+   },
+   "bannerPremiumPurchase": {
+      "message": "คุณมี Premium เหลืออยู่ %s \u003Cspan class=\"day-words\">วัน\u003C/span> "
+   },
+   "birthday": {
+      "message": "วันเกิด"
+   },
+   "birthday_copied": {
+      "message": "คัดลอกวันเกิดแล้ว"
+   },
+   "browserReboot": {
+      "message": "รีบูตเบราว์เซอร์"
+   },
+   "cancel": {
+      "message": "ยกเลิก"
+   },
+   "capitalize": {
+      "message": "ตัวพิมพ์ใหญ่ (A-Z)"
+   },
+   "cardNumber": {
+      "message": "เลขบัตร"
+   },
+   "cardType": {
+      "message": "ประเภทบัตร"
+   },
+   "cardType_placeholder": {
+      "message": "ใส่หรือเลือกประเภทบัตร"
+   },
+   "card_number_copied": {
+      "message": "คัดลอกเลขบัตรแล้ว"
+   },
+   "card_type_copied": {
+      "message": "คัดลอกประเภทบัตรแล้ว"
+   },
+   "cardholderName": {
+      "message": "นามผู้ถือบัตร"
+   },
+   "cardholder_name_copied": {
+      "message": "สำเนาชื่อผู้ถือบัตร"
+   },
+   "cardother": {
+      "message": "อื่นๆ"
+   },
+   "carteblanche": {
+      "message": "Carte Blanche"
+   },
+   "cityTown": {
+      "message": "เมือง"
+   },
+   "close": {
+      "message": "ปิด"
+   },
+   "comma": {
+      "message": ":"
+   },
+   "copied": {
+      "message": "คัดลอกแล้ว"
+   },
+   "copy": {
+      "message": "คัดลอก"
+   },
+   "copy_generator_password": {
+      "message": "คัดลอกรหัส"
+   },
+   "copy_notes": {
+      "message": "คัดลอกโน็ต"
+   },
+   "copy_one_time_Password": {
+      "message": "คัดลอก One-time Password"
+   },
+   "copy_password": {
+      "message": "รหัสผ่าน"
+   },
+   "copy_username": {
+      "message": "คัดลอกชื่อผู้ใช่"
+   },
+   "countryRegion": {
+      "message": "ประเทศหรือภูมิภาค"
+   },
+   "countryRegion_placeholder": {
+      "message": "เลือกประเทศหรือภูมิภาคของคุณ"
+   },
+   "createNewAccount": {
+      "message": "สร้างบัญชี"
+   },
+   "createdAt": {
+      "message": "สร้างที่"
+   },
+   "day": {
+      "message": "วัน"
+   },
+   "days": {
+      "message": "วัน"
+   },
+   "days_case": {
+      "message": "วัน"
+   },
+   "delete": {
+      "message": "ลบ"
+   },
+   "delete_item": {
+      "message": "คุณแน่ใจหรือว่าลบรายการนี้ไปที่ ถังขยะรีไซเคิล?"
+   },
+   "delete_item_Recycle_Bin": {
+      "message": "คุณแน่ใจหรือว่าลบรายการนี้ออกจากถังรีไซเคิล?"
+   },
+   "delete_item_Recycle_Bin_Dec": {
+      "message": "ไม่สามารถกู้คืนได้เมื่อลบไปแล้ว"
+   },
+   "delete_item_dec": {
+      "message": "คุณสามารถกู้คืนจากถังรีไซเคิลได้ตราบใดที่ไม่ได้ลบอย่างถาวร"
+   },
+   "deletedSuccessfully": {
+      "message": "ลบสำเร็จ"
+   },
+   "details": {
+      "message": "รายละเอียด"
+   },
+   "dinersclub": {
+      "message": "Diners Club"
+   },
+   "dir": {
+      "message": "ltr"
+   },
+   "discard": {
+      "message": "Discard"
+   },
+   "discard_change": {
+      "message": "คุณแน่ใจหรือไม่ว่าต้องการยกเลิกการเปลี่ยนแปลงที่ยังไม่ได้บันทึก?"
+   },
+   "discover": {
+      "message": "Discover"
+   },
+   "downloadApp": {
+      "message": "โหลดแอป"
+   },
+   "edit": {
+      "message": "แก้ไข"
+   },
+   "editInfo": {
+      "message": "แก้ไขข้อมูล"
+   },
+   "emailAddress": {
+      "message": "ที่อยู่อีเมล"
+   },
+   "emailOrPassIncorrect": {
+      "message": "ที่อยู่อีเมลหรือรหัสผ่านไม่ถูกต้อง"
+   },
+   "emailVerfy": {
+      "message": "ยืนยันอีเมล"
+   },
+   "email_address_copied": {
+      "message": "คัดลอกที่อยู่อีเมลแล้ว"
+   },
+   "enterYourPass": {
+      "message": "ใส่รหัสผ่านของคุณ"
+   },
+   "enter_your_email_address": {
+      "message": "ที่อยู่อีเมล"
+   },
+   "expOptionDate": {
+      "message": "วันหมดอายุ"
+   },
+   "expiration_date_copied": {
+      "message": "คัดลอกวันหมดอายุแล้ว"
+   },
+   "expired": {
+      "message": "หมดอายุ"
+   },
+   "extDesc": {
+      "message": "DualSafe Password Manager extension ช่วยให้คุณจัดการรหัสผ่านได้อย่างปลอดภัยในที่เดียว และให้คุณบันทึกอัตโนมัติ ป้อนอัตโนมัติ และเข้าถึงได้ทุกเมื่อ"
+   },
+   "extName": {
+      "description": "DualSafe Password Manager & Digital Vault",
+      "message": "DualSafe Password Manager & Digital Vault"
+   },
+   "failedToDelete": {
+      "message": "ลบล้มเหลว"
+   },
+   "failedToOpenLoading_DPM": {
+      "message": "กำลังโหลดเวอร์ชันเดสก์ท็อป"
+   },
+   "failedToOpenLoading_Dark_Web_Monitor_Dec": {
+      "message": "สอดส่อง Dark Web Monitor มีเฉพาะในเวอร์ชันเดสก์ท็อปเท่านั้น โปรดคลิก \"Open\" ในป๊อปอัปการยืนยันเพื่อเรียกใช้เวอร์ชันเดสก์ท็อป หรือคลิก %s ปุ่มด้านล่างเพื่อเปิดป๊อปอัปอีกครั้ง"
+   },
+   "failedToOpenLoading_Emergency_Contact_Dec": {
+      "message": "Emergency Contact Monitor มีเฉพาะในเวอร์ชันเดสก์ท็อปเท่านั้น โปรดคลิก \"Open\" ในป๊อปอัปการยืนยันเพื่อเรียกใช้เวอร์ชันเดสก์ท็อป หรือคลิก %s ปุ่มด้านล่างเพื่อเปิดป๊อปอัปอีกครั้ง"
+   },
+   "failedToOpenLoading_Import_Export_Dec": {
+      "message": "นำเข้าและส่งออก มีเฉพาะในเวอร์ชันเดสก์ท็อปเท่านั้น โปรดคลิก \"Open\" ในป๊อปอัปการยืนยันเพื่อเรียกใช้เวอร์ชันเดสก์ท็อป หรือคลิก %s ปุ่มด้านล่างเพื่อเปิดป๊อปอัปอีกครั้ง"
+   },
+   "failedToOpenLoading_Password_Health_Dec": {
+      "message": "สุขภาพรหัสผ่าน มีเฉพาะในเวอร์ชันเดสก์ท็อปเท่านั้น โปรดคลิก \"Open\" ในป๊อปอัปการยืนยันเพื่อเรียกใช้เวอร์ชันเดสก์ท็อป หรือคลิก %s ปุ่มด้านล่างเพื่อเปิดป๊อปอัปอีกครั้ง"
+   },
+   "failedToOpen_DPM": {
+      "message": "ไม่สามารถเปิดเวอร์ชันเดสก์ท็อป"
+   },
+   "failedToOpen_Dark_Web_Monitor_Dec": {
+      "message": "สอดส่อง Dark Web Monitor มีเฉพาะในเวอร์ชันเดสก์ท็อปเท่านั้น โปรดคลิก %d ปุ่มเพื่อดาวน์โหลดและติดตั้งเวอร์ชันเดสก์ท็อป Or click the %s ปุ่มเพื่อเปิดอีกครั้ง"
+   },
+   "failedToOpen_Emergency_Contact_Dec": {
+      "message": "Emergency Contact Monitor มีเฉพาะในเวอร์ชันเดสก์ท็อปเท่านั้น โปรดคลิก %d ปุ่มเพื่อดาวน์โหลดและติดตั้งเวอร์ชันเดสก์ท็อป Or click the %s ปุ่มเพื่อเปิดอีกครั้ง"
+   },
+   "failedToOpen_Import_Export_Dec": {
+      "message": "นำเข้าและส่งออก มีเฉพาะในเวอร์ชันเดสก์ท็อปเท่านั้น โปรดคลิก %d ปุ่มเพื่อดาวน์โหลดและติดตั้งเวอร์ชันเดสก์ท็อป Or click the %s ปุ่มเพื่อเปิดอีกครั้ง"
+   },
+   "failedToOpen_Password_Health_Dec": {
+      "message": "สุขภาพรหัสผ่าน มีเฉพาะในเวอร์ชันเดสก์ท็อปเท่านั้น โปรดคลิก %d ปุ่มเพื่อดาวน์โหลดและติดตั้งเวอร์ชันเดสก์ท็อป Or click the %s ปุ่มเพื่อเปิดอีกครั้ง"
+   },
+   "failedToRestore": {
+      "message": "คืนค่าล้มเหลว"
+   },
+   "feedback": {
+      "message": "ข้อเสนอแนะ"
+   },
+   "fill": {
+      "message": "เติม"
+   },
+   "firstName": {
+      "message": "ชื่อแรก"
+   },
+   "fiveMinutes": {
+      "message": "5 นาที"
+   },
+   "forgotYourPass": {
+      "message": "หรือรหัสเปล่า?"
+   },
+   "fourHours": {
+      "message": "4 นาที"
+   },
+   "free": {
+      "message": "ฟรี"
+   },
+   "gender": {
+      "message": "เพศ"
+   },
+   "genderFemale": {
+      "message": "หญิง"
+   },
+   "genderMale": {
+      "message": "ชาย"
+   },
+   "genderNone": {
+      "message": "ไม่มี"
+   },
+   "genderOther": {
+      "message": "อื่นๆ"
+   },
+   "gender_copied": {
+      "message": "คัดลอกเพศแล้ว"
+   },
+   "goPremiumBtn": {
+      "message": "ไป Premium"
+   },
+   "hideCode": {
+      "message": "Hide security code"
+   },
+   "hidePass": {
+      "message": "ซ่อนรหัส"
+   },
+   "installDesktopApp": {
+      "message": "ติดตั้งแอปเดสก์ท็อป"
+   },
+   "invalid_secret_key": {
+      "message": "Invalid secret key!"
+   },
+   "jcb": {
+      "message": "JCB"
+   },
+   "lang": {
+      "message": "th"
+   },
+   "lastModifiedAt": {
+      "message": "แก้ไขแล้วที่"
+   },
+   "lastName": {
+      "message": "นามสกุล"
+   },
+   "lastPasswordChangedAt": {
+      "message": "เปลี่ยนรหัสผ่านที่"
+   },
+   "learn_more": {
+      "message": "เรียนรู้เพิ่มเติม"
+   },
+   "length": {
+      "message": "ยาว"
+   },
+   "lock": {
+      "message": "ล็อก"
+   },
+   "logins": {
+      "message": "เข้าสู่ระบบ"
+   },
+   "maestro": {
+      "message": "Maestro"
+   },
+   "mastercard": {
+      "message": "Mastercard"
+   },
+   "middleName": {
+      "message": "ชื่อกลาง"
+   },
+   "month": {
+      "message": "เดือน"
+   },
+   "more": {
+      "message": "เพิ่มเติม"
+   },
+   "name": {
+      "message": "ชื่อ"
+   },
+   "name_copied": {
+      "message": "คัดลอกชื่อแล้ว"
+   },
+   "networkError": {
+      "message": "Network connection error."
+   },
+   "never": {
+      "message": "ไม่เคย"
+   },
+   "newUser": {
+      "message": "ผู้ใช้ใหม่?"
+   },
+   "noItemsAddAllItem": {
+      "message": "ไม่มีการเพิ่มรายการ"
+   },
+   "noItemsAddLoginItem": {
+      "message": "ไม่มีการเพิ่มการเข้าสู่ระบบ"
+   },
+   "noItemsAddNotesItem": {
+      "message": "ไม่มีการเพิ่มโน็ตลับ"
+   },
+   "noItemsAddPayItem": {
+      "message": "ไม่มีการเพิ่มข้อมูลการชำระเงิน"
+   },
+   "noItemsAddPersonalItem": {
+      "message": "ไม่มีการเพิ่มข้อมูลส่วนบุคคล"
+   },
+   "noItemsAddRecycleItem": {
+      "message": "ไม่พบรายการที่นี้"
+   },
+   "noItemsFound": {
+      "message": "ไม่พบรายการใดๆ"
+   },
+   "noResult": {
+      "message": "ไม่มีผลลัพธ์!"
+   },
+   "noSaved": {
+      "message": "ไม่มีการเข้าสู่ระบบที่บันทึกไว้สำหรับไซต์นี้"
+   },
+   "noSavedPrss": {
+      "message": "ไม่บันทึกรหัสผ่าน!"
+   },
+   "notNow": {
+      "message": "ไม่ใช่ตอนนี้"
+   },
+   "notes": {
+      "message": "โน็ต"
+   },
+   "notes_characters_tips": {
+      "message": "เหลือ %s ตัว"
+   },
+   "notes_copied": {
+      "message": "โน้ตที่คัดลอก"
+   },
+   "notes_placeholder": {
+      "message": "ใส่หมายเหตุสำหรับรายการนี้ (จำกัด: %s ตัว)"
+   },
+   "numWords": {
+      "message": "เลข (0-9)"
+   },
+   "okIgotIt": {
+      "message": "ตกลง ฉันเข้าใจแล้ว"
+   },
+   "oneHour": {
+      "message": "1 ชั่วโมง"
+   },
+   "oneMinute": {
+      "message": "1 นาที"
+   },
+   "one_time_Password": {
+      "message": "One-time Password"
+   },
+   "one_time_pass_copied": {
+      "message": "คัดลอก One-time Password แล้ว"
+   },
+   "only": {
+      "message": "เท่านั้น"
+   },
+   "open": {
+      "message": "เปิด"
+   },
+   "options": {
+      "message": "ตั้งค่า"
+   },
+   "passIncorrect": {
+      "message": "รหัสผ่านไม่ถูกต้อง"
+   },
+   "password": {
+      "message": "รหัสผ่าน"
+   },
+   "password_copied": {
+      "message": "คัดลอกรหัสผ่านแล้ว"
+   },
+   "password_same": {
+      "message": "New master password cannot be the same as the old one."
+   },
+   "password_tip_note": {
+      "message": "\u003Cb>Note:\u003C/b> Do not use any of your current passwords."
+   },
+   "payment_Info": {
+      "message": "ข้อมูลการชำระเงิน"
+   },
+   "personal_Info": {
+      "message": "ข้อมูลส่วนตัว"
+   },
+   "phoneNumber": {
+      "message": "เลขโทรศัพท์"
+   },
+   "phone_number_copied": {
+      "message": "คัดลอกเบอร์โทรแล้ว"
+   },
+   "premiumExpiredPurchase": {
+      "message": "Premium ของคุณมัน \u003Cb class='text-red'>หมดอายุ!\u003C/b>ชะแล้ว"
+   },
+   "premiumExpiredPurchaseAlert": {
+      "message": "ฟีเจอร์ขั้นสูงไม่สามารถใช้งานได้ในขณะนี้ อัปเกรด Premium เพื่อดำเนินการต่อ และเก็บรหัสผ่านของคุณให้ปลอดภัยได้อย่างง่ายดาย"
+   },
+   "premiumExpiringSoonPurchase": {
+      "message": "คุณเหลือ Premium \u003Cb class=\"text-yellow\">%s วัน\u003C/b>"
+   },
+   "premiumExpiringSoonPurchaseAlert": {
+      "message": "อัปเกรดเพื่อคงสิทธิ์การเข้าถึงระดับ Premium ในฟีเจอร์ขั้นสูงต่อไปนี้:"
+   },
+   "premiumFreePurchase": {
+      "message": "วิธีที่ง่ายกว่าและปลอดภัยกว่าในการจัดการรหัสผ่านของคุณ"
+   },
+   "premiumFreePurchaseAlert": {
+      "message": "เริ่ม Premium วันนี้และคุณสมบัติขั้นสูงเหล่านี้ไว้:"
+   },
+   "premiumFreePurchaseAlert_New": {
+      "message": "Start Premium today and keep these advanced features:"
+   },
+   "premiumFreePurchase_New": {
+      "message": "An Easier, Safer Way to Manage Your Passwords"
+   },
+   "premiumPurchase": {
+      "message": "คุณได้รับ Premium 30 วัน!"
+   },
+   "premiumPurchaseAlert": {
+      "message": "ตอนนี้โปรดเพลิดเพลินไปกับคุณฟีเจอร์พิเศษดังต่อไปนี้:"
+   },
+   "premiun": {
+      "message": "PREMIUM"
+   },
+   "purchase_Dark_Web_Monitor": {
+      "message": "Dark Web Monitoring & Alerts"
+   },
+   "purchase_Password_Health": {
+      "message": "ตรวจสุขภาพรหัสผ่าน"
+   },
+   "purchase_Password_Health_Check": {
+      "message": "Password Health Check"
+   },
+   "purchase_Unlimited_Devices": {
+      "message": "Sync Across Unlimited Devices"
+   },
+   "questionMark": {
+      "message": "?"
+   },
+   "recycle_Bin": {
+      "message": "ถังขยะรีไซเคิล"
+   },
+   "refresh": {
+      "message": "รีเฟรช"
+   },
+   "rememberMeOnThisDevice": {
+      "message": "จำเครื่องนี้"
+   },
+   "remindExpirationDate": {
+      "message": "เตือนฉัน 2 เดือนก่อนวันหมดอายุ"
+   },
+   "remind_password": {
+      "message": "เตือนให้เปลี่ยนรหัสผ่านหลังจาก 90 วัน"
+   },
+   "restore": {
+      "message": "คืนค่า"
+   },
+   "restoreSuccessfully": {
+      "message": "คืนค่าสำเร็จ"
+   },
+   "retry": {
+      "message": "ลองใหม่"
+   },
+   "save": {
+      "message": "บันทึก"
+   },
+   "saveIn_DPM": {
+      "message": "บันทึกใน DualSafe Password Manager"
+   },
+   "savedFailedData": {
+      "message": "ข้อมูลล่าสุดได้รับการซิงค์จากเซิร์ฟเวอร์"
+   },
+   "savedFailedSynced": {
+      "message": "บันทึกล้มเหลว! ข้อมูลล่าสุดได้รับการซิงค์จากเซิร์ฟเวอร์"
+   },
+   "savedSuccessfully": {
+      "message": "บันทึกสำเร็จ"
+   },
+   "search": {
+      "message": "ค้นหา"
+   },
+   "secure": {
+      "message": "ปลอดภัย"
+   },
+   "secureNotes": {
+      "message": "โน็ตลับ"
+   },
+   "secure_notes_placeholder": {
+      "message": "ใส่บันทึกสำคัญของคุณที่นี่ (จำกัด: %s ตัว)"
+   },
+   "securityCode": {
+      "message": "รหัสรักษาความปลอดภัย"
+   },
+   "security_code_copied": {
+      "message": "คัดลอกรหัสความปลอดภัยแล้ว"
+   },
+   "settings": {
+      "message": "ตั้งค่า"
+   },
+   "settings_Auto_Fill": {
+      "message": "ป้อนอัตโนมัติ"
+   },
+   "settings_Auto_Fill_Dec": {
+      "message": "กรอกข้อมูลเข้าสู่ระบบที่บันทึกไว้ ข้อมูลการชำระเงิน ฯลฯ โดยอัตโนมัติ"
+   },
+   "settings_Auto_Lock": {
+      "message": "ล็อคอัตโนมัติ"
+   },
+   "settings_Auto_Lock_Dec": {
+      "message": "ล็อก DualSafe Password Manager โดยอัตโนมัติตามความถี่ที่กำหนด"
+   },
+   "settings_Auto_Save": {
+      "message": "บันทึกอัตโนมัติ"
+   },
+   "settings_Auto_Save_Dec": {
+      "message": "บันทึกชื่อผู้ใช้และรหัสผ่านที่ป้อนโดยอัตโนมัติ"
+   },
+   "settings_Autofill_and_Autosave": {
+      "message": "ป้อนอัตโนมัติและบันทึกอัตโนมัติ"
+   },
+   "settings_Clear_Clipboard": {
+      "message": "ล้างคลิปบอร์ด"
+   },
+   "settings_Clear_Clipboard_Dec": {
+      "message": "ล้างคลิปบอร์ดโดยอัตโนมัติในเวลาที่กำหนดหลังจากคัดลอกรหัสผ่าน"
+   },
+   "settings_General": {
+      "message": "ทั่วไป"
+   },
+   "settings_General_Dec": {
+      "message": "ตั้ง DualSafe Password Manager ให้กลายเป็นผู้ช่วยดูแลรหัสผ่าน"
+   },
+   "settings_Security_Options": {
+      "message": "ตั้งค่าความปลอดภัย"
+   },
+   "settings_Show_Icon": {
+      "message": "แสดงไอคอน"
+   },
+   "settings_Show_Icon_Dec": {
+      "message": "แสดงไอคอนของ DualSafe Password Manager ในช่องป้อนรหัสผ่านทั้งหมดเพื่อบันทึกการเข้าสู่ระบบของคุณด้วยการคลิกเพียงครั้งเดียว"
+   },
+   "showCode": {
+      "message": "Show security code"
+   },
+   "showPass": {
+      "message": "แสดงรหัส"
+   },
+   "signIn": {
+      "message": "เข้าสู่ระบบ"
+   },
+   "signInLocked": {
+      "message": "Your account has been locked. Try again in 5 minutes."
+   },
+   "signInNow": {
+      "message": "ลงชื่อเข้าใช้ตอนนี้เพื่อป้อนการเข้าสู่ระบบอัตโนมัติสำหรับไซต์นี้"
+   },
+   "signInSave": {
+      "message": "เข้าสูระบบและบันทึก"
+   },
+   "signInTimeout": {
+      "message": "หมดเวลาลงชื่อเข้าใช้! โปรดตรวจสอบเครือข่ายของคุณและลองอีกครั้ง!"
+   },
+   "signIn_DPM": {
+      "message": "เข้าสู่ระบบ DualSafe Password Manager"
+   },
+   "signIn_Desc": {
+      "message": "ลงชื่อเข้าใช้ตอนนี้เพื่อบันทึกการเข้าสู่ระบบของ \u003Ca class=\"btn-link btn-name\">\u003C/a> และป้อนให้คุณโดยอัตโนมัติในอนาคต"
+   },
+   "signOut": {
+      "message": "ออกจากระบบ"
+   },
+   "state": {
+      "message": "สถานะ"
+   },
+   "strong": {
+      "message": "แข่งแรง"
+   },
+   "suggestion": {
+      "message": "คำแนะนำ"
+   },
+   "symbols": {
+      "message": "สัญลักษณ์ (%s)"
+   },
+   "systemLocks": {
+      "message": "ล็อกระบบ"
+   },
+   "tenMinutes": {
+      "message": "10 นาที"
+   },
+   "thirtyMinutes": {
+      "message": "30 นาที"
+   },
+   "title": {
+      "message": "ชื่อเรื่อง"
+   },
+   "title_placeholder": {
+      "message": "กรุณาใส่ชื่อเรื่อง"
+   },
+   "token_invalid_desc": {
+      "message": "Your session has expired. Please sign in again."
+   },
+   "tools": {
+      "message": "เครื่องมือ"
+   },
+   "tools_Dark_Web_Monitor": {
+      "message": "สอดส่อง Dark Web"
+   },
+   "tools_Dark_Web_Monitor_Dec": {
+      "message": "ช่วยคุณตรวจสอบการรั่วไหลของข้อมูลที่สำคัญใน Dark Web"
+   },
+   "tools_Import_Export": {
+      "message": "นำเข้าและส่งออก"
+   },
+   "tools_Import_Export_Dec": {
+      "message": "นำเข้าข้อมูลจากเบราว์เซอร์หรือเครื่องมือรหัสผ่านอื่น ๆ และส่งออกข้อมูลที่บันทึกไว้เป็นไฟล์ CSV ด้วยการคลิกเพียงครั้งเดียว"
+   },
+   "tools_Password_Health": {
+      "message": "สุขภาพรหัสผ่าน"
+   },
+   "tools_Password_Health_Dec": {
+      "message": "ช่วยคุณตรวจสอบรหัสผ่านที่มีช่องโหว่ เช่น รหัสผ่านที่ไม่รัดกุม ใช้ซ้ำ หรือถูกบุกรุก"
+   },
+   "tools_Unlimited_Passwords": {
+      "message": "รหัสผ่านไม่จำกัด"
+   },
+   "tools_Unlimited_Passwords_Only": {
+      "message": "(สำหรับแบบฟรีจะได้แค่ 50 รหัส)"
+   },
+   "twoMinutes": {
+      "message": "2 นาที"
+   },
+   "unionpay": {
+      "message": "UnionPay"
+   },
+   "unlock": {
+      "message": "ปลดล็อก"
+   },
+   "unlockDPM": {
+      "message": "ปลดล็อก DualSafe Password Manager"
+   },
+   "unlockDPM_Desc": {
+      "message": "ปลดล็อคทันทีเพื่อบันทึกการเข้าสู่ระบบของ \u003Ca class=\"btn-link btn-name\">\u003C/a> และป้อนให้คุณโดยอัตโนมัติในอนาคต"
+   },
+   "unlockNow": {
+      "message": "ปลดล็อกทันทีเพื่อป้อนการเข้าสู่ระบบอัตโนมัติสำหรับไซต์นี้"
+   },
+   "unlockSave": {
+      "message": "ปลดล็อกและบันทึก"
+   },
+   "update": {
+      "message": "อัปเดต"
+   },
+   "updateFailed": {
+      "message": "การอัพเดทล้มเหลว."
+   },
+   "updateLogins": {
+      "message": "อัพเดทการเข้าสู่ระบบ"
+   },
+   "updateSuccessfully": {
+      "message": "อัปเดตเรียบร้อยแล้ว."
+   },
+   "upgradeBtn": {
+      "message": "อัพเกรด"
+   },
+   "upgradeNowBtn": {
+      "message": "อัพเกรดเดี๋ยวนี้"
+   },
+   "url": {
+      "message": "url"
+   },
+   "url_copied": {
+      "message": "คัดลอกเว็บไซต์แล้ว"
+   },
+   "use": {
+      "message": "ใช้"
+   },
+   "use_generator_password": {
+      "message": "ใช้รหัส"
+   },
+   "username": {
+      "message": "ชื่อผู้ใช่"
+   },
+   "username_copied": {
+      "message": "คัดลอกชื่อผู้ใช่แล้ว"
+   },
+   "username_placeholder": {
+      "message": "อีเมล / ชื่อผู้ใช้ / เบอร์โทร"
+   },
+   "view": {
+      "message": "ดู"
+   },
+   "visa": {
+      "message": "Visa"
+   },
+   "visaelectron": {
+      "message": "Visa Electron"
+   },
+   "weak": {
+      "message": "อ่อนแอ"
+   },
+   "welcomeTo": {
+      "message": "ยินดีต้อนรับสู่"
+   },
+   "year": {
+      "message": "ปี"
+   },
+   "yes": {
+      "message": "ใช่"
+   },
+   "zip": {
+      "message": "ZIP"
+   },
+   "zipPostalCode": {
+      "message": "รหัสไปรษณีย์"
+   }
+}

@@ -39,6 +39,12 @@ export class MemoryRuntimeService {
   }
   get(w: string, id: string) { return this.repository.get(w, id); }
   getSnapshot(w: string, id: string) { return this.repository.getSnapshot(w, id); }
+  latestSnapshots(w: string, runtimeIds: string[]) {
+    return this.repository.latestSnapshots(w, runtimeIds);
+  }
+  ensureConversationRuntime(w: string, a: string, conversationId: string, agentMemoryRuntimeId: string) {
+    return this.repository.ensureConversationRuntime(w, a, conversationId, agentMemoryRuntimeId);
+  }
   list(w: string, q: MemoryRuntimeListQueryDto) { return this.repository.list(w, q); }
   listSnapshots(w: string, q: MemorySnapshotListQueryDto) {
     return this.repository.listSnapshots(w, q);

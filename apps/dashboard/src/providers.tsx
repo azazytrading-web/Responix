@@ -6,6 +6,9 @@ import { QueryClientProvider } from "@tanstack/react-query";
 import { platformBootstrapService, queryClient } from "@responix/state";
 import { ThemeProvider } from "next-themes";
 import { PlatformBootstrapProvider } from "./platform";
+import { registerBuiltInPlugins } from "./plugins";
+
+registerBuiltInPlugins();
 
 export function AppProviders({ children }: { children: ReactNode }) {
   return (

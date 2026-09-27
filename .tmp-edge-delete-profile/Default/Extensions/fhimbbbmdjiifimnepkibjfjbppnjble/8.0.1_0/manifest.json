@@ -1,0 +1,65 @@
+{
+   "action": {
+      "default_icon": {
+         "128": "static/monicaLogo.png",
+         "16": "static/monicaLogo.png",
+         "32": "static/monicaLogo.png",
+         "48": "static/monicaLogo.png"
+      },
+      "default_popup": "monicaPopup.html"
+   },
+   "background": {
+      "service_worker": "background.js"
+   },
+   "commands": {
+      "_execute_action": {
+         "suggested_key": {
+            "default": "Ctrl+M",
+            "mac": "Command+M"
+         }
+      },
+      "run-monica-on-new-tab": {
+         "description": "Open Chat Tab"
+      }
+   },
+   "content_scripts": [ {
+      "js": [ "content.js" ],
+      "matches": [ "\u003Call_urls>" ],
+      "run_at": "document_end"
+   } ],
+   "default_locale": "en",
+   "description": "__MSG_description__",
+   "externally_connectable": {
+      "matches": [ "https://monica.im/*", "https://powerup.monica.im/*", "https://monica.butterfly-effect.dev/*" ]
+   },
+   "host_permissions": [ "\u003Call_urls>" ],
+   "icons": {
+      "128": "static/monicaLogo.png",
+      "16": "static/monicaLogo.png",
+      "32": "static/monicaLogo.png",
+      "48": "static/monicaLogo.png"
+   },
+   "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAiMUHJOOV4NWIbNkNBe6DdayVbgvsH0dx+uMPIZugkLfPSy9mN8rDLxO7s5BwGpqdZeHdFecljg4kKQcEuGiXAmNjtrY3BAspyhUWE+b1kC4sWr3po+yZ1SmMS4s1yQPivmPL6e6mLNVPloY6FNb8NqyV/nuBZ5CNs4ADBwzMDHz158JShlRoOiOIlvX6CIWioVe04ncslD01w8SDIFkO/s24rHKJ7UZ5Ftk4K/J0X43XYRQGEhHdy2uNO5K+t+oe08QKj6YDUtlb6lRbixmwaPW20uXH87Ar3T54qNFkfUSCO8refHNFgusVjQ4hCjty120l2a1yXaUnFAcVai7djQIDAQAB",
+   "manifest_version": 3,
+   "name": "__MSG_name__",
+   "options_ui": {
+      "open_in_tab": true,
+      "page": "monicaOptions.html"
+   },
+   "permissions": [ "storage", "scripting", "contextMenus" ],
+   "update_url": "https://edge.microsoft.com/extensionwebstorebase/v1/crx",
+   "version": "8.0.1",
+   "web_accessible_resources": [ {
+      "matches": [ "\u003Call_urls>" ],
+      "resources": [ "content.css" ]
+   }, {
+      "matches": [ "\u003Call_urls>" ],
+      "resources": [ "content.js" ]
+   }, {
+      "matches": [ "\u003Call_urls>" ],
+      "resources": [ "static/*" ]
+   }, {
+      "matches": [ "\u003Call_urls>" ],
+      "resources": [ "chatTab.html" ]
+   } ]
+}

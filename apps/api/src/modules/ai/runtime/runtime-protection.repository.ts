@@ -496,6 +496,6 @@ export class RuntimeProtectionRepository {
     transaction: Prisma.TransactionClient,
     workspaceId: string
   ): Promise<void> {
-    await transaction.$queryRaw`SELECT pg_advisory_xact_lock(hashtextextended(${workspaceId}, 0))`;
+    await transaction.$queryRaw`SELECT 1 AS locked FROM pg_advisory_xact_lock(hashtextextended(${workspaceId}, 0))`;
   }
 }

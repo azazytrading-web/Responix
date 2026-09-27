@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="14" height="14" viewBox="0 0 14 14">
+  <defs>
+    <clipPath id="clip-path">
+      <rect  width="14" height="14" transform="translate(-0.023 -0.023)" fill="#5773ab" opacity="0"/>
+    </clipPath>
+  </defs>
+  <g id="ico_list_collection_blue" transform="translate(-469.731 -174.731)">
+    <g  transform="translate(469.754 174.754)" clip-path="url(#clip-path)">
+      <path  d="M7.886,10.97,5.874,9.913a.2.2,0,0,0-.185,0L3.674,10.97a1.323,1.323,0,0,1-.627.158,1.353,1.353,0,0,1-1.04-.486,1.337,1.337,0,0,1-.3-1.1L2.1,7.3a.2.2,0,0,0-.058-.178L.41,5.539A1.353,1.353,0,0,1,1.161,3.23L3.41,2.9a.2.2,0,0,0,.152-.11l1-2.038A1.355,1.355,0,0,1,7,.754L8,2.792a.193.193,0,0,0,.15.11L10.4,3.23a1.352,1.352,0,0,1,.751,2.309L9.524,7.126a.2.2,0,0,0-.058.178l.386,2.239A1.352,1.352,0,0,1,7.886,10.97Z" transform="translate(1.196 1.447)" fill="#5773ab"/>
+    </g>
+  </g>
+</svg>

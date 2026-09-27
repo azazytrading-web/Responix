@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+  <g id="icon_options_set" transform="translate(-298 -186.034)">
+    <g id="setting-2" transform="translate(300 188)">
+      <rect width="24" height="24" transform="translate(-2 -1.966)" fill="#fff" opacity="0"/>
+      <path id="Vector" d="M5.009,2.5A2.5,2.5,0,1,1,2.5,0,2.5,2.5,0,0,1,5.009,2.5Z" transform="translate(7.513 7.513)" fill="none" stroke="#292d32" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/>
+      <path id="Vector-2" data-name="Vector" d="M0,8.614V7.145A1.591,1.591,0,0,1,1.586,5.559c1.511,0,2.129-1.068,1.369-2.379a1.585,1.585,0,0,1,.584-2.162L4.983.191a1.393,1.393,0,0,1,1.9.5l.092.159c.751,1.311,1.987,1.311,2.746,0L9.817.692a1.393,1.393,0,0,1,1.9-.5l1.444.826a1.585,1.585,0,0,1,.584,2.162c-.76,1.311-.142,2.379,1.369,2.379A1.591,1.591,0,0,1,16.7,7.145V8.614A1.591,1.591,0,0,1,15.117,10.2c-1.511,0-2.129,1.068-1.369,2.379a1.583,1.583,0,0,1-.584,2.162l-1.444.826a1.393,1.393,0,0,1-1.9-.5l-.092-.159c-.751-1.311-1.987-1.311-2.746,0l-.092.159a1.393,1.393,0,0,1-1.9.5l-1.444-.826a1.585,1.585,0,0,1-.584-2.162c.76-1.311.142-2.379-1.369-2.379A1.591,1.591,0,0,1,0,8.614Z" transform="translate(1.67 2.138)" fill="none" stroke="#292d32" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/>
+    </g>
+  </g>
+</svg>

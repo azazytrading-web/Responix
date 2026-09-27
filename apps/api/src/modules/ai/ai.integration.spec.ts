@@ -20,6 +20,7 @@ import type { AiProviderAdapter } from "./providers/provider-adapter.interface";
 import { ProviderCredentialService } from "./providers/provider-credential.service";
 import { ProviderDiscoveryService } from "./providers/provider-discovery.service";
 import { ProviderFactory } from "./providers/provider.factory";
+import { ProviderManagementService } from "./providers/provider-management.service";
 import { ProviderRegistry } from "./providers/provider.registry";
 import { ProviderRepository } from "./providers/provider.repository";
 import { CapabilityResolver } from "./router/capability.resolver";
@@ -233,6 +234,7 @@ describe("AI module production integration", () => {
         { provide: PermissionResolutionService, useValue: { resolve: jest.fn().mockResolvedValue(["ai.configure", "ai.invoke"]) } },
         { provide: ProviderRepository, useValue: providerRepository },
         { provide: RoutingRepository, useValue: routingRepository },
+        { provide: ProviderManagementService, useValue: { get: jest.fn(), configure: jest.fn(), validate: jest.fn() } },
         { provide: CredentialRepository, useValue: credentialRepository },
         { provide: ProviderCredentialCryptoService, useValue: crypto },
         { provide: InvocationRepository, useValue: invocationRepository },

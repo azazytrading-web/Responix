@@ -93,6 +93,16 @@ describe("authentication lifecycle", () => {
     expect(auth.user?.id).toBe("u");
   });
 
+  it("falls back to the seeded local development credentials on localhost", async () => {
+    process.env.NODE_ENV = "development";
+    window.history.pushState({}, "", "http://localhost:3000/");
+    vi.mocked(silentRefreshManager.refresh).mockRejectedValueOnce(new ApiError(401, "UNAUTHORIZED", "missing"));
+    vi.mocked(authApi.login).mockResolvedValue(session);
+    render(<AuthProvider><Probe /></AuthProvider>);
+    await waitFor(() => expect(auth.state).toBe("AUTHENTICATED"));
+    expect(authApi.login).toHaveBeenCalledWith("admin@responix.local", "ResponixDev2026!");
+  });
+
   it("surfaces offline startup and synchronizes revoked sessions across tabs", async () => {
     vi.mocked(silentRefreshManager.refresh).mockRejectedValueOnce(new NetworkError());
     render(<AuthProvider><Probe /></AuthProvider>);

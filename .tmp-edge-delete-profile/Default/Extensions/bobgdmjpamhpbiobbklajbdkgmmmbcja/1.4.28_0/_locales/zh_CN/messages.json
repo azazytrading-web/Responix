@@ -1,0 +1,1500 @@
+{
+   "Checkbox_Keep_signed": {
+      "message": "保持登录状态"
+   },
+   "Checkbox_Keep_signed_Hint": {
+      "message": "将在指定时间段内自动登录。 请确保您的电脑环境安全。 使用公用电脑时，请不要勾选这个选项。"
+   },
+   "Delete_Exclude_website": {
+      "message": "删除 & 排除该网站"
+   },
+   "Emergency_Desc": {
+      "message": "在密码丢失或被盗等紧急情况下，可以轻松安全地访问您的帐户。"
+   },
+   "Emergency_Title": {
+      "message": "发生意外时的\u003Cb>紧急联系\u003C/b>"
+   },
+   "Enable_Now": {
+      "message": "立即启用"
+   },
+   "Enter_your_email": {
+      "message": "输入您的邮箱地址"
+   },
+   "Exclude_website_new": {
+      "message": "排除此网站"
+   },
+   "Invalid_Recovery_Code_New": {
+      "message": "恢复代码无效。 请确保输入正确的或最新的。 或者\u003Ca class=\"btn-link contactUsLink\">联系我们\u003C/a>。"
+   },
+   "Keep_Safe_Desc": {
+      "message": "启用密码健康以进行密码检查，并加强您的弱密码、旧密码和重复使用的密码。"
+   },
+   "Keep_Safe_Title": {
+      "message": "保持所有密码\u003Cb>安全\u003C/b>"
+   },
+   "M_Apr": {
+      "message": "4月"
+   },
+   "M_Aug": {
+      "message": "8月"
+   },
+   "M_Dec": {
+      "message": "12月"
+   },
+   "M_Feb": {
+      "message": "2月"
+   },
+   "M_Jan": {
+      "message": "1月"
+   },
+   "M_Jul": {
+      "message": "7月"
+   },
+   "M_Jun": {
+      "message": "6月"
+   },
+   "M_Mar": {
+      "message": "3月"
+   },
+   "M_May": {
+      "message": "5月"
+   },
+   "M_Nov": {
+      "message": "11月"
+   },
+   "M_Oct": {
+      "message": "10月"
+   },
+   "M_Sep": {
+      "message": "9月"
+   },
+   "No_Worries_Desc": {
+      "message": "如果您的个人信息遭受泄露，启用 Dark Web Monitoring 以接收通知。"
+   },
+   "No_Worries_Title": {
+      "message": "\u003Cb>不\u003C/b>担心\u003Cb>数据泄露\u003C/b>"
+   },
+   "No_thanks": {
+      "message": "不，谢谢！"
+   },
+   "Password_Generator": {
+      "message": "密码生成器"
+   },
+   "Password_Generator_Dec": {
+      "message": "一键生成强大且安全的密码"
+   },
+   "Suggested_Password": {
+      "message": "建议密码"
+   },
+   "Suggested_Password_Dec": {
+      "message": "为所有密码输入框显示建议密码"
+   },
+   "Suggested_password_Case": {
+      "message": "建议密码"
+   },
+   "TOTP_Tips": {
+      "message": "您的电脑本地时间不正确，可能导致一次性密码失效。"
+   },
+   "TOTP_placeholder": {
+      "message": "输入密钥或 URL，如：otpauth://*"
+   },
+   "Unlimited_Desc": {
+      "message": "只需一个帐户即可在任何设备上轻松管理、存储和创建安全密码。"
+   },
+   "Unlimited_Title": {
+      "message": "跨\u003Cb>无限设备\u003C/b>同步数据"
+   },
+   "Website": {
+      "message": "网址"
+   },
+   "about": {
+      "message": "关于"
+   },
+   "about_Acknowledgements": {
+      "message": "鸣谢"
+   },
+   "about_Copyright": {
+      "message": "© iTop Inc. All rights reserved."
+   },
+   "about_EULA": {
+      "message": "EULA"
+   },
+   "about_Privacy_Policy": {
+      "message": "隐私政策"
+   },
+   "about_Version": {
+      "message": "版本"
+   },
+   "account_blocked_disabled": {
+      "message": "此帐户已被阻止或禁用。 请联系支持团队寻求帮助。"
+   },
+   "add": {
+      "message": "添加"
+   },
+   "addNew": {
+      "message": "添加新的"
+   },
+   "addNewAccount": {
+      "message": "添加新帐户"
+   },
+   "add_Login": {
+      "message": "添加登录数据"
+   },
+   "add_Logins": {
+      "message": "添加登录数据"
+   },
+   "add_Notes": {
+      "message": "添加笔记"
+   },
+   "add_Payment_Info": {
+      "message": "添加付款信息"
+   },
+   "add_Payment_Info_Case": {
+      "message": "添加付款信息"
+   },
+   "add_Personal_Info": {
+      "message": "添加个人信息"
+   },
+   "add_Personal_Info_Case": {
+      "message": "添加个人信息"
+   },
+   "add_exclude": {
+      "message": "将网站加入到排除"
+   },
+   "add_items": {
+      "message": "添加项目"
+   },
+   "add_new_website": {
+      "message": "添加新网址"
+   },
+   "add_secure_note": {
+      "message": "添加安全笔记"
+   },
+   "add_tag": {
+      "message": "添加标签"
+   },
+   "add_to_favorites": {
+      "message": "添加到收藏夹"
+   },
+   "add_to_favorites_succ": {
+      "message": "已添加到收藏夹"
+   },
+   "add_to_onetime_pwd": {
+      "message": "添加到一次性密码"
+   },
+   "add_totp": {
+      "message": "加入一次性密码?"
+   },
+   "add_website": {
+      "message": "加入网站"
+   },
+   "add_website_placeholder": {
+      "message": "输入网址"
+   },
+   "address": {
+      "message": "地址"
+   },
+   "address_copied": {
+      "message": "地址已复制"
+   },
+   "advancedOptions": {
+      "message": "高级选项"
+   },
+   "all_Item": {
+      "message": "所有项目"
+   },
+   "alreadyAccount": {
+      "message": "* 如果您已经有iTop账号，请直接登录。"
+   },
+   "already_saved": {
+      "message": "已保存"
+   },
+   "americanexpress": {
+      "message": "American Express"
+   },
+   "appName": {
+      "message": "DualSafe Password Manager"
+   },
+   "auth_bottom_desc": {
+      "message": "完成授权后，您可以登录DualSafe Password Manager"
+   },
+   "auth_desc": {
+      "message": "请在新打开的浏览器标签中授权 DualSafe Password Manager的登录"
+   },
+   "auth_subtitle": {
+      "message": "等待授权…"
+   },
+   "auth_title": {
+      "message": "授权"
+   },
+   "autoFillFailed": {
+      "message": "找不到登录输入字段。 请尝试手动复制和粘贴登录信息。"
+   },
+   "auto_save_confirm_desc": {
+      "message": "以后自动保存所有网站的用户名和密码。"
+   },
+   "auto_save_passwords": {
+      "message": "自动保存密码"
+   },
+   "auto_save_passwords_desc": {
+      "message": "自动保存我所有网站的用户名和密码"
+   },
+   "auto_saved_successfully": {
+      "message": "自动保存成功"
+   },
+   "average": {
+      "message": "普通"
+   },
+   "back": {
+      "message": "返回"
+   },
+   "bannerExpiredPurchase": {
+      "message": "糟糕！您的Premium \u003Cb>已过期。\u003C/b>"
+   },
+   "bannerFreePurchase": {
+      "message": "升级到Premium以享受所有的权限"
+   },
+   "bannerPremiumPurchase": {
+      "message": "You have  %s \u003Cspan class=\"day-words\">days\u003C/span> left in Premium."
+   },
+   "birthday": {
+      "message": "生日"
+   },
+   "birthday_copied": {
+      "message": "生日已复制"
+   },
+   "browserReboot": {
+      "message": "浏览器重启"
+   },
+   "browser_extension": {
+      "message": "浏览器插件"
+   },
+   "cancel": {
+      "message": "取消"
+   },
+   "capitalize": {
+      "message": "字符 (A-Z)"
+   },
+   "cardNumber": {
+      "message": "卡号"
+   },
+   "cardType": {
+      "message": "卡片类型"
+   },
+   "cardType_placeholder": {
+      "message": "输入或选择卡片类型"
+   },
+   "card_number_copied": {
+      "message": "卡号已复制"
+   },
+   "card_type_copied": {
+      "message": "卡片类型已复制"
+   },
+   "cardholderName": {
+      "message": "持卡人姓名"
+   },
+   "cardholder_name_copied": {
+      "message": "持卡人姓名已复制"
+   },
+   "cardother": {
+      "message": "其他"
+   },
+   "carteblanche": {
+      "message": "Carte Blanche"
+   },
+   "change_desc": {
+      "message": "您正在更改主密码..."
+   },
+   "change_master_password": {
+      "message": "更改主密码"
+   },
+   "change_now": {
+      "message": "立即更改"
+   },
+   "change_title": {
+      "message": "更改主密码"
+   },
+   "cityTown": {
+      "message": "城市/城镇"
+   },
+   "clear": {
+      "message": "清理"
+   },
+   "clear_allpass_desc": {
+      "message": "清除后无法恢复。"
+   },
+   "clear_allpass_title": {
+      "message": "您确定要清除所有密码吗？"
+   },
+   "clear_deleted_desc": {
+      "message": "删除后无法恢复。"
+   },
+   "clear_deleted_title": {
+      "message": "您确定要从已删除项目中删除所有项目吗？"
+   },
+   "clear_password": {
+      "message": "清除密码"
+   },
+   "cleared_successfully": {
+      "message": "清理成功。"
+   },
+   "close": {
+      "message": "关闭"
+   },
+   "code_desc": {
+      "message": "请输入您的主密码以重置您的恢复代码"
+   },
+   "code_pairing_desc": {
+      "message": "从 桌面 应用弹出窗口中确认代码，然后单击连接按钮以授权自动登录和解锁。"
+   },
+   "code_pairing_title": {
+      "message": "连接代码"
+   },
+   "code_title": {
+      "message": "重置恢复代码"
+   },
+   "comma": {
+      "message": ":"
+   },
+   "comprehensive_pwd_Desc": {
+      "message": "全面的密码健康检查"
+   },
+   "confirmMasterNewPass": {
+      "message": "确认新的主密码"
+   },
+   "confirmMasterPass": {
+      "message": "确认您的主密码"
+   },
+   "continue": {
+      "message": "继续"
+   },
+   "continue_sign_in": {
+      "message": "继续登录"
+   },
+   "copied": {
+      "message": "已复制"
+   },
+   "copy": {
+      "message": "复制"
+   },
+   "copy_generator_password": {
+      "message": "复制密码"
+   },
+   "copy_notes": {
+      "message": "复制笔记"
+   },
+   "copy_one_time_Password": {
+      "message": "复制一次性密码"
+   },
+   "copy_password": {
+      "message": "密码"
+   },
+   "copy_username": {
+      "message": "复制用户名"
+   },
+   "countryRegion": {
+      "message": "国家或地区"
+   },
+   "countryRegion_placeholder": {
+      "message": "选择您的国家或地区"
+   },
+   "createNewAccount": {
+      "message": "创建帐户"
+   },
+   "create_new_account": {
+      "message": "创建一个帐户"
+   },
+   "createdAt": {
+      "message": "创建于"
+   },
+   "currentMasterPass": {
+      "message": "当前主密码"
+   },
+   "day": {
+      "message": "日"
+   },
+   "days": {
+      "message": "天"
+   },
+   "days_case": {
+      "message": "天"
+   },
+   "default_password_manager": {
+      "message": "默认密码管理器"
+   },
+   "delete": {
+      "message": "删除"
+   },
+   "delete_all": {
+      "message": "删除所有"
+   },
+   "delete_at": {
+      "message": "删除于"
+   },
+   "delete_item": {
+      "message": "您确定要将此项目删除到回收站吗？"
+   },
+   "delete_item_Recycle_Bin": {
+      "message": "您确定要从回收站中删除此项目吗？"
+   },
+   "delete_item_Recycle_Bin_Dec": {
+      "message": "删除后无法恢复。"
+   },
+   "delete_item_dec": {
+      "message": "只要它没有被永久删除，您就可以从回收站中恢复它。"
+   },
+   "deletedSuccessfully": {
+      "message": "删除成功。"
+   },
+   "deleted_this_item": {
+      "message": "删除此项"
+   },
+   "desktop": {
+      "message": "桌面应用程序"
+   },
+   "desktop_app": {
+      "message": "桌面应用"
+   },
+   "details": {
+      "message": "详细"
+   },
+   "device_limit_desc": {
+      "message": "您已在 3 台设备上登录， 已达到最大限制。立即升级以享受无限制设备访问和以下所有优势:"
+   },
+   "device_limit_tips": {
+      "message": "* 您将从该设备注销:"
+   },
+   "device_limit_title": {
+      "message": "已达到设备限制！"
+   },
+   "dinersclub": {
+      "message": "Diners Club"
+   },
+   "dir": {
+      "message": "ltr"
+   },
+   "discard": {
+      "message": "丢弃"
+   },
+   "discard_change": {
+      "message": "您确定要放弃未保存的更改吗？"
+   },
+   "discover": {
+      "message": "Discover"
+   },
+   "downloadApp": {
+      "message": "下载软件"
+   },
+   "edit": {
+      "message": "编辑"
+   },
+   "editInfo": {
+      "message": "编辑信息"
+   },
+   "emailAddress": {
+      "message": "电子邮件地址"
+   },
+   "emailOrPassIncorrect": {
+      "message": "电子邮件地址或密码不正确。"
+   },
+   "emailVerfy": {
+      "message": "验证此邮箱"
+   },
+   "email_address_copied": {
+      "message": "邮箱地址已复制"
+   },
+   "emergency_contact": {
+      "message": "紧急访问"
+   },
+   "emergency_contact_Desc": {
+      "message": "当您无法访问您的数据时，您授予紧急访问权限的人可以请求导出您的数据或更改您的主密码。"
+   },
+   "enterMasterNewPass": {
+      "message": "输入新的主密码"
+   },
+   "enterMasterPass": {
+      "message": "输入您的主密码"
+   },
+   "enterRecoveryCass": {
+      "message": "输入恢复代码"
+   },
+   "enterYourPass": {
+      "message": "输入密码"
+   },
+   "enter_email_desc": {
+      "message": "请输入您的邮箱地址以接收恢复代码！"
+   },
+   "enter_email_tips": {
+      "message": "无效邮箱地址。 请检查并重新输入！"
+   },
+   "enter_your_email_address": {
+      "message": "输入你的电子邮箱地址"
+   },
+   "exclude_website": {
+      "message": "排除网站"
+   },
+   "exclude_website_list": {
+      "message": "排除的网站列表"
+   },
+   "exit": {
+      "message": "退出"
+   },
+   "expOptionDate": {
+      "message": "过期日期"
+   },
+   "expiration_date_copied": {
+      "message": "过期日期已复制"
+   },
+   "expired": {
+      "message": "过期"
+   },
+   "extDesc": {
+      "message": "DualSafe Password Manager可帮助您安全地管理密码，并让您随时自动保存、自动填充和访问它们。"
+   },
+   "extName": {
+      "description": "DualSafe Password Manager & Digital Vault",
+      "message": "DualSafe Password Manager & Digital Vault"
+   },
+   "extension": {
+      "message": "插件"
+   },
+   "failedToDelete": {
+      "message": "删除失败。"
+   },
+   "failedToOpenLoading_DPM": {
+      "message": "加载桌面版本"
+   },
+   "failedToOpenLoading_Dark_Web_Monitor_Dec": {
+      "message": "暗网监测仅在桌面版本中可用。 请在确认弹出窗口中单击 “打开” 以运行桌面版本。 或者单击下面的 %s 按钮重新打开弹出窗口。"
+   },
+   "failedToOpenLoading_Emergency_Contact_Dec": {
+      "message": "紧急联系人仅在桌面版本中可用。 请在确认弹出窗口中单击 “打开” 以运行桌面版本。 或者单击下面的 %s 按钮重新打开弹出窗口。"
+   },
+   "failedToOpenLoading_Import_Export_Dec": {
+      "message": "导入和导出仅在桌面版本中可用。 请在确认弹出窗口中单击 “打开” 以运行桌面版本。 或者单击下面的 %s 按钮重新打开弹出窗口。"
+   },
+   "failedToOpenLoading_Password_Health_Dec": {
+      "message": "密码健康仅在桌面版本中可用。 请在确认弹出窗口中单击 “打开” 以运行桌面版本。 或者单击下面的 %s 按钮重新打开弹出窗口。"
+   },
+   "failedToOpen_DPM": {
+      "message": "桌面版打不开"
+   },
+   "failedToOpen_Dark_Web_Monitor_Dec": {
+      "message": "暗网监测仅在桌面版本中可用。 单击 %d 按钮下载并安装桌面版本。 或单击 %s 按钮再次打开。"
+   },
+   "failedToOpen_Emergency_Contact_Dec": {
+      "message": "紧急联系人仅在桌面版本中可用。 单击 %d 按钮下载并安装桌面版本。 或单击 %s 按钮再次打开。"
+   },
+   "failedToOpen_Import_Export_Dec": {
+      "message": "导入和导出仅在桌面版本中可用。 单击 %d 按钮下载并安装桌面版本。 或单击 %s 按钮再次打开。"
+   },
+   "failedToOpen_Password_Health_Dec": {
+      "message": "密码健康仅在桌面版本中可用。 单击 %d 按钮下载并安装桌面版本。 或单击 %s 按钮再次打开。"
+   },
+   "failedToRestore": {
+      "message": "无法恢复。"
+   },
+   "failed_send_desc": {
+      "message": "无法发送恢复码电子邮件。 请再试一次。"
+   },
+   "failed_send_title": {
+      "message": "发送失败。"
+   },
+   "favoties": {
+      "message": "收藏夹"
+   },
+   "feedback": {
+      "message": "反馈"
+   },
+   "fill": {
+      "message": "填充"
+   },
+   "firstName": {
+      "message": "名"
+   },
+   "fiveMinutes": {
+      "message": "5 分钟"
+   },
+   "forgotYourPass": {
+      "message": "忘记密码了吗？"
+   },
+   "fourHours": {
+      "message": "4 小时"
+   },
+   "fourteenDays": {
+      "message": "14 天"
+   },
+   "free": {
+      "message": "免费"
+   },
+   "gender": {
+      "message": "性别"
+   },
+   "genderFemale": {
+      "message": "女性"
+   },
+   "genderMale": {
+      "message": "男性"
+   },
+   "genderNone": {
+      "message": "无"
+   },
+   "genderOther": {
+      "message": "其他"
+   },
+   "gender_copied": {
+      "message": "性别已复制"
+   },
+   "goPremiumBtn": {
+      "message": "升级到 Premium"
+   },
+   "go_back_to_signin": {
+      "message": "返回登录"
+   },
+   "hideCode": {
+      "message": "隐藏安全码"
+   },
+   "hidePass": {
+      "message": "隐藏密码"
+   },
+   "ignore_website": {
+      "message": "忽略这个网站"
+   },
+   "installDesktopApp": {
+      "message": "安装桌面应用程序"
+   },
+   "invalid_email": {
+      "message": "无效的邮件地址。 请输入您已验证的电子邮件地址。"
+   },
+   "invalid_master_pass": {
+      "message": "无效主密码！"
+   },
+   "invalid_master_tips": {
+      "message": "无效主密码。 请检查并重试。"
+   },
+   "invalid_recovery_code": {
+      "message": "无效的恢复代码。 请检查并重试。"
+   },
+   "invalid_secret_key": {
+      "message": "无效安全密钥！"
+   },
+   "item_remove_from_favorites": {
+      "message": "从收藏夹中删除"
+   },
+   "jcb": {
+      "message": "JCB"
+   },
+   "lang": {
+      "message": "zh-cn"
+   },
+   "lastModifiedAt": {
+      "message": "修改于"
+   },
+   "lastName": {
+      "message": "姓"
+   },
+   "lastPasswordChangedAt": {
+      "message": "密码更改于"
+   },
+   "learn_more": {
+      "message": "了解更多"
+   },
+   "length": {
+      "message": "长度"
+   },
+   "loading": {
+      "message": "正在加载..."
+   },
+   "loading_data_error": {
+      "message": "加载失败。 请检查您的网络连接。"
+   },
+   "lock": {
+      "message": "锁定"
+   },
+   "lock_comfirm_btn": {
+      "message": "手动解锁"
+   },
+   "login_comfirm_btn": {
+      "message": "手动登录"
+   },
+   "login_comfirm_desc": {
+      "message": "单击您的帐户以授权从桌面应用自动登录和解锁。"
+   },
+   "login_feature_auto": {
+      "message": "\u003Cb>自动\u003C/b> - 通过自动同步访问无限设备"
+   },
+   "login_feature_easy": {
+      "message": "\u003Cb>简单\u003C/b> - 只需单击即可自动保存和自动填充密码"
+   },
+   "login_feature_safe": {
+      "message": "\u003Cb>安全\u003C/b> - 使用一流的加密存储您的数据"
+   },
+   "login_feature_secure": {
+      "message": "\u003Cb>安全\u003C/b> - 生成强而独特的密码"
+   },
+   "login_feature_unlimited": {
+      "message": "\u003Cb>无限\u003C/b> - 保存无限的密码、付款信息等"
+   },
+   "login_left_title": {
+      "message": "一种安全、简单且免费的密码管理方式，对您的数字生活至关重要。"
+   },
+   "login_waiting_title": {
+      "message": "正在等待来自桌面应用的授权…"
+   },
+   "logins": {
+      "message": "登录"
+   },
+   "lower_case": {
+      "message": "小写 (a-z)"
+   },
+   "maestro": {
+      "message": "Maestro"
+   },
+   "mastercard": {
+      "message": "Mastercard"
+   },
+   "masterpassIncorrect": {
+      "message": "无效主密码。"
+   },
+   "match_change_pass": {
+      "message": "密码不符合要求。"
+   },
+   "match_master_pass": {
+      "message": "密码不匹配。"
+   },
+   "middleName": {
+      "message": "中间名字"
+   },
+   "month": {
+      "message": "月"
+   },
+   "more": {
+      "message": "更多"
+   },
+   "name": {
+      "message": "姓名"
+   },
+   "name_copied": {
+      "message": "名字已复制"
+   },
+   "networkError": {
+      "message": "网络连接错误。"
+   },
+   "never": {
+      "message": "从不"
+   },
+   "newUser": {
+      "message": "新用户？"
+   },
+   "new_password": {
+      "message": "新密码"
+   },
+   "new_tag": {
+      "message": "新标签"
+   },
+   "new_tag_number": {
+      "message": "新标签"
+   },
+   "ninetyDays": {
+      "message": "90 天"
+   },
+   "noItemsAddAllItem": {
+      "message": "未添加项目。"
+   },
+   "noItemsAddLoginItem": {
+      "message": "未添加登录数据。"
+   },
+   "noItemsAddNotesItem": {
+      "message": "未添加安全笔记。"
+   },
+   "noItemsAddPayItem": {
+      "message": "未添加付款信息。"
+   },
+   "noItemsAddPersonalItem": {
+      "message": "未添加任何个人信息。"
+   },
+   "noItemsAddRecycleItem": {
+      "message": "没有项目。"
+   },
+   "noItemsFound": {
+      "message": "未找到项目。"
+   },
+   "noResult": {
+      "message": "没有结果！"
+   },
+   "noSaved": {
+      "message": "没有保存此站点的登录信息。"
+   },
+   "noSavedPrss": {
+      "message": "没有保存的密码！"
+   },
+   "no_excluded_websites": {
+      "message": "没有排除的网站。"
+   },
+   "no_password_history": {
+      "message": "没有密码记录。"
+   },
+   "no_valid_secret_key_found": {
+      "message": "找不到有效的密钥！"
+   },
+   "notNow": {
+      "message": "不是现在"
+   },
+   "not_have_code": {
+      "message": "没有恢复代码？"
+   },
+   "notes": {
+      "message": "笔记"
+   },
+   "notes_characters_tips": {
+      "message": "还剩 %s 个字符"
+   },
+   "notes_copied": {
+      "message": "笔记已复制"
+   },
+   "notes_placeholder": {
+      "message": "为此项目输入一些笔记（最大限制：%s 个字符）"
+   },
+   "numWords": {
+      "message": "数字 (0-9)"
+   },
+   "offer_to_save_passwords": {
+      "message": "提示保存密码"
+   },
+   "offer_to_save_passwords_desc": {
+      "message": "登录或注册时弹窗提示保存密码"
+   },
+   "ok": {
+      "message": "OK"
+   },
+   "okIgotIt": {
+      "message": "OK. 我明白了"
+   },
+   "oneHour": {
+      "message": "1 小时"
+   },
+   "oneMinute": {
+      "message": "1 分钟"
+   },
+   "one_time_Password": {
+      "message": "一次性密码"
+   },
+   "one_time_pass_copied": {
+      "message": "一次性密码已复制"
+   },
+   "only": {
+      "message": "只有"
+   },
+   "open": {
+      "message": "打开"
+   },
+   "options": {
+      "message": "选项"
+   },
+   "passIncorrect": {
+      "message": "密码不正确。"
+   },
+   "password": {
+      "message": "密码"
+   },
+   "password_copied": {
+      "message": "密码已复制"
+   },
+   "password_history_item": {
+      "message": "密码历史"
+   },
+   "password_history_tips": {
+      "message": "这里显示最近 %s 个密码。"
+   },
+   "password_history_title": {
+      "message": "密码历史"
+   },
+   "password_same": {
+      "message": "新的主密码不能与旧的相同。"
+   },
+   "password_tip_note": {
+      "message": "\u003Cb>Note:\u003C/b> Do not use any of your current passwords."
+   },
+   "password_tip_one": {
+      "message": "至少 8 个字符。 建议超过 16 个字符。"
+   },
+   "password_tip_three": {
+      "message": "至少一个符号。"
+   },
+   "password_tip_two": {
+      "message": "至少一个数字。"
+   },
+   "payment_Info": {
+      "message": "付款信息"
+   },
+   "personal_Info": {
+      "message": "个人信息"
+   },
+   "phoneNumber": {
+      "message": "电话号码"
+   },
+   "phone_number_copied": {
+      "message": "电话号码已复制"
+   },
+   "premiumExpiredPurchase": {
+      "message": "您的Premium \u003Cb class='text-red'>已过期\u003C/b>"
+   },
+   "premiumExpiredPurchaseAlert": {
+      "message": "高级功能现在不可用。 立即升级Premium以继续高级功能，并轻松保护您的密码安全。"
+   },
+   "premiumExpiringSoonPurchase": {
+      "message": "您的Premium 只剩下 \u003Cb class=\"text-yellow\">%s 天\u003C/b>！"
+   },
+   "premiumExpiringSoonPurchaseAlert": {
+      "message": "立即升级Premium以继续使用以下高级功能："
+   },
+   "premiumFreePurchase": {
+      "message": "一种更简单、更安全的密码管理方式"
+   },
+   "premiumFreePurchaseAlert": {
+      "message": "立即开始 Premium 并保留这些高级功能："
+   },
+   "premiumFreePurchaseAlert_New": {
+      "message": "立即开始 Premium 并保留这些高级功能："
+   },
+   "premiumFreePurchase_New": {
+      "message": "一种更简单、更安全的密码管理方式"
+   },
+   "premiumPurchase": {
+      "message": "您获得了 30 天的 Premium！"
+   },
+   "premiumPurchaseAlert": {
+      "message": "现在请体验以下高级功能："
+   },
+   "premiun": {
+      "message": "PREMIUM"
+   },
+   "purchase_Dark_Web_Monitor": {
+      "message": "暗网监控和警报"
+   },
+   "purchase_Password_Health": {
+      "message": "密码健康检查"
+   },
+   "purchase_Password_Health_Check": {
+      "message": "密码健康检查"
+   },
+   "purchase_Unlimited_Devices": {
+      "message": "跨设备同步"
+   },
+   "questionMark": {
+      "message": "?"
+   },
+   "recovery_code_copied": {
+      "message": "已复制恢复代码"
+   },
+   "recycle_Bin": {
+      "message": "回收站"
+   },
+   "refresh": {
+      "message": "刷新"
+   },
+   "rememberMeOnThisDevice": {
+      "message": "在此设备上记住我"
+   },
+   "remindExpirationDate": {
+      "message": "在到期日期前 2 个月提醒我"
+   },
+   "remind_me_after_days": {
+      "message": "7 天后提醒我"
+   },
+   "remind_me_tomorrow": {
+      "message": "明天提醒我"
+   },
+   "remind_password": {
+      "message": "90 天后提醒我更改密码"
+   },
+   "remove": {
+      "message": "移除"
+   },
+   "remove_from_favorites": {
+      "message": "从收藏夹中删除"
+   },
+   "remove_from_favorites_succ": {
+      "message": "已从收藏夹中删除"
+   },
+   "resend": {
+      "message": "重新发送"
+   },
+   "reset": {
+      "message": "重置"
+   },
+   "reset_code_desc": {
+      "message": "请输入您的恢复代码以重置您的主密码。 您的恢复代码已保存为 PDF 文件。"
+   },
+   "reset_code_title": {
+      "message": "输入恢复代码"
+   },
+   "reset_desc": {
+      "message": "请输入您已验证的电子邮件地址以重置密码。"
+   },
+   "reset_email_place": {
+      "message": "输入您已验证的电子邮件地址"
+   },
+   "reset_master_title": {
+      "message": "重置主密码"
+   },
+   "reset_recovery_code": {
+      "message": "重置恢复代码"
+   },
+   "reset_success_desc": {
+      "message": "您的主密码已重置。 请使用新的主密码登录。"
+   },
+   "reset_success_title": {
+      "message": "成功！"
+   },
+   "reset_title": {
+      "message": "重置密码"
+   },
+   "restore": {
+      "message": "恢复"
+   },
+   "restoreSuccessfully": {
+      "message": "恢复成功。"
+   },
+   "retry": {
+      "message": "重试"
+   },
+   "save": {
+      "message": "保存"
+   },
+   "saveIn_DPM": {
+      "message": "保存在DualSafe Password Manager"
+   },
+   "save_as_pdf": {
+      "message": "另存为 PDF"
+   },
+   "save_code_desc_login": {
+      "message": "请将您的恢复代码另存为 PDF。"
+   },
+   "save_code_desc_one": {
+      "message": "请将您的恢复代码保存为 PDF 并打印以确保安全。"
+   },
+   "save_code_desc_options": {
+      "message": "从现在开始，您之前的恢复代码无效。 请将您的新恢复代码另存为 PDF 并打印以确保安全。"
+   },
+   "save_code_desc_two": {
+      "message": "如果您忘记了主密码，它可以帮助您恢复访问 DualSafe Password Manager。"
+   },
+   "save_code_new_title": {
+      "message": "保存新的恢复代码"
+   },
+   "save_code_tips": {
+      "message": "\u003Cb>重要提示：\u003C/b>如果您忘记了主密码，恢复代码是帮助您再次访问 DualSafe Password Manager的唯一方法。"
+   },
+   "save_code_title": {
+      "message": "保存恢复代码"
+   },
+   "save_totp": {
+      "message": "储存一次性密码? "
+   },
+   "savedFailedData": {
+      "message": "最新数据已从服务器同步。"
+   },
+   "savedFailedSynced": {
+      "message": "保存失败！ 最新数据已从服务器同步。"
+   },
+   "savedSuccessfully": {
+      "message": "保存成功."
+   },
+   "scan_web_page_QRCode": {
+      "message": "扫描网页二维码"
+   },
+   "search": {
+      "message": "搜索"
+   },
+   "secure": {
+      "message": "安全"
+   },
+   "secureNotes": {
+      "message": "安全笔记"
+   },
+   "secure_notes_placeholder": {
+      "message": "在此处输入您的重要笔记（最大限制：%s 个字符）"
+   },
+   "securityCode": {
+      "message": "安全码"
+   },
+   "security_code_copied": {
+      "message": "安全码已复制"
+   },
+   "send": {
+      "message": "发送"
+   },
+   "send_email_hint": {
+      "message": "发送到您的电子邮件"
+   },
+   "sending_desc": {
+      "message": "将恢复码发送到您的电子邮件地址。"
+   },
+   "sending_title": {
+      "message": "正在发送"
+   },
+   "sent_succ_desc": {
+      "message": "您的恢复码已发送到邮箱 %s。 如果它不在您的收件箱中，请检查垃圾邮件。 或者您可以\u003Cbutton class=\"resndbtn\">重新发送\u003C/button>。"
+   },
+   "sent_succ_title": {
+      "message": "发送成功!"
+   },
+   "set_master_password": {
+      "message": "设置主密码"
+   },
+   "set_master_password_tips": {
+      "message": "为了您的账户安全，请设置主密码。"
+   },
+   "set_master_tips": {
+      "message": "\u003Cb>重要提示：\u003C/b>主密码将是访问DualSafe Password Manager的唯一有效密码。"
+   },
+   "set_master_title": {
+      "message": "设置主密码"
+   },
+   "set_success_desc": {
+      "message": "主密码已设置，恢复代码已成功保存。 请使用您的主密码登录。"
+   },
+   "settings": {
+      "message": "设置"
+   },
+   "settings_Auto_Fill": {
+      "message": "自动填充"
+   },
+   "settings_Auto_Fill_Dec": {
+      "message": "自动填写已保存的登录信息、付款信息等"
+   },
+   "settings_Auto_Fill_Password": {
+      "message": "自动填写密码"
+   },
+   "settings_Auto_Fill_Password_Dec": {
+      "message": "当您登陆已保存的网站时，自动填写帐户和密码。"
+   },
+   "settings_Auto_Lock": {
+      "message": "自动锁定"
+   },
+   "settings_Auto_Lock_Dec": {
+      "message": "按设定的频率自动锁定DualSafe Password Manager"
+   },
+   "settings_Auto_Save": {
+      "message": "自动保存"
+   },
+   "settings_Auto_Save_Dec": {
+      "message": "自动保存输入的用户名和密码"
+   },
+   "settings_Autofill_and_Autosave": {
+      "message": "自动填充 & 自动保存"
+   },
+   "settings_Clear_Clipboard": {
+      "message": "清除剪贴板"
+   },
+   "settings_Clear_Clipboard_Dec": {
+      "message": "复制密码后按设定的频率自动清除剪贴板"
+   },
+   "settings_Fill_Payments": {
+      "message": "填写付款信息"
+   },
+   "settings_Fill_Payments_Desc": {
+      "message": "帮助您一键填写已保存的付款信息。例如卡号、持卡人和到期日"
+   },
+   "settings_Fill_Personal_Infol": {
+      "message": "自动填写个人信息"
+   },
+   "settings_Fill_Personal_Infol_Desc": {
+      "message": "帮助您一键填写已保存的个人信息。例如电子邮件、电话号码和地址"
+   },
+   "settings_General": {
+      "message": "一般设置"
+   },
+   "settings_General_Dec": {
+      "message": "将 DualSafe Password Manager 设置为默认密码管理器"
+   },
+   "settings_Limited_time_free": {
+      "message": "(限时优惠)"
+   },
+   "settings_Security_Options": {
+      "message": "安全选项"
+   },
+   "settings_Show_Icon": {
+      "message": "显示图标"
+   },
+   "settings_Show_Icon_Dec": {
+      "message": "在所有密码输入框中显示 DualSafe Password Manager的图标，以一键保存您的登录信息"
+   },
+   "sevenDays": {
+      "message": "7 天"
+   },
+   "showCode": {
+      "message": "显示安全码"
+   },
+   "showPass": {
+      "message": "显示密码"
+   },
+   "signIn": {
+      "message": "登录"
+   },
+   "signInAutoNow": {
+      "message": "立即登录以自动填写您保存的账号密码，个人信息和付款信息。"
+   },
+   "signInLocked": {
+      "message": "您的帐户已被锁定。 请在 5 分钟后重试。"
+   },
+   "signInNow": {
+      "message": "立即登录以自动填充此站点的登录信息。"
+   },
+   "signInSave": {
+      "message": "登录并保存"
+   },
+   "signInTimeout": {
+      "message": "登录超时！ 请检查您的网络，然后重试！"
+   },
+   "signIn_DPM": {
+      "message": "登录DualSafe Password Manager"
+   },
+   "signIn_Desc": {
+      "message": "立即登录以保存 \u003Ca class=\"btn-link btn-name\">\u003C/a> 的登录信息，并在以后为您自动填充。"
+   },
+   "signOut": {
+      "message": "登出"
+   },
+   "sign_in_again_desc": {
+      "message": "您之前使用 Google / Facebook 登录没有设置密码。 您可以单击“OK”以再次使用 Google / Facebook 登录。"
+   },
+   "sign_in_now": {
+      "message": "立即登录"
+   },
+   "sign_in_with": {
+      "message": "或登录"
+   },
+   "sign_in_with_app": {
+      "message": "使用桌面应用 登录"
+   },
+   "sign_in_with_facebook": {
+      "message": "使用Facebook 登录"
+   },
+   "sign_in_with_google": {
+      "message": "使用 Google 登录"
+   },
+   "sixtyDays": {
+      "message": "60 天"
+   },
+   "skip_for_now": {
+      "message": "暂时跳过"
+   },
+   "sort_by": {
+      "message": "排序方式"
+   },
+   "sort_date_created": {
+      "message": "创建日期"
+   },
+   "sort_date_modified": {
+      "message": "修改日期"
+   },
+   "sort_newest_first": {
+      "message": "最新优先"
+   },
+   "sort_oldest_first": {
+      "message": "最久优先"
+   },
+   "sort_show_az": {
+      "message": "A-Z"
+   },
+   "sort_show_favorites": {
+      "message": "显示收藏夹"
+   },
+   "sort_show_title_az": {
+      "message": "标题： A to Z"
+   },
+   "sort_show_title_za": {
+      "message": "标题： Z to A"
+   },
+   "sort_show_za": {
+      "message": "Z-A"
+   },
+   "sort_title": {
+      "message": "标题"
+   },
+   "state": {
+      "message": "状态"
+   },
+   "strong": {
+      "message": "强"
+   },
+   "success_desc": {
+      "message": "单击插件图标 \u003Cspan class=\"succ-icon\">\u003C/span> 并将DualSafe Password Manager固定到工具栏。 然后您可以随时单击\u003Cspan class=\"succ-icon dpm\">\u003C/span> 使用。"
+   },
+   "success_title": {
+      "message": "恭喜🎉🎉🎉 \u003Cbr>DualSafe Password Manager已准备就绪！"
+   },
+   "suggestion": {
+      "message": "建议"
+   },
+   "suggestion_tips": {
+      "message": "这里显示当前打开网站的登录数据。"
+   },
+   "symbols": {
+      "message": "特殊符号 (%s)"
+   },
+   "systemLocks": {
+      "message": "系统重启"
+   },
+   "tags": {
+      "message": "标签"
+   },
+   "tenMinutes": {
+      "message": "10 分钟"
+   },
+   "thirtyDays": {
+      "message": "30 天"
+   },
+   "thirtyMinutes": {
+      "message": "30 分钟"
+   },
+   "title": {
+      "message": "标题"
+   },
+   "title_placeholder": {
+      "message": "请输入标题"
+   },
+   "token_invalid_desc": {
+      "message": "您的会话已过期。 请重新登录。"
+   },
+   "tools": {
+      "message": "工具"
+   },
+   "tools_Dark_Web_Monitor": {
+      "message": "暗网监测"
+   },
+   "tools_Dark_Web_Monitor_Dec": {
+      "message": "帮助您监控暗网中的敏感数据泄露"
+   },
+   "tools_Import_Export": {
+      "message": "导入 & 导出"
+   },
+   "tools_Import_Export_Dec": {
+      "message": "从您的浏览器或其他密码工具导入数据，或一键导出您保存的数据到 CSV 文件。"
+   },
+   "tools_Password_Health": {
+      "message": "密码健康"
+   },
+   "tools_Password_Health_Dec": {
+      "message": "帮助您检查易受攻击的密码，例如弱密码、重复使用密码，或被泄露的密码"
+   },
+   "tools_Unlimited_Passwords": {
+      "message": "无限密码"
+   },
+   "tools_Unlimited_Passwords_Only": {
+      "message": "(免费计划只有 50个)"
+   },
+   "twoMinutes": {
+      "message": "2 分钟"
+   },
+   "type": {
+      "message": "类型"
+   },
+   "unionpay": {
+      "message": "UnionPay"
+   },
+   "unknown": {
+      "message": "未知"
+   },
+   "unlock": {
+      "message": "解锁"
+   },
+   "unlockAutoNow": {
+      "message": "立即解锁以自动填写您保存的账号密码，个人信息和付款信息。"
+   },
+   "unlockDPM": {
+      "message": "解锁DualSafe Password Manager"
+   },
+   "unlockDPM_Desc": {
+      "message": "立即解锁以保存 \u003Ca class=\"btn-link btn-name\">\u003C/a> 的登录信息，并在以后为您自动填充。"
+   },
+   "unlockNow": {
+      "message": "立即解锁以自动填充此站点的登录信息。"
+   },
+   "unlockSave": {
+      "message": "解锁并保存"
+   },
+   "unlock_now": {
+      "message": "现在解锁"
+   },
+   "until_sign_out": {
+      "message": "直到退出登录"
+   },
+   "update": {
+      "message": "更新"
+   },
+   "updateFailed": {
+      "message": "更新失败"
+   },
+   "updateLogins": {
+      "message": "更新登录信息"
+   },
+   "updateSuccessfully": {
+      "message": "更新成功"
+   },
+   "upgradeBtn": {
+      "message": "升级"
+   },
+   "upgradeNowBtn": {
+      "message": "立刻升级"
+   },
+   "upper_case": {
+      "message": "大写 (A-Z)"
+   },
+   "url": {
+      "message": "url"
+   },
+   "url_copied": {
+      "message": "网站已复制"
+   },
+   "use": {
+      "message": "使用"
+   },
+   "use_generator_password": {
+      "message": "使用密码"
+   },
+   "user_manual": {
+      "message": "用户手册"
+   },
+   "username": {
+      "message": "用户名"
+   },
+   "username_copied": {
+      "message": "用户名已复制"
+   },
+   "username_placeholder": {
+      "message": "电子邮件/用户名/电话号码"
+   },
+   "view": {
+      "message": "查看"
+   },
+   "visa": {
+      "message": "Visa"
+   },
+   "visaelectron": {
+      "message": "Visa Electron"
+   },
+   "weak": {
+      "message": "弱"
+   },
+   "web_password_sync": {
+      "message": "注意：请务必更新该网站密码"
+   },
+   "welcomeTo": {
+      "message": "欢迎"
+   },
+   "year": {
+      "message": "年"
+   },
+   "yes": {
+      "message": "是"
+   },
+   "zip": {
+      "message": "邮编"
+   },
+   "zipPostalCode": {
+      "message": "邮编"
+   }
+}

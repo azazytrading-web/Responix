@@ -1,5 +1,6 @@
 import { BadRequestException, Injectable, NotFoundException } from "@nestjs/common";
 import { Prisma, RetrievalExecutionMode, RetrievalExecutionStatus } from "@prisma/client";
+import type { KnowledgeChunkMetadata } from "@prisma/client";
 import { createHash } from "node:crypto";
 import { PrismaService } from "../../database/prisma.service";
 import type { ExecuteRetrievalDto, RetrievalExecutionListQueryDto } from "./dto/retrieval-execution.dto";
@@ -35,7 +36,15 @@ export class RetrievalExecutionRepository implements RetrievalExecutionStore {
       const runtimePackage = this.record(snapshot.retrievalPackage);
       const sources = this.records(runtimePackage.sources);
       const sourceVersions = sources.map((source) => this.string(source.versionId)).filter(Boolean);
-      if (this.hash(snapshot.retrievalPackage) !== snapshot.packageHash ||
+      // The runtime stores the full package, but its packageHash/checksum are computed over
+      // the stable corePackage only. The stored package additionally carries volatile/meta
+      // fields (validation, hashes, preparedAt) that are excluded from the content hash.
+      // Strip them (on a copy) so the integrity check matches the prepare-time hash.
+      const corePackage = { ...runtimePackage };
+      delete corePackage.validation;
+      delete corePackage.hashes;
+      delete corePackage.preparedAt;
+      if (this.hash(corePackage) !== snapshot.packageHash ||
         this.hash({ packageHash: snapshot.packageHash, sourceVersions }) !== snapshot.checksum) {
         throw new BadRequestException("Retrieval Runtime snapshot integrity validation failed");
       }
@@ -85,10 +94,15 @@ export class RetrievalExecutionRepository implements RetrievalExecutionStore {
       const packagingStarted = Date.now();
       let usedTokens = 0; let truncated = false;
       const documents = ranked.flatMap(({ row, score }, index) => {
-        const estimated = row.document.chunks.reduce((sum, chunk) => sum + (chunk.tokenCount ?? 0), 0) ||
-          Math.ceil(JSON.stringify(row.snapshot).length / 4);
-        if (usedTokens + estimated > maxTokens) { truncated = true; return []; }
-        usedTokens += estimated;
+        const remaining = Math.max(0, maxTokens - usedTokens);
+        if (remaining <= 0) { truncated = true; return []; }
+        // Include the document even when it exceeds the remaining prompt-token budget, but
+        // select the most relevant chunks (per-chunk match against the query terms) that fit
+        // the budget instead of only the leading ones — this keeps middle/late chunks of a
+        // large document reachable while still capping the prompt at the token budget.
+        const { content, kept, tokens } = this.fitToBudget(this.record(row.snapshot), row.document.chunks, remaining, terms);
+        if (kept.length < row.document.chunks.length) truncated = true;
+        usedTokens += tokens;
         const source = sources.find((candidate) => candidate.versionId === row.id) ?? {};
         const citation = Object.freeze({ index: index + 1, documentId: row.document.id,
           versionId: row.id, label: row.document.name ?? row.document.fileName });
@@ -96,7 +110,7 @@ export class RetrievalExecutionRepository implements RetrievalExecutionStore {
           ...(row.document.collectionId ? { collectionId: row.document.collectionId } : {}),
           name: row.document.name ?? row.document.fileName, mimeType: row.document.mimeType,
           ...(row.document.language ? { language: row.document.language } : {}), score,
-          content: row.snapshot, chunks: Object.freeze(row.document.chunks.map((chunk) => Object.freeze({
+          content, chunks: Object.freeze(kept.map((chunk) => Object.freeze({
             id: chunk.id, ordinal: chunk.ordinal, ...(chunk.tokenCount === null ? {} : { tokenCount: chunk.tokenCount }),
             ...(chunk.checksum ? { checksum: chunk.checksum } : {}), metadata: Object.freeze(this.record(chunk.metadata))
           }))), citation, metadata: Object.freeze({ ...this.record(row.document.metadata), ...this.record(source.metadata) }) })];
@@ -226,12 +240,56 @@ export class RetrievalExecutionRepository implements RetrievalExecutionStore {
   }
   private score(snapshot: unknown, document: JsonRecord, terms: string[], mode: RetrievalExecutionMode) {
     if (!terms.length) return 1;
-    const text = `${JSON.stringify(snapshot)} ${JSON.stringify(document)}`.toLocaleLowerCase("und");
+    const text = `${this.safeStringify(snapshot)} ${this.safeStringify(document)}`.toLocaleLowerCase("und");
     const lexical = terms.filter((term) => text.includes(term)).length / terms.length;
     return mode === RetrievalExecutionMode.SEMANTIC ? (lexical || 0) : lexical;
   }
+  private safeStringify(value: unknown) {
+    try {
+      return JSON.stringify(value, (_key, entry) => (typeof entry === "bigint" ? entry.toString() : entry)) ?? "";
+    } catch {
+      return "";
+    }
+  }
   private assertNotCancelled(signal?: AbortSignal) {
     if (signal?.aborted) throw signal.reason ?? new DOMException("Retrieval cancelled", "AbortError");
+  }
+  /**
+   * Fits a document's chunks within the remaining prompt-token budget. When the document fits,
+   * it is returned unchanged. When it exceeds the budget, the most relevant chunks (scored
+   * per-chunk against the query terms, ties broken by ordinal) that fit are kept — always at
+   * least the most relevant one, so the document is never reduced to nothing — and a snapshot
+   * whose `chunks` are limited to those ordinals is returned. Selecting by relevance (instead
+   * of only the leading chunks) keeps middle/late chunks of a large document retrievable while
+   * still respecting the packaging budget, so oversized documents stay accessible.
+   */
+  private fitToBudget(snapshot: JsonRecord, chunks: Array<KnowledgeChunkMetadata>, remaining: number,
+    terms: string[]): { content: JsonRecord; kept: Array<KnowledgeChunkMetadata>; tokens: number } {
+    const total = chunks.reduce((sum, chunk) => sum + (chunk.tokenCount ?? 0), 0);
+    if (total <= remaining) return { content: snapshot, kept: chunks, tokens: total };
+    const ordered = chunks
+      .map((chunk) => ({ chunk, relevance: this.chunkRelevance(chunk, terms) }))
+      .sort((a, b) => b.relevance - a.relevance || a.chunk.ordinal - b.chunk.ordinal);
+    const kept: Array<KnowledgeChunkMetadata> = [];
+    let tokens = 0;
+    for (const { chunk } of ordered) {
+      const size = chunk.tokenCount ?? 0;
+      if (kept.length > 0 && tokens + size > remaining) break;
+      kept.push(chunk);
+      tokens += size;
+    }
+    kept.sort((a, b) => a.ordinal - b.ordinal);
+    const keptOrdinals = new Set(kept.map((chunk) => chunk.ordinal));
+    const snapshotChunks = this.records(snapshot.chunks);
+    const content = snapshotChunks.length
+      ? { ...snapshot, chunks: snapshotChunks.filter((chunk) => keptOrdinals.has(chunk.ordinal as number)) }
+      : snapshot;
+    return { content, kept, tokens };
+  }
+  private chunkRelevance(chunk: KnowledgeChunkMetadata, terms: string[]): number {
+    if (!terms.length) return 0;
+    const text = this.safeStringify(chunk).toLocaleLowerCase("und");
+    return terms.filter((term) => text.includes(term)).length / terms.length;
   }
   private records(value: unknown): JsonRecord[] { return Array.isArray(value) ? value.map((v) => this.record(v)) : []; }
   private record(value: unknown): JsonRecord { return value && typeof value === "object" && !Array.isArray(value) ? value as JsonRecord : {}; }

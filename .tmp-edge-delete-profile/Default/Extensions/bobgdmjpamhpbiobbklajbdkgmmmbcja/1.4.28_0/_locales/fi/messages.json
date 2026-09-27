@@ -1,0 +1,900 @@
+{
+   "M_Apr": {
+      "message": "Huhtikuu"
+   },
+   "M_Aug": {
+      "message": "Elokuu"
+   },
+   "M_Dec": {
+      "message": "Joulukuu"
+   },
+   "M_Feb": {
+      "message": "Helmikuu"
+   },
+   "M_Jan": {
+      "message": "Tammikuu"
+   },
+   "M_Jul": {
+      "message": "Heinäkuu"
+   },
+   "M_Jun": {
+      "message": "Kesäkuu"
+   },
+   "M_Mar": {
+      "message": "Maaliskuu"
+   },
+   "M_May": {
+      "message": "Toukokuu"
+   },
+   "M_Nov": {
+      "message": "Marraskuu"
+   },
+   "M_Oct": {
+      "message": "Lokakuu"
+   },
+   "M_Sep": {
+      "message": "Syyskuu"
+   },
+   "Password_Generator": {
+      "message": "Salasanageneraattori"
+   },
+   "Password_Generator_Dec": {
+      "message": "Luo vahvoja ja turvallisia salasanoja vain yhdellä napsauksella."
+   },
+   "Suggested_Password": {
+      "message": "Ehdotettu salasana"
+   },
+   "Suggested_Password_Dec": {
+      "message": "Näytä ehdotettu salasana kaikissa salasanan syöttöruuduissa"
+   },
+   "Suggested_password_Case": {
+      "message": "Ehdotettu salasana"
+   },
+   "TOTP_Tips": {
+      "message": "Tietokoneen paikallinen kellonaika on väärä, mikä voi aiheuttaa kertakäyttösalasanan vanhentumisen."
+   },
+   "TOTP_placeholder": {
+      "message": "Syötä salainen avain tai URL-osoite kuten otpauth://*"
+   },
+   "Website": {
+      "message": "Verkkosivut"
+   },
+   "about": {
+      "message": "Tietoja"
+   },
+   "about_Acknowledgements": {
+      "message": "Selvitykset"
+   },
+   "about_Copyright": {
+      "message": "© iTop Inc. Kaikki oikeudet pidätetään."
+   },
+   "about_EULA": {
+      "message": "Käyttöoikeussopimus (EULA)"
+   },
+   "about_Privacy_Policy": {
+      "message": "Tietosuojakäytäntö"
+   },
+   "about_Version": {
+      "message": "Versio"
+   },
+   "account_blocked_disabled": {
+      "message": "This account has been blocked or disabled. Please contact support team for help."
+   },
+   "addNew": {
+      "message": "Lisää uusi"
+   },
+   "addNewAccount": {
+      "message": "Lisää uusi tili"
+   },
+   "add_Login": {
+      "message": "Lisää kirjautuminen"
+   },
+   "add_Logins": {
+      "message": "Lisää kirjautumisia"
+   },
+   "add_Notes": {
+      "message": "Lisää huomautuksia"
+   },
+   "add_Payment_Info": {
+      "message": "Lisää maksutietoja"
+   },
+   "add_Payment_Info_Case": {
+      "message": "Lisää maksutietoja"
+   },
+   "add_Personal_Info": {
+      "message": "Lisää henkilökohtaisia tietoja"
+   },
+   "add_Personal_Info_Case": {
+      "message": "Lisää henkilökohtaisia tietoja"
+   },
+   "add_items": {
+      "message": "Lisää kohteita"
+   },
+   "add_new_website": {
+      "message": "Lisää uusi verkkosivusto"
+   },
+   "add_secure_note": {
+      "message": "Lisää turvahuomautus"
+   },
+   "address": {
+      "message": "Osoite"
+   },
+   "address_copied": {
+      "message": "Osoite kopioitu"
+   },
+   "advancedOptions": {
+      "message": "Lisäasetukset"
+   },
+   "all_Item": {
+      "message": "Kaikki kohdat"
+   },
+   "alreadyAccount": {
+      "message": "* If you already have an iTop account, please sign in directly."
+   },
+   "americanexpress": {
+      "message": "American Express"
+   },
+   "appName": {
+      "message": "DualSafe Password Manager"
+   },
+   "autoFillFailed": {
+      "message": "Failed to find login input fields. Please try to copy & paste login info manually."
+   },
+   "average": {
+      "message": "Keskim."
+   },
+   "back": {
+      "message": "Takaisin"
+   },
+   "bannerExpiredPurchase": {
+      "message": "Hups! Premium versiosi on \u003Cb>vanhentunut.\u003C/b>"
+   },
+   "bannerFreePurchase": {
+      "message": "Upgrade to enjoy full Premium access"
+   },
+   "bannerPremiumPurchase": {
+      "message": "Sinulla on %s \u003Cspan class=\"day-words\">päivää\u003C/span> jäljellä Premiumia."
+   },
+   "birthday": {
+      "message": "Syntymäpäivä"
+   },
+   "birthday_copied": {
+      "message": "Syntymäpäivä kopioitu"
+   },
+   "browserReboot": {
+      "message": "Selaimen uudelleenkäynnistys"
+   },
+   "cancel": {
+      "message": "Peruuta"
+   },
+   "capitalize": {
+      "message": "Isot kirjaimet (A-Z)"
+   },
+   "cardNumber": {
+      "message": "Kortin numero"
+   },
+   "cardType": {
+      "message": "Kortin tyyppi"
+   },
+   "cardType_placeholder": {
+      "message": "Syötä tai valitse korttityyppi"
+   },
+   "card_number_copied": {
+      "message": "Kortin numero kopioitu"
+   },
+   "card_type_copied": {
+      "message": "Kortin tyyppi kopioitu"
+   },
+   "cardholderName": {
+      "message": "Kortinhaltijan nimi"
+   },
+   "cardholder_name_copied": {
+      "message": "Kortinhaltijan nimi kopioitu"
+   },
+   "cardother": {
+      "message": "Muu"
+   },
+   "carteblanche": {
+      "message": "Carte Blanche"
+   },
+   "cityTown": {
+      "message": "Kaupunki/kylä"
+   },
+   "close": {
+      "message": "Sulje"
+   },
+   "comma": {
+      "message": ":"
+   },
+   "copied": {
+      "message": "kopioitu"
+   },
+   "copy": {
+      "message": "Kopioi"
+   },
+   "copy_generator_password": {
+      "message": "Kopioi salasana"
+   },
+   "copy_notes": {
+      "message": "Kopioi huomautukset"
+   },
+   "copy_one_time_Password": {
+      "message": "Kopioi kertakäyttösalasana"
+   },
+   "copy_password": {
+      "message": "salasana"
+   },
+   "copy_username": {
+      "message": "Kopioi käyttäjänimi"
+   },
+   "countryRegion": {
+      "message": "Maa tai alue"
+   },
+   "countryRegion_placeholder": {
+      "message": "Valitse maa tai alue"
+   },
+   "createNewAccount": {
+      "message": "Luo tili"
+   },
+   "createdAt": {
+      "message": "Luotu"
+   },
+   "day": {
+      "message": "Päivä"
+   },
+   "days": {
+      "message": "Päivää"
+   },
+   "days_case": {
+      "message": "päivää"
+   },
+   "delete": {
+      "message": "Poista"
+   },
+   "delete_item": {
+      "message": "Oletko varma, että haluat poistaa tämän kohteen roskakoriin?"
+   },
+   "delete_item_Recycle_Bin": {
+      "message": "Oletko varma, että haluat poistaa tämän kohteen roskakorista?"
+   },
+   "delete_item_Recycle_Bin_Dec": {
+      "message": "Sitä ei voi palauttaa, kun se on poistettu."
+   },
+   "delete_item_dec": {
+      "message": "Voit palauttaa sen roskakorista, kunhan se ei ole poistettu pysyvästi."
+   },
+   "deletedSuccessfully": {
+      "message": "Poisto onnistui."
+   },
+   "details": {
+      "message": "Yksityiskohdat"
+   },
+   "dinersclub": {
+      "message": "Diners Club"
+   },
+   "dir": {
+      "message": "ltr"
+   },
+   "discard": {
+      "message": "Hylkää"
+   },
+   "discard_change": {
+      "message": "Oletko varma, että haluat hylätä tallentamattomat muutokset?"
+   },
+   "discover": {
+      "message": "Discover"
+   },
+   "downloadApp": {
+      "message": "Lataa sovellus"
+   },
+   "edit": {
+      "message": "Muokkaa"
+   },
+   "editInfo": {
+      "message": "Muokkaa tietoja"
+   },
+   "emailAddress": {
+      "message": "Sähköpostiosoite"
+   },
+   "emailOrPassIncorrect": {
+      "message": "Väärä sähköpostiosoite tai salasana."
+   },
+   "emailVerfy": {
+      "message": "Vahvista tämä sähköpostiosoite"
+   },
+   "email_address_copied": {
+      "message": "Sähköpostiosoite kopioitu"
+   },
+   "enterYourPass": {
+      "message": "Anna salasanasi"
+   },
+   "enter_your_email_address": {
+      "message": "Sähköpostiosoite"
+   },
+   "expOptionDate": {
+      "message": "Viimeinen voimassaolopäivä"
+   },
+   "expiration_date_copied": {
+      "message": "Viimeinen käyttöpäivä kopioitu"
+   },
+   "expired": {
+      "message": "VANHENTUNUT"
+   },
+   "extDesc": {
+      "message": "DualSafe Password Manager -laajennus auttaa sinua hallitsemaan salasanoja turvallisesti yhdessä paikassa, ja voit tallentaa ne automaattisesti, täyttää ne automaattisesti ja käyttää niitä milloin tahansa."
+   },
+   "extName": {
+      "description": "DualSafe Password Manager & Digital Vault",
+      "message": "DualSafe Password Manager & Digital Vault"
+   },
+   "failedToDelete": {
+      "message": "Poisto epäonnistui."
+   },
+   "failedToOpenLoading_DPM": {
+      "message": "Ladataan työpöytäversiota"
+   },
+   "failedToOpenLoading_Dark_Web_Monitor_Dec": {
+      "message": "Pimeän verkon valvonta on saatavilla vain työpöytäversiona. Napsauta \"Avaa\" vahvistusponnahdusikkunassa käynnistääksesi työpöytäversion. Tai napsauta alla olevaa %s-painiketta avataksesi ponnahdusikkunan uudelleen."
+   },
+   "failedToOpenLoading_Emergency_Contact_Dec": {
+      "message": "Emergency Contact on saatavilla vain työpöytäversiona. Napsauta \"Avaa\" vahvistusponnahdusikkunassa käynnistääksesi työpöytäversion. Tai napsauta alla olevaa %s-painiketta avataksesi ponnahdusikkunan uudelleen."
+   },
+   "failedToOpenLoading_Import_Export_Dec": {
+      "message": "Tuonti ja vienti on käytettävissä vain työpöytäversiossa. Napsauta \"Avaa\" vahvistusponnahdusikkunassa käynnistääksesi työpöytäversion. Tai napsauta alla olevaa %s-painiketta avataksesi ponnahdusikkunan uudelleen."
+   },
+   "failedToOpenLoading_Password_Health_Dec": {
+      "message": "Salasanan kunto on saatavilla vain työpöytäversiossa. Napsauta \"Avaa\" vahvistusponnahdusikkunassa käynnistääksesi työpöytäversion. Tai napsauta alla olevaa %s-painiketta avataksesi ponnahdusikkunan uudelleen."
+   },
+   "failedToOpen_DPM": {
+      "message": "Työpöytäversion avaaminen epäonnistui"
+   },
+   "failedToOpen_Dark_Web_Monitor_Dec": {
+      "message": "Pimeän verkon valvonta on saatavilla vain työpöytäversiona. Lataa ja asenna työpöytäversio napsauttamalla %d-painiketta. Tai avaa se uudelleen napsauttamalla %s-painiketta."
+   },
+   "failedToOpen_Emergency_Contact_Dec": {
+      "message": "Emergency Contact on saatavilla vain työpöytäversiona. Lataa ja asenna työpöytäversio napsauttamalla %d-painiketta. Tai avaa se uudelleen napsauttamalla %s-painiketta."
+   },
+   "failedToOpen_Import_Export_Dec": {
+      "message": "Tuonti ja vienti on käytettävissä vain työpöytäversiossa. Lataa ja asenna työpöytäversio napsauttamalla %d-painiketta. Tai avaa se uudelleen napsauttamalla %s-painiketta."
+   },
+   "failedToOpen_Password_Health_Dec": {
+      "message": "Salasanan kunto on käytettävissä vain työpöytäversiossa. Lataa ja asenna työpöytäversio napsauttamalla %d-painiketta. Tai avaa se uudelleen napsauttamalla %s-painiketta."
+   },
+   "failedToRestore": {
+      "message": "Palautus epäonnistui."
+   },
+   "feedback": {
+      "message": "Palaute"
+   },
+   "fill": {
+      "message": "Täytä"
+   },
+   "firstName": {
+      "message": "Etunimi"
+   },
+   "fiveMinutes": {
+      "message": "5 minuuttia"
+   },
+   "forgotYourPass": {
+      "message": "Unohditko salasanasi?"
+   },
+   "fourHours": {
+      "message": "4 tuntia"
+   },
+   "free": {
+      "message": "ILMAINEN"
+   },
+   "gender": {
+      "message": "Sukupuoli"
+   },
+   "genderFemale": {
+      "message": "Nainen"
+   },
+   "genderMale": {
+      "message": "Mies"
+   },
+   "genderNone": {
+      "message": "Ei mikään"
+   },
+   "genderOther": {
+      "message": "Muu"
+   },
+   "gender_copied": {
+      "message": "Sukupuoli kopioitu"
+   },
+   "goPremiumBtn": {
+      "message": "Siirry Premiumiin"
+   },
+   "hideCode": {
+      "message": "Hide security code"
+   },
+   "hidePass": {
+      "message": "Piilota salasana"
+   },
+   "installDesktopApp": {
+      "message": "Asenna työpöytäsovellus"
+   },
+   "invalid_secret_key": {
+      "message": "Virheellinen salainen avain!"
+   },
+   "jcb": {
+      "message": "JCB"
+   },
+   "lang": {
+      "message": "fi"
+   },
+   "lastModifiedAt": {
+      "message": "Muokattu"
+   },
+   "lastName": {
+      "message": "Sukunimi"
+   },
+   "lastPasswordChangedAt": {
+      "message": "Salasana muutettu"
+   },
+   "learn_more": {
+      "message": "Lisätietoja"
+   },
+   "length": {
+      "message": "Pituus"
+   },
+   "lock": {
+      "message": "Lukitse"
+   },
+   "logins": {
+      "message": "Kirjautumiset"
+   },
+   "maestro": {
+      "message": "Maestro"
+   },
+   "mastercard": {
+      "message": "Mastercard"
+   },
+   "middleName": {
+      "message": "Toinen nimi"
+   },
+   "month": {
+      "message": "Month"
+   },
+   "more": {
+      "message": "Lisää"
+   },
+   "name": {
+      "message": "Nimi"
+   },
+   "name_copied": {
+      "message": "Nimi kopioitu"
+   },
+   "networkError": {
+      "message": "Virhe verkkoyhteydessä."
+   },
+   "never": {
+      "message": "Ei koskaan"
+   },
+   "newUser": {
+      "message": "Oletko uusi käyttäjä?"
+   },
+   "noItemsAddAllItem": {
+      "message": "Kohteita ei lisätty."
+   },
+   "noItemsAddLoginItem": {
+      "message": "Kirjautumisia ei ole lisätty."
+   },
+   "noItemsAddNotesItem": {
+      "message": "Suojattuja muistiinpanoja ei ole lisätty."
+   },
+   "noItemsAddPayItem": {
+      "message": "Maksutietoja ei ole lisätty."
+   },
+   "noItemsAddPersonalItem": {
+      "message": "Henkilötietoja ei ole lisätty."
+   },
+   "noItemsAddRecycleItem": {
+      "message": "Täällä ei ole kohteita."
+   },
+   "noItemsFound": {
+      "message": "Kohteita ei löytynyt."
+   },
+   "noResult": {
+      "message": "Ei tulosta!"
+   },
+   "noSaved": {
+      "message": "Tälle sivustolle ei ole tallennettu kirjautumistunnuksia."
+   },
+   "noSavedPrss": {
+      "message": "Ei tallennettua salasanaa!"
+   },
+   "notNow": {
+      "message": "Ei nyt"
+   },
+   "notes": {
+      "message": "Huomautukset"
+   },
+   "notes_characters_tips": {
+      "message": "%s merkkiä jäljellä"
+   },
+   "notes_copied": {
+      "message": "Huomautukset kopioitu"
+   },
+   "notes_placeholder": {
+      "message": "Kirjoita joitakin huomioita tästä tuotteesta (enimmäisrajoitus: %s merkkiä)."
+   },
+   "numWords": {
+      "message": "Luvut (0-9)"
+   },
+   "okIgotIt": {
+      "message": "SELVÄ. Tajusin."
+   },
+   "oneHour": {
+      "message": "1 tunti"
+   },
+   "oneMinute": {
+      "message": "1 minuutti"
+   },
+   "one_time_Password": {
+      "message": "Kertakäyttöinen salasana"
+   },
+   "one_time_pass_copied": {
+      "message": "Kertakäyttöinen salasana kopioitu"
+   },
+   "only": {
+      "message": "Vain"
+   },
+   "open": {
+      "message": "Avaa"
+   },
+   "options": {
+      "message": "Asetukset"
+   },
+   "passIncorrect": {
+      "message": "Väärä salasana."
+   },
+   "password": {
+      "message": "Salasana"
+   },
+   "password_copied": {
+      "message": "Salasana kopioitu"
+   },
+   "password_same": {
+      "message": "New master password cannot be the same as the old one."
+   },
+   "password_tip_note": {
+      "message": "\u003Cb>Note:\u003C/b> Do not use any of your current passwords."
+   },
+   "payment_Info": {
+      "message": "Maksutietoja"
+   },
+   "personal_Info": {
+      "message": "Henkilökohtaiset tiedot"
+   },
+   "phoneNumber": {
+      "message": "Puhelinnumero"
+   },
+   "phone_number_copied": {
+      "message": "Puhelinnumero kopioitu"
+   },
+   "premiumExpiredPurchase": {
+      "message": "Premium versiosi on \u003Cb class='text-red'>vanhentunut!\u003C/b>"
+   },
+   "premiumExpiredPurchaseAlert": {
+      "message": "Lisäominaisuudet eivät ole nyt käytettävissä. Päivitä ja jatka Premium-käyttöoikeutta ja pidä salasanasi turvassa."
+   },
+   "premiumExpiringSoonPurchase": {
+      "message": "Vain \u003Cb class=\"text-yellow\">%s päivää\u003C/b> Premiumia jäljellä!"
+   },
+   "premiumExpiringSoonPurchaseAlert": {
+      "message": "Päivitä, jotta sinulla on Premium-käyttöoikeus seuraaviin lisäominaisuuksiin:"
+   },
+   "premiumFreePurchase": {
+      "message": "Helpompi ja turvallisempi tapa hallita salasanojasi"
+   },
+   "premiumFreePurchaseAlert": {
+      "message": "Aloita Premium-toiminto jo tänään ja pidä nämä lisäominaisuudet:"
+   },
+   "premiumFreePurchaseAlert_New": {
+      "message": "Start Premium today and keep these advanced features:"
+   },
+   "premiumFreePurchase_New": {
+      "message": "An Easier, Safer Way to Manage Your Passwords"
+   },
+   "premiumPurchase": {
+      "message": "Sinulla on 30 päivän Premium!"
+   },
+   "premiumPurchaseAlert": {
+      "message": "Nauti nyt seuraavista lisäominaisuuksista:"
+   },
+   "premiun": {
+      "message": "PREMIUM"
+   },
+   "purchase_Dark_Web_Monitor": {
+      "message": "Dark Web Monitoring & Alerts"
+   },
+   "purchase_Password_Health": {
+      "message": "Salasanan kuntotarkistus"
+   },
+   "purchase_Password_Health_Check": {
+      "message": "Password Health Check"
+   },
+   "purchase_Unlimited_Devices": {
+      "message": "Sync Across Unlimited Devices"
+   },
+   "questionMark": {
+      "message": "?"
+   },
+   "recycle_Bin": {
+      "message": "Roskakori"
+   },
+   "refresh": {
+      "message": "Päivitä"
+   },
+   "rememberMeOnThisDevice": {
+      "message": "Muista minut tällä laitteella"
+   },
+   "remindExpirationDate": {
+      "message": "Muistuta 2 kuukautta ennen viimeistä käyttöpäivää."
+   },
+   "remind_password": {
+      "message": "Muistuta vaihtamaan salasana 90 päivän kuluttua."
+   },
+   "restore": {
+      "message": "Palauta"
+   },
+   "restoreSuccessfully": {
+      "message": "Palautus onnistui."
+   },
+   "retry": {
+      "message": "Yritä uudelleen"
+   },
+   "save": {
+      "message": "Tallenna"
+   },
+   "saveIn_DPM": {
+      "message": "Tallenna DualSafe Password Managerissa"
+   },
+   "savedFailedData": {
+      "message": "Uusimmat tiedot on synkronoitu palvelimelta."
+   },
+   "savedFailedSynced": {
+      "message": "Tallennus epäonnistui! Uusimmat tiedot on synkronoitu palvelimelta."
+   },
+   "savedSuccessfully": {
+      "message": "Tallennus onnistui."
+   },
+   "search": {
+      "message": "Etsi"
+   },
+   "secure": {
+      "message": "Turvallinen"
+   },
+   "secureNotes": {
+      "message": "Turvahuomautukset"
+   },
+   "secure_notes_placeholder": {
+      "message": "Kirjoita tärkeät huomautukset tähän (enimmäisrajoitus: %s merkkiä)"
+   },
+   "securityCode": {
+      "message": "Turvakoodi"
+   },
+   "security_code_copied": {
+      "message": "Turvakoodi kopioitu"
+   },
+   "settings": {
+      "message": "Asetukset"
+   },
+   "settings_Auto_Fill": {
+      "message": "Automaattinen täyttö"
+   },
+   "settings_Auto_Fill_Dec": {
+      "message": "Täytä tallennetut kirjautumistunnukset, maksutiedot jne. automaattisesti."
+   },
+   "settings_Auto_Lock": {
+      "message": "Automaattilukitus"
+   },
+   "settings_Auto_Lock_Dec": {
+      "message": "Lukitse DualSafe Password Manager automaattisesti määritetyllä tiheydellä."
+   },
+   "settings_Auto_Save": {
+      "message": "Automaattinen tallennus"
+   },
+   "settings_Auto_Save_Dec": {
+      "message": "Tallenna syötetyt käyttäjätunnukset ja salasanat automaattisesti."
+   },
+   "settings_Autofill_and_Autosave": {
+      "message": "Automaattinen täyttö ja tallennus"
+   },
+   "settings_Clear_Clipboard": {
+      "message": "Tyhjennä leikepöytä"
+   },
+   "settings_Clear_Clipboard_Dec": {
+      "message": "Tyhjennä leikepöytä automaattisesti määritettynä ajankohtana salasanan kopioinnin jälkeen."
+   },
+   "settings_General": {
+      "message": "Yleiset"
+   },
+   "settings_General_Dec": {
+      "message": "Aseta DualSafe Password Manager oletussalasanojen hallintaohjelmaksi."
+   },
+   "settings_Security_Options": {
+      "message": "Turvallisuusasetukset"
+   },
+   "settings_Show_Icon": {
+      "message": "Näytä kuvake"
+   },
+   "settings_Show_Icon_Dec": {
+      "message": "Näytä DualSafe Password Managerin kuvake kaikissa salasanan syöttöruuduissa ja tallenna kirjautumisesi yhdellä napsauksella."
+   },
+   "showCode": {
+      "message": "Show security code"
+   },
+   "showPass": {
+      "message": "Näytä salasana"
+   },
+   "signIn": {
+      "message": "Kirjaudu sisään"
+   },
+   "signInLocked": {
+      "message": "Your account has been locked. Try again in 5 minutes."
+   },
+   "signInNow": {
+      "message": "Kirjaudu sisään nyt täyttääksesi kirjautumistunnukset automaattisesti tälle sivustolle."
+   },
+   "signInSave": {
+      "message": "Kirjaudu sisään ja tallenna"
+   },
+   "signInTimeout": {
+      "message": "Kirjautumisen aikakatkaisu! Tarkista verkko ja yritä uudelleen!"
+   },
+   "signIn_DPM": {
+      "message": "Kirjaudu sisään DualSafe Password Manageriin"
+   },
+   "signIn_Desc": {
+      "message": "Kirjaudu sisään nyt tallentaaksesi \u003Ca class=\"btn-link btn-name\">\u003C/a> kirjautumistunnukset ja täyttää ne automaattisesti puolestasi tulevaisuudessa."
+   },
+   "signOut": {
+      "message": "Kirjaudu ulos"
+   },
+   "state": {
+      "message": "Valtio"
+   },
+   "strong": {
+      "message": "Vahva"
+   },
+   "suggestion": {
+      "message": "Ehdotus"
+   },
+   "symbols": {
+      "message": "Symbolit (%s)"
+   },
+   "systemLocks": {
+      "message": "Järjestelmän lukitus"
+   },
+   "tenMinutes": {
+      "message": "10 minuuttia"
+   },
+   "thirtyMinutes": {
+      "message": "30 minuuttia"
+   },
+   "title": {
+      "message": "Otsikko"
+   },
+   "title_placeholder": {
+      "message": "Kirjoita otsikko"
+   },
+   "token_invalid_desc": {
+      "message": "Your session has expired. Please sign in again."
+   },
+   "tools": {
+      "message": "Työkalut"
+   },
+   "tools_Dark_Web_Monitor": {
+      "message": "Pimeän verkon valvonta"
+   },
+   "tools_Dark_Web_Monitor_Dec": {
+      "message": "Auttaa sinua tarkkailemaan arkaluonteisia tietovuotoja pimeässä verkossa"
+   },
+   "tools_Import_Export": {
+      "message": "Tuonti ja vienti"
+   },
+   "tools_Import_Export_Dec": {
+      "message": "Tuo tietoja selaimista tai muista salasanatyökaluista ja vie tallennetut tiedot CSV-tiedostoon vain yhdellä napsauksella."
+   },
+   "tools_Password_Health": {
+      "message": "Salasanan kunto"
+   },
+   "tools_Password_Health_Dec": {
+      "message": "Auttaa sinua tarkistamaan haavoittuvia salasanoja, kuten heikkoja, uudelleen käytettyjä tai paljastuneita salasanoja."
+   },
+   "tools_Unlimited_Passwords": {
+      "message": "Rajoittamattomat salasanat"
+   },
+   "tools_Unlimited_Passwords_Only": {
+      "message": "(Vain 50 ilmaispaketissa)"
+   },
+   "twoMinutes": {
+      "message": "2 minuuttia"
+   },
+   "unionpay": {
+      "message": "UnionPay"
+   },
+   "unlock": {
+      "message": "Avaa lukitus"
+   },
+   "unlockDPM": {
+      "message": "Avaa DualSafe Password Managerin lukitus"
+   },
+   "unlockDPM_Desc": {
+      "message": "Avaa lukitus nyt tallentaaksesi \u003Ca class=\"btn-link btn-name\">\u003C/a> kirjautumistunnukset ja täyttää ne automaattisesti puolestasi tulevaisuudessa."
+   },
+   "unlockNow": {
+      "message": "Avaa lukitus nyt, jotta voit täyttää kirjautumistunnukset automaattisesti tälle sivustolle.."
+   },
+   "unlockSave": {
+      "message": "Avaa lukitus ja tallenna"
+   },
+   "update": {
+      "message": "Päivitä"
+   },
+   "updateFailed": {
+      "message": "Päivitys epäonnistui."
+   },
+   "updateLogins": {
+      "message": "Päivitä kirjautumistunnukset"
+   },
+   "updateSuccessfully": {
+      "message": "Päivitys onnistui."
+   },
+   "upgradeBtn": {
+      "message": "Päivitys"
+   },
+   "upgradeNowBtn": {
+      "message": "Päivitä nyt"
+   },
+   "url": {
+      "message": "url"
+   },
+   "url_copied": {
+      "message": "Verkkosivu kopioitu"
+   },
+   "use": {
+      "message": "Käytä"
+   },
+   "use_generator_password": {
+      "message": "Käytä salasanaa"
+   },
+   "username": {
+      "message": "Käyttäjänimi"
+   },
+   "username_copied": {
+      "message": "Käyttäjänimi kopioitu"
+   },
+   "username_placeholder": {
+      "message": "Sähköposti / Käyttäjänimi / Puhelinnumero"
+   },
+   "view": {
+      "message": "Näytä"
+   },
+   "visa": {
+      "message": "Visa"
+   },
+   "visaelectron": {
+      "message": "Visa Electron"
+   },
+   "weak": {
+      "message": "Heikko"
+   },
+   "welcomeTo": {
+      "message": "Tervetuloa"
+   },
+   "year": {
+      "message": "Vuosi"
+   },
+   "yes": {
+      "message": "Kyllä"
+   },
+   "zip": {
+      "message": "ZIP"
+   },
+   "zipPostalCode": {
+      "message": "ZIP/Postinumero"
+   }
+}

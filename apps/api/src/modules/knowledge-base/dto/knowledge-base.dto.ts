@@ -296,6 +296,109 @@ export class CloneKnowledgeDocumentDto {
   slug!: string;
 }
 
+export class UploadKnowledgeDocumentDto {
+  @ApiProperty({ format: "uuid" })
+  @IsUUID()
+  spaceId!: string;
+
+  @ApiPropertyOptional({ format: "uuid" })
+  @IsOptional()
+  @IsUUID()
+  collectionId?: string;
+
+  @ApiPropertyOptional({ format: "uuid" })
+  @IsOptional()
+  @IsUUID()
+  folderId?: string;
+
+  @ApiPropertyOptional({ format: "uuid" })
+  @IsOptional()
+  @IsUUID()
+  categoryId?: string;
+
+  @ApiPropertyOptional({ maxLength: 255 })
+  @IsOptional()
+  @IsString()
+  @MaxLength(255)
+  name?: string;
+
+  @ApiPropertyOptional({ pattern: slugPattern })
+  @IsOptional()
+  @Matches(slugPattern)
+  @MaxLength(160)
+  slug?: string;
+
+  @ApiPropertyOptional({ maxLength: 2000 })
+  @IsOptional()
+  @IsString()
+  @MaxLength(2000)
+  description?: string;
+
+  @ApiPropertyOptional({ maxLength: 35 })
+  @IsOptional()
+  @IsString()
+  @MaxLength(35)
+  language?: string;
+
+  @ApiPropertyOptional({ type: "object", additionalProperties: true })
+  @IsOptional()
+  @IsObject()
+  metadata?: Record<string, unknown>;
+}
+
+export class CreateKnowledgeTextDocumentDto {
+  @ApiProperty({ format: "uuid" })
+  @IsUUID()
+  spaceId!: string;
+
+  @ApiPropertyOptional({ format: "uuid" })
+  @IsOptional()
+  @IsUUID()
+  collectionId?: string;
+
+  @ApiPropertyOptional({ format: "uuid" })
+  @IsOptional()
+  @IsUUID()
+  folderId?: string;
+
+  @ApiPropertyOptional({ format: "uuid" })
+  @IsOptional()
+  @IsUUID()
+  categoryId?: string;
+
+  @ApiProperty()
+  @IsString()
+  @MaxLength(255)
+  name!: string;
+
+  @ApiProperty()
+  @Matches(slugPattern)
+  @MaxLength(160)
+  slug!: string;
+
+  @ApiProperty({ description: "Raw document text to index", maxLength: 1000000 })
+  @IsString()
+  @MaxLength(1000000)
+  content!: string;
+
+  @ApiPropertyOptional({ maxLength: 2000 })
+  @IsOptional()
+  @IsString()
+  @MaxLength(2000)
+  description?: string;
+
+  @ApiPropertyOptional({ maxLength: 35 })
+  @IsOptional()
+  @IsString()
+  @MaxLength(35)
+  language?: string;
+
+  @ApiPropertyOptional({ type: "object", additionalProperties: true })
+  @IsOptional()
+  @IsObject()
+  metadata?: Record<string, unknown>;
+}
+
 export class KnowledgeDocumentListQueryDto {
   @ApiPropertyOptional({ default: 1 })
   @IsOptional()

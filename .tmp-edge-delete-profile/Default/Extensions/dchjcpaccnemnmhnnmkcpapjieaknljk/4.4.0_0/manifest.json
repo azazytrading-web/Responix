@@ -1,0 +1,35 @@
+{
+   "action": {
+      "default_icon": {
+         "128": "icon128.png",
+         "16": "icon.png",
+         "48": "icon48.png"
+      },
+      "default_popup": "popup.html"
+   },
+   "background": {
+      "service_worker": "service-worker-loader.js",
+      "type": "module"
+   },
+   "content_security_policy": {
+      "extension_pages": "script-src 'self'; object-src 'self';"
+   },
+   "description": "Accurate prayer times with multiple calculation methods and a range of customizable features",
+   "icons": {
+      "128": "icon128.png",
+      "16": "icon.png",
+      "48": "icon48.png"
+   },
+   "key": "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCLX+1jVGPS65ivr+ZprCvOZUD+o4MHXay8XlzqpUWmvWE+wXW6K811mp9zpkugfrGDPd1MjX9StuX7agY8Bz2O65fhzTX6d7HZzb0FQFUsCYZ93MIKTlHHthQ6Q5z9ZpMwObTXF/79QEakuMdgKoIT4dWdwM8b8l6sAdcbftme2wIDAQAB",
+   "manifest_version": 3,
+   "name": "Prayer Times",
+   "options_page": "options.html",
+   "permissions": [ "storage", "offscreen", "notifications", "alarms" ],
+   "update_url": "https://clients2.google.com/service/update2/crx",
+   "version": "4.4.0",
+   "web_accessible_resources": [ {
+      "matches": [ "\u003Call_urls>" ],
+      "resources": [ "public/athan/*.mp3", "public/bell.png", "lib/constants.js", "lib/storage.js", "lib/prayer-times-api.js", "lib/location-helper.js", "timetable.html", "timetable.js", "css/style.css", "offscreen.html", "offscreen.js", "donate.html", "donate.js", "css/donate.css", "success.html", "cancel.html", "close-handler.js" ],
+      "use_dynamic_url": false
+   } ]
+}

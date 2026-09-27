@@ -1,0 +1,4695 @@
+
+{
+  "www_paypal_com": 
+  {
+    "websites": [],
+    "forms": [ 
+      {
+        "id": "CDD50DF9-7B7A-D869-836B-C925C9E0BB86",
+        "selector": "!",
+        "use": "PAYMENT",
+        "fields": [ 
+          {
+            "selector": "#brand",
+            "type": [ "CARDTYPE", "~ignore" ],
+            "options": 
+            {
+              "valuepair": "100000"
+            }
+          }, 
+          {
+            "selector": "#cardNumber",
+            "type": [ "NUMBER", "~ignore" ]
+          }, 
+          {
+            "selector": "#verificationCode",
+            "type": [ "SECURITYCODE", "~ignore" ]
+          }, 
+          {
+            "selector": "#expDate",
+            "type": [ "EXPIRE", "~ignore" ],
+            "options": 
+            {
+              "dtfmt": "{MM}/{YY}"
+            }
+          } ],
+        "options": 
+        {
+          "full": "payment"
+        }
+      }, 
+      {
+        "id": "054BDEBA-2DC7-99EE-8D62-A859689C3530",
+        "selector": "DIV:nth-child(1)#app-element-mountpoint>DIV>DIV:nth-child(1)>DIV>MAIN:nth-child(3)>DIV.content",
+        "use": "PERSONINFO",
+        "fields": [ 
+          {
+            "selector": "INPUT:nth-child(1)[name='/paypalAccountData/firstName']#paypalAccountData_firstName.ppvx_text-input__control___3-13-13",
+            "type": [ "FNAME", "~ignore" ]
+          }, 
+          {
+            "selector": "INPUT:nth-child(1)[name='/paypalAccountData/lastName']#paypalAccountData_lastName.ppvx_text-input__control___3-13-13",
+            "type": [ "LNAME", "~ignore" ]
+          }, 
+          {
+            "selector": "INPUT:nth-child(1)[name='/paypalAccountData/email']#paypalAccountData_email.ppvx_text-input__control___3-13-13",
+            "type": [ "EMAIL", "~username", "~ignore" ]
+          }, 
+          {
+            "selector": "INPUT:nth-child(1)[name='/paypalAccountData/phoneNumber']#paypalAccountData_phone.ppvx_text-input__control___3-13-13",
+            "type": [ "PHONE", "~ignore" ]
+          }, 
+          {
+            "selector": "INPUT:nth-child(1)[name='/paypalAccountData/dob']#paypalAccountData_dob.ppvx_text-input__control___3-13-13",
+            "type": [ "BIRTHDAY", "~ignore" ],
+            "options": 
+            {
+              "dtfmt": "{MM}/{DD}/{YYYY}"
+            }
+          }, 
+          {
+            "selector": "INPUT:nth-child(1)[name='/paypalAccountData/address/0/address1']#paypalAccountData_address1_0.ppvx_text-input__control___3-13-13",
+            "type": [ "ADDRESS", "~ignore" ]
+          }, 
+          {
+            "selector": "INPUT:nth-child(1)[name='/paypalAccountData/address/0/city']#paypalAccountData_city_0.ppvx_text-input__control___3-13-13",
+            "type": [ "CITY", "~ignore" ]
+          }, 
+          {
+            "selector": "INPUT:nth-child(1)[name='combo_t_/paypalAccountData/countryselector']#combo_txt_paypalAccountData_countryselector.ppvx_text-input__control___3-13-13.ppvx_text-input__control--icon-right___3-13-13",
+            "type": [ "CONTRY", "~ignore" ],
+            "options": 
+            {
+              "valuepair": "100007"
+            }
+          }, 
+          {
+            "selector": "INPUT:nth-child(1)[name='/paypalAccountData/address/0/zip']#paypalAccountData_zip_0.ppvx_text-input__control___3-13-13",
+            "type": [ "POST", "~ignore" ]
+          } ]
+      }, 
+      {
+        "id": "054BDEBA-2DC7-99EE-8D62-A859689C3XF0",
+        "selector": "DIV:nth-child(1)#mainModal>DIV>DIV:nth-child(2).vx_modal-content.padding-20",
+        "use": "PERSONINFO",
+        "fields": [ 
+          {
+            "selector": "INPUT:nth-child(1)[name='line1']#line1.ppvx_text-input__control___3-13-18",
+            "type": [ "ADDRESS", "~ignore" ]
+          }, 
+          {
+            "selector": "INPUT:nth-child(1)[name='city']#city.ppvx_text-input__control___3-13-18",
+            "type": [ "CITY", "~ignore" ]
+          }, 
+          {
+            "selector": "SELECT:nth-child(1)[name='state']#state.ppvx_dropdown__control___3-4-39",
+            "type": [ "STATE", "~ignore" ]
+          }, 
+          {
+            "selector": "INPUT:nth-child(1)[name='postal_code']#postal_code.ppvx_text-input__control___3-13-18",
+            "type": [ "POST", "~ignore" ]
+          } ]
+      } ],
+    "fields": [],
+    "except": []
+  },
+  "secure5_www_apple_com": 
+  {
+    "websites": [],
+    "forms": [ 
+      {
+        "id": "7C1BFD14-4457-8A22-C336-4F6B3C15C5CC",
+        "selector": "DIV:nth-child(10)#checkout-container>DIV>DIV:nth-child(2)>DIV>DIV:nth-child(1)>DIV:nth-child(2)>FIELDSET>DIV:nth-child(2)>DIV>DIV:nth-child(3).rf-paymentoptions-group.rf-paymentoptions-group-otherpaymentmethods",
+        "use": "PAYMENT",
+        "fields": [ 
+          {
+            "selector": "INPUT:nth-child(1)#checkout",
+            "type": [ "NUMBER", "~ignore" ]
+          }, 
+          {
+            "selector": "INPUT:nth-child(1)#checkout.securityCode",
+            "type": [ "SECURITYCODE", "~ignore" ]
+          }, 
+          {
+            "selector": "INPUT:nth-child(1)#checkout.expiration",
+            "type": [ "EXPIRE", "~ignore" ],
+            "options": 
+            {
+              "dtfmt": "{MM}/{YY}"
+            }
+          } ],
+        "options": 
+        {
+          "full": "payment"
+        }
+      } ],
+    "fields": [],
+    "except": []
+  },
+  "pay_google_com": 
+  {
+    "websites": [],
+    "forms": [ 
+      {
+        "id": "7C1BFD14-4457-8A22-C336-4F6B3C15C5CC",
+        "selector": "BODY:nth-child(2)#iframeBody>DIV:nth-child(3)>DIV:nth-child(3).b3id-instrument-manager-content.b3-instrument-manager-content",
+        "use": "PAYMENT",
+        "fields": [ 
+          {
+            "selector": "DIV#creditCardForm-1>DIV:nth-child(2)>DIV:nth-child(1)>DIV:nth-child(2)>INPUT[name='ccname'].jfk-textinput.b3id-text-input.b3-text-input",
+            "type": [ "CARDHOLDERNAME", "~ignore" ]
+          }, 
+          {
+            "selector": "DIV#creditCardForm-1>DIV:nth-child(1)>DIV:nth-child(1)>DIV>DIV:nth-child(1)>DIV:nth-child(2)>INPUT[name='cardnumber'].jfk-textinput.b3id-text-input.b3-text-input.numeric.b3-card-number-input-field.b3-invalid-control.label-input-label",
+            "type": [ "NUMBER", "~ignore" ]
+          }, 
+          {
+            "selector": "DIV#creditCardForm-1>DIV:nth-child(1)>DIV:nth-child(2)>DIV:nth-child(2)>DIV>DIV:nth-child(1)>DIV:nth-child(2)>INPUT[name='cvc'].jfk-textinput.b3id-text-input.b3-text-input.numeric.b3-security-code-input-field.b3-invalid-control.label-input-label",
+            "type": [ "SECURITYCODE", "~ignore" ]
+          }, 
+          {
+            "selector": "DIV#creditCardForm-1>DIV:nth-child(1)>DIV:nth-child(2)>DIV:nth-child(1)>DIV:nth-child(3)>DIV:nth-child(1)>DIV:nth-child(2)>INPUT[name='ccyear'].jfk-textinput.b3id-text-input.b3-text-input.numeric.b3-card-year-input-field.label-input-label.b3-invalid-control",
+            "type": [ "EXPYEAR", "~ignore" ],
+            "options": 
+            {
+              "dtfmt": "{YYYY}"
+            }
+          }, 
+          {
+            "selector": "DIV#creditCardForm-1>DIV:nth-child(1)>DIV:nth-child(2)>DIV:nth-child(1)>DIV:nth-child(1)>DIV:nth-child(1)>DIV:nth-child(2)>INPUT[name='ccmonth'].jfk-textinput.b3id-text-input.b3-text-input.numeric.b3-card-month-input-field.b3-invalid-control.label-input-label",
+            "type": [ "EXPMONTH", "~ignore" ]
+          } ],
+        "options": 
+        {
+          "full": "payment"
+        }
+      } ],
+    "fields": [],
+    "except": []
+  },
+  "account_microsoft_com": 
+  {
+    "websites": [],
+    "forms": [ 
+      {
+        "id": "CD1F3ABC-E807-BD70-515C-47C6EEF3A4F4",
+        "selector": "HTML>BODY:nth-child(2)>DIV:nth-child(24)>DIV>DIV>DIV>DIV:nth-child(2)>DIV:nth-child(2)>DIV>DIV:nth-child(2).ms-Panel-content.content-214",
+        "use": "PAYMENT",
+        "fields": [ 
+          {
+            "selector": "INPUT#accountHolderName",
+            "type": [ "CARDHOLDERNAME", "~ignore" ]
+          }, 
+          {
+            "selector": "INPUT#accountToken",
+            "type": [ "NUMBER", "~ignore" ]
+          }, 
+          {
+            "selector": "INPUT#cvvToken",
+            "type": [ "SECURITYCODE", "~ignore" ]
+          }, 
+          {
+            "selector": "INPUT#expiryYear",
+            "type": [ "EXPYEAR", "~ignore" ]
+          }, 
+          {
+            "selector": "INPUT#expiryMonth",
+            "type": [ "EXPMONTH", "~ignore" ]
+          } ],
+        "options": 
+        {
+          "full": "payment"
+        }
+      } ],
+    "fields": [],
+    "except": []
+  },
+  "secure_facebook_com": 
+  {
+    "websites": [],
+    "forms": [ 
+      {
+        "id": "F50CBF4B-4D2D-EE3B-2C77-982B0E2D365F",
+        "selector": "DIV:nth-child(1)#mount_0_0_XQ>DIV:nth-child(2)>DIV:nth-child(1)>DIV>DIV:nth-child(7)>DIV>DIV:nth-child(2)>DIV:nth-child(1)>DIV>DIV:nth-child(2)>DIV>DIV>DIV>DIV:nth-child(3).x1swvt13.x1l90r2v.x1pi30zi.xyamay9",
+        "use": "PAYMENT",
+        "fields": [ 
+          {
+            "selector": "INPUT:nth-child(2)#jsc_c_1g.x1i10hfl",
+            "type": [ "NUMBER", "~ignore" ]
+          }, 
+          {
+            "selector": "INPUT:nth-child(2)#jsc_c_1k",
+            "type": [ "SECURITYCODE", "~ignore" ]
+          }, 
+          {
+            "selector": "INPUT:nth-child(2)#jsc_c_1i",
+            "type": [ "EXPIRE", "~ignore" ],
+            "options": 
+            {
+              "dtfmt": "{MM}/{YY}"
+            }
+          } ],
+        "options": 
+        {
+          "full": "payment"
+        }
+      } ],
+    "fields": [],
+    "except": []
+  },
+  "www_walmart_com": 
+  {
+    "websites": [],
+    "forms": [ 
+      {
+        "id": "8A5E7D93-03B7-3D92-B1F0-724AA2F2B5CD",
+        "selector": "DIV:nth-child(1)#__next>DIV:nth-child(1)>DIV:nth-child(2)>SECTION>DIV:nth-child(2)>DIV:nth-child(2)>MAIN>DIV>DIV:nth-child(2)>DIV>DIV:nth-child(2)>DIV",
+        "use": "PAYMENT",
+        "fields": [ 
+          {
+            "selector": "INPUT:nth-child(2)#cc-number.w_GQ",
+            "type": [ "NUMBER", "~ignore" ]
+          }, 
+          {
+            "selector": "INPUT:nth-child(1)[name='cvv']#react-aria-7.w_GQ",
+            "type": [ "SECURITYCODE", "~ignore" ]
+          }, 
+          {
+            "selector": "SELECT:nth-child(2)#react-aria-6.w_F3",
+            "type": [ "EXPYEAR", "~ignore" ],
+            "options": 
+            {
+              "dtfmt": "{YY}"
+            }
+          }, 
+          {
+            "selector": "SELECT:nth-child(2)#react-aria-5.w_F3",
+            "type": [ "EXPMONTH", "~ignore" ],
+            "options": 
+            {
+              "dtfmt": "{MM}"
+            }
+          } ],
+        "options": 
+        {
+          "full": "payment"
+        }
+      }, 
+      {
+        "id": "",
+        "selector": "FORM#add-creditcard-form>DIV:nth-child(2).flex.flex-column",
+        "use": "PAYMENT",
+        "fields": [ 
+          {
+            "selector": "#cc-number",
+            "type": [ "NUMBER", "~ignore" ]
+          } ]
+      }, 
+      {
+        "id": "D0833F3E-A6C5-4A83-FC1F-81AAB03E60EA",
+        "selector": "DIV:nth-child(1)#__next",
+        "use": "PERSONINFO",
+        "fields": [ 
+          {
+            "selector": "INPUT[name='firstName']#ld_ui_textfield_469001.w_Fy",
+            "type": [ "FNAME", "~ignore" ]
+          }, 
+          {
+            "selector": "INPUT[name='lastName']#ld_ui_textfield_469002.w_Fy",
+            "type": [ "LNAME", "~ignore" ]
+          } ]
+      }, 
+      {
+        "id": "",
+        "selector": "FORM:nth-child(3)#sign-up-form",
+        "use": "PERSONINFO",
+        "fields": [ 
+          {
+            "selector": "#ld_ui_textfield_819756",
+            "type": [ "FNAME", "~ignore" ]
+          }, 
+          {
+            "selector": "#ld_ui_textfield_819757",
+            "type": [ "LNAME", "~ignore" ]
+          } ]
+      }, 
+      {
+        "id": "",
+        "selector": "FORM:nth-child(2)#add-edit-address-form",
+        "use": "PERSONINFO",
+        "fields": [ 
+          {
+            "selector": "#react-aria-3",
+            "type": [ "FNAME", "~ignore" ]
+          }, 
+          {
+            "selector": "#react-aria-4",
+            "type": [ "LNAME", "~ignore" ]
+          }, 
+          {
+            "selector": "#react-aria-9",
+            "type": [ "PHONE", "~ignore" ]
+          }, 
+          {
+            "selector": "#addressLineOne",
+            "type": [ "ADDRESS", "~ignore" ]
+          }, 
+          {
+            "selector": "#react-aria-6",
+            "type": [ "CITY", "~ignore" ]
+          } ]
+      } ],
+    "fields": [],
+    "except": []
+  },
+  "card-form_wise_com": 
+  {
+    "websites": [],
+    "forms": [ 
+      {
+        "id": "CE65D7F0-180D-FD95-1389-DCFE67FABD3D",
+        "selector": "DIV:nth-child(1)#root>DIV>DIV:nth-child(2)",
+        "use": "PAYMENT",
+        "fields": [ 
+          {
+            "selector": "INPUT:nth-child(1)[name='card-number']#card-number-input.form-control",
+            "type": [ "NUMBER", "~ignore" ]
+          }, 
+          {
+            "selector": "INPUT:nth-child(2)[name='cvc']#cvc.form-control",
+            "type": [ "SECURITYCODE", "~ignore" ]
+          }, 
+          {
+            "selector": "INPUT:nth-child(2)[name='expiry-date']#expiry-date.form-control",
+            "type": [ "EXPIRE", "~ignore" ],
+            "options": 
+            {
+              "dtfmt": "{MM}/{YY}"
+            }
+          } ]
+      } ],
+    "fields": [],
+    "except": []
+  },
+  "account_booking_com": 
+  {
+    "websites": [],
+    "forms": [ 
+      {
+        "id": "9EB01202-039A-F1FB-9AB0-D1957EF70020",
+        "selector": "DIV:nth-child(1)#root>DIV>DIV>DIV>DIV:nth-child(2)>DIV.bui-spacer--large",
+        "use": "PAYMENT",
+        "fields": [ 
+          {
+            "selector": "INPUT:nth-child(1)[name='name']#__bui-1.ZMH9h0HCYH9GGNxHnXGJ",
+            "type": [ "CARDHOLDERNAME", "~ignore" ]
+          }, 
+          {
+            "selector": "DIV:nth-child(1)#root>DIV>DIV>DIV>DIV:nth-child(2)>DIV>FORM>DIV:nth-child(2)>DIV:nth-child(2)>DIV>INPUT:nth-child(2)[name='number'].ZMH9h0HCYH9GGNxHnXGJ",
+            "type": [ "NUMBER", "~ignore" ]
+          }, 
+          {
+            "selector": "INPUT:nth-child(2)[name='cvc']#__bui-4.ZMH9h0HCYH9GGNxHnXGJ",
+            "type": [ "SECURITYCODE", "~ignore" ]
+          }, 
+          {
+            "selector": "DIV:nth-child(1)#root>DIV>DIV>DIV>DIV:nth-child(2)>DIV>FORM>DIV:nth-child(3)>DIV:nth-child(1)>DIV:nth-child(2)>DIV>INPUT:nth-child(1)[name='expirationDate'].ZMH9h0HCYH9GGNxHnXGJ",
+            "type": [ "EXPIRE", "~ignore" ],
+            "options": 
+            {
+              "dtfmt": "{MM}/{YY}"
+            }
+          } ]
+      }, 
+      {
+        "id": "AA74063E-87D8-9D67-0BC1-A0D23FE74118",
+        "selector": ".uRfFhBqobKtuCIVi1yQ7",
+        "use": "PERSONINFO",
+        "fields": [ 
+          {
+            "selector": "input[name=first]",
+            "type": [ "FNAME", "~ignore" ]
+          }, 
+          {
+            "selector": "input[name=last]",
+            "type": [ "LNAME", "~ignore" ]
+          } ]
+      }, 
+      {
+        "id": "93A13D3D-6509-C0F6-3596-5AEE11AA9EE7",
+        "selector": ".AeE1sGrCwyTGrra9G_kz",
+        "use": "PERSONINFO",
+        "fields": []
+      }, 
+      {
+        "id": "F839D53C-F3F8-43F1-C3C6-45F45934D7C4",
+        "selector": ".KBX_kI7wQ0ziDRM0x5Ig",
+        "use": "PERSONINFO",
+        "fields": [ 
+          {
+            "selector": "INPUT[name='new_email']",
+            "type": [ "EMAIL", "~username", "~ignore" ]
+          } ]
+      }, 
+      {
+        "id": "8B8DD948-BEBF-0C39-F994-9D85F5A52632",
+        "selector": ".uRfFhBqobKtuCIVi1yQ7",
+        "use": "PERSONINFO",
+        "fields": [ 
+          {
+            "selector": "INPUT[name='dateOfBirth__year']",
+            "type": [ "BYEAR", "~ignore" ]
+          }, 
+          {
+            "selector": "INPUT[name='dateOfBirth__day']",
+            "type": [ "BDAY", "~ignore" ]
+          } ]
+      }, 
+      {
+        "id": "C080C539-3AAA-3A9B-F711-6D8F26514826",
+        "selector": ".AeE1sGrCwyTGrra9G_kz",
+        "use": "PERSONINFO",
+        "fields": [ 
+          {
+            "selector": "SELECT:nth-child(1)[name='nationality']",
+            "type": [ "CONTRY", "~ignore" ],
+            "options": 
+            {
+              "valuepair": "100010"
+            }
+          } ]
+      }, 
+      {
+        "id": "D14C2BEF-02D8-430A-A82C-8E4A4DA416C4",
+        "selector": "DIV#undefined_content>FIELDSET>DIV.Vw55_aACpYkyD1luIfis.kBoHgdoepdx0bTMKriS3.dNpq1L9vuTuHat2giHI8",
+        "use": "PERSONINFO",
+        "fields": [ 
+          {
+            "selector": "INPUT:nth-child(1)[name='line1']",
+            "type": [ "ADDRESS", "~ignore" ]
+          }, 
+          {
+            "selector": "INPUT:nth-child(1)[name='city']",
+            "type": [ "STATE", "~ignore" ]
+          }, 
+          {
+            "selector": "SELECT:nth-child(1)[name='country']",
+            "type": [ "CONTRY", "~ignore" ],
+            "options": 
+            {
+              "valuepair": "100011"
+            }
+          }, 
+          {
+            "selector": "INPUT:nth-child(1)[name='zip']#__bui-79.ZMH9h0HCYH9GGNxHnXGJ",
+            "type": [ "POST", "~ignore" ]
+          } ]
+      } ],
+    "fields": [],
+    "except": []
+  },
+  "shop_samsung_com": 
+  {
+    "websites": [],
+    "forms": [ 
+      {
+        "id": "FC8FFE81-042C-098D-45C5-C5DDC13AF628",
+        "selector": "FORM:nth-child(2)#cybersourceSOPForm>DIV:nth-child(1).cardForm.row.no-gutter.clearfix.creditCard.tab-content",
+        "use": "PAYMENT",
+        "fields": [ 
+          {
+            "selector": "INPUT[name='nameOnCard']#nameOnCard.form-control.text.tokoPaymentDetailsFormElement.js-nameOnCard",
+            "type": [ "CARDHOLDERNAME", "~ignore" ]
+          }, 
+          {
+            "selector": "SELECT[name='cardTypeCode']#cardType.tokoPaymentDetailsFormElement.form-control",
+            "type": [ "CARDTYPE", "~ignore" ],
+            "options": 
+            {
+              "valuepair": "100001"
+            }
+          }, 
+          {
+            "selector": "INPUT[name='cardNumber']#cardNumber.form-control.text.tokoPaymentDetailsFormElement.js-cardNumber",
+            "type": [ "NUMBER", "~ignore" ]
+          }, 
+          {
+            "selector": "INPUT:nth-child(2)[name='card_cvn']#cvnNumber.col-xs-12.form-control.text.tokoPaymentDetailsFormElement",
+            "type": [ "SECURITYCODE", "~ignore" ]
+          }, 
+          {
+            "selector": "SELECT[name='expiryYear']#ExpiryYear.tokoPaymentDetailsFormElement.form-control.notranslate",
+            "type": [ "EXPYEAR", "~ignore" ],
+            "options": 
+            {
+              "dtfmt": "{YY}"
+            }
+          }, 
+          {
+            "selector": "SELECT[name='expiryMonth']#ExpiryMonth.tokoPaymentDetailsFormElement.form-control.notranslate",
+            "type": [ "EXPMONTH", "~ignore" ],
+            "options": 
+            {
+              "dtfmt": "{MM}"
+            }
+          } ]
+      }, 
+      {
+        "id": "C6F86AD3-6AAA-95FF-DB78-AC44943BE3AB",
+        "selector": "form",
+        "use": "PERSONINFO",
+        "fields": [ 
+          {
+            "selector": "input[formcontrolname=firstName]",
+            "type": [ "FNAME", "~ignore" ]
+          }, 
+          {
+            "selector": "input[formcontrolname=lastName]",
+            "type": [ "LNAME", "~ignore" ]
+          }, 
+          {
+            "selector": "input[formcontrolname=phone]",
+            "type": [ "PHONE", "~ignore" ]
+          }, 
+          {
+            "selector": "input[formcontrolname=line1]",
+            "type": [ "ADDRESS", "~ignore" ]
+          } ]
+      } ],
+    "fields": [],
+    "except": []
+  },
+  "js_checkout_com": 
+  {
+    "websites": [],
+    "forms": [ 
+      {
+        "id": "AFD7DB8D-AD5C-B9A7-1B8B-C7DF148E7EF4",
+        "selector": "DIV:nth-child(2)#frames-container.frames-container.multi-line",
+        "use": "PAYMENT",
+        "fields": [ 
+          {
+            "selector": "INPUT:nth-child(2)[name='cardnumber']#checkout-frames-card-number.card-number.field",
+            "type": [ "NUMBER", "~ignore" ]
+          }, 
+          {
+            "selector": "INPUT:nth-child(2)[name='cvc']#checkout-frames-cvv.cvv.field",
+            "type": [ "SECURITYCODE", "~ignore" ]
+          }, 
+          {
+            "selector": "INPUT:nth-child(2)[name='exp-date']#checkout-frames-expiry-date.expiry-date.field",
+            "type": [ "EXPIRE", "~ignore" ],
+            "options": 
+            {
+              "dtfmt": "{MM}/{YY}"
+            }
+          } ]
+      } ],
+    "fields": [],
+    "except": []
+  },
+  "gcoin_gome_com": 
+  {
+    "websites": [],
+    "forms": [ 
+      {
+        "id": "E3AE5546-0806-A076-CA39-DED5D45BF0FC",
+        "selector": ".fill-tal",
+        "use": "PAYMENT",
+        "fields": [ 
+          {
+            "selector": "#name",
+            "type": [ "CARDHOLDERNAME", "~ignore" ]
+          }, 
+          {
+            "selector": "#bankCardNo",
+            "type": [ "NUMBER", "~ignore" ]
+          } ]
+      } ],
+    "fields": [],
+    "except": []
+  },
+  "allegro": 
+  {
+    "websites": [],
+    "forms": [ 
+      {
+        "id": "42C9CD9A-065F-C532-BD37-804WF18FC5B0",
+        "selector": "SECTION:nth-child(2)#payment-component>SLOT>RENDER-HTML-ONCE>DIV:nth-child(1)>LEGACY-PT-APP-ROOT:nth-child(2)>PMF-PAYMENTS-METHODS>PMF-PAYMENT-TILES-VIEW>FORM>DIV:nth-child(1)>DIV>PMF-PAYMENT-TILES-LIST>PMF-TILE-RENDERER:nth-child(1)>DIV:nth-child(2)>DIV>DIV>DIV>DIV>DIV:nth-child(2)>DIV>DIV:nth-child(1)>DIV:nth-child(2)>DIV.mg9e_16.mg9e_24_l.mvrt_16.mvrt_24_l.mj7a_16.mj7a_24_l.msts_pt.mx7m_1.mlkp_ag.m911_co.mnyp_co.mefy_co.mldj_2.mm2b_2.mg1ope",
+        "use": "PAYMENT",
+        "fields": [ 
+          {
+            "selector": "INPUT[name='cardNumber']#card-number.form-input",
+            "type": [ "NUMBER", "~ignore" ]
+          }, 
+          {
+            "selector": "DIV:nth-child(1)#app>DIV>DIV>DIV>SPAN>SPAN>INPUT[name='cvv'].form-input",
+            "type": [ "SECURITYCODE", "~ignore" ]
+          }, 
+          {
+            "selector": "DIV:nth-child(1)#app>DIV>DIV>DIV>SPAN>SPAN>INPUT[name='expDate'].form-input",
+            "type": [ "EXPIRE", "~ignore" ],
+            "options": 
+            {
+              "dtfmt": "{MM}/{YY}"
+            }
+          } ]
+      }, 
+      {
+        "id": "42C9CD9A-065F-C532-BD37-804A118FC5B0",
+        "selector": "HTML>BODY:nth-child(2)>DIV:nth-child(3)>DIV:nth-child(2)>DIV:nth-child(2)>DIV>DIV>DIV:nth-child(2)>DIV>DIV>DIV:nth-child(1)>DIV>DIV>DIV>SECTION:nth-child(3)>FORM",
+        "use": "PERSONINFO",
+        "fields": [ 
+          {
+            "selector": "INPUT:nth-child(1)[name='email']#email.mjyo_6x.mqu1_21.mli8_k4.mse2_40.mp4t_0.m3h2_0.mryx_0.munh_0.mg9e_8.mvrt_8.mj7a_8.mh36_8.m911_5r.mefy_5r.mnyp_5r.mdwl_5r.msbw_2.mldj_2.mtag_2.mm2b_2.mgmw_wo.msts_pt.mgn2_14.mp0t_0a.m9tr_5r.o1jww.m0ux_fp.mp5q_jr.fzysh",
+            "type": [ "EMAIL", "~username", "~ignore" ]
+          } ]
+      }, 
+      {
+        "id": "C9A97A07-869A-EDAB-EB36-FDE6D971757D",
+        "selector": "HTML>BODY:nth-child(2)>DIV:nth-child(3)>DIV:nth-child(2)>DIV:nth-child(2)>DIV>DIV:nth-child(2)>DIV:nth-child(2)>DIV>DIV>SECTION:nth-child(1)>FORM>DIV>DIV>DIV:nth-child(2).msts_pt.mg9e_16.mg9e_24_l.mvrt_16.mvrt_24_l.mj7a_16.mj7a_24_l.mh36_16.mh36_24_l.a883q",
+        "use": "PERSONINFO",
+        "fields": [ 
+          {
+            "selector": "INPUT:nth-child(1)[name='email']#email.mjyo_6x.mqu1_21.mli8_k4.mse2_40.mp4t_0.m3h2_0.mryx_0.munh_0.mg9e_8.mvrt_8.mj7a_8.mh36_8.m911_5r.mefy_5r.mnyp_5r.mdwl_5r.msbw_2.mldj_2.mtag_2.mm2b_2.mgmw_wo.msts_pt.mgn2_14.mp0t_0a.m9tr_5r.o1w0t.m0ux_fp.mp5q_jr.f1m1h",
+            "type": [ "EMAIL", "~username", "~ignore" ]
+          }, 
+          {
+            "selector": "INPUT:nth-child(1)[name='phone']#phone.mjyo_6x.mqu1_21.mli8_k4.mse2_40.mp4t_0.m3h2_0.mryx_0.munh_0.mg9e_8.mvrt_8.mj7a_8.mh36_8.m911_5r.mefy_5r.mnyp_5r.mdwl_5r.msbw_2.mldj_2.mtag_2.mm2b_2.mgmw_wo.msts_pt.mgn2_14.mp0t_0a.m9tr_5r.o1w0t.m0ux_fp.mp5q_jr.f1m1h",
+            "type": [ "PHONE", "~ignore" ]
+          } ]
+      } ],
+    "fields": [],
+    "except": []
+  },
+  "move_vpal_com": 
+  {
+    "websites": [],
+    "forms": [ 
+      {
+        "id": "",
+        "selector": "!",
+        "use": "PAYMENT",
+        "fields": [ 
+          {
+            "selector": "#realName",
+            "type": [ "CARDHOLDERNAME", "~ignore" ]
+          }, 
+          {
+            "selector": "#cvv",
+            "type": [ "SECURITYCODE", "~ignore" ]
+          }, 
+          {
+            "selector": "#validity",
+            "type": [ "EXPIRE", "~ignore" ],
+            "options": 
+            {
+              "dtfmt": "{MM}/{YY}"
+            }
+          } ],
+        "options": 
+        {
+          "full": "payment"
+        }
+      } ],
+    "fields": [],
+    "except": []
+  },
+  "global_alipay_com": 
+  {
+    "websites": [],
+    "forms": [ 
+      {
+        "id": "",
+        "selector": "DIV:nth-child(1)#main>DIV:nth-child(5)>DIV:nth-child(2).panel-body",
+        "use": "PAYMENT",
+        "fields": [ 
+          {
+            "selector": "#accountHolderName",
+            "type": [ "CARDHOLDERNAME", "~ignore" ]
+          }, 
+          {
+            "selector": "#accountNumber",
+            "type": [ "NUMBER", "~ignore" ]
+          } ]
+      }, 
+      {
+        "id": "",
+        "selector": "DIV:nth-child(1)#root>DIV>DIV:nth-child(2)>DIV>DIV:nth-child(2)>FORM.ant-form.ant-form-horizontal.ant-form-hide-required-mark",
+        "use": "PERSONINFO",
+        "fields": [ 
+          {
+            "selector": "#email",
+            "type": [ "EMAIL", "~username", "~ignore" ]
+          } ]
+      }, 
+      {
+        "id": "",
+        "selector": "DIV:nth-child(1)#main>DIV:nth-child(4)>DIV:nth-child(2)>DIV.contact",
+        "use": "PERSONINFO",
+        "fields": [ 
+          {
+            "selector": "#contactPersons[100].name",
+            "type": [ "NAME", "~ignore" ]
+          }, 
+          {
+            "selector": "#contactPersons[100].email",
+            "type": [ "EMAIL", "~username", "~ignore" ]
+          }, 
+          {
+            "selector": "#main>DIV:nth-child(4)>DIV:nth-child(2)>DIV>DIV:nth-child(4)>DIV:nth-child(2)>DIV>DIV:nth-child(1)>INPUT:nth-child(3)",
+            "type": [ "PHONE", "~ignore" ]
+          } ]
+      } ],
+    "fields": [],
+    "except": []
+  },
+  "apx-security_amazon": 
+  {
+    "websites": [],
+    "forms": [ 
+      {
+        "id": "",
+        "selector": "FORM#pp-HsjhJ2-14>DIV:nth-child(3)>DIV:nth-child(2)>DIV.a-row.pmts-add-credit-card-container",
+        "use": "PAYMENT",
+        "fields": [ 
+          {
+            "selector": "#pp-HsjhJ2-18",
+            "type": [ "CARDHOLDERNAME", "~ignore" ]
+          }, 
+          {
+            "selector": "#pp-HsjhJ2-16",
+            "type": [ "NUMBER", "~ignore" ]
+          } ]
+      }, 
+      {
+        "id": "",
+        "selector": "FORM#pp-xgmhU2-17>DIV:nth-child(3)>DIV:nth-child(2)>DIV.a-row.pmts-add-credit-card-container",
+        "use": "PAYMENT",
+        "fields": [ 
+          {
+            "selector": "#pp-xgmhU2-21",
+            "type": [ "CARDHOLDERNAME", "~ignore" ]
+          }, 
+          {
+            "selector": "#pp-xgmhU2-19",
+            "type": [ "NUMBER", "~ignore" ]
+          } ]
+      } ],
+    "fields": [],
+    "except": []
+  },
+  "t_2c2p_com": 
+  {
+    "websites": [],
+    "forms": [ 
+      {
+        "id": "",
+        "selector": "FORM:nth-child(3)[name='credit_card_details_form']#credit_card_details_form",
+        "use": "PAYMENT",
+        "fields": [ 
+          {
+            "selector": "#credit_card_holder_name",
+            "type": [ "CARDHOLDERNAME", "~ignore" ]
+          }, 
+          {
+            "selector": "#credit_card_number",
+            "type": [ "NUMBER", "~ignore" ]
+          } ]
+      } ],
+    "fields": [],
+    "except": []
+  },
+  "www_sears_com": 
+  {
+    "websites": [],
+    "forms": [ 
+      {
+        "id": "34520455-34AC-CA98-F0E7-25CBD1E55A9B",
+        "selector": "!",
+        "use": "PAYMENT",
+        "fields": [ 
+          {
+            "selector": "INPUT:nth-child(1)#nameOnCard",
+            "type": [ "CARDHOLDERNAME", "~ignore" ]
+          }, 
+          {
+            "selector": "INPUT:nth-child(1)#numberOnCard",
+            "type": [ "NUMBER", "~ignore" ]
+          } ],
+        "options": 
+        {
+          "full": "payment"
+        }
+      }, 
+      {
+        "id": "0A62F5A5-1A3D-2122-636E-4710C6C66DCE",
+        "selector": "FORM#kc-register-form-1.form-horizontal",
+        "use": "PERSONINFO",
+        "fields": [ 
+          {
+            "selector": "INPUT[name='mfirstName']#mfirstName.form-control",
+            "type": [ "FNAME", "~ignore" ]
+          }, 
+          {
+            "selector": "INPUT[name='mlastName']#mlastName.form-control",
+            "type": [ "LNAME", "~ignore" ]
+          }, 
+          {
+            "selector": "INPUT[name='memail']#memail.form-control",
+            "type": [ "EMAIL", "~username", "~ignore" ]
+          }, 
+          {
+            "selector": "INPUT[name='muser.attributes.zipCode']#mzipCode.form-control",
+            "type": [ "POST", "~ignore" ]
+          } ]
+      }, 
+      {
+        "id": "EDB79E71-6BC0-89CA-FBF0-AD3F72250C9B",
+        "selector": "#mat-tab-content-0-0>DIV>MAT-CARD:nth-child(3)>MAT-CARD-CONTENT:nth-child(3)>DIV>DIV>DIV>FORM[name='phoneUpdateForm']",
+        "use": "PERSONINFO",
+        "fields": [ 
+          {
+            "selector": "#currPhone",
+            "type": [ "PHONE", "~ignore" ]
+          } ]
+      }, 
+      {
+        "id": "24D08AB3-29C8-6286-3C71-DEDA7E0349FC",
+        "selector": "!",
+        "use": "PERSONINFO",
+        "fields": [ 
+          {
+            "selector": "#currAdd",
+            "type": [ "ADDRESS", "~ignore" ]
+          }, 
+          {
+            "selector": "#currCity",
+            "type": [ "CITY", "~ignore" ]
+          }, 
+          {
+            "selector": "#currZip",
+            "type": [ "POST", "~ignore" ]
+          } ]
+      }, 
+      {
+        "id": "CCA0C3A8-3C18-4DA1-2C93-AECCE296F697",
+        "selector": "!",
+        "use": "PERSONINFO",
+        "fields": [ 
+          {
+            "selector": "#firstName",
+            "type": [ "FNAME", "~ignore" ]
+          }, 
+          {
+            "selector": "#lastName",
+            "type": [ "LNAME", "~ignore" ]
+          }, 
+          {
+            "selector": "#phoneNumber",
+            "type": [ "PHONE", "~ignore" ]
+          }, 
+          {
+            "selector": "#streetAddress",
+            "type": [ "ADDRESS", "~ignore" ]
+          }, 
+          {
+            "selector": "#city",
+            "type": [ "CITY", "~ignore" ]
+          }, 
+          {
+            "selector": "#zipCode",
+            "type": [ "POST", "~ignore" ]
+          } ]
+      } ],
+    "fields": [],
+    "except": []
+  },
+  "www_macys_com": 
+  {
+    "websites": [],
+    "forms": [ 
+      {
+        "id": "B0F3660F-AB3C-CA61-6FD0-478C894228A4",
+        "selector": "#editCreditCardForm",
+        "use": "PAYMENT",
+        "fields": [ 
+          {
+            "selector": "#creditCardType",
+            "type": [ "CARDTYPE", "~ignore" ],
+            "options": 
+            {
+              "valuepair": "100002"
+            }
+          }, 
+          {
+            "selector": "#cc-number",
+            "type": [ "NUMBER", "~ignore" ]
+          }, 
+          {
+            "selector": "#cid",
+            "type": [ "SECURITYCODE", "~ignore" ]
+          }, 
+          {
+            "selector": "#expyear",
+            "type": [ "EXPYEAR", "~ignore" ]
+          }, 
+          {
+            "selector": "#expMonth",
+            "type": [ "EXPMONTH", "~ignore" ]
+          } ]
+      }, 
+      {
+        "id": "D6A82721-F553-BECF-854E-E1C9279AD0E4",
+        "selector": "#maincontent>SECTION:nth-child(2)>SECTION:nth-child(2)>SECTION:nth-child(2)>ARTICLE:nth-child(1)>FORM:nth-child(3)",
+        "use": "PAYMENT",
+        "fields": [ 
+          {
+            "selector": "#card_name_5",
+            "type": [ "CARDHOLDERNAME", "~ignore" ]
+          }, 
+          {
+            "selector": "#card_number_5",
+            "type": [ "NUMBER", "~ignore" ]
+          }, 
+          {
+            "selector": "#cvv_6",
+            "type": [ "SECURITYCODE", "~ignore" ]
+          } ]
+      }, 
+      {
+        "id": "789185BC-7C49-6873-5E31-7C9964581722",
+        "selector": "DIV:nth-child(1)#ca-profile-container.container.fill-height.item1",
+        "use": "PERSONINFO",
+        "fields": [ 
+          {
+            "selector": "#ca-profile-firstname",
+            "type": [ "FNAME", "~ignore" ]
+          }, 
+          {
+            "selector": "INPUT:nth-child(2)[name='ca-profile-lastname']#ca-profile-lastname",
+            "type": [ "LNAME", "~ignore" ]
+          }, 
+          {
+            "selector": "INPUT:nth-child(4)[name='email']#ca-profile-email.is-invalid-input",
+            "type": [ "EMAIL", "~username", "~ignore" ]
+          }, 
+          {
+            "selector": "SELECT:nth-child(2)[name='ca-profile-birth-month']#ca-profile-birth-month",
+            "type": [ "BMOTH", "~ignore" ]
+          }, 
+          {
+            "selector": "SELECT:nth-child(2)[name='ca-profile-birth-day']#ca-profile-birth-day",
+            "type": [ "BDAY", "~ignore" ]
+          } ]
+      }, 
+      {
+        "id": "4E2A44F7-90D8-DA10-5CEA-A820A861BCD2",
+        "selector": "#editCreditCardForm>DIV:nth-child(9)",
+        "use": "PERSONINFO",
+        "fields": [ 
+          {
+            "selector": "#firstName",
+            "type": [ "FNAME", "~ignore" ]
+          }, 
+          {
+            "selector": "#lastName",
+            "type": [ "LNAME", "~ignore" ]
+          }, 
+          {
+            "selector": "#email",
+            "type": [ "EMAIL", "~username", "~ignore" ]
+          }, 
+          {
+            "selector": "#phone",
+            "type": [ "PHONE", "~ignore" ]
+          }, 
+          {
+            "selector": "#addressLine1",
+            "type": [ "ADDRESS", "~ignore" ]
+          }, 
+          {
+            "selector": "#city",
+            "type": [ "CITY", "~ignore" ]
+          }, 
+          {
+            "selector": "#zipCode",
+            "type": [ "POST", "~ignore" ]
+          } ]
+      } ],
+    "fields": [],
+    "except": []
+  },
+  "www_target_com": 
+  {
+    "websites": [],
+    "forms": [ 
+      {
+        "id": "D2A6005A-1F3B-37DA-94DF-6556B8A2C4C3",
+        "selector": "#__next>DIV:nth-child(2)>DIV:nth-child(2)>DIV>DIV:nth-child(2)>DIV>DIV:nth-child(2)>DIV>DIV:nth-child(2)>DIV",
+        "use": "PAYMENT",
+        "fields": [ 
+          {
+            "selector": "#cardName",
+            "type": [ "CARDHOLDERNAME", "~ignore" ]
+          }, 
+          {
+            "selector": "#cardNumber",
+            "type": [ "NUMBER", "~ignore" ]
+          }, 
+          {
+            "selector": "#expiration",
+            "type": [ "EXPIRE", "~ignore" ],
+            "options": 
+            {
+              "dtfmt": "{MM}/{YY}"
+            }
+          } ]
+      }, 
+      {
+        "id": "575FF99B-251B-FA08-5616-CAC30A58AB1E",
+        "selector": "DIV:nth-child(1)#__next>DIV:nth-child(2)>DIV>DIV:nth-child(1)>DIV>DIV:nth-child(2)>FORM:nth-child(2)",
+        "use": "PERSONINFO",
+        "fields": [ 
+          {
+            "selector": "#firstname",
+            "type": [ "FNAME", "~ignore" ]
+          }, 
+          {
+            "selector": "#lastname",
+            "type": [ "LNAME", "~ignore" ]
+          }, 
+          {
+            "selector": "#username",
+            "type": [ "EMAIL", "~username", "~ignore" ]
+          }, 
+          {
+            "selector": "#phone",
+            "type": [ "PHONE", "~ignore" ]
+          } ]
+      }, 
+      {
+        "id": "B216518C-64F1-43D6-3FFF-9C02E6218FFF",
+        "selector": "DIV:nth-child(1)#__next>DIV:nth-child(2)>DIV:nth-child(2)>DIV>DIV:nth-child(2)>DIV>DIV>DIV:nth-child(2)>DIV>DIV>DIV:nth-child(4)>FORM",
+        "use": "PERSONINFO",
+        "fields": [ 
+          {
+            "selector": "#first_name",
+            "type": [ "FNAME", "~ignore" ]
+          }, 
+          {
+            "selector": "#last_name",
+            "type": [ "LNAME", "~ignore" ]
+          }, 
+          {
+            "selector": "#phone_number",
+            "type": [ "PHONE", "~ignore" ]
+          }, 
+          {
+            "selector": "#address_line1",
+            "type": [ "ADDRESS", "~ignore" ]
+          }, 
+          {
+            "selector": "#city",
+            "type": [ "CITY", "~ignore" ]
+          }, 
+          {
+            "selector": "#zip_code",
+            "type": [ "POST", "~ignore" ]
+          } ]
+      }, 
+      {
+        "id": "A05EAFC3-1CD2-BAAE-7A6F-345700169C8E",
+        "selector": "DIV:nth-child(1)#__next>DIV:nth-child(2)>DIV:nth-child(2)>DIV>DIV:nth-child(2)>DIV>DIV:nth-child(2)>DIV>DIV:nth-child(2)>DIV>DIV:nth-child(5)>DIV:nth-child(3)>FORM",
+        "use": "PERSONINFO",
+        "fields": [ 
+          {
+            "selector": "#first_name",
+            "type": [ "FNAME", "~ignore" ]
+          }, 
+          {
+            "selector": "#last_name",
+            "type": [ "LNAME", "~ignore" ]
+          }, 
+          {
+            "selector": "#phone_number",
+            "type": [ "PHONE", "~ignore" ]
+          }, 
+          {
+            "selector": "#address_line1",
+            "type": [ "ADDRESS", "~ignore" ]
+          }, 
+          {
+            "selector": "#city",
+            "type": [ "CITY", "~ignore" ]
+          }, 
+          {
+            "selector": "#state",
+            "type": [ "STATE", "~ignore" ]
+          }, 
+          {
+            "selector": "#country",
+            "type": [ "CONTRY", "~ignore" ],
+            "options": 
+            {
+              "valuepair": "100022"
+            }
+          }, 
+          {
+            "selector": "#zip_code",
+            "type": [ "POST", "~ignore" ]
+          } ]
+      } ],
+    "fields": [],
+    "except": []
+  },
+  "www_wish_com": 
+  {
+    "websites": [],
+    "forms": [ 
+      {
+        "id": "67EDA934-B698-F3E1-D1CE-9F6B3BFF5D22",
+        "selector": "DIV#main_content>DIV:nth-child(1)>DIV:nth-child(2)>DIV:nth-child(2)>DIV>DIV>DIV:nth-child(3).Common__CreditCardFormWrapper-bon6ls-27.fkIOeB",
+        "use": "PAYMENT",
+        "fields": [ 
+          {
+            "selector": "#main_content>DIV:nth-child(1)>DIV:nth-child(2)>DIV:nth-child(2)>DIV>DIV>DIV:nth-child(3)>DIV:nth-child(1)>DIV>DIV:nth-child(2)>DIV:nth-child(2)>INPUT",
+            "type": [ "NUMBER", "~ignore" ]
+          }, 
+          {
+            "selector": "DIV#main_content>DIV:nth-child(1)>DIV:nth-child(2)>DIV:nth-child(2)>DIV>DIV>DIV:nth-child(3)>DIV:nth-child(2)>DIV:nth-child(1)>DIV>DIV:nth-child(2)>INPUT.WishTextInput-molq32-5.cqppHn",
+            "type": [ "SECURITYCODE", "~ignore" ]
+          }, 
+          {
+            "selector": "DIV#main_content>DIV:nth-child(1)>DIV:nth-child(2)>DIV:nth-child(2)>DIV>DIV>DIV:nth-child(3)>DIV:nth-child(2)>DIV:nth-child(2)>DIV>DIV:nth-child(2)>INPUT.WishTextInput-molq32-5.cqppHn",
+            "type": [ "EXPIRE", "~ignore" ],
+            "options": 
+            {
+              "dtfmt": "{MM}/{YY}"
+            }
+          } ]
+      }, 
+      {
+        "id": "98BA6D1B-6485-92C0-4088-D18EC40F12D2",
+        "selector": "#react-app>DIV>DIV:nth-child(10)>DIV>DIV>DIV>DIV:nth-child(2)>DIV:nth-child(1)>DIV:nth-child(2)>FORM",
+        "use": "PERSONINFO",
+        "fields": [ 
+          {
+            "selector": "#react-app>DIV>DIV:nth-child(10)>DIV>DIV>DIV>DIV:nth-child(2)>DIV:nth-child(1)>DIV:nth-child(2)>FORM>DIV:nth-child(2)>DIV:nth-child(1)>DIV>INPUT[name='firstname']",
+            "type": [ "FNAME", "~ignore" ]
+          }, 
+          {
+            "selector": "#react-app>DIV>DIV:nth-child(10)>DIV>DIV>DIV>DIV:nth-child(2)>DIV:nth-child(1)>DIV:nth-child(2)>FORM>DIV:nth-child(2)>DIV:nth-child(2)>DIV>INPUT[name='lastname']",
+            "type": [ "LNAME", "~ignore" ]
+          }, 
+          {
+            "selector": "#react-app>DIV>DIV:nth-child(10)>DIV>DIV>DIV>DIV:nth-child(2)>DIV:nth-child(1)>DIV:nth-child(2)>FORM>DIV:nth-child(3)>DIV>INPUT:nth-child(2)",
+            "type": [ "EOP", "~username", "~ignore" ]
+          } ]
+      }, 
+      {
+        "id": "9454A082-B760-0488-29BF-96B1E504B9C1",
+        "selector": "DIV#main_content>DIV>DIV>DIV>DIV:nth-child(2)>DIV>DIV:nth-child(2).Common__Table-ambwfd-0.bZoYIY",
+        "use": "PERSONINFO",
+        "fields": [ 
+          {
+            "selector": "DIV#main_content>DIV>DIV>DIV>DIV:nth-child(2)>DIV>DIV:nth-child(2)>DIV:nth-child(1)>DIV:nth-child(2)>INPUT:nth-child(2).UIControls__WishInputText-sc-3x6loc-0.bbNcjn",
+            "type": [ "FNAME", "~ignore" ]
+          }, 
+          {
+            "selector": "DIV#main_content>DIV>DIV>DIV>DIV:nth-child(2)>DIV>DIV:nth-child(2)>DIV:nth-child(1)>DIV:nth-child(2)>INPUT:nth-child(4).UIControls__WishInputText-sc-3x6loc-0.bbNcjn",
+            "type": [ "LNAME", "~ignore" ]
+          }, 
+          {
+            "selector": "DIV#main_content>DIV>DIV>DIV>DIV:nth-child(2)>DIV>DIV:nth-child(2)>DIV:nth-child(2)>DIV:nth-child(2)>INPUT:nth-child(1).UIControls__WishInputText-sc-3x6loc-0.Account__AccountInputText-sc-1qebrql-14.bbNcjn.fjfivN",
+            "type": [ "EMAIL", "~username", "~ignore" ]
+          }, 
+          {
+            "selector": "#main_content>DIV>DIV>DIV>DIV:nth-child(2)>DIV>DIV:nth-child(2)>DIV:nth-child(4)>DIV:nth-child(2)>INPUT:nth-child(2)",
+            "type": [ "PHONE", "~ignore" ]
+          } ]
+      }, 
+      {
+        "id": "F3DCD0AE-4B81-0D86-DA02-172F91703FFA",
+        "selector": "DIV#main_content>DIV>DIV>DIV>DIV:nth-child(2)>DIV>DIV:nth-child(3)>DIV:nth-child(1)>DIV:nth-child(2).FormElement__FormBody-h7mauq-20.bbHJiN",
+        "use": "PERSONINFO",
+        "fields": [ 
+          {
+            "selector": "DIV#main_content>DIV>DIV>DIV>DIV:nth-child(2)>DIV>DIV:nth-child(3)>DIV:nth-child(1)>DIV:nth-child(2)>DIV:nth-child(1)>DIV:nth-child(1)>DIV>DIV:nth-child(2)>INPUT.WishTextInput-molq32-5.kwzpzy",
+            "type": [ "FNAME", "~ignore" ]
+          }, 
+          {
+            "selector": "DIV#main_content>DIV>DIV>DIV>DIV:nth-child(2)>DIV>DIV:nth-child(3)>DIV:nth-child(1)>DIV:nth-child(2)>DIV:nth-child(1)>DIV:nth-child(2)>DIV>DIV:nth-child(2)>INPUT.WishTextInput-molq32-5.kwzpzy",
+            "type": [ "LNAME", "~ignore" ]
+          }, 
+          {
+            "selector": "DIV#main_content>DIV>DIV>DIV>DIV:nth-child(2)>DIV>DIV:nth-child(3)>DIV:nth-child(1)>DIV:nth-child(2)>DIV:nth-child(6)>DIV>DIV>DIV:nth-child(2)>INPUT.WishTextInput-molq32-5.kwzpzy",
+            "type": [ "PHONE", "~ignore" ]
+          }, 
+          {
+            "selector": "DIV#main_content>DIV>DIV>DIV>DIV:nth-child(2)>DIV>DIV:nth-child(3)>DIV:nth-child(1)>DIV:nth-child(2)>DIV:nth-child(2)>DIV>DIV>DIV:nth-child(2)>INPUT.WishTextInput-molq32-5.kwzpzy",
+            "type": [ "ADDRESS", "~ignore" ]
+          }, 
+          {
+            "selector": "DIV#main_content>DIV>DIV>DIV>DIV:nth-child(2)>DIV>DIV:nth-child(3)>DIV:nth-child(1)>DIV:nth-child(2)>DIV:nth-child(5)>DIV:nth-child(1)>DIV>DIV:nth-child(2)>INPUT.WishTextInput-molq32-5.kwzpzy",
+            "type": [ "CITY", "~ignore" ]
+          }, 
+          {
+            "selector": "DIV#main_content>DIV>DIV>DIV>DIV:nth-child(2)>DIV>DIV:nth-child(3)>DIV:nth-child(1)>DIV:nth-child(2)>DIV:nth-child(5)>DIV:nth-child(2)>DIV>DIV:nth-child(2)>INPUT.WishTextInput-molq32-5.kwzpzy",
+            "type": [ "POST", "~ignore" ]
+          } ]
+      }, 
+      {
+        "id": "9ADC2C40-266A-B777-6BB8-8974DE7199B5",
+        "selector": "DIV#main_content>DIV:nth-child(1)>DIV:nth-child(1)>DIV:nth-child(2)>DIV>DIV>DIV:nth-child(1)>DIV:nth-child(2).FormElement__FormBody-h7mauq-20.bbHJiN",
+        "use": "PERSONINFO",
+        "fields": [ 
+          {
+            "selector": "DIV#main_content>DIV:nth-child(1)>DIV:nth-child(1)>DIV:nth-child(2)>DIV>DIV>DIV:nth-child(1)>DIV:nth-child(2)>DIV:nth-child(1)>DIV:nth-child(1)>DIV>DIV:nth-child(2)>INPUT.WishTextInput-molq32-5.kwzpzy",
+            "type": [ "FNAME", "~ignore" ]
+          }, 
+          {
+            "selector": "DIV#main_content>DIV:nth-child(1)>DIV:nth-child(1)>DIV:nth-child(2)>DIV>DIV>DIV:nth-child(1)>DIV:nth-child(2)>DIV:nth-child(1)>DIV:nth-child(2)>DIV>DIV:nth-child(2)>INPUT.WishTextInput-molq32-5.kwzpzy",
+            "type": [ "LNAME", "~ignore" ]
+          }, 
+          {
+            "selector": "DIV#main_content>DIV:nth-child(1)>DIV:nth-child(1)>DIV:nth-child(2)>DIV>DIV>DIV:nth-child(1)>DIV:nth-child(2)>DIV:nth-child(6)>DIV>DIV>DIV:nth-child(2)>INPUT.WishTextInput-molq32-5.kwzpzy",
+            "type": [ "PHONE", "~ignore" ]
+          }, 
+          {
+            "selector": "DIV#main_content>DIV:nth-child(1)>DIV:nth-child(1)>DIV:nth-child(2)>DIV>DIV>DIV:nth-child(1)>DIV:nth-child(2)>DIV:nth-child(2)>DIV>DIV>DIV:nth-child(2)>INPUT.WishTextInput-molq32-5.kwzpzy",
+            "type": [ "ADDRESS", "~ignore" ]
+          }, 
+          {
+            "selector": "DIV#main_content>DIV:nth-child(1)>DIV:nth-child(1)>DIV:nth-child(2)>DIV>DIV>DIV:nth-child(1)>DIV:nth-child(2)>DIV:nth-child(5)>DIV:nth-child(1)>DIV>DIV:nth-child(2)>INPUT.WishTextInput-molq32-5.kwzpzy",
+            "type": [ "CITY", "~ignore" ]
+          }, 
+          {
+            "selector": "DIV#main_content>DIV:nth-child(1)>DIV:nth-child(1)>DIV:nth-child(2)>DIV>DIV>DIV:nth-child(1)>DIV:nth-child(2)>DIV:nth-child(5)>DIV:nth-child(2)>DIV>DIV:nth-child(2)>INPUT.WishTextInput-molq32-5.kwzpzy",
+            "type": [ "POST", "~ignore" ]
+          } ]
+      }, 
+      {
+        "id": "F08E05DE-AE23-2920-79FD-FD5922064F29",
+        "selector": "!",
+        "use": "PERSONINFO",
+        "fields": [ 
+          {
+            "selector": "#main_content>DIV:nth-child(1)>DIV:nth-child(2)>DIV:nth-child(2)>DIV>DIV>DIV:nth-child(3)>DIV:nth-child(3)>DIV:nth-child(2)>DIV>DIV:nth-child(1)>DIV:nth-child(1)>DIV>DIV:nth-child(2)>INPUT",
+            "type": [ "FNAME", "~ignore" ]
+          }, 
+          {
+            "selector": "#main_content>DIV:nth-child(1)>DIV:nth-child(2)>DIV:nth-child(2)>DIV>DIV>DIV:nth-child(3)>DIV:nth-child(3)>DIV:nth-child(2)>DIV>DIV:nth-child(1)>DIV:nth-child(2)>DIV>DIV:nth-child(2)>INPUT",
+            "type": [ "LNAME", "~ignore" ]
+          }, 
+          {
+            "selector": "#main_content>DIV:nth-child(1)>DIV:nth-child(2)>DIV:nth-child(2)>DIV>DIV>DIV:nth-child(3)>DIV:nth-child(3)>DIV:nth-child(2)>DIV>DIV:nth-child(6)>DIV>DIV>DIV:nth-child(2)>INPUT",
+            "type": [ "PHONE", "~ignore" ]
+          }, 
+          {
+            "selector": "#main_content>DIV:nth-child(1)>DIV:nth-child(2)>DIV:nth-child(2)>DIV>DIV>DIV:nth-child(3)>DIV:nth-child(3)>DIV:nth-child(2)>DIV>DIV:nth-child(2)>DIV>DIV>DIV:nth-child(2)>INPUT",
+            "type": [ "ADDRESS", "~ignore" ]
+          }, 
+          {
+            "selector": "#main_content>DIV:nth-child(1)>DIV:nth-child(2)>DIV:nth-child(2)>DIV>DIV>DIV:nth-child(3)>DIV:nth-child(3)>DIV:nth-child(2)>DIV>DIV:nth-child(5)>DIV:nth-child(1)>DIV>DIV:nth-child(2)>INPUT",
+            "type": [ "CITY", "~ignore" ]
+          }, 
+          {
+            "selector": "#main_content>DIV:nth-child(1)>DIV:nth-child(2)>DIV:nth-child(2)>DIV>DIV>DIV:nth-child(3)>DIV:nth-child(3)>DIV:nth-child(2)>DIV>DIV:nth-child(5)>DIV:nth-child(2)>DIV>DIV:nth-child(2)>INPUT",
+            "type": [ "POST", "~ignore" ]
+          } ]
+      } ],
+    "fields": [],
+    "except": []
+  },
+  "shopee": 
+  {
+    "websites": [],
+    "forms": [ 
+      {
+        "id": "285A2C2A-AEB0-2C58-E4AE-2D9ADE997BDD",
+        "selector": "DIV:nth-child(3)#modal>DIV:nth-child(2)>DIV:nth-child(1)>DIV>DIV>DIV>DIV>DIV>DIV:nth-child(3)>DIV:nth-child(2)._3l1LSu.p5Dz-L",
+        "use": "PAYMENT",
+        "fields": [ 
+          {
+            "selector": "DIV:nth-child(3)#modal>DIV:nth-child(2)>DIV:nth-child(1)>DIV>DIV>DIV>DIV>DIV>DIV:nth-child(3)>DIV:nth-child(2)>DIV:nth-child(2)>DIV:nth-child(3)>DIV:nth-child(1)>DIV:nth-child(1)>DIV>INPUT.gGBmvH",
+            "type": [ "CARDHOLDERNAME", "~ignore" ]
+          }, 
+          {
+            "selector": "DIV:nth-child(3)#modal>DIV:nth-child(2)>DIV:nth-child(1)>DIV>DIV>DIV>DIV>DIV>DIV:nth-child(3)>DIV:nth-child(2)>DIV:nth-child(2)>DIV:nth-child(1)>DIV:nth-child(1)>DIV:nth-child(1)>DIV>INPUT.gGBmvH",
+            "type": [ "NUMBER", "~ignore" ]
+          }, 
+          {
+            "selector": "DIV:nth-child(3)#modal>DIV:nth-child(2)>DIV:nth-child(1)>DIV>DIV>DIV>DIV>DIV>DIV:nth-child(3)>DIV:nth-child(2)>DIV:nth-child(2)>DIV:nth-child(2)>DIV:nth-child(2)>DIV>DIV:nth-child(1)>DIV:nth-child(1)>DIV:nth-child(1)>INPUT.gGBmvH",
+            "type": [ "SECURITYCODE", "~ignore" ]
+          }, 
+          {
+            "selector": "DIV:nth-child(3)#modal>DIV:nth-child(2)>DIV:nth-child(1)>DIV>DIV>DIV>DIV>DIV>DIV:nth-child(3)>DIV:nth-child(2)>DIV:nth-child(2)>DIV:nth-child(2)>DIV:nth-child(1)>DIV>DIV:nth-child(1)>DIV:nth-child(1)>DIV>INPUT.gGBmvH",
+            "type": [ "EXPIRE", "~ignore" ],
+            "options": 
+            {
+              "dtfmt": "{MM}/{YY}"
+            }
+          } ]
+      }, 
+      {
+        "id": "1B8E3CB1-DCCC-B7F0-99CC-C1AC01AC31A0",
+        "selector": "DIV:nth-child(3)#modal>DIV:nth-child(2)>DIV:nth-child(1)>DIV>DIV>DIV>DIV>DIV>DIV:nth-child(3)>DIV:nth-child(3)._3l1LSu",
+        "use": "PERSONINFO",
+        "fields": [ 
+          {
+            "selector": "DIV:nth-child(3)#modal>DIV:nth-child(2)>DIV:nth-child(1)>DIV>DIV>DIV>DIV>DIV>DIV:nth-child(3)>DIV:nth-child(3)>DIV:nth-child(2)>DIV:nth-child(1)>DIV:nth-child(1)>DIV:nth-child(1)>DIV>INPUT.gGBmvH",
+            "type": [ "ADDRESS", "~ignore" ]
+          }, 
+          {
+            "selector": "DIV:nth-child(3)#modal>DIV:nth-child(2)>DIV:nth-child(1)>DIV>DIV>DIV>DIV>DIV>DIV:nth-child(3)>DIV:nth-child(3)>DIV:nth-child(2)>DIV:nth-child(2)>DIV:nth-child(1)>DIV:nth-child(1)>DIV>INPUT.gGBmvH",
+            "type": [ "POST", "~ignore" ]
+          } ]
+      }, 
+      {
+        "id": "AEB56BA2-F0D3-9CB7-3EF7-12887474CF71",
+        "selector": "DIV:nth-child(3)#modal>ASIDE:nth-child(2)>DIV:nth-child(1)>DIV>FORM:nth-child(2)>DIV>DIV:nth-child(1).JPJ2Hj",
+        "use": "PERSONINFO",
+        "fields": [ 
+          {
+            "selector": "DIV:nth-child(3)#modal>ASIDE:nth-child(2)>DIV:nth-child(1)>DIV>FORM:nth-child(2)>DIV>DIV:nth-child(1)>DIV:nth-child(1)>DIV:nth-child(1)>DIV>INPUT:nth-child(2).nLQQgn",
+            "type": [ "NAME", "~ignore" ]
+          }, 
+          {
+            "selector": "DIV:nth-child(3)#modal>ASIDE:nth-child(2)>DIV:nth-child(1)>DIV>FORM:nth-child(2)>DIV>DIV:nth-child(1)>DIV:nth-child(1)>DIV:nth-child(3)>DIV>INPUT:nth-child(2).nLQQgn",
+            "type": [ "PHONE", "~ignore" ]
+          }, 
+          {
+            "selector": "DIV:nth-child(3)#modal>ASIDE:nth-child(2)>DIV:nth-child(1)>DIV>FORM:nth-child(2)>DIV>DIV:nth-child(1)>DIV:nth-child(3)>DIV:nth-child(1)>DIV>INPUT:nth-child(2).nLQQgn",
+            "type": [ "ADDRESS", "~ignore" ]
+          }, 
+          {
+            "selector": "DIV:nth-child(3)#modal>ASIDE:nth-child(2)>DIV:nth-child(1)>DIV>FORM:nth-child(2)>DIV>DIV:nth-child(1)>DIV:nth-child(2)>DIV>DIV>INPUT:nth-child(2).nLQQgn",
+            "type": [ "POST", "~ignore" ]
+          } ]
+      } ],
+    "fields": [],
+    "except": []
+  },
+  "secure_oceanpayment_com": 
+  {
+    "websites": [],
+    "forms": [ 
+      {
+        "id": "6D62D187-1F5D-7CF8-DE3D-746CFFDAD7E7",
+        "selector": "FORM#send>DIV>DIV>DIV:nth-child(1)>DIV>DIV>DIV.clearfix.border-line",
+        "use": "PAYMENT",
+        "fields": [ 
+          {
+            "selector": "INPUT:nth-child(3)[name='card_number_temp']#card_number_temp.field__input.number_box.input-element",
+            "type": [ "NUMBER", "~ignore" ]
+          }, 
+          {
+            "selector": "INPUT[name='card_secureCode']#cvv2.field__input.number_box",
+            "type": [ "SECURITYCODE", "~ignore" ]
+          }, 
+          {
+            "selector": "INPUT:nth-child(1)[name='card_date']#checkout_expiration_date.field__input.input-data",
+            "type": [ "EXPIRE", "~ignore" ],
+            "options": 
+            {
+              "dtfmt": "{MM}/{YY}"
+            }
+          } ]
+      } ],
+    "fields": [],
+    "except": []
+  },
+  "js3_verygoodvault_com": 
+  {
+    "websites": [],
+    "forms": [ 
+      {
+        "id": "400B6125-B78C-172C-C551-3DBE915DEB07",
+        "selector": "MAIN#bd>DIV>DIV>DIV:nth-child(4)>DIV:nth-child(3)>DIV>DIV>DIV>DIV:nth-child(2)>FORM",
+        "use": "PAYMENT",
+        "fields": [ 
+          {
+            "selector": "DIV:nth-child(1)#react>INPUT:nth-child(1).css-2devmg",
+            "type": [ "CARDHOLDERNAME", "~ignore" ]
+          }, 
+          {
+            "selector": "DIV:nth-child(1)#react>INPUT:nth-child(1).css-2devmg",
+            "type": [ "NUMBER", "~ignore" ]
+          }, 
+          {
+            "selector": "DIV:nth-child(1)#react>INPUT:nth-child(1).css-2devmg",
+            "type": [ "SECURITYCODE", "~ignore" ]
+          }, 
+          {
+            "selector": "DIV:nth-child(1)#react>INPUT:nth-child(1).css-2devmg",
+            "type": [ "EXPIRE", "~ignore" ],
+            "options": 
+            {
+              "dtfmt": "{MM}/{YY}"
+            }
+          } ]
+      }, 
+      {
+        "id": "6CF75A53-EA12-4E47-BE67-BC6628F123F8",
+        "selector": "MAIN#bd>DIV>DIV>DIV:nth-child(4)>DIV:nth-child(3)>DIV>DIV>DIV>DIV:nth-child(2)>FORM",
+        "use": "PERSONINFO",
+        "fields": [ 
+          {
+            "selector": "INPUT:nth-child(1)[name='billingAddress.fullName']#textInput-12._1n06qpy4_675._1n06qpy5_675._1n06qpy7_675._1n06qpy9_675",
+            "type": [ "NAME", "~ignore" ]
+          }, 
+          {
+            "selector": "INPUT:nth-child(1)[name='billingAddress.phone']#textInput-18._1n06qpy4_675._1n06qpy5_675._1n06qpy7_675._1n06qpy9_675",
+            "type": [ "PHONE", "~ignore" ]
+          }, 
+          {
+            "selector": "INPUT:nth-child(1)[name='billingAddress.address1']#textInput-13._1n06qpy4_675._1n06qpy5_675._1n06qpy7_675._1n06qpy9_675",
+            "type": [ "ADDRESS", "~ignore" ]
+          }, 
+          {
+            "selector": "INPUT:nth-child(1)[name='billingAddress.city']#textInput-16._1n06qpy4_675._1n06qpy5_675._1n06qpy7_675._1n06qpy9_675",
+            "type": [ "CITY", "~ignore" ]
+          }, 
+          {
+            "selector": "INPUT:nth-child(1)[name='billingAddress.postalCode']#textInput-17._1n06qpy4_675._1n06qpy5_675._1n06qpy7_675._1n06qpy9_675",
+            "type": [ "POST", "~ignore" ]
+          } ]
+      } ],
+    "fields": [],
+    "except": []
+  },
+  "www_overstock_com": 
+  {
+    "websites": [],
+    "forms": [ 
+      {
+        "id": "62D2BACB-78FF-9A21-0007-11E6A442E158",
+        "selector": "FORM:nth-child(5)#checkoutForm>DIV:nth-child(1)>SECTION:nth-child(5)>DIV:nth-child(2)>DIV:nth-child(1)>DIV:nth-child(2)>DIV:nth-child(2)>DIV>DIV:nth-child(2)",
+        "use": "PAYMENT",
+        "fields": [ 
+          {
+            "selector": "INPUT:nth-child(2)[name='CC_number']#cc-number-input.os-input",
+            "type": [ "NUMBER", "~ignore" ]
+          }, 
+          {
+            "selector": "INPUT:nth-child(2)[name='cvv_number']#cc-cvv-input.os-input",
+            "type": [ "SECURITYCODE", "~ignore" ]
+          }, 
+          {
+            "selector": "FORM:nth-child(5)#checkoutForm>DIV:nth-child(1)>SECTION:nth-child(5)>DIV:nth-child(2)>DIV:nth-child(1)>DIV:nth-child(2)>DIV:nth-child(2)>DIV>DIV:nth-child(2)>DIV:nth-child(1)>DIV:nth-child(2)>DIV:nth-child(1)>DIV>DIV:nth-child(2)>DIV:nth-child(2)>SELECT:nth-child(1)[name='exp_year'].os-select.select-lg",
+            "type": [ "EXPYEAR", "~ignore" ]
+          }, 
+          {
+            "selector": "SELECT:nth-child(1)[name='exp_month']#cc-exp-input.os-select.select-lg",
+            "type": [ "EXPMONTH", "~ignore" ]
+          } ]
+      }, 
+      {
+        "id": "56162A1A-EA4C-918F-B087-C2DD32F0F8C0",
+        "selector": "DIV:nth-child(1)#address-form>DIV:nth-child(1).AddressForm__FormContainer-sc-1m9bgvv-1.bBIJzN",
+        "use": "PERSONINFO",
+        "fields": [ 
+          {
+            "selector": "INPUT:nth-child(2)[name='fname']#first-name.cl-form-text-input.cl-form-input",
+            "type": [ "FNAME", "~ignore" ]
+          }, 
+          {
+            "selector": "INPUT:nth-child(2)[name='lname']#last-name.cl-form-text-input.cl-form-input",
+            "type": [ "LNAME", "~ignore" ]
+          }, 
+          {
+            "selector": "INPUT:nth-child(2)[name='phone']#phone-number.cl-form-text-input.cl-form-input",
+            "type": [ "PHONE", "~ignore" ]
+          }, 
+          {
+            "selector": "INPUT:nth-child(2)[name='address-line1']#address-line-one.cl-form-text-input.cl-form-input",
+            "type": [ "ADDRESS", "~ignore" ]
+          }, 
+          {
+            "selector": "INPUT:nth-child(2)[name='city']#address-city.cl-form-text-input.cl-form-input",
+            "type": [ "CITY", "~ignore" ]
+          }, 
+          {
+            "selector": "INPUT:nth-child(2)[name='zip']#address-postal-code.cl-form-text-input.cl-form-input",
+            "type": [ "POST", "~ignore" ]
+          } ]
+      }, 
+      {
+        "id": "0FBB4B88-FD05-3CB5-34C1-1E88FBCB7B97",
+        "selector": "FORM:nth-child(5)#checkoutForm>DIV:nth-child(1)>DIV:nth-child(2)>DIV:nth-child(1).address-section",
+        "use": "PERSONINFO",
+        "fields": [ 
+          {
+            "selector": "INPUT:nth-child(2)[name='ShippingFirstName']#shippingAddressFirstName.os-input",
+            "type": [ "FNAME", "~ignore" ]
+          }, 
+          {
+            "selector": "INPUT:nth-child(2)[name='ShippingLastName']#shippingAddressLastName.os-input",
+            "type": [ "LNAME", "~ignore" ]
+          }, 
+          {
+            "selector": "INPUT:nth-child(2)[name='ShippingPhone1']#shippingAddressPhone.os-input",
+            "type": [ "PHONE", "~ignore" ]
+          }, 
+          {
+            "selector": "INPUT:nth-child(2)[name='lineone']#shippingAddressLineOne.os-input",
+            "type": [ "ADDRESS", "~ignore" ]
+          }, 
+          {
+            "selector": "INPUT:nth-child(2)[name='city']#shippingAddressCity.os-input",
+            "type": [ "CITY", "~ignore" ]
+          }, 
+          {
+            "selector": "INPUT:nth-child(2)[name='zip']#shippingAddressZip.os-input",
+            "type": [ "POST", "~ignore" ]
+          } ]
+      } ],
+    "fields": [],
+    "except": []
+  },
+  "www_dell_com": 
+  {
+    "websites": [],
+    "forms": [ 
+      {
+        "id": "",
+        "selector": "DIV:nth-child(5)#addNewPaymentModalOffcanvas>DIV>DIV>DELL-MY-ACCOUNT-ADD-UPDATE-PAYMENT:nth-child(2)>DIV>FORM:nth-child(2)[name='[object HTMLInputElement]'].dds__needs-validation.ng-pristine.ng-invalid.ng-touched",
+        "use": "PAYMENT",
+        "fields": [ 
+          {
+            "selector": "INPUT:nth-child(2)[name='name']#name.dds__form-control.ng-pristine.ng-invalid.ng-touched",
+            "type": [ "CARDHOLDERNAME", "~ignore" ]
+          }, 
+          {
+            "selector": "SELECT:nth-child(2)[name='type']#type.dds__form-control.ng-pristine.ng-invalid.ng-touched",
+            "type": [ "CARDTYPE", "~ignore" ],
+            "options": 
+            {
+              "valuepair": "100003"
+            }
+          }, 
+          {
+            "selector": "INPUT:nth-child(2)[name='cardId']#cardId.dds__form-control.ng-untouched.ng-pristine.ng-invalid",
+            "type": [ "NUMBER", "~ignore" ]
+          }, 
+          {
+            "selector": "SELECT:nth-child(2)[name='expirationYear']#expirationYear.dds__form-control.ng-pristine.ng-invalid.ng-touched",
+            "type": [ "EXPYEAR", "~ignore" ]
+          }, 
+          {
+            "selector": "SELECT:nth-child(2)[name='expirationMonth']#expirationMonth.dds__form-control.ng-untouched.ng-pristine.ng-invalid",
+            "type": [ "EXPMONTH", "~ignore" ]
+          } ]
+      }, 
+      {
+        "id": "",
+        "selector": "FORM:nth-child(3)[name='frmRegisterAccount']#frmRegisterAccount",
+        "use": "PERSONINFO",
+        "fields": [ 
+          {
+            "selector": "INPUT:nth-child(1)[name='FirstName']#FirstName.mdc-text-field__input",
+            "type": [ "FNAME", "~ignore" ]
+          }, 
+          {
+            "selector": "INPUT:nth-child(1)[name='LastName']#LastName.mdc-text-field__input",
+            "type": [ "LNAME", "~ignore" ]
+          }, 
+          {
+            "selector": "INPUT:nth-child(1)[name='EmailAddress']#EmailAddress.mdc-text-field__input",
+            "type": [ "EMAIL", "~username", "~ignore" ]
+          } ]
+      }, 
+      {
+        "id": "",
+        "selector": "DIV:nth-child(4)#addNewAddressModalOffcanvas>DELL-MY-ACCOUNT-ADDRESSES-ADD-UPDATE-ADDRESS-MY-SG>DIV>DIV>DIV:nth-child(2)>DIV>FORM.dds__needs-validation.ng-untouched.ng-pristine.ng-invalid",
+        "use": "PERSONINFO",
+        "fields": [ 
+          {
+            "selector": "INPUT:nth-child(2)[name='firstName']#firstName.dds__form-control.ng-pristine.ng-invalid.ng-touched",
+            "type": [ "FNAME", "~ignore" ]
+          }, 
+          {
+            "selector": "INPUT:nth-child(2)[name='lastName']#lastName.dds__form-control.ng-pristine.ng-invalid.ng-touched",
+            "type": [ "LNAME", "~ignore" ]
+          }, 
+          {
+            "selector": "INPUT:nth-child(2)[name='phoneNumber']#phoneNumber.dds__form-control.ng-pristine.ng-invalid.ng-touched",
+            "type": [ "PHONE", "~ignore" ]
+          }, 
+          {
+            "selector": "INPUT:nth-child(2)[name='line1']#line1.dds__form-control.ng-pristine.pac-target-input.ng-invalid.ng-touched",
+            "type": [ "ADDRESS", "~ignore" ]
+          }, 
+          {
+            "selector": "INPUT:nth-child(2)[name='city']#city.dds__form-control.ng-pristine.ng-invalid.ng-touched",
+            "type": [ "CITY", "~ignore" ]
+          }, 
+          {
+            "selector": "INPUT:nth-child(2)[name='postalCode']#postalCode.dds__form-control.ng-pristine.ng-invalid.ng-touched",
+            "type": [ "POST", "~ignore" ]
+          } ]
+      }, 
+      {
+        "id": "",
+        "selector": "DIV:nth-child(4)#root>DIV>DIV:nth-child(3)>DIV>DIV:nth-child(4)>ARTICLE>FORM[name='CreditAppContactInfo DPAMarcomCreditApp']",
+        "use": "PERSONINFO",
+        "fields": [ 
+          {
+            "selector": "INPUT:nth-child(3)[name='firstName']#firstName.text-input.form-control.is-invalid",
+            "type": [ "FNAME", "~ignore" ]
+          }, 
+          {
+            "selector": "INPUT:nth-child(3)[name='lastName']#lastName.text-input.form-control.is-invalid",
+            "type": [ "LNAME", "~ignore" ]
+          }, 
+          {
+            "selector": "INPUT:nth-child(3)[name='email']#email.text-input.form-control.is-invalid",
+            "type": [ "EMAIL", "~username", "~ignore" ]
+          }, 
+          {
+            "selector": "INPUT:nth-child(3)[name='phoneNumber']#phoneNumber.text-input.form-control.is-invalid",
+            "type": [ "PHONE", "~ignore" ]
+          }, 
+          {
+            "selector": "INPUT:nth-child(4)#homeAddress.text-input.form-control",
+            "type": [ "ADDRESS", "~ignore" ]
+          } ]
+      } ],
+    "fields": [],
+    "except": []
+  },
+  "www_esteelauder_com": 
+  {
+    "websites": [],
+    "forms": [ 
+      {
+        "id": "",
+        "selector": "FORM#payment>FIELDSET:nth-child(9).pg-section.payment-form__fieldset.payment-form__cc-fieldset",
+        "use": "PAYMENT",
+        "fields": [ 
+          {
+            "selector": "SELECT:nth-child(2)[name='CARD_TYPE']#form--payment--field--CARD_TYPE.no-js",
+            "type": [ "CARDTYPE", "~ignore" ],
+            "options": 
+            {
+              "valuepair": "100004"
+            }
+          }, 
+          {
+            "selector": "INPUT:nth-child(2)[name='CARD_NUMBER']#form--payment--field--CARD_NUMBER.field",
+            "type": [ "NUMBER", "~ignore" ]
+          }, 
+          {
+            "selector": "INPUT:nth-child(2)[name='CVV']#form--payment--field--CVV.field",
+            "type": [ "SECURITYCODE", "~ignore" ]
+          }, 
+          {
+            "selector": "SELECT[name='EXPIRES_YEAR']#form--payment--field--EXPIRES_YEAR.no-js",
+            "type": [ "EXPYEAR", "~ignore" ]
+          }, 
+          {
+            "selector": "SELECT[name='EXPIRES_MONTH']#form--payment--field--EXPIRES_MONTH.no-js",
+            "type": [ "EXPMONTH", "~ignore" ]
+          } ]
+      }, 
+      {
+        "id": "",
+        "selector": "FORM:nth-child(3)#registration>DIV:nth-child(3).sign-in-component__form-content",
+        "use": "PERSONINFO",
+        "fields": [ 
+          {
+            "selector": "INPUT:nth-child(1)[name='FIRST_NAME']#form--registration--field--FIRST_NAME.form-text.js-placeholder-mode",
+            "type": [ "FNAME", "~ignore" ]
+          }, 
+          {
+            "selector": "INPUT:nth-child(1)[name='PC_EMAIL_ADDRESS']#form--registration--field--PC_EMAIL_ADDRESS.form-text.js-placeholder-mode",
+            "type": [ "EMAIL", "~username", "~ignore" ]
+          } ]
+      }, 
+      {
+        "id": "",
+        "selector": "FORM:nth-child(3)[name='registration']#registration",
+        "use": "PERSONINFO",
+        "fields": [ 
+          {
+            "selector": "INPUT[name='FIRST_NAME']#form--registration--field--FIRST_NAME.field",
+            "type": [ "FNAME", "~ignore" ]
+          }, 
+          {
+            "selector": "INPUT[name='LAST_NAME']#form--registration--field--LAST_NAME.field",
+            "type": [ "LNAME", "~ignore" ]
+          }, 
+          {
+            "selector": "INPUT[name='PC_EMAIL_ADDRESS']#form--registration--field--PC_EMAIL_ADDRESS.field",
+            "type": [ "EMAIL", "~username", "~ignore" ]
+          }, 
+          {
+            "selector": "INPUT[name='SMSPROMO_MOBILE_NUMBER']#form--sms--field--SMSPROMO_MOBILE_NUMBER.field",
+            "type": [ "PHONE", "~ignore" ]
+          } ]
+      }, 
+      {
+        "id": "",
+        "selector": "FORM[name='address']#address",
+        "use": "PERSONINFO",
+        "fields": [ 
+          {
+            "selector": "INPUT:nth-child(2)[name='FIRST_NAME']#form--address--field--FIRST_NAME.field",
+            "type": [ "FNAME", "~ignore" ]
+          }, 
+          {
+            "selector": "INPUT:nth-child(2)[name='LAST_NAME']#form--address--field--LAST_NAME.field",
+            "type": [ "LNAME", "~ignore" ]
+          }, 
+          {
+            "selector": "INPUT:nth-child(2)[name='PHONE1']#form--address--field--PHONE1.field",
+            "type": [ "PHONE", "~ignore" ]
+          }, 
+          {
+            "selector": "INPUT:nth-child(2)[name='ADDRESS1']#form--address--field--ADDRESS1.field",
+            "type": [ "ADDRESS", "~ignore" ]
+          }, 
+          {
+            "selector": "INPUT:nth-child(2)[name='CITY']#form--address--field--CITY.field",
+            "type": [ "CITY", "~ignore" ]
+          }, 
+          {
+            "selector": "INPUT:nth-child(2)[name='POSTAL_CODE']#form--address--field--POSTAL_CODE.field",
+            "type": [ "POST", "~ignore" ]
+          } ]
+      }, 
+      {
+        "id": "",
+        "selector": "DIV:nth-child(4)#billing_address_form>DIV>FIELDSET>DIV:nth-child(3).address-form__fieldset",
+        "use": "PERSONINFO",
+        "fields": [ 
+          {
+            "selector": "INPUT:nth-child(2)[name='FIRST_NAME']#form--address--field--FIRST_NAME.field",
+            "type": [ "FNAME", "~ignore" ]
+          }, 
+          {
+            "selector": "INPUT:nth-child(2)[name='LAST_NAME']#form--address--field--LAST_NAME.field",
+            "type": [ "LNAME", "~ignore" ]
+          }, 
+          {
+            "selector": "INPUT:nth-child(2)[name='PHONE1']#form--address--field--PHONE1.field",
+            "type": [ "PHONE", "~ignore" ]
+          }, 
+          {
+            "selector": "INPUT:nth-child(2)[name='ADDRESS1']#form--address--field--ADDRESS1.field",
+            "type": [ "ADDRESS", "~ignore" ]
+          }, 
+          {
+            "selector": "INPUT:nth-child(2)[name='CITY']#form--address--field--CITY.field",
+            "type": [ "CITY", "~ignore" ]
+          }, 
+          {
+            "selector": "SELECT[name='COUNTRY_ID']#form--address--field--COUNTRY_ID.country_select.no-js",
+            "type": [ "CONTRY", "~ignore" ],
+            "options": 
+            {
+              "valuepair": "100024"
+            }
+          }, 
+          {
+            "selector": "INPUT:nth-child(2)[name='POSTAL_CODE']#form--address--field--POSTAL_CODE.field",
+            "type": [ "POST", "~ignore" ]
+          } ]
+      } ],
+    "fields": [],
+    "except": []
+  },
+  "www_gilt_com": 
+  {
+    "websites": [],
+    "forms": [ 
+      {
+        "id": "",
+        "selector": "FORM#credit_card_form>DIV:nth-child(2).add-payment-payment",
+        "use": "PAYMENT",
+        "fields": [ 
+          {
+            "selector": "INPUT:nth-child(2)[name='cardholderName']#cardholder_name",
+            "type": [ "CARDHOLDERNAME", "~ignore" ]
+          }, 
+          {
+            "selector": "INPUT:nth-child(2)[name='credit-card-number']#credit-card-number.number",
+            "type": [ "NUMBER", "~ignore" ]
+          }, 
+          {
+            "selector": "INPUT:nth-child(2)[name='cvv']#cvv.cvv",
+            "type": [ "SECURITYCODE", "~ignore" ]
+          }, 
+          {
+            "selector": "INPUT:nth-child(2)[name='expiration-year']#expiration-year.expirationYear",
+            "type": [ "EXPYEAR", "~ignore" ],
+            "options": 
+            {
+              "dtfmt": "{YYYY}"
+            }
+          } ]
+      }, 
+      {
+        "id": "",
+        "selector": "DIV#registration_step>DIV>FORM:nth-child(4).rue-form",
+        "use": "PERSONINFO",
+        "fields": [ 
+          {
+            "selector": "INPUT:nth-child(1)[name='username']#landing_email",
+            "type": [ "EMAIL", "~username", "~ignore" ]
+          } ]
+      }, 
+      {
+        "id": "",
+        "selector": "FORM:nth-child(1)#member_info_form.account-info-section-inner.deprecated-form-styles",
+        "use": "PERSONINFO",
+        "fields": [ 
+          {
+            "selector": "INPUT[name='first_name']#id_first_name",
+            "type": [ "FNAME", "~ignore" ]
+          }, 
+          {
+            "selector": "INPUT[name='last_name']#id_last_name",
+            "type": [ "LNAME", "~ignore" ]
+          }, 
+          {
+            "selector": "INPUT[name='email']#id_email",
+            "type": [ "EMAIL", "~username", "~ignore" ]
+          } ]
+      }, 
+      {
+        "id": "",
+        "selector": "DIV:nth-child(1)#address_modal>FORM.grid-form.address-form.deprecated-form-styles",
+        "use": "PERSONINFO",
+        "fields": [ 
+          {
+            "selector": "INPUT:nth-child(2)[name='firstName']#first_name",
+            "type": [ "FNAME", "~ignore" ]
+          }, 
+          {
+            "selector": "INPUT:nth-child(2)[name='lastName']#last_name",
+            "type": [ "LNAME", "~ignore" ]
+          }, 
+          {
+            "selector": "INPUT:nth-child(2)[name='phoneNumber']#phone",
+            "type": [ "PHONE", "~ignore" ]
+          }, 
+          {
+            "selector": "INPUT:nth-child(2)[name='address1']#address1",
+            "type": [ "ADDRESS", "~ignore" ]
+          }, 
+          {
+            "selector": "INPUT:nth-child(2)[name='city']#city",
+            "type": [ "CITY", "~ignore" ]
+          }, 
+          {
+            "selector": "INPUT:nth-child(2)[name='postalCode']#postalCode",
+            "type": [ "POST", "~ignore" ]
+          } ]
+      }, 
+      {
+        "id": "",
+        "selector": "FORM#credit_card_form>DIV:nth-child(3).add-billing-address-wrapper",
+        "use": "PERSONINFO",
+        "fields": [ 
+          {
+            "selector": "INPUT:nth-child(2)[name='firstName']#first_name",
+            "type": [ "FNAME", "~ignore" ]
+          }, 
+          {
+            "selector": "INPUT:nth-child(2)[name='lastName']#last_name",
+            "type": [ "LNAME", "~ignore" ]
+          }, 
+          {
+            "selector": "INPUT:nth-child(2)[name='phoneNumber']#phone",
+            "type": [ "PHONE", "~ignore" ]
+          }, 
+          {
+            "selector": "INPUT:nth-child(2)[name='address1']#address1",
+            "type": [ "ADDRESS", "~ignore" ]
+          }, 
+          {
+            "selector": "INPUT:nth-child(2)[name='city']#city",
+            "type": [ "CITY", "~ignore" ]
+          }, 
+          {
+            "selector": "INPUT:nth-child(2)[name='postalCode']#postalCode",
+            "type": [ "POST", "~ignore" ]
+          } ]
+      } ],
+    "fields": [],
+    "except": []
+  },
+  "pecst01_aurusepay_com": 
+  {
+    "websites": [],
+    "forms": [ 
+      {
+        "id": "",
+        "selector": "DIV#payment-form",
+        "use": "PAYMENT",
+        "fields": [ 
+          {
+            "selector": "INPUT:nth-child(1)#cNumber.pass-fi",
+            "type": [ "NUMBER", "~ignore" ]
+          }, 
+          {
+            "selector": "INPUT:nth-child(1)#secCode.security_code_w",
+            "type": [ "SECURITYCODE", "~ignore" ]
+          }, 
+          {
+            "selector": "SELECT:nth-child(1)#exp_yyy.year",
+            "type": [ "EXPYEAR", "~ignore" ]
+          }, 
+          {
+            "selector": "SELECT:nth-child(1)#exp_mmm.month",
+            "type": [ "EXPMONTH", "~ignore" ]
+          } ]
+      } ],
+    "fields": [],
+    "except": []
+  },
+  "checkout_banggood_com": 
+  {
+    "websites": [],
+    "forms": [ 
+      {
+        "id": "",
+        "selector": "DIV:nth-child(2)#main>DIV.credit-platform.credit-platform-creditcard",
+        "use": "PAYMENT",
+        "fields": [ 
+          {
+            "selector": "DIV:nth-child(2)#main>DIV>DIV:nth-child(1)>DIV:nth-child(1)>DIV>INPUT:nth-child(1).input-text.error",
+            "type": [ "NUMBER", "~ignore" ]
+          }, 
+          {
+            "selector": "DIV:nth-child(2)#main>DIV>DIV:nth-child(1)>DIV:nth-child(2)>DIV:nth-child(2)>INPUT:nth-child(1).input-text.error",
+            "type": [ "SECURITYCODE", "~ignore" ]
+          }, 
+          {
+            "selector": "DIV:nth-child(2)#main>DIV>DIV:nth-child(1)>DIV:nth-child(2)>DIV:nth-child(1)>INPUT:nth-child(1).input-text.error",
+            "type": [ "EXPIRE", "~ignore" ],
+            "options": 
+            {
+              "dtfmt": "{MM}/{YY}"
+            }
+          } ]
+      } ],
+    "fields": [],
+    "except": []
+  },
+  "checkout_gmarket_co": 
+  {
+    "websites": [],
+    "forms": [ 
+      {
+        "id": "",
+        "selector": "DIV#xo_id_section_normal_pay>DIV>DIV>DIV:nth-child(2)>DIV>DIV:nth-child(2).box__pay-method",
+        "use": "PAYMENT",
+        "fields": [ 
+          {
+            "selector": "INPUT#xo_id_foreign_card_number.input_txt",
+            "type": [ "NUMBER", "~ignore" ]
+          }, 
+          {
+            "selector": "INPUT#xo_id_foreign_card_cvc.input_txt",
+            "type": [ "SECURITYCODE", "~ignore" ]
+          }, 
+          {
+            "selector": "INPUT#xo_id_foreign_card_month_year.input_txt",
+            "type": [ "EXPIRE", "~ignore" ],
+            "options": 
+            {
+              "dtfmt": "{MM}/{YY}"
+            }
+          } ]
+      } ],
+    "fields": [],
+    "except": []
+  },
+  "buynow_ecbsn_com": 
+  {
+    "websites": [],
+    "forms": [ 
+      {
+        "id": "",
+        "selector": "HTML>BODY:nth-child(2)>DIV:nth-child(2)>DIV.clo-form-container.container.r4-style",
+        "use": "PAYMENT",
+        "fields": [ 
+          {
+            "selector": "INPUT:nth-child(1)[name='cardNumber']#card-number-element",
+            "type": [ "NUMBER", "~ignore" ]
+          }, 
+          {
+            "selector": "SELECT:nth-child(1)[name='expirationYearSelect']#expiration-year-select-element",
+            "type": [ "EXPYEAR", "~ignore" ]
+          }, 
+          {
+            "selector": "SELECT:nth-child(1)[name='expirationMonthSelect']#expiration-month-select-element",
+            "type": [ "EXPMONTH", "~ignore" ]
+          } ]
+      }, 
+      {
+        "id": "",
+        "selector": "FORM:nth-child(2)#clo-card-payment-form>DIV:nth-child(3).address-form-container.form-group-no-margin.col-xs-12.col-sm-12",
+        "use": "PERSONINFO",
+        "fields": [ 
+          {
+            "selector": "INPUT:nth-child(1)[name='firstName']#address-first-name.form-control",
+            "type": [ "FNAME", "~ignore" ]
+          }, 
+          {
+            "selector": "INPUT:nth-child(1)[name='lastName']#address-last-name.form-control",
+            "type": [ "LNAME", "~ignore" ]
+          }, 
+          {
+            "selector": "INPUT:nth-child(1)[name='phone']#address-phone.form-control",
+            "type": [ "PHONE", "~ignore" ]
+          }, 
+          {
+            "selector": "INPUT:nth-child(1)[name='address1']#address-address1.form-control",
+            "type": [ "ADDRESS", "~ignore" ]
+          }, 
+          {
+            "selector": "INPUT:nth-child(1)[name='city']#address-city.form-control",
+            "type": [ "CITY", "~ignore" ]
+          }, 
+          {
+            "selector": "INPUT:nth-child(1)[name='zip']#address-zip.form-control",
+            "type": [ "POST", "~ignore" ]
+          } ]
+      } ],
+    "fields": [],
+    "except": []
+  },
+  "www_revolve_com": 
+  {
+    "websites": [],
+    "forms": [ 
+      {
+        "id": "",
+        "selector": "DIV:nth-child(1)#billingRowId_1>DIV:nth-child(2)>DIV:nth-child(2).co_payment_details.block.block--sm",
+        "use": "PAYMENT",
+        "fields": [ 
+          {
+            "selector": "INPUT:nth-child(2)[name='card_num']#card_num.creditpromo_input.no-mouseflow.u-full-width.js-mask-cc",
+            "type": [ "NUMBER", "~ignore" ]
+          }, 
+          {
+            "selector": "INPUT:nth-child(2)[name='security_code']#security_code.creditpromo_input.no-mouseflow.u-margin-t--sm.u-full-width",
+            "type": [ "SECURITYCODE", "~ignore" ]
+          }, 
+          {
+            "selector": "SELECT:nth-child(2)[name='expire_year']#expire_year.u-full-width",
+            "type": [ "EXPYEAR", "~ignore" ]
+          }, 
+          {
+            "selector": "SELECT:nth-child(2)[name='expire_month']#expire_month.u-full-width",
+            "type": [ "EXPMONTH", "~ignore" ]
+          } ]
+      }, 
+      {
+        "id": "",
+        "selector": "MAIN:nth-child(8)#main-content>DIV>DIV>DIV:nth-child(3)>DIV:nth-child(2).gc.n-6-of-12.u-padding-rl--xxl.login_rightside",
+        "use": "PERSONINFO",
+        "fields": [ 
+          {
+            "selector": "INPUT:nth-child(2)[name='1672307816893495669']#emailNew.field__input",
+            "type": [ "EMAIL", "~username", "~ignore" ]
+          } ]
+      }, 
+      {
+        "id": "",
+        "selector": "DIV:nth-child(1)#add_shipping",
+        "use": "PERSONINFO",
+        "fields": [ 
+          {
+            "selector": "INPUT:nth-child(2)[name='shippingName']#shipping_name_sgp.field__input",
+            "type": [ "NAME", "~ignore" ]
+          }, 
+          {
+            "selector": "INPUT:nth-child(2)[name='shippingTelephone']#shipping_telephone_sgp.field__input",
+            "type": [ "PHONE", "~ignore" ]
+          }, 
+          {
+            "selector": "INPUT:nth-child(2)[name='shippingStreet']#shipping_street_sgp.field__input",
+            "type": [ "ADDRESS", "~ignore" ]
+          }, 
+          {
+            "selector": "INPUT:nth-child(2)[name='shippingCity']#shipping_city_sgp.field__input",
+            "type": [ "CITY", "~ignore" ]
+          }, 
+          {
+            "selector": "SELECT:nth-child(2)[name='shippingCountry']#shipping_country.countryselectbox.select",
+            "type": [ "CONTRY", "~ignore" ],
+            "options": 
+            {
+              "valuepair": "100025"
+            }
+          }, 
+          {
+            "selector": "INPUT:nth-child(2)[name='shippingZipCode']#shipping_zip_code_sgp.field__input",
+            "type": [ "POST", "~ignore" ]
+          } ]
+      }, 
+      {
+        "id": "",
+        "selector": "DIV:nth-child(1)#billingRowId_1>DIV:nth-child(2)>DIV:nth-child(4)>DIV:nth-child(2).co_delivery_options",
+        "use": "PERSONINFO",
+        "fields": [ 
+          {
+            "selector": "INPUT:nth-child(2)[name='billingName']#billingRowId_1billing_name.field__input",
+            "type": [ "NAME", "~ignore" ]
+          }, 
+          {
+            "selector": "INPUT:nth-child(2)[name='billingTelephone']#billingRowId_1billing_telephone.field__input.js-mask-tel-us",
+            "type": [ "PHONE", "~ignore" ]
+          }, 
+          {
+            "selector": "INPUT:nth-child(2)[name='billingStreet']#billingRowId_1billing_street.field__input",
+            "type": [ "ADDRESS", "~ignore" ]
+          }, 
+          {
+            "selector": "SELECT:nth-child(2)[name='billingCountry']#billingRowId_1billing_country.countryselectbox.select",
+            "type": [ "CONTRY", "~ignore" ],
+            "options": 
+            {
+              "valuepair": "100026"
+            }
+          }, 
+          {
+            "selector": "INPUT:nth-child(2)[name='billingZipCode']#billingRowId_1billing_zip_code.field__input.js-us-zipcode-mapping.zipcode-mapping-initalized",
+            "type": [ "POST", "~ignore" ]
+          } ]
+      } ],
+    "fields": [],
+    "except": []
+  },
+  "192_168_2_240:5500": 
+  {
+    "websites": [],
+    "forms": [ 
+      {
+        "id": "jeiwqyfdsnavfdsa",
+        "selector": "!",
+        "use": "PAYMENT",
+        "fields": [ 
+          {
+            "selector": "FORM:nth-child(4)#payment_1>DIV>DIV:nth-child(1)>SELECT:nth-child(2)[name='cardtype']",
+            "type": [ "CARDTYPE", "~ignore" ],
+            "options": 
+            {
+              "valuepair": "100005"
+            }
+          }, 
+          {
+            "selector": "FORM:nth-child(4)#payment_1>DIV>DIV:nth-child(2)>INPUT:nth-child(2)[name='number']",
+            "type": [ "NUMBER", "~ignore" ]
+          }, 
+          {
+            "selector": "FORM:nth-child(4)#payment_1>DIV>DIV:nth-child(3)>INPUT:nth-child(2)[name='securitycode']",
+            "type": [ "SECURITYCODE", "~ignore" ]
+          }, 
+          {
+            "selector": "FORM:nth-child(4)#payment_1>DIV>DIV:nth-child(4)>INPUT:nth-child(2)[name='expire']",
+            "type": [ "EXPIRE", "~ignore" ],
+            "options": 
+            {
+              "dtfmt": "{YYYY}-{MM}"
+            }
+          } ],
+        "options": 
+        {
+          "full": "payment"
+        }
+      }, 
+      {
+        "id": "",
+        "selector": "!",
+        "use": "PAYMENT",
+        "fields": [ 
+          {
+            "selector": "DIV:nth-child(4)#payment_2>DIV>DIV:nth-child(1)>SELECT:nth-child(2)[name='cardtype']",
+            "type": [ "CARDTYPE", "~ignore" ],
+            "options": 
+            {
+              "valuepair": "100006"
+            }
+          }, 
+          {
+            "selector": "DIV:nth-child(4)#payment_2>DIV>DIV:nth-child(2)>INPUT:nth-child(2)[name='number']",
+            "type": [ "NUMBER", "~ignore" ]
+          }, 
+          {
+            "selector": "DIV:nth-child(4)#payment_2>DIV>DIV:nth-child(3)>INPUT:nth-child(2)[name='securitycode']",
+            "type": [ "SECURITYCODE", "~ignore" ]
+          }, 
+          {
+            "selector": "DIV:nth-child(4)#payment_2>DIV>DIV:nth-child(4)>INPUT:nth-child(2)[name='eyear']",
+            "type": [ "EXPYEAR", "~ignore" ],
+            "options": 
+            {
+              "dtfmt": "{YY}"
+            }
+          }, 
+          {
+            "selector": "DIV:nth-child(4)#payment_2>DIV>DIV:nth-child(5)>INPUT:nth-child(2)[name='emonth']",
+            "type": [ "EXPMONTH", "~ignore" ],
+            "options": 
+            {
+              "dtfmt": "{MM}"
+            }
+          } ],
+        "options": 
+        {
+          "full": "payment"
+        }
+      } ],
+    "fields": [],
+    "except": []
+  },
+  "appleid_apple_com": 
+  {
+    "websites": [],
+    "forms": [ 
+      {
+        "id": "D6BBE903-326C-27B9-3879-21D9575F0908",
+        "selector": "DIV:nth-child(1)#PersonalDetails.slide-data-holder",
+        "use": "PERSONINFO",
+        "fields": [ 
+          {
+            "selector": "#input-1669187460939-1",
+            "type": [ "FNAME", "~ignore" ]
+          }, 
+          {
+            "selector": "INPUT:nth-child(1)[name='ctl00$cphBodyContent$PersonalDetails1$txtLastName']#txtLastName.field-data.watermark",
+            "type": [ "LNAME", "~ignore" ]
+          }, 
+          {
+            "selector": "INPUT:nth-child(1)[name='ctl00$cphBodyContent$PersonalDetails1$txtEmail']#txtEmail.field-data.watermark",
+            "type": [ "EMAIL", "~username", "~ignore" ]
+          }, 
+          {
+            "selector": "#input-1669187461333-0",
+            "type": [ "BIRTHDAY", "~ignore" ],
+            "options": 
+            {
+              "dtfmt": "{MM}/{DD}/{YYYY}"
+            }
+          }, 
+          {
+            "selector": "INPUT:nth-child(1)[name='ctl00$cphBodyContent$ContactDetails1$txtAddress1']#txtAddress1.field-data.watermark",
+            "type": [ "ADDRESS", "~ignore" ]
+          }, 
+          {
+            "selector": "#txtCity",
+            "type": [ "CITY", "~ignore" ]
+          }, 
+          {
+            "selector": "INPUT[name='ctl00$cphBodyContent$ContactDetails1$txtZip']#txtZip.field-data.watermark",
+            "type": [ "POST", "~ignore" ]
+          } ]
+      } ],
+    "fields": [],
+    "except": []
+  },
+  "payouts_payoneer_com": 
+  {
+    "websites": [],
+    "forms": [ 
+      {
+        "id": "A3492125-980B-F451-DBC8-5A69054FA5CF",
+        "selector": "DIV#idms-step-1667355037423-0>DIV:nth-child(2)>DIV>DIV.flow-body.no-horizontal-scrollbar.clearfix",
+        "use": "PERSONINFO",
+        "fields": [ 
+          {
+            "selector": "#txtFirstName",
+            "type": [ "FNAME", "~ignore" ]
+          }, 
+          {
+            "selector": "#txtLastName",
+            "type": [ "LNAME", "~ignore" ]
+          }, 
+          {
+            "selector": "INPUT:nth-child(1)#input-1667294578683-0.generic-input-field.form-textbox.form-textbox-text.email-field.form-cell.form-field.field-has-info",
+            "type": [ "EMAIL", "~username", "~ignore" ]
+          }, 
+          {
+            "selector": "#AccountPhoneNumber_num",
+            "type": [ "PHONE", "~ignore" ]
+          }, 
+          {
+            "selector": "INPUT:nth-child(1)[name='provinceCityDistrict']#home.customerAccount.shippingInfo.shippingAddress.editShippingAddress.editAddress.stateCitySelectorForCheckout.provinceCityDistrict.form-textbox-input.rf-form-layout-ps-input.form-textbox-entered",
+            "type": [ "STATE", "~ignore" ]
+          }, 
+          {
+            "selector": "#txtZip",
+            "type": [ "POST", "~ignore" ]
+          } ]
+      } ],
+    "fields": [],
+    "except": []
+  },
+  "accounts_google_com": 
+  {
+    "websites": [],
+    "forms": [ 
+      {
+        "id": "B657118D-03C8-7390-D97B-5EE3E9FFB35C",
+        "selector": "DIV:nth-child(1)#initialView.RAYh1e.RELBvb.LZgQXe.qmmlRd",
+        "use": "PERSONINFO",
+        "fields": [ 
+          {
+            "selector": "INPUT:nth-child(1)[name='firstName']#firstName.whsOnd.zHQkBf",
+            "type": [ "FNAME", "~ignore" ]
+          }, 
+          {
+            "selector": "INPUT:nth-child(1)[name='lastName']#lastName.whsOnd.zHQkBf",
+            "type": [ "LNAME", "~ignore" ]
+          }, 
+          {
+            "selector": "#gender",
+            "type": [ "GENDER", "~ignore" ],
+            "options": 
+            {
+              "valuepair": "100008"
+            }
+          }, 
+          {
+            "selector": "INPUT:nth-child(1)[name='Username']#username.whsOnd.zHQkBf",
+            "type": [ "EMAIL", "~username", "~ignore" ]
+          }, 
+          {
+            "selector": "#phoneNumberId",
+            "type": [ "PHONE", "~ignore" ]
+          }, 
+          {
+            "selector": "INPUT:nth-child(1)[name='year']#year.whsOnd.zHQkBf",
+            "type": [ "BYEAR", "~ignore" ]
+          }, 
+          {
+            "selector": "SELECT#month.UDCCJb",
+            "type": [ "BMOTH", "~ignore" ]
+          }, 
+          {
+            "selector": "INPUT:nth-child(1)[name='day']#day.whsOnd.zHQkBf",
+            "type": [ "BDAY", "~ignore" ]
+          } ]
+      } ],
+    "fields": [],
+    "except": []
+  },
+  "www_global_jdsports_com": 
+  {
+    "websites": [],
+    "forms": [ 
+      {
+        "id": "590A0790-35E6-5A94-C69A-FAE1A0FCFA96",
+        "selector": "#registerCustomerForm",
+        "use": "PERSONINFO",
+        "fields": [ 
+          {
+            "selector": "#firstName",
+            "type": [ "FNAME", "~ignore" ]
+          }, 
+          {
+            "selector": "#lastName",
+            "type": [ "LNAME", "~ignore" ]
+          }, 
+          {
+            "selector": "#username",
+            "type": [ "EMAIL", "~username", "~ignore" ]
+          }, 
+          {
+            "selector": "#phone",
+            "type": [ "PHONE", "~ignore" ]
+          }, 
+          {
+            "selector": "#addressPredictLook",
+            "type": [ "ADDRESS", "~ignore" ]
+          }, 
+          {
+            "selector": "select[name=billingCountry]",
+            "type": [ "CONTRY", "~ignore" ],
+            "options": 
+            {
+              "valuepair": "100009"
+            }
+          } ]
+      } ],
+    "fields": [],
+    "except": []
+  },
+  "signup_live_com": 
+  {
+    "websites": [],
+    "forms": [ 
+      {
+        "id": "49F97F2B-7667-D475-7EA8-3065A0C2383D",
+        "selector": "DIV:nth-child(1)#inner>DIV:nth-child(3).win-scroll",
+        "use": "PERSONINFO",
+        "fields": [ 
+          {
+            "selector": "INPUT:nth-child(2)[name='FirstName']#FirstName.form-control",
+            "type": [ "FNAME", "~ignore" ]
+          }, 
+          {
+            "selector": "INPUT:nth-child(2)[name='LastName']#LastName.form-control",
+            "type": [ "LNAME", "~ignore" ]
+          }, 
+          {
+            "selector": "INPUT[name='MemberName']#MemberName.ltr_override.form-control.email-input-max-width",
+            "type": [ "EMAIL", "~username", "~ignore" ]
+          }, 
+          {
+            "selector": "INPUT[name='BirthYear']#BirthYear.form-control",
+            "type": [ "BYEAR", "~ignore" ]
+          }, 
+          {
+            "selector": "SELECT[name='BirthMonth']#BirthMonth.datepart1.form-control.win-dropdown",
+            "type": [ "BMOTH", "~ignore" ]
+          }, 
+          {
+            "selector": "SELECT[name='BirthDay']#BirthDay.datepart2.form-control.win-dropdown",
+            "type": [ "BDAY", "~ignore" ]
+          } ]
+      } ],
+    "fields": [],
+    "except": []
+  },
+  "reg_jd_com": 
+  {
+    "websites": [],
+    "forms": [ 
+      {
+        "id": "F6F654B1-FF97-7E08-8F9E-ECBFAC4D93AF",
+        "selector": "DIV:nth-child(1)#form-item-account.form-item.form-item-account.DSafe-flag",
+        "use": "PERSONINFO",
+        "fields": [ 
+          {
+            "selector": "#form-email",
+            "type": [ "EMAIL", "~username", "~ignore" ]
+          } ]
+      }, 
+      {
+        "id": "C74D64AE-4D66-9BA4-CF3A-2C93B2D14020",
+        "selector": "DIV:nth-child(28)#step1-wrap>DIV:nth-child(1)>DIV>DIV:nth-child(2).item-input-wrap",
+        "use": "PERSONINFO",
+        "fields": [ 
+          {
+            "selector": "INPUT:nth-child(2)[name='phone']#form-phone.field",
+            "type": [ "PHONE", "~ignore" ]
+          } ]
+      } ],
+    "fields": [],
+    "except": []
+  },
+  "account_samsung": 
+  {
+    "websites": [],
+    "forms": [ 
+      {
+        "id": "92D6888F-E81C-7E4D-1CEE-AED34C91A01E",
+        "selector": "HTML>BODY:nth-child(2)>DIV:nth-child(1)>MAIN:nth-child(2).one-main.ng-scope",
+        "use": "PERSONINFO",
+        "fields": [ 
+          {
+            "selector": "INPUT:nth-child(2)[name='givenName']#givenName.ng-pristine.ng-untouched.ng-empty.ng-invalid.ng-invalid-required.ng-valid-pattern.ng-valid-maxlength",
+            "type": [ "FNAME", "~ignore" ]
+          }, 
+          {
+            "selector": "INPUT:nth-child(2)[name='familyName']#familyName.ng-pristine.ng-empty.ng-invalid.ng-invalid-required.ng-valid-pattern.ng-valid-maxlength.ng-touched",
+            "type": [ "LNAME", "~ignore" ]
+          }, 
+          {
+            "selector": "INPUT:nth-child(2)[name='signUpID']#signUpID.ng-pristine.ng-valid.ng-empty.ng-valid-pattern.ng-valid-maxlength.ng-touched",
+            "type": [ "PHONE", "~ignore" ]
+          }, 
+          {
+            "selector": "INPUT:nth-child(2)[name='yearOfBirth']#yearOfBirth.dateofbirthForm.ng-untouched.ng-pristine.ng-valid",
+            "type": [ "BYEAR", "~ignore" ]
+          }, 
+          {
+            "selector": "SELECT:nth-child(2)[name='monthOfBirth']#monthOfBirth.dateofbirthForm.ng-untouched.ng-pristine.ng-valid",
+            "type": [ "BMOTH", "~ignore" ]
+          }, 
+          {
+            "selector": "INPUT:nth-child(2)[name='dateOfBirth']#dateOfBirth.dateofbirthForm.ng-untouched.ng-pristine.ng-valid",
+            "type": [ "BDAY", "~ignore" ]
+          } ]
+      } ],
+    "fields": [],
+    "except": []
+  },
+  "member1_taobao_com": 
+  {
+    "websites": [],
+    "forms": [ 
+      {
+        "id": "C767C3FB-FFDA-B4C5-7A10-F6560D295CB3",
+        "selector": "FORM:nth-child(4)#myForm.next-form.next-medium",
+        "use": "PERSONINFO",
+        "fields": [ 
+          {
+            "selector": "INPUT[name='fullName']#fullName",
+            "type": [ "NAME", "~ignore" ]
+          }, 
+          {
+            "selector": "INPUT[name='mobile']#mobile",
+            "type": [ "PHONE", "~ignore" ]
+          }, 
+          {
+            "selector": "INPUT[name='post']#post",
+            "type": [ "POST", "~ignore" ]
+          } ]
+      } ],
+    "fields": [],
+    "except": []
+  },
+  "passport_alibaba_com": 
+  {
+    "websites": [],
+    "forms": [ 
+      {
+        "id": "3D394471-6533-4892-B9B8-819A753CBA47",
+        "selector": "form.next-form",
+        "use": "PERSONINFO",
+        "fields": [ 
+          {
+            "selector": "INPUT[name='firstName']",
+            "type": [ "FNAME", "~ignore" ]
+          }, 
+          {
+            "selector": "INPUT[name='lastName']",
+            "type": [ "LNAME", "~ignore" ]
+          }, 
+          {
+            "selector": "#email",
+            "type": [ "EMAIL", "~username", "~ignore" ]
+          }, 
+          {
+            "selector": "#container>DIV>FORM>DIV>DIV:nth-child(5)>DIV:nth-child(2)>DIV:nth-child(1)>SPAN:nth-child(2)>INPUT",
+            "type": [ "PHONE", "~ignore" ]
+          }, 
+          {
+            "selector": "INPUT[name='address_detail']",
+            "type": [ "ADDRESS", "~ignore" ]
+          } ]
+      } ],
+    "fields": [],
+    "except": []
+  },
+  "reg_taobao_com": 
+  {
+    "websites": [],
+    "forms": [ 
+      {
+        "id": "3AFCA87A-B10C-D652-5ADD-6CE496B0E6E8",
+        "selector": "DIV:nth-child(6)#container>DIV>DIV:nth-child(2)>DIV:nth-child(1)>DIV:nth-child(2)>DIV>DIV:nth-child(2).am-input-control",
+        "use": "PERSONINFO",
+        "fields": [ 
+          {
+            "selector": "#container>DIV>DIV:nth-child(2)>DIV:nth-child(1)>DIV:nth-child(2)>DIV>DIV:nth-child(2)>INPUT",
+            "type": [ "PHONE", "~ignore" ]
+          } ]
+      } ],
+    "fields": [],
+    "except": []
+  },
+  "member_1688_com": 
+  {
+    "websites": [],
+    "forms": [ 
+      {
+        "id": "1E208C2E-1819-CB57-28A4-BB21BC35DD38",
+        "selector": "DIV:nth-child(4)#container>DIV>FORM>DIV>DIV:nth-child(4)>DIV:nth-child(2)>DIV:nth-child(1)>DIV:nth-child(1).mobileCountrySelect",
+        "use": "PERSONINFO",
+        "fields": [ 
+          {
+            "selector": "#container>DIV>FORM>DIV>DIV:nth-child(4)>DIV:nth-child(2)>DIV:nth-child(1)>SPAN:nth-child(2)>INPUT",
+            "type": [ "PHONE", "~ignore" ]
+          } ]
+      }, 
+      {
+        "id": "",
+        "selector": "DIV:nth-child(3)#container>DIV>FORM>DIV>DIV:nth-child(4)>DIV:nth-child(2).next-col-10.next-form-item-control",
+        "use": "PERSONINFO",
+        "fields": [ 
+          {
+            "selector": "#contactName",
+            "type": [ "NAME", "~ignore" ]
+          }, 
+          {
+            "selector": "#container>DIV>FORM>DIV>DIV:nth-child(7)>DIV:nth-child(2)>DIV:nth-child(1)>SPAN:nth-child(2)>INPUT",
+            "type": [ "PHONE", "~ignore" ]
+          } ]
+      } ],
+    "fields": [],
+    "except": []
+  },
+  "www_facebook_com": 
+  {
+    "websites": [],
+    "forms": [ 
+      {
+        "id": "E4326313-421F-65B9-7DB1-D60D01F89B4A",
+        "selector": "DIV#reg_box>DIV:nth-child(1)._8fgl._9l2p",
+        "use": "PERSONINFO",
+        "fields": [ 
+          {
+            "selector": "INPUT:nth-child(2)[name='firstname']#u_4_d_Jl.inputtext._58mg._5dba._2ph-",
+            "type": [ "FNAME", "~ignore" ]
+          }, 
+          {
+            "selector": "INPUT:nth-child(1)[name='lastname']#u_4_b_y6.inputtext._58mg._5dba._2ph-",
+            "type": [ "LNAME", "~ignore" ]
+          }, 
+          {
+            "selector": "INPUT:nth-child(2)[name='reg_email__']#u_4_g_jI.inputtext._58mg._5dba._2ph-",
+            "type": [ "EOP", "~username", "~ignore" ]
+          }, 
+          {
+            "selector": "SELECT:nth-child(1)[name='birthday_year']#year._9407._5dba._9hk6._8esg",
+            "type": [ "BYEAR", "~ignore" ]
+          }, 
+          {
+            "selector": "SELECT:nth-child(2)[name='birthday_month']#month._9407._5dba._9hk6._8esg",
+            "type": [ "BMOTH", "~ignore" ]
+          }, 
+          {
+            "selector": "SELECT:nth-child(3)[name='birthday_day']#day._9407._5dba._9hk6._8esg",
+            "type": [ "BDAY", "~ignore" ]
+          } ]
+      } ],
+    "fields": [],
+    "except": []
+  },
+  "passport_vip_com": 
+  {
+    "websites": [],
+    "forms": [ 
+      {
+        "id": "650C9DC9-9FC1-2551-1B22-45BFBB0B534D",
+        "selector": "FORM:nth-child(2)#reg_mobile_form>DIV:nth-child(1)>DIV:nth-child(1).ui-form-item-group",
+        "use": "PERSONINFO",
+        "fields": [ 
+          {
+            "selector": "INPUT:nth-child(1)[name='loginName']#J_mobile_name.ui-input.ipt-phone",
+            "type": [ "PHONE", "~ignore" ]
+          } ]
+      }, 
+      {
+        "id": "",
+        "selector": "DIV#J_login_form>DIV:nth-child(2)>DIV:nth-child(1).ui-form-item-group",
+        "use": "PERSONINFO",
+        "fields": [ 
+          {
+            "selector": "#J_mobile_login_phone",
+            "type": [ "PHONE", "~ignore" ]
+          } ]
+      } ],
+    "fields": [],
+    "except": []
+  },
+  "checkout_vip_com": 
+  {
+    "websites": [],
+    "forms": [ 
+      {
+        "id": "B06433FC-5E6C-F27A-0B84-55CED4D14669",
+        "selector": "DIV:nth-child(3)#J-address-form>DIV:nth-child(3)>DIV:nth-child(2)>DIV:nth-child(2)>DIV:nth-child(1).ui-tooltips.ui-tooltips-warning.ui-tooltips-bottom-left-arrow",
+        "use": "PERSONINFO",
+        "fields": [ 
+          {
+            "selector": "#consignee",
+            "type": [ "NAME", "~ignore" ]
+          }, 
+          {
+            "selector": "#mobile",
+            "type": [ "PHONE", "~ignore" ]
+          }, 
+          {
+            "selector": "#addressInfo",
+            "type": [ "ADDRESS", "~ignore" ]
+          } ]
+      } ],
+    "fields": [],
+    "except": []
+  },
+  "my_suning_com": 
+  {
+    "websites": [],
+    "forms": [ 
+      {
+        "id": "626E2133-4627-95A2-F142-CC43E433F4B6",
+        "selector": "!",
+        "use": "PERSONINFO",
+        "fields": [ 
+          {
+            "selector": "#addr-name",
+            "type": [ "NAME", "~ignore" ]
+          }, 
+          {
+            "selector": "#addr-tel",
+            "type": [ "PHONE", "~ignore" ]
+          }, 
+          {
+            "selector": "#addr-phone",
+            "type": [ "EOP", "~username", "~ignore" ]
+          }, 
+          {
+            "selector": "#addr-detailAddress",
+            "type": [ "ADDRESS", "~ignore" ]
+          } ]
+      }, 
+      {
+        "id": "",
+        "selector": "HTML>BODY:nth-child(2)>DIV:nth-child(26)>DIV>DIV:nth-child(3)>DIV>DIV:nth-child(2)>DIV.pop-wrapper.take-addr",
+        "use": "PERSONINFO",
+        "fields": [ 
+          {
+            "selector": "#addr-name",
+            "type": [ "NAME", "~ignore" ]
+          }, 
+          {
+            "selector": "#addr-tel",
+            "type": [ "PHONE", "~ignore" ]
+          }, 
+          {
+            "selector": "#addr-phone",
+            "type": [ "EOP", "~username", "~ignore" ]
+          } ]
+      } ],
+    "fields": [],
+    "except": []
+  },
+  "reg_suning_com": 
+  {
+    "websites": [],
+    "forms": [ 
+      {
+        "id": "95AB8DED-7EFF-F18B-B7F2-00B17D165AC3",
+        "selector": "FORM:nth-child(2)#enterReg_form>DIV:nth-child(1)>DIV:nth-child(2)>DIV:nth-child(1)>DIV:nth-child(2).input-wrapper",
+        "use": "PERSONINFO",
+        "fields": [ 
+          {
+            "selector": "INPUT:nth-child(1)[name='aliasName']#mobileAlias",
+            "type": [ "PHONE", "~ignore" ]
+          } ]
+      } ],
+    "fields": [],
+    "except": []
+  },
+  "wise_com": 
+  {
+    "websites": [],
+    "forms": [ 
+      {
+        "id": "5E280953-222B-9D43-B74F-33C28AE42561",
+        "selector": "DIV:nth-child(2)#__next>DIV>DIV>DIV>DIV:nth-child(2)>SECTION>DIV>DIV>DIV>DIV:nth-child(2).personal-profile-form.d-flex.justify-content-center",
+        "use": "PERSONINFO",
+        "fields": [ 
+          {
+            "selector": "INPUT:nth-child(2)#firstName.form-control",
+            "type": [ "FNAME", "~ignore" ]
+          }, 
+          {
+            "selector": "INPUT:nth-child(2)#lastName.form-control",
+            "type": [ "LNAME", "~ignore" ]
+          }, 
+          {
+            "selector": "INPUT[name='email']#email.form-control",
+            "type": [ "EMAIL", "~username", "~ignore" ]
+          }, 
+          {
+            "selector": "DIV:nth-child(2)#__next>DIV>DIV>DIV:nth-child(2)>SECTION>DIV>DIV>DIV:nth-child(2)>DIV>DIV>DIV>DIV>DIV>FORM:nth-child(3)>DIV:nth-child(1)>DIV:nth-child(2)>DIV>INPUT[name='phoneNumber'].form-control",
+            "type": [ "PHONE", "~ignore" ]
+          }, 
+          {
+            "selector": "DIV:nth-child(2)#dateOfBirth>DIV>DIV:nth-child(3)>DIV>LABEL>INPUT:nth-child(2)[name='year'].form-control",
+            "type": [ "BYEAR", "~ignore" ]
+          }, 
+          {
+            "selector": "DIV:nth-child(2)#dateOfBirth>DIV>DIV:nth-child(2)>DIV>LABEL>INPUT:nth-child(2)[name='day'].form-control",
+            "type": [ "BDAY", "~ignore" ]
+          }, 
+          {
+            "selector": "INPUT:nth-child(2)#addressFirstLine.form-control",
+            "type": [ "ADDRESS", "~ignore" ]
+          }, 
+          {
+            "selector": "INPUT:nth-child(2)#city.form-control",
+            "type": [ "CITY", "~ignore" ]
+          }, 
+          {
+            "selector": "INPUT:nth-child(2)#postCode.form-control",
+            "type": [ "POST", "~ignore" ]
+          } ]
+      } ],
+    "fields": [],
+    "except": []
+  },
+  "cdn_registerdisney_go_com": 
+  {
+    "websites": [],
+    "forms": [ 
+      {
+        "id": "8F23FC8B-D22A-A8CC-D869-BD9653FFFEAC",
+        "selector": "DIV:nth-child(1)#root>DIV:nth-child(3)>DIV:nth-child(1)>DIV>DIV:nth-child(1)>FORM:nth-child(1).form-section.registration",
+        "use": "PERSONINFO",
+        "fields": [ 
+          {
+            "selector": "INPUT:nth-child(1)#InputFirstName.input-InputFirstName",
+            "type": [ "FNAME", "~ignore" ]
+          }, 
+          {
+            "selector": "INPUT:nth-child(1)#InputLastName.input-InputLastName",
+            "type": [ "LNAME", "~ignore" ]
+          }, 
+          {
+            "selector": "#InputDOB",
+            "type": [ "BIRTHDAY", "~ignore" ],
+            "options": 
+            {
+              "dtfmt": "{MM}/{DD}/{YYYY}"
+            }
+          } ]
+      }, 
+      {
+        "id": "C4656D2F-BBB2-1E4B-AA9F-7C40C82B54E5",
+        "selector": "DIV:nth-child(1)#root>DIV:nth-child(3)>DIV:nth-child(1)>DIV>DIV:nth-child(1)>FORM>LABEL:nth-child(4)>DIV:nth-child(2).input-wrapper.field-error",
+        "use": "PERSONINFO",
+        "fields": [ 
+          {
+            "selector": "INPUT:nth-child(1)#InputEmail.input-InputEmail",
+            "type": [ "EMAIL", "~username", "~ignore" ]
+          } ]
+      }, 
+      {
+        "id": "1B19E959-3A9F-0062-C0C1-4185EEC1DCEA",
+        "selector": "DIV:nth-child(1)#root>DIV:nth-child(3)>DIV:nth-child(1)>DIV>DIV:nth-child(1)>FORM:nth-child(1).form-section.update-profile",
+        "use": "PERSONINFO",
+        "fields": [ 
+          {
+            "selector": "INPUT#InputFirstName.input-InputFirstName",
+            "type": [ "FNAME", "~ignore" ]
+          }, 
+          {
+            "selector": "INPUT#InputLastName.input-InputLastName",
+            "type": [ "LNAME", "~ignore" ]
+          }, 
+          {
+            "selector": "SELECT:nth-child(2)#CountrySelect",
+            "type": [ "CONTRY", "~ignore" ],
+            "options": 
+            {
+              "valuepair": "100012"
+            }
+          } ]
+      } ],
+    "fields": [],
+    "except": []
+  },
+  "www_coinbase_com": 
+  {
+    "websites": [],
+    "forms": [ 
+      {
+        "id": "A6A9554A-B4AE-62B6-BFA4-E7F5AB1FF0B5",
+        "selector": "DIV#root>DIV:nth-child(1)>DIV:nth-child(3)>DIV>DIV>DIV>FORM:nth-child(2)>DIV>DIV:nth-child(1).cds-flex-f1g67tkn.cds-stretch-s5nqxyn.cds-column-ci8mx7v.cds-nowrap-n1jb5thv.cds-2-_vhy4ik",
+        "use": "PERSONINFO",
+        "fields": [ 
+          {
+            "selector": "[name='firstName']",
+            "type": [ "FNAME", "~ignore" ]
+          }, 
+          {
+            "selector": "[name='lastName']",
+            "type": [ "LNAME", "~ignore" ]
+          } ]
+      } ],
+    "fields": [],
+    "except": []
+  },
+  "octopus_com": 
+  {
+    "websites": [],
+    "forms": [ 
+      {
+        "id": "0A5A6109-F6D0-E989-58A7-90799C605A63",
+        "selector": "#registerForm",
+        "use": "PERSONINFO",
+        "fields": [ 
+          {
+            "selector": "INPUT:nth-child(1)[name='FirstName']#FirstName.form-control",
+            "type": [ "FNAME", "~ignore" ]
+          }, 
+          {
+            "selector": "INPUT:nth-child(1)[name='LastName']#LastName.form-control",
+            "type": [ "LNAME", "~ignore" ]
+          }, 
+          {
+            "selector": "INPUT:nth-child(1)[name='EmailAddress']#EmailAddress.form-control",
+            "type": [ "EMAIL", "~username", "~ignore" ]
+          } ]
+      } ],
+    "fields": [],
+    "except": []
+  },
+  "store_steampowered_com": 
+  {
+    "websites": [],
+    "forms": [ 
+      {
+        "id": "7C1E8414-C6FC-7135-CD13-A68B98FAF9D9",
+        "selector": "DIV:nth-child(2)#account_form_box>DIV.join_form",
+        "use": "PERSONINFO",
+        "fields": [ 
+          {
+            "selector": "INPUT:nth-child(2)[name='email']#email",
+            "type": [ "EMAIL", "~username", "~ignore" ]
+          }, 
+          {
+            "selector": "SELECT:nth-child(2)[name='country']#country.blueish",
+            "type": [ "CONTRY", "~ignore" ],
+            "options": 
+            {
+              "valuepair": "100013"
+            }
+          } ]
+      }, 
+      {
+        "id": "77AA1346-EF19-36EE-86E4-928D78BAE7A8",
+        "selector": "DIV:nth-child(2)#account_form_box>DIV.join_form",
+        "use": "PERSONINFO",
+        "fields": [ 
+          {
+            "selector": "INPUT:nth-child(2)[name='reenter_email']#reenter_email",
+            "type": [ "EMAIL", "~username", "~ignore" ]
+          }, 
+          {
+            "selector": "SELECT:nth-child(2)[name='country']#country.blueish",
+            "type": [ "CONTRY", "~ignore" ],
+            "options": 
+            {
+              "valuepair": "100014"
+            }
+          } ]
+      } ],
+    "fields": [],
+    "except": []
+  },
+  "www_epicgames_com": 
+  {
+    "websites": [],
+    "forms": [ 
+      {
+        "id": "5EAD0073-4295-9858-1E5F-11B0E776FB2B",
+        "selector": "!",
+        "use": "PERSONINFO",
+        "fields": [ 
+          {
+            "selector": "#name",
+            "type": [ "FNAME", "~ignore" ]
+          }, 
+          {
+            "selector": "#lastName.MuiInputBase-input.MuiOutlinedInput-input",
+            "type": [ "LNAME", "~ignore" ]
+          }, 
+          {
+            "selector": "#email",
+            "type": [ "EMAIL", "~username", "~ignore" ]
+          } ]
+      } ],
+    "fields": [],
+    "except": []
+  },
+  "www_gog_com": 
+  {
+    "websites": [],
+    "forms": [ 
+      {
+        "id": "3A4F7E58-722A-393E-432C-F7205FC69769",
+        "selector": "HTML>BODY:nth-child(2)>DIV:nth-child(2)>DIV:nth-child(4)>DIV:nth-child(1)>DIV:nth-child(2)>DIV:nth-child(2)>DIV:nth-child(2).settings-layout__content.settings-content",
+        "use": "PERSONINFO",
+        "fields": [ 
+          {
+            "selector": "HTML>BODY:nth-child(2)>DIV:nth-child(2)>DIV:nth-child(4)>DIV:nth-child(1)>DIV:nth-child(2)>DIV:nth-child(2)>DIV:nth-child(2)>UL:nth-child(2)>LI:nth-child(3)>STRONG:nth-child(2)>SPAN:nth-child(3)>SELECT:nth-child(3).ng-pristine.ng-untouched.ng-valid.unfocusable.ng-empty",
+            "type": [ "BYEAR", "~ignore" ]
+          }, 
+          {
+            "selector": "HTML>BODY:nth-child(2)>DIV:nth-child(2)>DIV:nth-child(4)>DIV:nth-child(1)>DIV:nth-child(2)>DIV:nth-child(2)>DIV:nth-child(2)>UL:nth-child(2)>LI:nth-child(3)>STRONG:nth-child(2)>SPAN:nth-child(2)>SELECT:nth-child(3).ng-pristine.ng-untouched.ng-valid.unfocusable.ng-empty",
+            "type": [ "BMOTH", "~ignore" ]
+          }, 
+          {
+            "selector": "HTML>BODY:nth-child(2)>DIV:nth-child(2)>DIV:nth-child(4)>DIV:nth-child(1)>DIV:nth-child(2)>DIV:nth-child(2)>DIV:nth-child(2)>UL:nth-child(2)>LI:nth-child(3)>STRONG:nth-child(2)>SPAN:nth-child(1)>SELECT:nth-child(3)[name='user_bday_day'].ng-pristine.ng-untouched.ng-valid.unfocusable.ng-empty",
+            "type": [ "BDAY", "~ignore" ]
+          }, 
+          {
+            "selector": "HTML>BODY:nth-child(2)>DIV:nth-child(2)>DIV:nth-child(4)>DIV:nth-child(1)>DIV:nth-child(2)>DIV:nth-child(2)>DIV:nth-child(2)>UL:nth-child(2)>LI:nth-child(4)>STRONG:nth-child(2)>SPAN>SELECT:nth-child(3).unfocusable",
+            "type": [ "CONTRY", "~ignore" ],
+            "options": 
+            {
+              "valuepair": "100015"
+            }
+          } ]
+      } ],
+    "fields": [],
+    "except": []
+  },
+  "www_linkedin_com": 
+  {
+    "websites": [],
+    "forms": [ 
+      {
+        "id": "0D5F6BD6-E22C-5F7A-A716-5F97661C9F15",
+        "selector": "DIV#profile-edit-form-page-content>DIV.pt2.pb4.ph5",
+        "use": "PERSONINFO",
+        "fields": [ 
+          {
+            "selector": "INPUT:nth-child(2)#single-line-text-form-component-profileEditFormElement-TOP-CARD-profile-ACoAADsHLHwBL8KU39P4AUNr9t12sxmFMmZinQA-firstName.fb-dash-form-element__error-field.artdeco-text-input--input",
+            "type": [ "FNAME", "~ignore" ]
+          }, 
+          {
+            "selector": "INPUT:nth-child(2)#single-line-text-form-component-profileEditFormElement-TOP-CARD-profile-ACoAADsHLHwBL8KU39P4AUNr9t12sxmFMmZinQA-lastName.fb-dash-form-element__error-field.artdeco-text-input--input",
+            "type": [ "LNAME", "~ignore" ]
+          }, 
+          {
+            "selector": "INPUT#single-typeahead-entity-form-component-profileEditFormElement-TOP-CARD-profile-ACoAADsHLHwBL8KU39P4AUNr9t12sxmFMmZinQA-geoLocation-cityTypeaheadField",
+            "type": [ "CITY", "~ignore" ]
+          }, 
+          {
+            "selector": "INPUT#single-typeahead-entity-form-component-profileEditFormElement-TOP-CARD-profile-ACoAADsHLHwBL8KU39P4AUNr9t12sxmFMmZinQA-geoLocation-countryField",
+            "type": [ "CONTRY", "~ignore" ]
+          }, 
+          {
+            "selector": "INPUT:nth-child(2)#single-line-text-form-component-profileEditFormElement-TOP-CARD-profile-ACoAADsHLHwBL8KU39P4AUNr9t12sxmFMmZinQA-geoLocation-postalCodeTextField.artdeco-text-input--input",
+            "type": [ "POST", "~ignore" ]
+          } ]
+      }, 
+      {
+        "id": "EB78F193-3386-7D40-26C9-35B4D67CA1FC",
+        "selector": "DIV#profile-edit-form-page-content>DIV>DIV:nth-child(3).pt6",
+        "use": "PERSONINFO",
+        "fields": [ 
+          {
+            "selector": "INPUT:nth-child(2)#single-line-text-form-component-urn-li-fsu-profileContactInfoEditFormElement-PHONE-NUMBER-1.artdeco-text-input--input",
+            "type": [ "PHONE", "~ignore" ]
+          }, 
+          {
+            "selector": "SELECT[name='month']#-urn-li-fsu-profileContactInfoEditFormElement-BIRTH-DATE-1-date-dropdown",
+            "type": [ "BMOTH", "~ignore" ]
+          }, 
+          {
+            "selector": "SELECT[name='day']#-urn-li-fsu-profileContactInfoEditFormElement-BIRTH-DATE-1-date-dropdown-day-select",
+            "type": [ "BDAY", "~ignore" ]
+          }, 
+          {
+            "selector": "TEXTAREA:nth-child(2)#multiline-text-form-component-urn-li-fsu-profileContactInfoEditFormElement-ADDRESS-1.fb-multiline-text.artdeco-text-input--input.artdeco-text-input__textarea.artdeco-text-input__textarea--align-top",
+            "type": [ "ADDRESS", "~ignore" ]
+          } ]
+      } ],
+    "fields": [],
+    "except": []
+  },
+  "www_blogger_com": 
+  {
+    "websites": [],
+    "forms": [ 
+      {
+        "id": "DC040831-8AD3-6356-496F-7E4CB5305B36",
+        "selector": "FORM:nth-child(2)[name='profile']#profileForm.contents",
+        "use": "PERSONINFO",
+        "fields": [ 
+          {
+            "selector": "INPUT[name='widget.displayname']",
+            "type": [ "NAME", "~ignore" ]
+          }, 
+          {
+            "selector": "INPUT[name='email']#email.text",
+            "type": [ "EMAIL", "~username", "~ignore" ]
+          }, 
+          {
+            "selector": "INPUT[name='widget.city']#widget.city.text",
+            "type": [ "CITY", "~ignore" ]
+          }, 
+          {
+            "selector": "INPUT[name='widget.state']#widget.state.text",
+            "type": [ "STATE", "~ignore" ]
+          }, 
+          {
+            "selector": "SELECT[name='widget.country']#widget.country",
+            "type": [ "CONTRY", "~ignore" ],
+            "options": 
+            {
+              "valuepair": "100016"
+            }
+          } ]
+      } ],
+    "fields": [],
+    "except": []
+  },
+  "www_istockphoto_com": 
+  {
+    "websites": [],
+    "forms": [ 
+      {
+        "id": "7FE2F188-2D77-B95C-F231-CE01450BB621",
+        "selector": "FORM:nth-child(3)[name='profile']#edit-profile.new_profile.ng-pristine.ng-invalid.ng-invalid-required.ng-valid-pattern.ng-valid-maxlength",
+        "use": "PERSONINFO",
+        "fields": [ 
+          {
+            "selector": "INPUT:nth-child(2)[name='profile[first_name]']#profile_first_name.ng-pristine.ng-untouched.ng-invalid.ng-invalid-required.ng-valid-pattern.ng-valid-maxlength",
+            "type": [ "FNAME", "~ignore" ]
+          }, 
+          {
+            "selector": "INPUT:nth-child(2)[name='profile[last_name]']#profile_last_name.ng-pristine.ng-untouched.ng-invalid.ng-invalid-required.ng-valid-pattern.ng-valid-maxlength",
+            "type": [ "LNAME", "~ignore" ]
+          } ]
+      } ],
+    "fields": [],
+    "except": []
+  },
+  "id_vk_com": 
+  {
+    "websites": [],
+    "forms": [ 
+      {
+        "id": "02F79A28-8D04-1A6E-CE7C-238EC853B44E",
+        "selector": "FORM:nth-child(4)#signupForm>DIV:nth-child(1).vkuiFormLayout__container",
+        "use": "PERSONINFO",
+        "fields": [ 
+          {
+            "selector": "FORM:nth-child(4)#signupForm>DIV:nth-child(1)>DIV:nth-child(1)>DIV:nth-child(2)>DIV:nth-child(1)>INPUT:nth-child(1)[name='first_name'].vkuiInput__el",
+            "type": [ "FNAME", "~ignore" ]
+          }, 
+          {
+            "selector": "FORM:nth-child(4)#signupForm>DIV:nth-child(1)>DIV:nth-child(1)>DIV:nth-child(2)>DIV:nth-child(2)>INPUT:nth-child(1)[name='last_name'].vkuiInput__el",
+            "type": [ "LNAME", "~ignore" ]
+          }, 
+          {
+            "selector": "FORM:nth-child(4)#signupForm>DIV:nth-child(1)>DIV:nth-child(2)>DIV>DIV:nth-child(2)>DIV>INPUT[name='birthday'].vkc__TextField__input.vkc__DateInput__fieldDateInputComponent",
+            "type": [ "BIRTHDAY", "~ignore" ],
+            "options": 
+            {
+              "dtfmt": "{DD}.{MM}.{YYYY}"
+            }
+          } ]
+      } ],
+    "fields": [],
+    "except": []
+  },
+  "www_dailymotion_com": 
+  {
+    "websites": [],
+    "forms": [ 
+      {
+        "id": "C06CA6EE-732C-22CE-2160-F1603C43E6DA",
+        "selector": "DIV:nth-child(1)#root>DIV>MAIN:nth-child(3)>DIV>DIV>DIV>DIV:nth-child(2)>DIV>DIV>FORM:nth-child(1)>DIV.EmailSignup__formWrapper___2gpH1",
+        "use": "PERSONINFO",
+        "fields": [ 
+          {
+            "selector": "SELECT:nth-child(1)[name='signup_gender']#signup_gender.Select__select___psS_E.GenderSelect__input___2ZnxG.GenderSelect__selectPlaceholder___3IDU3.Select__empty___LoEDa",
+            "type": [ "GENDER", "~ignore" ],
+            "options": 
+            {
+              "valuepair": "100017"
+            }
+          }, 
+          {
+            "selector": "DIV:nth-child(1)#root>DIV>MAIN:nth-child(3)>DIV>DIV>DIV>DIV:nth-child(2)>DIV>DIV>FORM:nth-child(1)>DIV>DIV:nth-child(2)>INPUT:nth-child(1)[name='email'].EmailInput__input___2Pq6c",
+            "type": [ "EMAIL", "~username", "~ignore" ]
+          }, 
+          {
+            "selector": "DIV:nth-child(1)#root>DIV>MAIN:nth-child(3)>DIV>DIV>DIV>DIV:nth-child(2)>DIV>DIV>FORM:nth-child(1)>DIV>DIV:nth-child(4)>DIV:nth-child(1)>INPUT[name='birthday'].BirthdayInput__input___3FFSF.BirthdayInput__inputDate___1g0DF.BirthdayInput__hasPlaceholder___2eBcF",
+            "type": [ "BIRTHDAY", "~ignore" ],
+            "options": 
+            {
+              "dtfmt": "{YYYY}-{MM}-{DD}"
+            }
+          } ]
+      }, 
+      {
+        "id": "95D64E77-A4BF-B1BF-851B-E736517D5238",
+        "selector": "!",
+        "use": "PERSONINFO",
+        "fields": [ 
+          {
+            "selector": "INPUT[name='name']#name.Input__input___1EydI.EditAccount__input___3ywjQ",
+            "type": [ "NAME", "~ignore" ]
+          }, 
+          {
+            "selector": "SELECT:nth-child(1)[name='gender']#gender.Select__select___psS_E",
+            "type": [ "GENDER", "~ignore" ],
+            "options": 
+            {
+              "valuepair": "100018"
+            }
+          }, 
+          {
+            "selector": "INPUT[name='birthday']#birthday.Input__input___1EydI.EditAccount__input___3ywjQ",
+            "type": [ "BIRTHDAY", "~ignore" ],
+            "options": 
+            {
+              "dtfmt": "{YYYY}-{MM}-{DD}"
+            }
+          } ]
+      } ],
+    "fields": [],
+    "except": []
+  },
+  "auth_forbes_com": 
+  {
+    "websites": [],
+    "forms": [ 
+      {
+        "id": "4BDCB975-C690-5746-91FA-17F3E716282A",
+        "selector": "!",
+        "use": "PERSONINFO",
+        "fields": [ 
+          {
+            "selector": "#first-name",
+            "type": [ "FNAME", "~ignore" ]
+          }, 
+          {
+            "selector": "#last-name",
+            "type": [ "LNAME", "~ignore" ]
+          }, 
+          {
+            "selector": "#email",
+            "type": [ "EMAIL", "~username", "~ignore" ]
+          } ]
+      }, 
+      {
+        "id": "A5DB966C-3ED8-39FA-98F7-6599F14B5791",
+        "selector": "!",
+        "use": "PERSONINFO",
+        "fields": [ 
+          {
+            "selector": "#first_name",
+            "type": [ "FNAME", "~ignore" ]
+          }, 
+          {
+            "selector": "#last_name",
+            "type": [ "LNAME", "~ignore" ]
+          }, 
+          {
+            "selector": "INPUT:nth-child(1)#email",
+            "type": [ "EMAIL", "~username", "~ignore" ]
+          }, 
+          {
+            "selector": ".pn-datepicker__toggle>INPUT",
+            "type": [ "BIRTHDAY", "~ignore" ],
+            "options": 
+            {
+              "dtfmt": "{MM}/{DD}/{YYYY}"
+            }
+          } ]
+      } ],
+    "fields": [],
+    "except": []
+  },
+  "www_imdb_com": 
+  {
+    "websites": [],
+    "forms": [ 
+      {
+        "id": "A5DB966C-3ED8-39FA-98F7-6599F14B5791",
+        "selector": "!",
+        "use": "PERSONINFO",
+        "fields": [ 
+          {
+            "selector": "SELECT:nth-child(2)[name='gender']#genderSel",
+            "type": [ "GENDER", "~ignore" ],
+            "options": 
+            {
+              "valuepair": "100019"
+            }
+          }, 
+          {
+            "selector": "#yearOfBirth",
+            "type": [ "BYEAR", "~ignore" ]
+          }, 
+          {
+            "selector": "#monthOfBirth",
+            "type": [ "BMOTH", "~ignore" ]
+          }, 
+          {
+            "selector": "#dayOfBirth",
+            "type": [ "BDAY", "~ignore" ]
+          }, 
+          {
+            "selector": "#countryOfResidence",
+            "type": [ "CONTRY", "~ignore" ],
+            "options": 
+            {
+              "valuepair": "100020"
+            }
+          } ]
+      } ],
+    "fields": [],
+    "except": []
+  },
+  "issuu_com": 
+  {
+    "websites": [],
+    "forms": [ 
+      {
+        "id": "5CD9EC6F-E4E6-A64E-1704-5F9C91C5A815",
+        "selector": "!",
+        "use": "PERSONINFO",
+        "fields": [ 
+          {
+            "selector": "INPUT#first_name_textinput.TextField__input__qwgdG__0-0-1636",
+            "type": [ "FNAME", "~ignore" ]
+          }, 
+          {
+            "selector": "INPUT#last_name_textinput.TextField__input__qwgdG__0-0-1636",
+            "type": [ "LNAME", "~ignore" ]
+          }, 
+          {
+            "selector": "INPUT#display_name_textinput.TextField__input__qwgdG__0-0-1636",
+            "type": [ "NAME", "~ignore" ]
+          }, 
+          {
+            "selector": "DIV:nth-child(4)#app>DIV>DIV:nth-child(3)>DIV:nth-child(2)>DIV:nth-child(3)>DIV:nth-child(4)>DIV:nth-child(1)>DIV:nth-child(2)>DIV>INPUT:nth-child(1).TextField__input__qwgdG__0-0-1636",
+            "type": [ "EMAIL", "~username", "~ignore" ]
+          }, 
+          {
+            "selector": "INPUT#city_textinput.TextField__input__qwgdG__0-0-1636",
+            "type": [ "CITY", "~ignore" ]
+          }, 
+          {
+            "selector": "DIV:nth-child(4)#app>DIV>DIV:nth-child(3)>DIV:nth-child(2)>DIV:nth-child(1)>DIV:nth-child(5)>SELECT:nth-child(2).sc-1xtscmm-3.edcNfB",
+            "type": [ "CONTRY", "~ignore" ],
+            "options": 
+            {
+              "valuepair": "100021"
+            }
+          } ]
+      } ],
+    "fields": [],
+    "except": []
+  },
+  "get_checkout_com": 
+  {
+    "websites": [],
+    "forms": [ 
+      {
+        "id": "",
+        "selector": "FORM:nth-child(2)[name='2021-Q3_GL_Insta_Performance_OneStepDark_1669359048580']#gate-e37beb3c-d2ac-4dd9-afd5-43be2b3b4c7f_form_1669359048580.gcdc-form-render.gcdc-form-render-formContactPerformanceOneStep.gcdc-form-render-formcontactperformanceonestep.DSafe-flag",
+        "use": "PERSONINFO",
+        "fields": [ 
+          {
+            "selector": "INPUT[name='first-name']#gcdc-field-e37beb3c-d2ac-4dd9-afd5-43be2b3b4c7ffirst_name.gcdc-form-field",
+            "type": [ "FNAME", "~ignore" ]
+          }, 
+          {
+            "selector": "INPUT[name='last-name']#gcdc-field-e37beb3c-d2ac-4dd9-afd5-43be2b3b4c7flast_name.gcdc-form-field",
+            "type": [ "LNAME", "~ignore" ]
+          }, 
+          {
+            "selector": "INPUT[name='email']#gcdc-field-e37beb3c-d2ac-4dd9-afd5-43be2b3b4c7femail.gcdc-form-field.DSafe-flag",
+            "type": [ "EMAIL", "~username", "~ignore" ]
+          }, 
+          {
+            "selector": "FORM:nth-child(2)#gate-e37beb3c-d2ac-4dd9-afd5-43be2b3b4c7f_form_1669359048580>DIV:nth-child(8)>DIV:nth-child(2)>INPUT:nth-child(3).gcdc-form-field.gcdc-phonemulti-main.DSafe-flag",
+            "type": [ "PHONE", "~ignore" ]
+          }, 
+          {
+            "selector": "INPUT:nth-child(1)[name='country']#gcdc-field-e37beb3c-d2ac-4dd9-afd5-43be2b3b4c7fcountry.gcdc-form-field.gcdc-form-country.gcdc-country-selected",
+            "type": [ "CONTRY", "~ignore" ]
+          } ]
+      } ],
+    "fields": [],
+    "except": []
+  },
+  "dashboard_stripe_com": 
+  {
+    "websites": [],
+    "forms": [ 
+      {
+        "id": "",
+        "selector": "HTML>BODY:nth-child(2)>DIV:nth-child(33)>DIV:nth-child(1)>DIV>DIV:nth-child(2)>DIV:nth-child(2)>DIV:nth-child(1)>DIV.db-RegisterAndLoginLayout-formPadding.Box-root",
+        "use": "PERSONINFO",
+        "fields": [ 
+          {
+            "selector": "INPUT[name='name']#register-name-input.Input.Input--nowrap.PressableContext.Padding-horizontal--12.Padding-vertical--8.PressableContext--cursor--text.PressableContext--display--inlineFlex.PressableContext--fontLineHeight--20.PressableContext--fontSize--14.PressableContext--fontWeight--regular.PressableContext--height.PressableContext--height--large.PressableContext--radius--all.PressableContext--width.PressableContext--width--maximized.TextInput-element.TextInput-element--align--left",
+            "type": [ "NAME", "~ignore" ]
+          }, 
+          {
+            "selector": "INPUT[name='email']#register-email-input.Input.Input--nowrap.PressableContext.Padding-horizontal--12.Padding-vertical--8.PressableContext--cursor--text.PressableContext--display--inlineFlex.PressableContext--fontLineHeight--20.PressableContext--fontSize--14.PressableContext--fontWeight--regular.PressableContext--height.PressableContext--height--large.PressableContext--radius--all.PressableContext--width.PressableContext--width--maximized.TextInput-element.TextInput-element--align--left",
+            "type": [ "EMAIL", "~username", "~ignore" ]
+          } ]
+      }, 
+      {
+        "id": "",
+        "selector": "BODY:nth-child(2)#merch>DIV:nth-child(34)>DIV:nth-child(2)>DIV>SPAN:nth-child(2)>DIV>DIV:nth-child(3)>DIV>DIV.Box-root.Flex-flex.Flex-justifyContent--center",
+        "use": "PERSONINFO",
+        "fields": [ 
+          {
+            "selector": "INPUT[name='first_name']#first_name.Input.Input--nowrap.PressableContext.Padding-horizontal--12.Padding-vertical--8.PressableContext--cursor--text.PressableContext--display--inlineFlex.PressableContext--fontLineHeight--20.PressableContext--fontSize--14.PressableContext--fontWeight--regular.PressableContext--height.PressableContext--height--large.PressableContext--radius--all.PressableContext--width.TextInput-element.TextInput-element--align--left",
+            "type": [ "FNAME", "~ignore" ]
+          }, 
+          {
+            "selector": "INPUT[name='last_name']#last_name.Input.Input--nowrap.PressableContext.Padding-horizontal--12.Padding-vertical--8.PressableContext--cursor--text.PressableContext--display--inlineFlex.PressableContext--fontLineHeight--20.PressableContext--fontSize--14.PressableContext--fontWeight--regular.PressableContext--height.PressableContext--height--large.PressableContext--radius--all.PressableContext--width.TextInput-element.TextInput-element--align--left",
+            "type": [ "LNAME", "~ignore" ]
+          }, 
+          {
+            "selector": "INPUT:nth-child(1)[name='email']#email.Input.Input--nowrap.PressableContext.Padding-horizontal--12.Padding-vertical--8.PressableContext--cursor--text.PressableContext--display--inlineFlex.PressableContext--fontLineHeight--20.PressableContext--fontSize--14.PressableContext--fontWeight--regular.PressableContext--height.PressableContext--height--large.PressableContext--radius--all.PressableContext--width.TextInput-element.TextInput-element--align--left",
+            "type": [ "EMAIL", "~username", "~ignore" ]
+          }, 
+          {
+            "selector": "INPUT:nth-child(2)[name='phone']#phone.Input.Input--nowrap.PressableContext.Padding-horizontal--12.Padding-vertical--8.PressableContext--cursor--text.PressableContext--display--inlineFlex.PressableContext--fontLineHeight--20.PressableContext--fontSize--14.PressableContext--fontWeight--regular.PressableContext--height.PressableContext--height--large.PressableContext--radius--all.PressableContext--width.PhoneInput-element",
+            "type": [ "PHONE", "~ignore" ]
+          }, 
+          {
+            "selector": "BODY:nth-child(2)#merch>DIV:nth-child(34)>DIV:nth-child(2)>DIV>SPAN:nth-child(2)>DIV>DIV:nth-child(3)>DIV>DIV>DIV>DIV>DIV>DIV>MAIN:nth-child(2)>FORM>SPAN>DIV:nth-child(1)>DIV>DIV:nth-child(2)>DIV:nth-child(3)>DIV>DIV:nth-child(2)>DIV>DIV>DIV>DIV>DIV:nth-child(1)>DIV>DIV>DIV>DIV:nth-child(1)>DIV>DIV:nth-child(5)>DIV>INPUT:nth-child(1)[name='dob-year'].Input.Input--nowrap.PressableContext.Padding-vertical--4.PressableContext--cursor--text.PressableContext--display--inlineFlex.PressableContext--fontLineHeight--20.PressableContext--fontSize--14.PressableContext--fontWeight--regular.PressableContext--height.PressableContext--height--large.PressableContext--radius--all.PressableContext--width.PressableContext--width--auto.DateInput-input.DateInput-input--year",
+            "type": [ "BYEAR", "~ignore" ]
+          }, 
+          {
+            "selector": "INPUT:nth-child(1)[name='dob-month']#dob.Input.Input--nowrap.PressableContext.Padding-vertical--4.PressableContext--cursor--text.PressableContext--display--inlineFlex.PressableContext--fontLineHeight--20.PressableContext--fontSize--14.PressableContext--fontWeight--regular.PressableContext--height.PressableContext--height--large.PressableContext--radius--all.PressableContext--width.PressableContext--width--auto.DateInput-input.DateInput-input--month",
+            "type": [ "BMOTH", "~ignore" ]
+          }, 
+          {
+            "selector": "BODY:nth-child(2)#merch>DIV:nth-child(34)>DIV:nth-child(2)>DIV>SPAN:nth-child(2)>DIV>DIV:nth-child(3)>DIV>DIV>DIV>DIV>DIV>DIV>MAIN:nth-child(2)>FORM>SPAN>DIV:nth-child(1)>DIV>DIV:nth-child(2)>DIV:nth-child(3)>DIV>DIV:nth-child(2)>DIV>DIV>DIV>DIV>DIV:nth-child(1)>DIV>DIV>DIV>DIV:nth-child(1)>DIV>DIV:nth-child(3)>DIV>INPUT:nth-child(1)[name='dob-day'].Input.Input--nowrap.PressableContext.Padding-vertical--4.PressableContext--cursor--text.PressableContext--display--inlineFlex.PressableContext--fontLineHeight--20.PressableContext--fontSize--14.PressableContext--fontWeight--regular.PressableContext--height.PressableContext--height--large.PressableContext--radius--all.PressableContext--width.PressableContext--width--auto.DateInput-input.DateInput-input--day",
+            "type": [ "BDAY", "~ignore" ]
+          }, 
+          {
+            "selector": "BODY:nth-child(2)#merch>DIV:nth-child(34)>DIV:nth-child(2)>DIV>SPAN:nth-child(2)>DIV>DIV:nth-child(3)>DIV>DIV>DIV>DIV>DIV>DIV>MAIN:nth-child(2)>FORM>SPAN>DIV:nth-child(1)>DIV>DIV:nth-child(2)>DIV:nth-child(4)>DIV:nth-child(2)>DIV>DIV>DIV>DIV>DIV>DIV>DIV>DIV:nth-child(2)>DIV>DIV>DIV:nth-child(1)>DIV>DIV>DIV:nth-child(1)>DIV>DIV:nth-child(1)>DIV>DIV:nth-child(1)>INPUT[name='address'].Input.Input--nowrap.PressableContext.Padding-horizontal--12.Padding-vertical--8.PressableContext--cursor--text.PressableContext--display--inlineFlex.PressableContext--fontLineHeight--20.PressableContext--fontSize--14.PressableContext--fontWeight--regular.PressableContext--height.PressableContext--height--large.PressableContext--radius--all.PressableContext--width.PressableContext--width--maximized.TextInput-element.TextInput-element--align--left",
+            "type": [ "ADDRESS", "~ignore" ]
+          }, 
+          {
+            "selector": "BODY:nth-child(2)#merch>DIV:nth-child(34)>DIV:nth-child(2)>DIV>SPAN:nth-child(2)>DIV>DIV:nth-child(3)>DIV>DIV>DIV>DIV>DIV>DIV>MAIN:nth-child(2)>FORM>SPAN>DIV:nth-child(1)>DIV>DIV:nth-child(2)>DIV:nth-child(4)>DIV:nth-child(2)>DIV>DIV>DIV>DIV>DIV>DIV>DIV>DIV:nth-child(2)>DIV>DIV>DIV:nth-child(1)>DIV>DIV>DIV:nth-child(4)>DIV>DIV>DIV:nth-child(1)>INPUT[name='zip'].Input.Input--nowrap.PressableContext.Padding-horizontal--12.Padding-vertical--8.PressableContext--cursor--text.PressableContext--display--inlineFlex.PressableContext--fontLineHeight--20.PressableContext--fontSize--14.PressableContext--fontWeight--regular.PressableContext--height.PressableContext--height--large.PressableContext--radius--all.PressableContext--width.PressableContext--width--maximized.TextInput-element.TextInput-element--align--left",
+            "type": [ "POST", "~ignore" ]
+          } ]
+      } ],
+    "fields": [],
+    "except": []
+  },
+  "www_karativa_com": 
+  {
+    "websites": [],
+    "forms": [ 
+      {
+        "id": "90E7FEE3-3334-8B82-7412-066C0FCA90E3",
+        "selector": "FORM:nth-child(4)#form-validate-register.form.create.account.form-create-account",
+        "use": "PERSONINFO",
+        "fields": [ 
+          {
+            "selector": "FORM:nth-child(4)#form-validate-register>DIV:nth-child(2)>INPUT:nth-child(1)[name='firstname']",
+            "type": [ "FNAME", "~ignore" ]
+          }, 
+          {
+            "selector": "FORM:nth-child(4)#form-validate-register>DIV:nth-child(2)>INPUT:nth-child(2)[name='lastname']",
+            "type": [ "LNAME", "~ignore" ]
+          }, 
+          {
+            "selector": "INPUT[name='email']#email_address.input-text",
+            "type": [ "EMAIL", "~username", "~ignore" ]
+          } ]
+      }, 
+      {
+        "id": "92464C3C-6FCE-4140-D667-8C7727869AEF",
+        "selector": "FORM:nth-child(4)#form-validate.form-address-edit",
+        "use": "PERSONINFO",
+        "fields": [ 
+          {
+            "selector": "INPUT[name='firstname']#firstname.input-text.required-entry",
+            "type": [ "FNAME", "~ignore" ]
+          }, 
+          {
+            "selector": "INPUT[name='lastname']#lastname.input-text.required-entry",
+            "type": [ "LNAME", "~ignore" ]
+          }, 
+          {
+            "selector": "INPUT[name='telephone']#telephone.input-text.required-entry",
+            "type": [ "PHONE", "~ignore" ]
+          }, 
+          {
+            "selector": "INPUT:nth-child(2)[name='street[]']#street_1.input-text.required-entry",
+            "type": [ "ADDRESS", "~ignore" ]
+          }, 
+          {
+            "selector": "INPUT[name='city']#city.input-text.required-entry",
+            "type": [ "CITY", "~ignore" ]
+          }, 
+          {
+            "selector": "SELECT[name='country_id']#country.required-entry",
+            "type": [ "CONTRY", "~ignore" ],
+            "options": 
+            {
+              "valuepair": "100023"
+            }
+          }, 
+          {
+            "selector": "INPUT:nth-child(1)[name='postcode']#zip.input-text.validate-zip-international.required-entry",
+            "type": [ "POST", "~ignore" ]
+          } ]
+      } ],
+    "fields": [],
+    "except": []
+  },
+  "accounts_shopify_com": 
+  {
+    "websites": [],
+    "forms": [ 
+      {
+        "id": "DC1E3B2D-A1D1-4C2D-35F2-BA23E7BB82A8",
+        "selector": "FORM#submit-disable>DIV:nth-child(2).ui-form__section",
+        "use": "PERSONINFO",
+        "fields": [ 
+          {
+            "selector": "INPUT:nth-child(2)[name='account[first_name]']#account_first_name.next-input",
+            "type": [ "FNAME", "~ignore" ]
+          }, 
+          {
+            "selector": "INPUT:nth-child(2)[name='account[last_name]']#account_last_name.next-input",
+            "type": [ "LNAME", "~ignore" ]
+          }, 
+          {
+            "selector": "INPUT:nth-child(2)[name='account[email]']#account_email.next-input.type-ahead-input.email-typo-input",
+            "type": [ "EMAIL", "~username", "~ignore" ]
+          } ]
+      } ],
+    "fields": [],
+    "except": []
+  },
+  "www_wayfair_com": 
+  {
+    "websites": [],
+    "forms": [ 
+      {
+        "id": "B6001214-2C35-1701-3635-95F5501102D1",
+        "selector": "MAIN#bd>DIV>DIV>DIV:nth-child(3)>FORM[name='[object HTMLInputElement]']",
+        "use": "PERSONINFO",
+        "fields": [ 
+          {
+            "selector": "INPUT:nth-child(1)[name='name']#textInput-12._1n06qpy4_675._1n06qpy5_675._1n06qpy7_675._1n06qpy9_675",
+            "type": [ "NAME", "~ignore" ]
+          }, 
+          {
+            "selector": "INPUT:nth-child(1)[name='phone']#textInput-18._1n06qpy4_675._1n06qpy5_675._1n06qpy7_675._1n06qpy9_675",
+            "type": [ "PHONE", "~ignore" ]
+          }, 
+          {
+            "selector": "INPUT:nth-child(1)[name='address_1']#textInput-13._1n06qpy4_675._1n06qpy5_675._1n06qpy7_675._1n06qpy9_675",
+            "type": [ "ADDRESS", "~ignore" ]
+          }, 
+          {
+            "selector": "INPUT:nth-child(1)[name='city']#textInput-15._1n06qpy4_675._1n06qpy5_675._1n06qpy7_675._1n06qpy9_675",
+            "type": [ "CITY", "~ignore" ]
+          }, 
+          {
+            "selector": "INPUT:nth-child(1)[name='zip']#textInput-16._1n06qpy4_675._1n06qpy5_675._1n06qpy7_675._1n06qpy9_675",
+            "type": [ "POST", "~ignore" ]
+          } ]
+      } ],
+    "fields": [],
+    "except": []
+  },
+  "reg_gome_com": 
+  {
+    "websites": [],
+    "forms": [ 
+      {
+        "id": "00DCFBC1-C130-697B-34FE-30ADA125999B",
+        "selector": "FORM#verifyMobileForm",
+        "use": "PERSONINFO",
+        "fields": [ 
+          {
+            "selector": "INPUT:nth-child(1)[name='mobile']#mobile.form-control",
+            "type": [ "PHONE", "~ignore" ]
+          } ]
+      } ],
+    "fields": [],
+    "except": []
+  },
+  "myhome_gome_com": 
+  {
+    "websites": [],
+    "forms": [ 
+      {
+        "id": "4EE46F8E-1267-AE49-3F18-8F5D8A9A0142",
+        "selector": "HTML>BODY:nth-child(2)>DIV:nth-child(4)>DIV>DIV:nth-child(2)>DIV>DIV:nth-child(4)>DIV:nth-child(3).discont.otherTab",
+        "use": "PERSONINFO",
+        "fields": [ 
+          {
+            "selector": "HTML>BODY:nth-child(2)>DIV:nth-child(4)>DIV>DIV:nth-child(2)>DIV>DIV:nth-child(4)>DIV:nth-child(3)>DL:nth-child(2)>DD:nth-child(2)>INPUT:nth-child(1)[name='name'].input-text.input-text-error",
+            "type": [ "NAME", "~ignore" ]
+          }, 
+          {
+            "selector": "HTML>BODY:nth-child(2)>DIV:nth-child(4)>DIV>DIV:nth-child(2)>DIV>DIV:nth-child(4)>DIV:nth-child(3)>DL:nth-child(6)>DD:nth-child(2)>INPUT:nth-child(1)[name='email'].input-text",
+            "type": [ "EMAIL", "~username", "~ignore" ]
+          }, 
+          {
+            "selector": "HTML>BODY:nth-child(2)>DIV:nth-child(4)>DIV>DIV:nth-child(2)>DIV>DIV:nth-child(4)>DIV:nth-child(3)>DL:nth-child(5)>DD:nth-child(2)>INPUT:nth-child(1)[name='mobile'].input-text.input-text-error",
+            "type": [ "PHONE", "~ignore" ]
+          }, 
+          {
+            "selector": "HTML>BODY:nth-child(2)>DIV:nth-child(4)>DIV>DIV:nth-child(2)>DIV>DIV:nth-child(4)>DIV:nth-child(3)>DL:nth-child(4)>DD:nth-child(2)>INPUT:nth-child(1)[name='addressDetailed'].input-text.detiInpt.input-text-error",
+            "type": [ "ADDRESS", "~ignore" ]
+          } ]
+      } ],
+    "fields": [],
+    "except": []
+  },
+  "checkout_boost_com": 
+  {
+    "websites": [],
+    "forms": [ 
+      {
+        "id": "dsfdsakfds-sfdsafeiy-sdaf-xzfdsa",
+        "selector": "DIV#boost>DIV:nth-child(1)>DIV:nth-child(2)>DIV:nth-child(3)>DIV>TEC-ACCORDION-NEW>DIV.accordion.accordion-new.ng-star-inserted",
+        "use": "PERSONINFO",
+        "fields": [ 
+          {
+            "selector": "INPUT:nth-child(2)[name='firstName']#firstName.ng-untouched.ng-pristine.ng-valid",
+            "type": [ "FNAME", "~ignore" ]
+          }, 
+          {
+            "selector": "INPUT:nth-child(2)[name='lastName']#lastName.ng-untouched.ng-pristine.ng-valid",
+            "type": [ "LNAME", "~ignore" ]
+          }, 
+          {
+            "selector": "INPUT:nth-child(2)[name='emailAddress']#email.ng-untouched.ng-pristine.ng-valid",
+            "type": [ "EMAIL", "~username", "~ignore" ]
+          }, 
+          {
+            "selector": "INPUT:nth-child(2)[name='phoneNumber']#phoneNumber.ng-untouched.ng-pristine.ng-valid",
+            "type": [ "PHONE", "~ignore" ]
+          }, 
+          {
+            "selector": "INPUT:nth-child(4)#dateOfBirth_year.year.ng-untouched.ng-pristine.ng-valid",
+            "type": [ "BYEAR", "~ignore" ]
+          }, 
+          {
+            "selector": "INPUT:nth-child(3)#dateOfBirth_month.ng-untouched.ng-pristine.ng-valid",
+            "type": [ "BMOTH", "~ignore" ]
+          }, 
+          {
+            "selector": "INPUT:nth-child(1)#dateOfBirth_day.ng-untouched.ng-pristine.ng-valid.ng-star-inserted",
+            "type": [ "BDAY", "~ignore" ]
+          }, 
+          {
+            "selector": "INPUT:nth-child(2)#deliveryAddressinput.ng-untouched.ng-pristine.ng-valid",
+            "type": [ "ADDRESS", "~ignore" ]
+          } ]
+      } ],
+    "fields": [],
+    "except": []
+  },
+  "accounts-sandbox_dwolla_com": 
+  {
+    "websites": [],
+    "forms": [ 
+      {
+        "id": "94BB2FCE-D24B-23AF-7C23-F88594F5A042",
+        "selector": "DIV:nth-child(2)#root>DIV>DIV>DIV>DIV:nth-child(2)>SECTION>DIV>DIV:nth-child(2)>DIV>DIV>DIV>DIV:nth-child(2)>FORM>UL",
+        "use": "PERSONINFO",
+        "fields": [ 
+          {
+            "selector": "INPUT:nth-child(1)[name='firstName']#firstName",
+            "type": [ "FNAME", "~ignore" ]
+          }, 
+          {
+            "selector": "INPUT:nth-child(1)[name='lastName']#lastName",
+            "type": [ "LNAME", "~ignore" ]
+          }, 
+          {
+            "selector": "INPUT:nth-child(1)[name='email']#email",
+            "type": [ "EMAIL", "~username", "~ignore" ]
+          } ]
+      } ],
+    "fields": [],
+    "except": []
+  },
+  "login_dangdang_com": 
+  {
+    "websites": [],
+    "forms": [ 
+      {
+        "id": "CD2B8467-008C-2C3E-5ABE-79A15DBDD719",
+        "selector": "HTML>BODY:nth-child(2)>DIV:nth-child(2)>DIV:nth-child(2)>DIV>DIV:nth-child(2)>DIV:nth-child(1)>DIV>DIV>DIV:nth-child(2)>DIV:nth-child(1).l",
+        "use": "PERSONINFO",
+        "fields": [ 
+          {
+            "selector": "HTML>BODY:nth-child(2)>DIV:nth-child(2)>DIV:nth-child(2)>DIV>DIV:nth-child(2)>DIV:nth-child(1)>DIV>DIV>DIV:nth-child(2)>DIV:nth-child(1)>INPUT:nth-child(2)",
+            "type": [ "PHONE", "~ignore" ]
+          } ]
+      } ],
+    "fields": [],
+    "except": []
+  },
+  "www_2checkout_com": 
+  {
+    "websites": [],
+    "forms": [ 
+      {
+        "id": "",
+        "selector": "DIV#signUpFormBox.stepOne",
+        "use": "PERSONINFO",
+        "fields": [ 
+          {
+            "selector": "INPUT:nth-child(2)[name='first_name']#first_name.formControl.textValidation",
+            "type": [ "FNAME", "~ignore" ]
+          }, 
+          {
+            "selector": "INPUT:nth-child(2)[name='last_name']#last_name.formControl.textValidation",
+            "type": [ "LNAME", "~ignore" ]
+          }, 
+          {
+            "selector": "INPUT:nth-child(2)[name='email']#email.formControl",
+            "type": [ "EMAIL", "~username", "~ignore" ]
+          } ]
+      }, 
+      {
+        "id": "",
+        "selector": "HTML>BODY:nth-child(2)>DIV:nth-child(2)>DIV:nth-child(2)>DIV>DIV:nth-child(2)>DIV>DIV>DIV>DIV>DIV:nth-child(2)>DIV:nth-child(1).wrapperFormSignup",
+        "use": "PERSONINFO",
+        "fields": [ 
+          {
+            "selector": "INPUT:nth-child(3)[name='FirstName']#FirstName.mktoField.mktoTextField.mktoHasWidth.mktoRequired",
+            "type": [ "FNAME", "~ignore" ]
+          }, 
+          {
+            "selector": "INPUT:nth-child(3)[name='LastName']#LastName.mktoField.mktoTextField.mktoHasWidth.mktoRequired",
+            "type": [ "LNAME", "~ignore" ]
+          }, 
+          {
+            "selector": "INPUT:nth-child(3)[name='Email']#Email.mktoField.mktoEmailField.mktoHasWidth.mktoRequired",
+            "type": [ "EMAIL", "~username", "~ignore" ]
+          }, 
+          {
+            "selector": "INPUT:nth-child(3)[name='Phone']#Phone.mktoField.mktoTextField.mktoHasWidth.mktoRequired",
+            "type": [ "PHONE", "~ignore" ]
+          } ]
+      } ],
+    "fields": [],
+    "except": []
+  },
+  "www_braintreepayments_com": 
+  {
+    "websites": [],
+    "forms": [ 
+      {
+        "id": "",
+        "selector": "MAIN:nth-child(6)#main-section>DIV:nth-child(1)>DIV>DIV>DIV>DIV:nth-child(2)>DIV.card.layout--ps.card--shadow",
+        "use": "PERSONINFO",
+        "fields": [ 
+          {
+            "selector": "INPUT:nth-child(1)[name='first_name']#sandbox_first_name.input.form-field__input.input--text",
+            "type": [ "FNAME", "~ignore" ]
+          }, 
+          {
+            "selector": "INPUT:nth-child(1)[name='last_name']#sandbox_last_name.input.form-field__input.input--text",
+            "type": [ "LNAME", "~ignore" ]
+          }, 
+          {
+            "selector": "INPUT:nth-child(1)[name='email']#sandbox_email.input.form-field__input.input--email",
+            "type": [ "EMAIL", "~username", "~ignore" ]
+          } ]
+      } ],
+    "fields": [],
+    "except": []
+  },
+  "pypd_paypal-mktg_com": 
+  {
+    "websites": [],
+    "forms": [ 
+      {
+        "id": "",
+        "selector": "FORM:nth-child(1)#pardot-form>DIV:nth-child(5)>DIV>DIV:nth-child(2)>DIV>DIV:nth-child(1).form-field__item.form-field__item--text",
+        "use": "PERSONINFO",
+        "fields": [ 
+          {
+            "selector": "INPUT:nth-child(1)[name='925803_21952pi_925803_21952']#925803_21952pi_925803_21952.text.input.form-field__input.input--text",
+            "type": [ "FNAME", "~ignore" ]
+          }, 
+          {
+            "selector": "INPUT:nth-child(1)[name='925803_21954pi_925803_21954']#925803_21954pi_925803_21954.text.input.form-field__input.input--text",
+            "type": [ "LNAME", "~ignore" ]
+          }, 
+          {
+            "selector": "INPUT:nth-child(1)[name='925803_21960pi_925803_21960']#925803_21960pi_925803_21960.text.input.form-field__input.input--text",
+            "type": [ "EMAIL", "~username", "~ignore" ]
+          }, 
+          {
+            "selector": "INPUT:nth-child(1)[name='925803_21962pi_925803_21962']#925803_21962pi_925803_21962.text.input.form-field__input.input--text",
+            "type": [ "PHONE", "~ignore" ]
+          } ]
+      } ],
+    "fields": [],
+    "except": []
+  },
+  "www_affirm_com": 
+  {
+    "websites": [],
+    "forms": [ 
+      {
+        "id": "",
+        "selector": "HTML>BODY:nth-child(2).affirmBrand",
+        "use": "PERSONINFO",
+        "fields": [ 
+          {
+            "selector": "MAIN#Identity-container>DIV>DIV>DIV>DIV:nth-child(2)>DIV>FORM:nth-child(2)>DIV:nth-child(1)>DIV>DIV:nth-child(1)>DIV>DIV>INPUT:nth-child(1)[name='fname'].focusable-form-field.pro11TnYcue.pro284gg8sY",
+            "type": [ "FNAME", "~ignore" ]
+          }, 
+          {
+            "selector": "MAIN#Identity-container>DIV>DIV>DIV>DIV:nth-child(2)>DIV>FORM:nth-child(2)>DIV:nth-child(1)>DIV>DIV:nth-child(2)>DIV>DIV:nth-child(1)>DIV>DIV>DIV>INPUT:nth-child(1)[name='lname'].focusable-form-field.pro11TnYcue.pro284gg8sY",
+            "type": [ "LNAME", "~ignore" ]
+          }, 
+          {
+            "selector": "MAIN#Identity-container>DIV>DIV>DIV>DIV:nth-child(2)>DIV>FORM:nth-child(2)>DIV:nth-child(2)>DIV>DIV>INPUT:nth-child(1)[name='email'].focusable-form-field.pro11TnYcue.pro284gg8sY",
+            "type": [ "EMAIL", "~username", "~ignore" ]
+          }, 
+          {
+            "selector": "MAIN#Identity-container>DIV>DIV>DIV>DIV:nth-child(2)>FORM:nth-child(2)>DIV:nth-child(1)>DIV>DIV>INPUT:nth-child(1).focusable-form-field.pro11TnYcue.pro284gg8sY",
+            "type": [ "PHONE", "~ignore" ]
+          }, 
+          {
+            "selector": "MAIN#Identity-container>DIV>DIV>DIV>DIV:nth-child(2)>DIV>FORM:nth-child(2)>DIV:nth-child(1)>DIV>DIV>INPUT:nth-child(1)[name='dob-US'].focusable-form-field.pro11TnYcue.input-show-placeholder.pro284gg8sY",
+            "type": [ "BIRTHDAY", "~ignore" ],
+            "options": 
+            {
+              "dtfmt": "{MM}/{DD}/{YYYY}"
+            }
+          }, 
+          {
+            "selector": "MAIN#Identity-container>DIV>DIV>DIV>DIV:nth-child(2)>DIV>DIV:nth-child(3)>FORM>DIV:nth-child(1)>DIV>DIV:nth-child(1)>DIV>DIV>INPUT:nth-child(1)[name='address'].focusable-form-field.pro11TnYcue.pro284gg8sY",
+            "type": [ "ADDRESS", "~ignore" ]
+          }, 
+          {
+            "selector": "MAIN#Identity-container>DIV>DIV>DIV>DIV:nth-child(2)>DIV>DIV:nth-child(3)>FORM>DIV:nth-child(1)>DIV>DIV:nth-child(3)>DIV>DIV>INPUT:nth-child(1)[name='city'].focusable-form-field.pro11TnYcue.pro284gg8sY",
+            "type": [ "CITY", "~ignore" ]
+          }, 
+          {
+            "selector": "MAIN#Identity-container>DIV>DIV>DIV>DIV:nth-child(2)>DIV>DIV:nth-child(3)>FORM>DIV:nth-child(1)>DIV>DIV:nth-child(4)>DIV>DIV:nth-child(1)>DIV>DIV>DIV>INPUT:nth-child(1)[name='state'].focusable-form-field.pro11TnYcue.pro284gg8sY",
+            "type": [ "STATE", "~ignore" ]
+          }, 
+          {
+            "selector": "MAIN#Identity-container>DIV>DIV>DIV>DIV:nth-child(2)>DIV>DIV:nth-child(3)>FORM>DIV:nth-child(1)>DIV>DIV:nth-child(4)>DIV>DIV:nth-child(2)>DIV>DIV>DIV>INPUT:nth-child(1)[name='zip'].focusable-form-field.pro11TnYcue.pro284gg8sY",
+            "type": [ "POST", "~ignore" ]
+          } ]
+      }, 
+      {
+        "id": "",
+        "selector": "SECTION:nth-child(15)#id.SectionWrapper-page--business-13.SectionWrapper-sectionWrapper--pQutn.styles-spacingTopStandard--qppdu.styles-spacingBottomStandard--2DrRP",
+        "use": "PERSONINFO",
+        "fields": [ 
+          {
+            "selector": "INPUT:nth-child(1)[name='FirstName']#DetailsFormInputFirstName-13.Input-input--418Co.Input-empty--5d1du",
+            "type": [ "FNAME", "~ignore" ]
+          }, 
+          {
+            "selector": "INPUT:nth-child(1)[name='LastName']#DetailsFormInputLastName-13.Input-input--418Co.Input-empty--5d1du",
+            "type": [ "LNAME", "~ignore" ]
+          }, 
+          {
+            "selector": "INPUT:nth-child(1)[name='Email']#DetailsFormInputEmail-13.Input-input--418Co.Input-empty--5d1du",
+            "type": [ "EMAIL", "~username", "~ignore" ]
+          } ]
+      } ],
+    "fields": [],
+    "except": []
+  },
+  "mms_pinduoduo_com": 
+  {
+    "websites": [],
+    "forms": [ 
+      {
+        "id": "",
+        "selector": "DIV:nth-child(2)#root>DIV>DIV:nth-child(1)>DIV>MAIN>DIV>SECTION:nth-child(2)>DIV>DIV:nth-child(2)>DIV>DIV>DIV:nth-child(3)>DIV>DIV>DIV>DIV>DIV:nth-child(2).IPT_inputBlockCell_1y2u37n",
+        "use": "PERSONINFO",
+        "fields": [ 
+          {
+            "selector": "#root>DIV>DIV:nth-child(1)>DIV>MAIN>DIV>SECTION:nth-child(2)>DIV>DIV:nth-child(2)>DIV>DIV>DIV:nth-child(3)>DIV>DIV>DIV>DIV>DIV:nth-child(2)>INPUT",
+            "type": [ "PHONE", "~ignore" ]
+          } ]
+      } ],
+    "fields": [],
+    "except": []
+  },
+  "dl_reg_163_com": 
+  {
+    "websites": [],
+    "forms": [ 
+      {
+        "id": "",
+        "selector": "DIV#auto-id-1670912001103>DIV:nth-child(2)>DIV:nth-child(2).u-input.box",
+        "use": "PERSONINFO",
+        "fields": [ 
+          {
+            "selector": "#phoneipt",
+            "type": [ "PHONE", "~ignore" ]
+          } ]
+      } ],
+    "fields": [],
+    "except": []
+  },
+  "sso_weidian_com": 
+  {
+    "websites": [],
+    "forms": [ 
+      {
+        "id": "",
+        "selector": "DIV:nth-child(5)#login_tele_wrapper>DIV:nth-child(3).login_input_div.flex",
+        "use": "PERSONINFO",
+        "fields": [ 
+          {
+            "selector": "#login_tele_input",
+            "type": [ "PHONE", "~ignore" ]
+          } ]
+      }, 
+      {
+        "id": "",
+        "selector": "DIV:nth-child(2)#login_quickLogin_wrapper>DIV:nth-child(2).login_input_div.flex",
+        "use": "PERSONINFO",
+        "fields": [ 
+          {
+            "selector": "#login_autoRegiTele_input",
+            "type": [ "PHONE", "~ignore" ]
+          } ]
+      } ],
+    "fields": [],
+    "except": []
+  },
+  "d_weidian_com": 
+  {
+    "websites": [],
+    "forms": [ 
+      {
+        "id": "",
+        "selector": "DIV:nth-child(1)#app>DIV:nth-child(2)>DIV>DIV>DIV:nth-child(2)>FORM>DIV:nth-child(1)>DIV>DIV:nth-child(2)>DIV.input-with-select.el-input.el-input-group.el-input-group--prepend",
+        "use": "PERSONINFO",
+        "fields": [ 
+          {
+            "selector": "#app>DIV:nth-child(2)>DIV>DIV>DIV:nth-child(2)>FORM>DIV:nth-child(1)>DIV>DIV:nth-child(2)>DIV>INPUT:nth-child(2)[name='telephone']",
+            "type": [ "PHONE", "~ignore" ]
+          } ]
+      }, 
+      {
+        "id": "",
+        "selector": "DIV:nth-child(1)#app>DIV:nth-child(2)>DIV>DIV>DIV:nth-child(3)>DIV:nth-child(2)>DIV:nth-child(3)>DIV:nth-child(1)>FORM>DIV:nth-child(1)>DIV>DIV>DIV:nth-child(1)>DIV:nth-child(1)>DIV>DIV:nth-child(1).el-input.el-input--suffix",
+        "use": "PERSONINFO",
+        "fields": [ 
+          {
+            "selector": "#app>DIV:nth-child(2)>DIV>DIV>DIV:nth-child(3)>DIV:nth-child(2)>DIV:nth-child(3)>DIV:nth-child(1)>FORM>DIV:nth-child(1)>DIV>DIV>DIV:nth-child(1)>INPUT:nth-child(2)[name='telephone']",
+            "type": [ "PHONE", "~ignore" ]
+          } ]
+      } ],
+    "fields": [],
+    "except": []
+  },
+  "www_sf-express_com": 
+  {
+    "websites": [],
+    "forms": [ 
+      {
+        "id": "",
+        "selector": "HTML>BODY:nth-child(2)>DIV:nth-child(11)>DIV>DIV:nth-child(2)>DIV>DIV:nth-child(1)>FORM:nth-child(2)>DIV:nth-child(1).blank.phone",
+        "use": "PERSONINFO",
+        "fields": [ 
+          {
+            "selector": "HTML>BODY:nth-child(2)>DIV:nth-child(11)>DIV>DIV:nth-child(2)>DIV>DIV:nth-child(1)>FORM:nth-child(2)>DIV:nth-child(1)>INPUT:nth-child(3)",
+            "type": [ "PHONE", "~ignore" ]
+          } ]
+      }, 
+      {
+        "id": "",
+        "selector": "DIV:nth-child(2)#app>DIV:nth-child(3)>DIV>DIV:nth-child(2)>DIV:nth-child(3)>DIV:nth-child(2)>DIV>DIV:nth-child(2).edit-info",
+        "use": "PERSONINFO",
+        "fields": [ 
+          {
+            "selector": "#contactName0>INPUT:nth-child(2)",
+            "type": [ "NAME", "~ignore" ]
+          }, 
+          {
+            "selector": "#contactTel0>INPUT:nth-child(2)",
+            "type": [ "PHONE", "~ignore" ]
+          }, 
+          {
+            "selector": "#address0>DIV:nth-child(1)>FIGURE>INPUT:nth-child(2)",
+            "type": [ "ADDRESS", "~ignore" ]
+          } ]
+      }, 
+      {
+        "id": "",
+        "selector": "DIV:nth-child(2)#app>DIV:nth-child(3)>DIV>DIV:nth-child(2)>DIV:nth-child(3)>DIV:nth-child(3)>DIV>DIV:nth-child(2).edit-info",
+        "use": "PERSONINFO",
+        "fields": [ 
+          {
+            "selector": "#contactName1>INPUT:nth-child(2)",
+            "type": [ "NAME", "~ignore" ]
+          }, 
+          {
+            "selector": "#contactTel1>INPUT:nth-child(2)",
+            "type": [ "PHONE", "~ignore" ]
+          }, 
+          {
+            "selector": "#address1>DIV:nth-child(1)>FIGURE>INPUT:nth-child(2)",
+            "type": [ "ADDRESS", "~ignore" ]
+          } ]
+      }, 
+      {
+        "id": "",
+        "selector": "DIV:nth-child(2)#app>DIV:nth-child(3)>DIV>DIV:nth-child(2)>DIV:nth-child(3)>DIV:nth-child(2)>DIV>DIV:nth-child(2)>DIV:nth-child(1)>DIV:nth-child(3)>DIV>DIV:nth-child(2)>DIV:nth-child(1)>DIV:nth-child(4)>DIV>DIV:nth-child(2)>DIV>DIV>DIV:nth-child(2).edit-info",
+        "use": "PERSONINFO",
+        "fields": [ 
+          {
+            "selector": "#contactName2>INPUT:nth-child(2)",
+            "type": [ "NAME", "~ignore" ]
+          }, 
+          {
+            "selector": "#contactTel2>INPUT:nth-child(2)",
+            "type": [ "PHONE", "~ignore" ]
+          }, 
+          {
+            "selector": "#address2>DIV:nth-child(1)>FIGURE>INPUT:nth-child(2)",
+            "type": [ "ADDRESS", "~ignore" ]
+          } ]
+      } ],
+    "fields": [],
+    "except": []
+  },
+  "passtc_sf-express_com": 
+  {
+    "websites": [],
+    "forms": [ 
+      {
+        "id": "",
+        "selector": "DIV:nth-child(1)#app>DIV:nth-child(3).input",
+        "use": "PERSONINFO",
+        "fields": [ 
+          {
+            "selector": "#app>DIV:nth-child(3)>DIV:nth-child(2)>INPUT",
+            "type": [ "NAME", "~ignore" ]
+          }, 
+          {
+            "selector": "#app>DIV:nth-child(4)>DIV:nth-child(2)>INPUT",
+            "type": [ "PHONE", "~ignore" ]
+          } ]
+      } ],
+    "fields": [],
+    "except": []
+  },
+  "ishansong_com": 
+  {
+    "websites": [],
+    "forms": [ 
+      {
+        "id": "",
+        "selector": "DIV:nth-child(1)#app>DIV>DIV>DIV:nth-child(1)>DIV:nth-child(2)>DIV:nth-child(1)>DIV:nth-child(2)>DIV:nth-child(4)>DIV:nth-child(3).applyText",
+        "use": "PERSONINFO",
+        "fields": [ 
+          {
+            "selector": "#app>DIV>DIV>DIV:nth-child(1)>DIV:nth-child(2)>DIV:nth-child(1)>DIV:nth-child(2)>DIV:nth-child(4)>DIV:nth-child(3)>INPUT:nth-child(1)",
+            "type": [ "PHONE", "~ignore" ]
+          } ]
+      }, 
+      {
+        "id": "",
+        "selector": "DIV:nth-child(1)#app>DIV>DIV>DIV:nth-child(3)>DIV>DIV:nth-child(1)>DIV:nth-child(1)>DIV:nth-child(3).user-mess-con",
+        "use": "PERSONINFO",
+        "fields": [ 
+          {
+            "selector": "#app>DIV>DIV>DIV:nth-child(3)>DIV>DIV:nth-child(1)>DIV:nth-child(1)>DIV:nth-child(3)>DIV:nth-child(3)>DIV:nth-child(2)>INPUT",
+            "type": [ "NAME", "~ignore" ]
+          }, 
+          {
+            "selector": "#app>DIV>DIV>DIV:nth-child(3)>DIV>DIV:nth-child(1)>DIV:nth-child(1)>DIV:nth-child(3)>DIV:nth-child(3)>DIV:nth-child(4)>INPUT",
+            "type": [ "PHONE", "~ignore" ]
+          }, 
+          {
+            "selector": "#app>DIV>DIV>DIV:nth-child(3)>DIV>DIV:nth-child(1)>DIV:nth-child(1)>DIV:nth-child(3)>DIV:nth-child(2)>DIV:nth-child(2)>INPUT",
+            "type": [ "ADDRESS", "~ignore" ]
+          } ]
+      }, 
+      {
+        "id": "",
+        "selector": "DIV:nth-child(1)#app>DIV>DIV>DIV:nth-child(3)>DIV>DIV:nth-child(1)>DIV:nth-child(2)>DIV:nth-child(3).user-mess-con",
+        "use": "PERSONINFO",
+        "fields": [ 
+          {
+            "selector": "#app>DIV>DIV>DIV:nth-child(3)>DIV>DIV:nth-child(1)>DIV:nth-child(2)>DIV:nth-child(3)>DIV:nth-child(3)>DIV:nth-child(2)>INPUT",
+            "type": [ "NAME", "~ignore" ]
+          }, 
+          {
+            "selector": "#app>DIV>DIV>DIV:nth-child(3)>DIV>DIV:nth-child(1)>DIV:nth-child(2)>DIV:nth-child(3)>DIV:nth-child(3)>DIV:nth-child(4)>INPUT",
+            "type": [ "PHONE", "~ignore" ]
+          }, 
+          {
+            "selector": "#app>DIV>DIV>DIV:nth-child(3)>DIV>DIV:nth-child(1)>DIV:nth-child(2)>DIV:nth-child(3)>DIV:nth-child(2)>DIV:nth-child(2)>INPUT",
+            "type": [ "ADDRESS", "~ignore" ]
+          } ]
+      } ],
+    "fields": [],
+    "except": []
+  },
+  "www_amazon": 
+  {
+    "websites": [],
+    "forms": [ 
+      {
+        "id": "",
+        "selector": "FORM#ap_register_form>DIV:nth-child(6)>DIV.a-box-inner",
+        "use": "PERSONINFO",
+        "fields": [ 
+          {
+            "selector": "#ap_customer_name",
+            "type": [ "NAME", "~ignore" ]
+          }, 
+          {
+            "selector": "#ap_email",
+            "type": [ "EOP", "~username", "~ignore" ]
+          } ]
+      }, 
+      {
+        "id": "",
+        "selector": "DIV:nth-child(1)#address-ui-widgets-enterAddressFormContainer>DIV:nth-child(1)>DIV.a-input-text-group.a-spacing-medium.a-spacing-top-medium",
+        "use": "PERSONINFO",
+        "fields": [ 
+          {
+            "selector": "#address-ui-widgets-enterAddressFullName",
+            "type": [ "NAME", "~ignore" ]
+          }, 
+          {
+            "selector": "#address-ui-widgets-enterAddressPhoneNumber",
+            "type": [ "PHONE", "~ignore" ]
+          }, 
+          {
+            "selector": "#address-ui-widgets-enterAddressLine1",
+            "type": [ "ADDRESS", "~ignore" ]
+          } ]
+      }, 
+      {
+        "id": "",
+        "selector": "DIV:nth-child(1)#address-ui-widgets-enterAddressFormContainer>DIV:nth-child(2)>DIV.a-input-text-group.a-spacing-medium.a-spacing-top-medium",
+        "use": "PERSONINFO",
+        "fields": [ 
+          {
+            "selector": "#address-ui-widgets-enterAddressFullName",
+            "type": [ "NAME", "~ignore" ]
+          }, 
+          {
+            "selector": "#address-ui-widgets-enterAddressPhoneNumber",
+            "type": [ "PHONE", "~ignore" ]
+          }, 
+          {
+            "selector": "#address-ui-widgets-enterAddressLine1",
+            "type": [ "ADDRESS", "~ignore" ]
+          } ]
+      } ],
+    "fields": [],
+    "except": []
+  },
+  "signup_ebay_com": 
+  {
+    "websites": [],
+    "forms": [ 
+      {
+        "id": "",
+        "selector": "DIV:nth-child(3)#mainContent>DIV:nth-child(3)>DIV:nth-child(4)>DIV>DIV>DIV:nth-child(1)>DIV>FORM:nth-child(2)[name='create-personal-account-with-email']",
+        "use": "PERSONINFO",
+        "fields": [ 
+          {
+            "selector": "#firstname",
+            "type": [ "FNAME", "~ignore" ]
+          }, 
+          {
+            "selector": "#lastname",
+            "type": [ "LNAME", "~ignore" ]
+          }, 
+          {
+            "selector": "#Email",
+            "type": [ "EMAIL", "~username", "~ignore" ]
+          } ]
+      }, 
+      {
+        "id": "",
+        "selector": "DIV:nth-child(3)#mainContent>DIV:nth-child(3)>DIV>DIV:nth-child(6)>FORM:nth-child(2)[name='create-business-account-with-email']",
+        "use": "PERSONINFO",
+        "fields": [ 
+          {
+            "selector": "#businessName",
+            "type": [ "NAME", "~ignore" ]
+          }, 
+          {
+            "selector": "#businessEmail",
+            "type": [ "EMAIL", "~username", "~ignore" ]
+          } ]
+      } ],
+    "fields": [],
+    "except": []
+  },
+  "reg_ebay_com": 
+  {
+    "websites": [],
+    "forms": [ 
+      {
+        "id": "",
+        "selector": "FORM:nth-child(2)[name='upgradeForm']#upgradeForm",
+        "use": "PERSONINFO",
+        "fields": [ 
+          {
+            "selector": "#phoneFlagComp1",
+            "type": [ "PHONE", "~ignore" ]
+          }, 
+          {
+            "selector": "#addressSugg",
+            "type": [ "ADDRESS", "~ignore" ]
+          } ]
+      }, 
+      {
+        "id": "",
+        "selector": "FORM:nth-child(2)[name='upgradeForm']#upgradeForm",
+        "use": "PERSONINFO",
+        "fields": [ 
+          {
+            "selector": "#phoneFlagComp1",
+            "type": [ "PHONE", "~ignore" ]
+          }, 
+          {
+            "selector": "#address1",
+            "type": [ "ADDRESS", "~ignore" ]
+          }, 
+          {
+            "selector": "#city",
+            "type": [ "CITY", "~ignore" ]
+          }, 
+          {
+            "selector": "#zip",
+            "type": [ "POST", "~ignore" ]
+          } ]
+      } ],
+    "fields": [],
+    "except": []
+  },
+  "settings3_ebay_com": 
+  {
+    "websites": [],
+    "forms": [ 
+      {
+        "id": "",
+        "selector": "DIV:nth-child(5)#mainContent>DIV:nth-child(1)>DIV:nth-child(3)>DIV>FORM.null",
+        "use": "PERSONINFO",
+        "fields": [ 
+          {
+            "selector": "#s0-0-17-6-name-field-name-field",
+            "type": [ "NAME", "~ignore" ]
+          }, 
+          {
+            "selector": "#phoneFlagComp1",
+            "type": [ "PHONE", "~ignore" ]
+          }, 
+          {
+            "selector": "#s0-0-17-6-address-autocomplete-field-addressLine1-field-addressLine1-field",
+            "type": [ "ADDRESS", "~ignore" ]
+          }, 
+          {
+            "selector": "#s0-0-17-6-city-field-city-field",
+            "type": [ "CITY", "~ignore" ]
+          }, 
+          {
+            "selector": "#s0-0-17-6-zipCode-field-zipCode-field",
+            "type": [ "POST", "~ignore" ]
+          } ]
+      } ],
+    "fields": [],
+    "except": []
+  },
+  "www_ikea_com": 
+  {
+    "websites": [],
+    "forms": [ 
+      {
+        "id": "",
+        "selector": "DIV#bottomDivider>DIV>MAIN>DIV:nth-child(2)>DIV>FORM:nth-child(2)",
+        "use": "PERSONINFO",
+        "fields": [ 
+          {
+            "selector": "#first-name",
+            "type": [ "FNAME", "~ignore" ]
+          }, 
+          {
+            "selector": "#last-name",
+            "type": [ "LNAME", "~ignore" ]
+          }, 
+          {
+            "selector": "#email",
+            "type": [ "EMAIL", "~username", "~ignore" ]
+          }, 
+          {
+            "selector": "#phone",
+            "type": [ "PHONE", "~ignore" ]
+          } ]
+      } ],
+    "fields": [],
+    "except": []
+  },
+  "www_ikea": 
+  {
+    "websites": [],
+    "forms": [ 
+      {
+        "id": "",
+        "selector": "DIV#i-modal-panel-children-1>DIV:nth-child(2)>DIV>DIV:nth-child(2)>DIV>DIV>DIV>FORM:nth-child(1).i-form",
+        "use": "PERSONINFO",
+        "fields": [ 
+          {
+            "selector": "#8ff83c28-b280-4a7e-a74a-158b4a9d3dee",
+            "type": [ "NAME", "~ignore" ]
+          }, 
+          {
+            "selector": "#63770730-07f4-4266-aa5c-729162f096ce",
+            "type": [ "PHONE", "~ignore" ]
+          }, 
+          {
+            "selector": "#968d14fd-5f6d-4cde-b480-14f2fbd2e977",
+            "type": [ "ADDRESS", "~ignore" ]
+          } ]
+      } ],
+    "fields": [],
+    "except": []
+  },
+  "www_bestdenki_com": 
+  {
+    "websites": [],
+    "forms": [ 
+      {
+        "id": "",
+        "selector": "FORM:nth-child(3)#form-validate.form.create.account.form-create-account",
+        "use": "PERSONINFO",
+        "fields": [ 
+          {
+            "selector": "#firstname",
+            "type": [ "FNAME", "~ignore" ]
+          }, 
+          {
+            "selector": "#lastname",
+            "type": [ "LNAME", "~ignore" ]
+          }, 
+          {
+            "selector": "#email_address",
+            "type": [ "EMAIL", "~username", "~ignore" ]
+          } ]
+      }, 
+      {
+        "id": "",
+        "selector": "FORM:nth-child(3)#form-validate.form-address-edit",
+        "use": "PERSONINFO",
+        "fields": [ 
+          {
+            "selector": "#firstname",
+            "type": [ "FNAME", "~ignore" ]
+          }, 
+          {
+            "selector": "#lastname",
+            "type": [ "LNAME", "~ignore" ]
+          }, 
+          {
+            "selector": "#telephone",
+            "type": [ "PHONE", "~ignore" ]
+          }, 
+          {
+            "selector": "#street_1",
+            "type": [ "ADDRESS", "~ignore" ]
+          }, 
+          {
+            "selector": "#city",
+            "type": [ "CITY", "~ignore" ]
+          } ]
+      } ],
+    "fields": [],
+    "except": []
+  },
+  "www_bergdorfgoodman_com": 
+  {
+    "websites": [],
+    "forms": [ 
+      {
+        "id": "",
+        "selector": "DIV:nth-child(3)#mainContent>DIV>FORM:nth-child(2)",
+        "use": "PERSONINFO",
+        "fields": [ 
+          {
+            "selector": "INPUT:nth-child(1)[name='firstName']#first-name-field.form-text-field__input.inputFont",
+            "type": [ "FNAME", "~ignore" ]
+          }, 
+          {
+            "selector": "INPUT:nth-child(1)[name='lastName']#last-name-field.form-text-field__input.inputFont",
+            "type": [ "LNAME", "~ignore" ]
+          }, 
+          {
+            "selector": "INPUT:nth-child(1)[name='email']#email-field.form-text-field__input.inputFont",
+            "type": [ "EMAIL", "~username", "~ignore" ]
+          }, 
+          {
+            "selector": "SELECT:nth-child(1)[name='month']#month-field.form-select__input.inputFont",
+            "type": [ "BMOTH", "~ignore" ]
+          }, 
+          {
+            "selector": "SELECT:nth-child(1)[name='day']#day-field.form-select__input.inputFont",
+            "type": [ "BDAY", "~ignore" ]
+          } ]
+      }, 
+      {
+        "id": "",
+        "selector": "DIV#mainContent>MAIN>DIV:nth-child(2)>DIV>DIV:nth-child(2)>SECTION:nth-child(2)>DIV:nth-child(4).account-details-page__field-wrapper",
+        "use": "PERSONINFO",
+        "fields": [ 
+          {
+            "selector": "SELECT:nth-child(1)[name='month']#month-field.form-select__input.inputFont",
+            "type": [ "BMOTH", "~ignore" ]
+          }, 
+          {
+            "selector": "SELECT:nth-child(1)[name='day']#day-field.form-select__input.inputFont",
+            "type": [ "BDAY", "~ignore" ]
+          } ]
+      }, 
+      {
+        "id": "",
+        "selector": "DIV#mainContent>MAIN>DIV:nth-child(2)>DIV:nth-child(2)>DIV:nth-child(2)>FORM:nth-child(2)>DIV:nth-child(1).form-fields-container",
+        "use": "PERSONINFO",
+        "fields": [ 
+          {
+            "selector": "INPUT:nth-child(1)[name='firstName']#address-first-name.form-text-field__input.inputFont",
+            "type": [ "FNAME", "~ignore" ]
+          }, 
+          {
+            "selector": "INPUT:nth-child(1)[name='lastName']#address-last-name.form-text-field__input.inputFont",
+            "type": [ "LNAME", "~ignore" ]
+          }, 
+          {
+            "selector": "INPUT:nth-child(1)[name='phoneNumber']#address-phone.form-text-field__input.inputFont",
+            "type": [ "PHONE", "~ignore" ]
+          }, 
+          {
+            "selector": "INPUT:nth-child(1)[name='address1']#address-address1.form-text-field__input.inputFont",
+            "type": [ "ADDRESS", "~ignore" ]
+          }, 
+          {
+            "selector": "INPUT:nth-child(1)[name='city']#address-city.form-text-field__input.inputFont",
+            "type": [ "CITY", "~ignore" ]
+          }, 
+          {
+            "selector": "INPUT:nth-child(1)[name='postalCode']#address-postalCode.form-text-field__input.inputFont",
+            "type": [ "POST", "~ignore" ]
+          } ]
+      }, 
+      {
+        "id": "",
+        "selector": "DIV:nth-child(1)#root>MAIN:nth-child(1)>DIV>DIV:nth-child(1)>DIV:nth-child(2)>DIV:nth-child(2)>DIV:nth-child(2)>FORM",
+        "use": "PERSONINFO",
+        "fields": [ 
+          {
+            "selector": "INPUT:nth-child(1)[name='firstName']#first-name-field.form-text-field__input.inputFont",
+            "type": [ "FNAME", "~ignore" ]
+          }, 
+          {
+            "selector": "INPUT:nth-child(1)[name='lastName']#last-name-field.form-text-field__input.inputFont",
+            "type": [ "LNAME", "~ignore" ]
+          }, 
+          {
+            "selector": "INPUT:nth-child(1)[name='phoneNumber']#address-phoneNumber.form-text-field__input.inputFont",
+            "type": [ "PHONE", "~ignore" ]
+          }, 
+          {
+            "selector": "INPUT:nth-child(1)[name='address1']#address-address1.form-text-field__input.inputFont",
+            "type": [ "ADDRESS", "~ignore" ]
+          }, 
+          {
+            "selector": "INPUT:nth-child(1)[name='city']#address-city.form-text-field__input.inputFont",
+            "type": [ "CITY", "~ignore" ]
+          }, 
+          {
+            "selector": "INPUT:nth-child(1)[name='postalCode']#address-postalCode.form-text-field__input.inputFont",
+            "type": [ "POST", "~ignore" ]
+          } ]
+      } ],
+    "fields": [],
+    "except": []
+  },
+  "sea_banggood_com": 
+  {
+    "websites": [],
+    "forms": [ 
+      {
+        "id": "",
+        "selector": "DIV:nth-child(2)#main-bg>DIV:nth-child(1)>FORM:nth-child(3).register",
+        "use": "PERSONINFO",
+        "fields": [ 
+          {
+            "selector": "INPUT:nth-child(1)[name='join-email']#join-email",
+            "type": [ "EMAIL", "~username", "~ignore" ]
+          } ]
+      }, 
+      {
+        "id": "",
+        "selector": "HTML>BODY:nth-child(2)>DIV:nth-child(63)>DIV>DIV:nth-child(2).address-body",
+        "use": "PERSONINFO",
+        "fields": [ 
+          {
+            "selector": "HTML>BODY:nth-child(2)>DIV:nth-child(63)>DIV>DIV:nth-child(2)>UL:nth-child(1)>LI:nth-child(1)>DIV:nth-child(2)>LABEL:nth-child(1)>DIV>INPUT.ipt.ipt-half.error",
+            "type": [ "FNAME", "~ignore" ]
+          }, 
+          {
+            "selector": "HTML>BODY:nth-child(2)>DIV:nth-child(63)>DIV>DIV:nth-child(2)>UL:nth-child(1)>LI:nth-child(1)>DIV:nth-child(2)>LABEL:nth-child(2)>DIV>INPUT.ipt.ipt-half.error",
+            "type": [ "LNAME", "~ignore" ]
+          }, 
+          {
+            "selector": "HTML>BODY:nth-child(2)>DIV:nth-child(63)>DIV>DIV:nth-child(2)>UL:nth-child(1)>LI:nth-child(2)>DIV:nth-child(2)>LABEL>DIV:nth-child(2)>INPUT:nth-child(2).ipt.error",
+            "type": [ "PHONE", "~ignore" ]
+          }, 
+          {
+            "selector": "HTML>BODY:nth-child(2)>DIV:nth-child(63)>DIV>DIV:nth-child(2)>UL:nth-child(1)>LI:nth-child(4)>DIV:nth-child(2)>LABEL>DIV>INPUT.ipt.error",
+            "type": [ "ADDRESS", "~ignore" ]
+          }, 
+          {
+            "selector": "HTML>BODY:nth-child(2)>DIV:nth-child(63)>DIV>DIV:nth-child(2)>UL:nth-child(1)>LI:nth-child(9)>DIV:nth-child(2)>LABEL:nth-child(1)>DIV>INPUT.ipt.error",
+            "type": [ "CITY", "~ignore" ]
+          }, 
+          {
+            "selector": "HTML>BODY:nth-child(2)>DIV:nth-child(63)>DIV>DIV:nth-child(2)>UL:nth-child(1)>LI:nth-child(11)>DIV:nth-child(2)>LABEL:nth-child(1)>DIV>INPUT:nth-child(1).ipt.error",
+            "type": [ "POST", "~ignore" ]
+          } ]
+      }, 
+      {
+        "id": "",
+        "selector": "HTML>BODY:nth-child(2)>DIV:nth-child(2)>DIV:nth-child(2)>DIV:nth-child(1)>DIV:nth-child(2)>DIV:nth-child(2)>DIV:nth-child(1)>DIV>DIV:nth-child(2).address-body",
+        "use": "PERSONINFO",
+        "fields": [ 
+          {
+            "selector": "HTML>BODY:nth-child(2)>DIV:nth-child(2)>DIV:nth-child(2)>DIV:nth-child(1)>DIV:nth-child(2)>DIV:nth-child(2)>DIV:nth-child(1)>DIV>DIV:nth-child(2)>UL:nth-child(1)>LI:nth-child(1)>DIV:nth-child(2)>LABEL:nth-child(1)>DIV>INPUT.ipt.ipt-half.error",
+            "type": [ "FNAME", "~ignore" ]
+          }, 
+          {
+            "selector": "HTML>BODY:nth-child(2)>DIV:nth-child(2)>DIV:nth-child(2)>DIV:nth-child(1)>DIV:nth-child(2)>DIV:nth-child(2)>DIV:nth-child(1)>DIV>DIV:nth-child(2)>UL:nth-child(1)>LI:nth-child(1)>DIV:nth-child(2)>LABEL:nth-child(2)>DIV>INPUT.ipt.ipt-half.error",
+            "type": [ "LNAME", "~ignore" ]
+          }, 
+          {
+            "selector": "HTML>BODY:nth-child(2)>DIV:nth-child(2)>DIV:nth-child(2)>DIV:nth-child(1)>DIV:nth-child(2)>DIV:nth-child(2)>DIV:nth-child(1)>DIV>DIV:nth-child(2)>UL:nth-child(1)>LI:nth-child(2)>DIV:nth-child(2)>LABEL>DIV:nth-child(2)>INPUT:nth-child(2).ipt.error",
+            "type": [ "PHONE", "~ignore" ]
+          }, 
+          {
+            "selector": "HTML>BODY:nth-child(2)>DIV:nth-child(2)>DIV:nth-child(2)>DIV:nth-child(1)>DIV:nth-child(2)>DIV:nth-child(2)>DIV:nth-child(1)>DIV>DIV:nth-child(2)>UL:nth-child(1)>LI:nth-child(4)>DIV:nth-child(2)>LABEL>DIV>INPUT.ipt.error",
+            "type": [ "ADDRESS", "~ignore" ]
+          }, 
+          {
+            "selector": "HTML>BODY:nth-child(2)>DIV:nth-child(2)>DIV:nth-child(2)>DIV:nth-child(1)>DIV:nth-child(2)>DIV:nth-child(2)>DIV:nth-child(1)>DIV>DIV:nth-child(2)>UL:nth-child(1)>LI:nth-child(9)>DIV:nth-child(2)>LABEL:nth-child(1)>DIV>INPUT.ipt.error",
+            "type": [ "CITY", "~ignore" ]
+          }, 
+          {
+            "selector": "HTML>BODY:nth-child(2)>DIV:nth-child(2)>DIV:nth-child(2)>DIV:nth-child(1)>DIV:nth-child(2)>DIV:nth-child(2)>DIV:nth-child(1)>DIV>DIV:nth-child(2)>UL:nth-child(1)>LI:nth-child(11)>DIV:nth-child(2)>LABEL:nth-child(1)>DIV>INPUT:nth-child(1).ipt.error",
+            "type": [ "POST", "~ignore" ]
+          } ]
+      } ],
+    "fields": [],
+    "except": []
+  },
+  "www_olx": 
+  {
+    "websites": [],
+    "forms": [ 
+      {
+        "id": "",
+        "selector": "FORM#registerForm.login-form.default",
+        "use": "PERSONINFO",
+        "fields": [ 
+          {
+            "selector": "INPUT[name='register[email_phone]']#userEmailPhoneRegister.light.required",
+            "type": [ "EOP", "~username", "~ignore" ]
+          } ]
+      } ],
+    "fields": [],
+    "except": []
+  },
+  "gmemberssl_gmarket_co": 
+  {
+    "websites": [],
+    "forms": [ 
+      {
+        "id": "",
+        "selector": "FORM:nth-child(2)#[object HTMLInputElement]",
+        "use": "PERSONINFO",
+        "fields": [ 
+          {
+            "selector": "INPUT:nth-child(1)[name='email']#email",
+            "type": [ "EMAIL", "~username", "~ignore" ]
+          } ]
+      } ],
+    "fields": [],
+    "except": []
+  },
+  "mmyg_gmarket_co": 
+  {
+    "websites": [],
+    "forms": [ 
+      {
+        "id": "",
+        "selector": "DIV#content.mypage__wrap.mypage__new-address",
+        "use": "PERSONINFO",
+        "fields": [ 
+          {
+            "selector": "INPUT#overseasName.input_txt",
+            "type": [ "NAME", "~ignore" ]
+          }, 
+          {
+            "selector": "INPUT[name='overseasAddress']#overseasAddress.input_txt",
+            "type": [ "ADDRESS", "~ignore" ]
+          }, 
+          {
+            "selector": "INPUT[name='overseasCity']#overseasCity.input_txt",
+            "type": [ "CITY", "~ignore" ]
+          }, 
+          {
+            "selector": "INPUT[name='overseasState']#overseasState.input_txt",
+            "type": [ "STATE", "~ignore" ]
+          }, 
+          {
+            "selector": "INPUT[name='overseasZipCode']#overseasZipCode.input_txt",
+            "type": [ "POST", "~ignore" ]
+          } ]
+      } ],
+    "fields": [],
+    "except": []
+  },
+  "www_rakuten_com": 
+  {
+    "websites": [],
+    "forms": [ 
+      {
+        "id": "",
+        "selector": "DIV#authContainer>FORM:nth-child(1)",
+        "use": "PERSONINFO",
+        "fields": [ 
+          {
+            "selector": "INPUT[name='emailAddress']#emailAddress.chakra-input.rr-auth-web-user-email-input.css-1wpvo2",
+            "type": [ "EMAIL", "~username", "~ignore" ]
+          } ]
+      } ],
+    "fields": [],
+    "except": []
+  }
+}

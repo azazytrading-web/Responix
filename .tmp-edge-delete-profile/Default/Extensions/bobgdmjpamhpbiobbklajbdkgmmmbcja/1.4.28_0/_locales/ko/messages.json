@@ -1,0 +1,1449 @@
+{
+   "Checkbox_Keep_signed": {
+      "message": "로그인 상태 유지"
+   },
+   "Checkbox_Keep_signed_Hint": {
+      "message": "지정된 기간 동안 자동으로 로그인됩니다. 컴퓨터 환경이 안전한지 확인하십시오. 공용 컴퓨터를 사용할 때는 이 옵션을 선택하지 마십시오."
+   },
+   "Delete_Exclude_website": {
+      "message": " 이 웹 사이트 삭제 및 제외 "
+   },
+   "Emergency_Desc": {
+      "message": " 암호를 분실하거나 도난당한 경우와 같은 긴급 상황에서 계정에 쉽고 안전하게 다시 액세스할 수 있습니다."
+   },
+   "Emergency_Title": {
+      "message": " 사고 발생 시 \u003Cb>비상 액세스 \u003C/b> "
+   },
+   "Enable_Now": {
+      "message": " 사양하겠습니다 "
+   },
+   "Enter_your_email": {
+      "message": " 이메일 입력 "
+   },
+   "Exclude_website_new": {
+      "message": " 이 웹 사이트 제외 "
+   },
+   "Invalid_Recovery_Code_New": {
+      "message": " 복구 코드가 잘못되었습니다. 정확하거나 최신 버전을 입력하십시오. 또는  \u003Ca class=\"btn-link contactUsLink\">문의해주세요.\u003C/a>"
+   },
+   "Keep_Safe_Desc": {
+      "message": " 암호 상태를 활성화하여 암호 검사를 수행하고 약한 암호, 이전 암호 및 재사용된 암호를 강화합니다."
+   },
+   "Keep_Safe_Title": {
+      "message": " 모든 암호를 안전하게 \u003Cb>보관\u003C/b>"
+   },
+   "No_Worries_Desc": {
+      "message": " 다크 웹 모니터링을 활성화하여 개인 정보에 데이터 침해가 발생한 경우 알림을 수신합니다."
+   },
+   "No_Worries_Title": {
+      "message": "\u003Cb>데이터 침해\u003C/b>에 대한 걱정 \u003Cb>없음\u003C/b>"
+   },
+   "No_thanks": {
+      "message": " 사양하겠습니다 "
+   },
+   "Password_Generator": {
+      "message": "암호 생성기"
+   },
+   "Password_Generator_Dec": {
+      "message": "한 번의 클릭만으로 강력하고 안전한 암호 만들기"
+   },
+   "Suggested_Password": {
+      "message": "단 한 번의 클릭만으로 강력하고 안전한 암호 만들기"
+   },
+   "Suggested_Password_Dec": {
+      "message": "모든 암호 입력 상자에 제안된 암호 표시"
+   },
+   "Suggested_password_Case": {
+      "message": "제안된 암호"
+   },
+   "TOTP_Tips": {
+      "message": "PC의 로컬 시간이 잘못되어 일회성 암호가 잘못될 수 있습니다."
+   },
+   "TOTP_placeholder": {
+      "message": "비밀 키 또는 otpauth://*와 같는 URL 입력"
+   },
+   "Unlimited_Desc": {
+      "message": " 계정 하나로 모든 장치 또는 플랫폼에서 보안 암호를 쉽게 관리, 저장 및 생성할 수 있습니다."
+   },
+   "Unlimited_Title": {
+      "message": " \u003Cb>무제한 장치\u003C/b> 간 데이터 동기화"
+   },
+   "Website": {
+      "message": "웹사이트"
+   },
+   "about": {
+      "message": "정보"
+   },
+   "about_Acknowledgements": {
+      "message": "감사 인사"
+   },
+   "about_Copyright": {
+      "message": "© iTop Inc. 판권 소유"
+   },
+   "about_EULA": {
+      "message": "EULA"
+   },
+   "about_Privacy_Policy": {
+      "message": "개인 보호 정책"
+   },
+   "about_Version": {
+      "message": "버전"
+   },
+   "add": {
+      "message": "추가 "
+   },
+   "addNew": {
+      "message": "새로 추가"
+   },
+   "addNewAccount": {
+      "message": "새 계정 추가"
+   },
+   "add_Login": {
+      "message": "로그인 추가"
+   },
+   "add_Logins": {
+      "message": "로그인 추가"
+   },
+   "add_Notes": {
+      "message": "노트 추가"
+   },
+   "add_Payment_Info": {
+      "message": "결제 정보 추가"
+   },
+   "add_Payment_Info_Case": {
+      "message": "결제 정보 추가"
+   },
+   "add_Personal_Info": {
+      "message": "개인 정보 추가"
+   },
+   "add_Personal_Info_Case": {
+      "message": "개인 정보 추가"
+   },
+   "add_exclude": {
+      "message": "제외할 웹 사이트 추가"
+   },
+   "add_items": {
+      "message": "항목 추가"
+   },
+   "add_new_website": {
+      "message": "새 웹 사이트 추가"
+   },
+   "add_secure_note": {
+      "message": "보안 노트 추가"
+   },
+   "add_tag": {
+      "message": "새 태그 "
+   },
+   "add_to_favorites": {
+      "message": "즐겨찾기에 추가"
+   },
+   "add_to_favorites_succ": {
+      "message": "즐겨찾기에 추가됨"
+   },
+   "add_to_onetime_pwd": {
+      "message": "일회용 암호에 추가"
+   },
+   "add_totp": {
+      "message": "일회용 암호를 추가하시겠습니까?"
+   },
+   "add_website": {
+      "message": "웹 사이트 추가"
+   },
+   "add_website_placeholder": {
+      "message": " 웹사이트 입력 "
+   },
+   "address": {
+      "message": "주소"
+   },
+   "address_copied": {
+      "message": "주소 복사"
+   },
+   "advancedOptions": {
+      "message": "고급 옵션"
+   },
+   "all_Item": {
+      "message": "모든 항목"
+   },
+   "alreadyAccount": {
+      "message": "* 이미 iTop 계정이 있는 경우 직접 로그인하십시오."
+   },
+   "already_saved": {
+      "message": "이미 저장했습니다"
+   },
+   "americanexpress": {
+      "message": "American Express"
+   },
+   "appName": {
+      "message": "DualSafe Password Manager"
+   },
+   "auth_bottom_desc": {
+      "message": "인증을 마치면 Dual Safe Password Manager에 로그인할 수 있습니다."
+   },
+   "auth_desc": {
+      "message": "새로 연 브라우저 탭에서 DualSafe Password Manager의 로그인을 인증하십시오."
+   },
+   "auth_subtitle": {
+      "message": "인증 대기 중..."
+   },
+   "auth_title": {
+      "message": "인증"
+   },
+   "autoFillFailed": {
+      "message": "로그인 입력 필드를 찾지 못했습니다. 로그인 정보를 수동으로 복사하여 붙여넣으십시오."
+   },
+   "auto_save_confirm_desc": {
+      "message": "나중에 모든 웹 사이트에 대한 사용자 이름과 암호를 자동으로 저장합니다.."
+   },
+   "auto_save_passwords": {
+      "message": "암호 자동 저장 "
+   },
+   "auto_save_passwords_desc": {
+      "message": "모든 웹 사이트에 대한 사용자 이름 및 암호 자동 저장 "
+   },
+   "auto_saved_successfully": {
+      "message": "자동 저장 성공"
+   },
+   "average": {
+      "message": "평균"
+   },
+   "back": {
+      "message": "뒤로"
+   },
+   "bannerExpiredPurchase": {
+      "message": "이런! 프리미엄이 \u003Cb>만료\u003C/b>되었습니다."
+   },
+   "bannerFreePurchase": {
+      "message": "업그레이드하여 전체 프리미엄 접근을 누리십시오."
+   },
+   "bannerPremiumPurchase": {
+      "message": "프리미엄 서비스 기간이 %s \u003Cspan class=\"day-words\">일\u003C/span> 남았습니다."
+   },
+   "birthday": {
+      "message": "생일"
+   },
+   "birthday_copied": {
+      "message": "생일 복사"
+   },
+   "browserReboot": {
+      "message": "브라우저 재부팅"
+   },
+   "browser_extension": {
+      "message": "브라우저 확장"
+   },
+   "cancel": {
+      "message": "취소"
+   },
+   "capitalize": {
+      "message": "대문자 (A-Z)"
+   },
+   "cardNumber": {
+      "message": "카드 번호"
+   },
+   "cardType": {
+      "message": "카드 유형"
+   },
+   "cardType_placeholder": {
+      "message": "카드 유형 입력 또는 선택"
+   },
+   "card_number_copied": {
+      "message": "카드 번호 복사"
+   },
+   "card_type_copied": {
+      "message": "카드 유형 복사"
+   },
+   "cardholderName": {
+      "message": "카드 소지자 이름"
+   },
+   "cardholder_name_copied": {
+      "message": "카드 소유자 이름 복사"
+   },
+   "cardother": {
+      "message": "기타"
+   },
+   "carteblanche": {
+      "message": "Carte Blanche"
+   },
+   "change_desc": {
+      "message": "마스터 암호를 변경하는 중..."
+   },
+   "change_master_password": {
+      "message": "마스터 암호 변경"
+   },
+   "change_now": {
+      "message": "지금 변경"
+   },
+   "change_title": {
+      "message": "마스터 암호 변경"
+   },
+   "cityTown": {
+      "message": "시/도시"
+   },
+   "clear": {
+      "message": "지우기"
+   },
+   "clear_allpass_desc": {
+      "message": "일단 지우면 복원할 수 없습니다."
+   },
+   "clear_allpass_title": {
+      "message": "모든 암호를 지우시겠습니까?"
+   },
+   "clear_deleted_desc": {
+      "message": "일단 삭제하면 복원할 수 없습니다."
+   },
+   "clear_deleted_title": {
+      "message": "삭제된 항목에서 모든 항목을 삭제하시겠습니까?"
+   },
+   "clear_password": {
+      "message": "암호 지우기"
+   },
+   "cleared_successfully": {
+      "message": "성공적으로 지웠습니다."
+   },
+   "close": {
+      "message": "단기"
+   },
+   "code_desc": {
+      "message": "복구 코드를 재설정하려면 마스터 암호를 입력하십시오"
+   },
+   "code_pairing_desc": {
+      "message": "PC 앱 팝업에서 코드를 확인하고 연결 버튼을 클릭하여 자동 로그인 및 잠금 해제를 승인합니다."
+   },
+   "code_pairing_title": {
+      "message": "연결 코드"
+   },
+   "code_title": {
+      "message": "복구 코드 재설정"
+   },
+   "comma": {
+      "message": ":"
+   },
+   "comprehensive_pwd_Desc": {
+      "message": "포괄적인 암호 상태 검사"
+   },
+   "confirmMasterNewPass": {
+      "message": "새 마스터 암호 확인"
+   },
+   "confirmMasterPass": {
+      "message": "마스터 암호 확인"
+   },
+   "continue": {
+      "message": "계속"
+   },
+   "continue_sign_in": {
+      "message": "계속 로그인"
+   },
+   "copied": {
+      "message": "복사됨"
+   },
+   "copy": {
+      "message": "복사"
+   },
+   "copy_generator_password": {
+      "message": "암호 복사"
+   },
+   "copy_notes": {
+      "message": "노트 복사"
+   },
+   "copy_one_time_Password": {
+      "message": "일회용 암호 복사"
+   },
+   "copy_password": {
+      "message": "암호"
+   },
+   "copy_username": {
+      "message": "사용자 이름 복사"
+   },
+   "countryRegion": {
+      "message": "국가 또는 지역"
+   },
+   "countryRegion_placeholder": {
+      "message": "국가 또는 지역 선택"
+   },
+   "createNewAccount": {
+      "message": "계정 만들기"
+   },
+   "create_new_account": {
+      "message": "계정 만들기"
+   },
+   "createdAt": {
+      "message": "생성 날짜"
+   },
+   "currentMasterPass": {
+      "message": "Current master password"
+   },
+   "day": {
+      "message": "일"
+   },
+   "days": {
+      "message": "일"
+   },
+   "days_case": {
+      "message": "일"
+   },
+   "default_password_manager": {
+      "message": "Default Password Manager"
+   },
+   "delete": {
+      "message": "삭제"
+   },
+   "delete_all": {
+      "message": "모두 삭제"
+   },
+   "delete_at": {
+      "message": "에서 삭제됨"
+   },
+   "delete_item": {
+      "message": "이 항목을 휴지통으로 삭제하시겠습니까?"
+   },
+   "delete_item_Recycle_Bin": {
+      "message": "이 항목을 휴지통에서 삭제하시겠습니까?"
+   },
+   "delete_item_Recycle_Bin_Dec": {
+      "message": "한 번 삭제하면 복원할 수 없습니다."
+   },
+   "delete_item_dec": {
+      "message": "영구적으로 삭제되지 않는 한 휴지통에서 복원할 수 있습니다."
+   },
+   "deletedSuccessfully": {
+      "message": "성공적으로 삭제되었습니다."
+   },
+   "deleted_this_item": {
+      "message": "이 항목 삭제"
+   },
+   "desktop": {
+      "message": "데스크탑"
+   },
+   "desktop_app": {
+      "message": "데스크탑 앱"
+   },
+   "details": {
+      "message": "세부사항"
+   },
+   "device_limit_desc": {
+      "message": "3개 장치에서 로그인할 수 있는 최대 한도에 도달했습니다. 지금 업그레이드하여 무제한 장치 액세스와 아래의 모든 이점을 누리십시오:"
+   },
+   "device_limit_tips": {
+      "message": "*이 장치에서 로그아웃됩니다:"
+   },
+   "device_limit_title": {
+      "message": "장치 제한에 도달했습니다!"
+   },
+   "dinersclub": {
+      "message": "Diners Club"
+   },
+   "dir": {
+      "message": "ltr"
+   },
+   "discard": {
+      "message": "예"
+   },
+   "discard_change": {
+      "message": "저장하지 않은 변경 사항을 삭제하시겠습니까?"
+   },
+   "discover": {
+      "message": "Discover"
+   },
+   "downloadApp": {
+      "message": "앱 다운로드"
+   },
+   "edit": {
+      "message": "편집"
+   },
+   "editInfo": {
+      "message": "편집 정보"
+   },
+   "emailAddress": {
+      "message": "이메일 주소"
+   },
+   "emailOrPassIncorrect": {
+      "message": "이메일 주소 또는 암호가 잘못되었습니다."
+   },
+   "emailVerfy": {
+      "message": "이 이메일 확인"
+   },
+   "email_address_copied": {
+      "message": "이메일 주소 복사"
+   },
+   "emergency_contact": {
+      "message": "비상 액세스"
+   },
+   "emergency_contact_Desc": {
+      "message": "데이터에 액세스할 수 없게 되면 긴급 액세스 권한을 부여한 사용자가 데이터 내보내기 또는 마스터 암호 변경을 요청할 수 있습니다."
+   },
+   "enterMasterNewPass": {
+      "message": "새 마스터 암호 입력"
+   },
+   "enterMasterPass": {
+      "message": "마스터 암호 입력"
+   },
+   "enterRecoveryCass": {
+      "message": "복구 코드 입력"
+   },
+   "enterYourPass": {
+      "message": "암호 입력"
+   },
+   "enter_email_desc": {
+      "message": " 복구 코드를 받으려면 이메일 주소를 입력하세요!"
+   },
+   "enter_email_tips": {
+      "message": " 이메일 주소가 잘못되었습니다.확인하고 다시 입력하십시오!"
+   },
+   "exclude_website": {
+      "message": "웹 사이트 제외 "
+   },
+   "exclude_website_list": {
+      "message": "제외된 웹 사이트 목록 "
+   },
+   "exit": {
+      "message": "출구"
+   },
+   "expOptionDate": {
+      "message": "만료 날짜"
+   },
+   "expiration_date_copied": {
+      "message": "만료 날짜 복사"
+   },
+   "expired": {
+      "message": "만료됨"
+   },
+   "extDesc": {
+      "message": "Dual Safe Password Manager 확장을 사용하면 한 곳에서 안전하게 암호를 관리하고 언제든지 자동으로 저장, 자동 채우기 및 접근할 수 있습니다."
+   },
+   "extName": {
+      "description": "DualSafe Password Manager 및 디지털 금고",
+      "message": "DualSafe Password Manager 및 디지털 금고"
+   },
+   "extension": {
+      "message": "확장"
+   },
+   "failedToDelete": {
+      "message": "삭제하지 못했습니다."
+   },
+   "failedToOpenLoading_DPM": {
+      "message": "데스크탑 버전 불러오기"
+   },
+   "failedToOpenLoading_Dark_Web_Monitor_Dec": {
+      "message": "다크 웹 모니터는 데스크탑 버전에서만 사용할 수 있습니다. 확인 팝업에서 \"열기\"를 클릭하여 데스크탑 버전을 실행하십시오. 또는 아래 %s 버튼을 클릭하여 팝업을 다시 여십시오."
+   },
+   "failedToOpenLoading_Emergency_Contact_Dec": {
+      "message": "Emergency Contact는 데스크탑 버전에서만 사용할 수 있습니다. 확인 팝업에서 \"열기\"를 클릭하여 데스크탑 버전을 실행하십시오. 또는 아래 %s 버튼을 클릭하여 팝업을 다시 여십시오."
+   },
+   "failedToOpenLoading_Import_Export_Dec": {
+      "message": "가져오기 및 내보내기는 데스크탑 버전에서만 사용할 수 있습니다. 확인 팝업에서 \"열기\"를 클릭하여 데스크탑 버전을 실행하십시오. 또는 아래 %s 버튼을 클릭하여 팝업을 다시 여십시오."
+   },
+   "failedToOpenLoading_Password_Health_Dec": {
+      "message": "암호 상태는 데스크탑 버전에서만 사용할 수 있습니다. 확인 팝업에서 \"열기\"를 클릭하여 데스크탑 버전을 실행하십시오. 또는 아래 %s 버튼을 클릭하여 팝업을 다시 여십시오."
+   },
+   "failedToOpen_DPM": {
+      "message": "데스크탑 버전을 열지 못했습니다"
+   },
+   "failedToOpen_Dark_Web_Monitor_Dec": {
+      "message": "다크 웹 모니터는 데스크탑 버전에서만 사용할 수 있습니다. %d 버튼을 클릭하여 데스크탑 버전을 다운로드하고 설치하십시오. 또는 %s 버튼을 클릭하여 다시 여십시오."
+   },
+   "failedToOpen_Emergency_Contact_Dec": {
+      "message": "Emergency Contact는 데스크탑 버전에서만 사용할 수 있습니다. %d 버튼을 클릭하여 데스크탑 버전을 다운로드하고 설치하십시오. 또는 %s 버튼을 클릭하여 다시 여십시오."
+   },
+   "failedToOpen_Import_Export_Dec": {
+      "message": "가져오기 및 내보내기는 데스크탑 버전에서만 사용할 수 있습니다. %d 버튼을 클릭하여 데스크탑 버전을 다운로드하고 설치하십시오. 또는 %s 버튼을 클릭하여 다시 여십시오."
+   },
+   "failedToOpen_Password_Health_Dec": {
+      "message": "암호 상태는 데스크탑 버전에서만 사용할 수 있습니다. %d 버튼을 클릭하여 데스크탑 버전을 다운로드하고 설치하십시오. 또는 %s 버튼을 클릭하여 다시 여십시오."
+   },
+   "failedToRestore": {
+      "message": "복원하지 못했습니다."
+   },
+   "failed_send_desc": {
+      "message": "복구 코드 이메일을 보내지 못했습니다. 다시 시도하십시오."
+   },
+   "failed_send_title": {
+      "message": "보내지 못했습니다"
+   },
+   "favoties": {
+      "message": "즐겨찾기"
+   },
+   "feedback": {
+      "message": "피드백"
+   },
+   "fill": {
+      "message": "채우기"
+   },
+   "firstName": {
+      "message": "이름"
+   },
+   "fiveMinutes": {
+      "message": "5분"
+   },
+   "forgotYourPass": {
+      "message": "암호를 잊으셨습니까?"
+   },
+   "fourHours": {
+      "message": "4시간"
+   },
+   "fourteenDays": {
+      "message": "14일 "
+   },
+   "free": {
+      "message": "무료"
+   },
+   "gender": {
+      "message": "성별"
+   },
+   "genderFemale": {
+      "message": "여자"
+   },
+   "genderMale": {
+      "message": "남자"
+   },
+   "genderNone": {
+      "message": "안 함"
+   },
+   "genderOther": {
+      "message": "기타"
+   },
+   "gender_copied": {
+      "message": "성별 복사"
+   },
+   "goPremiumBtn": {
+      "message": "프리미엄으로 이동"
+   },
+   "go_back_to_signin": {
+      "message": "로그인으로 돌아가기"
+   },
+   "hideCode": {
+      "message": "보안 코드 숨김"
+   },
+   "hidePass": {
+      "message": "암호 숨기기"
+   },
+   "ignore_website": {
+      "message": "이 웹 사이트 무시"
+   },
+   "installDesktopApp": {
+      "message": "데스크탑 앱 설치"
+   },
+   "invalid_email": {
+      "message": "잘못된 이메일 주소입니다. 확인한 이메일 주소를 입력하십시오."
+   },
+   "invalid_master_pass": {
+      "message": "마스터 암호가 잘못되었습니다!"
+   },
+   "invalid_master_tips": {
+      "message": "마스터 암호가 잘못되었습니다. 확인하고 다시 시도하십시오."
+   },
+   "invalid_recovery_code": {
+      "message": "잘못된 복구 코드입니다. 확인하고 다시 시도하십시오."
+   },
+   "invalid_secret_key": {
+      "message": "잘못된 비밀 키입니다!"
+   },
+   "item_remove_from_favorites": {
+      "message": "즐겨찾기에서 제거"
+   },
+   "jcb": {
+      "message": "JCB"
+   },
+   "lang": {
+      "message": "ko"
+   },
+   "lastModifiedAt": {
+      "message": "수정 날짜"
+   },
+   "lastName": {
+      "message": "성"
+   },
+   "lastPasswordChangedAt": {
+      "message": "함호 변경 날짜"
+   },
+   "learn_more": {
+      "message": "더 알아보기"
+   },
+   "length": {
+      "message": "길이"
+   },
+   "loading": {
+      "message": "불러오는 중 ..."
+   },
+   "loading_data_error": {
+      "message": "불러오지 못했습니다. 네트워크 연결을 확인하십시오."
+   },
+   "lock": {
+      "message": "잠금"
+   },
+   "lock_comfirm_btn": {
+      "message": "수동으로 잠금 해제"
+   },
+   "login_comfirm_btn": {
+      "message": "수동으로 로그인"
+   },
+   "login_comfirm_desc": {
+      "message": "계정을 클릭하여 데스크탑 앱에서 자동 로그인 및 잠금 해제를 인증합니다."
+   },
+   "login_feature_auto": {
+      "message": "\u003Cb>자동 \u003C/b> - 자동 동기화를 통해 무제한 장치 액세스"
+   },
+   "login_feature_easy": {
+      "message": "\u003Cb>쉬움\u003C/b> - 간단한 클릭으로 암호 자동 저장 및 자동 채우기"
+   },
+   "login_feature_safe": {
+      "message": "\u003Cb>안전\u003C/b> - 동급 최고의 암호화로 데이터 저장"
+   },
+   "login_feature_secure": {
+      "message": "\u003Cb>보안\u003C/b> - 강력한 고유 암호 생성"
+   },
+   "login_feature_unlimited": {
+      "message": "\u003Cb>무제한 \u003C/b> - 암호, 결제 등을 무제한으로 저장하세요."
+   },
+   "login_left_title": {
+      "message": "안전하고 간단하지만 자유로운 암호 관리 방법, 디지털 라이프에 필수."
+   },
+   "login_waiting_title": {
+      "message": "데스크탑 앱의 인증을 기다리는 중..."
+   },
+   "logins": {
+      "message": "로그인"
+   },
+   "lower_case": {
+      "message": "소문자 (a-z)"
+   },
+   "maestro": {
+      "message": "Maestro"
+   },
+   "mastercard": {
+      "message": "Mastercard"
+   },
+   "masterpassIncorrect": {
+      "message": "마스터 암호가 잘못되었습니다."
+   },
+   "match_change_pass": {
+      "message": "암호가 요구 사항을 충족하지 않습니다."
+   },
+   "match_master_pass": {
+      "message": "암호가 일치하지 않습니다."
+   },
+   "middleName": {
+      "message": "중간 이름"
+   },
+   "month": {
+      "message": "월"
+   },
+   "more": {
+      "message": " 기타"
+   },
+   "name": {
+      "message": "이름"
+   },
+   "name_copied": {
+      "message": "이름 복사"
+   },
+   "networkError": {
+      "message": "네트워크 연결 오류입니다."
+   },
+   "never": {
+      "message": "안 함"
+   },
+   "newUser": {
+      "message": "새 사용자이신가요?"
+   },
+   "new_password": {
+      "message": "새 암호"
+   },
+   "new_tag": {
+      "message": "새 태그 "
+   },
+   "new_tag_number": {
+      "message": "새 태그 "
+   },
+   "ninetyDays": {
+      "message": "90일 "
+   },
+   "noItemsAddAllItem": {
+      "message": "추가된 항목이 없습니다."
+   },
+   "noItemsAddLoginItem": {
+      "message": "로그인이 추가되지 않습니다."
+   },
+   "noItemsAddNotesItem": {
+      "message": "보안 노트가 추가되지 않았습니다."
+   },
+   "noItemsAddPayItem": {
+      "message": "결제 정보가 추가되지 않았습니다."
+   },
+   "noItemsAddPersonalItem": {
+      "message": "개인 정보가 추가되지 않았습니다."
+   },
+   "noItemsAddRecycleItem": {
+      "message": "항목이 없습니다."
+   },
+   "noItemsFound": {
+      "message": "항목을 찾을 수 없습니다."
+   },
+   "noResult": {
+      "message": "결과 없음!"
+   },
+   "noSaved": {
+      "message": "이 사이트에 대해 저장된 로그인이 없습니다."
+   },
+   "noSavedPrss": {
+      "message": "저장된 비밀번호가 없습니다!"
+   },
+   "no_excluded_websites": {
+      "message": "제외된 웹 사이트가 없습니다."
+   },
+   "no_password_history": {
+      "message": "암호 기록이 없습니다."
+   },
+   "no_valid_secret_key_found": {
+      "message": "유효한 비밀 키를 찾을 수 없습니다!"
+   },
+   "notNow": {
+      "message": "지금은 안 함"
+   },
+   "not_have_code": {
+      "message": "복구 코드가 없습니까?"
+   },
+   "notes": {
+      "message": "노트"
+   },
+   "notes_characters_tips": {
+      "message": "%s 문자 남음"
+   },
+   "notes_copied": {
+      "message": "메모 복사됨"
+   },
+   "notes_placeholder": {
+      "message": "이 항목에 대한 참고 사항을 입력하십시오 (최대 제한: %s 문자)"
+   },
+   "numWords": {
+      "message": "숫자 (0-9)"
+   },
+   "offer_to_save_passwords": {
+      "message": "암호 저장 제안 "
+   },
+   "offer_to_save_passwords_desc": {
+      "message": "로그인 또는 등록할 때 암호 저장 확인 "
+   },
+   "ok": {
+      "message": "확인"
+   },
+   "okIgotIt": {
+      "message": "확인. 알겠습니다."
+   },
+   "oneHour": {
+      "message": "1시간"
+   },
+   "oneMinute": {
+      "message": "1분"
+   },
+   "one_time_Password": {
+      "message": "일회용 암호"
+   },
+   "one_time_pass_copied": {
+      "message": "일회용 암호 복사"
+   },
+   "only": {
+      "message": "전용"
+   },
+   "open": {
+      "message": "열기"
+   },
+   "options": {
+      "message": "옵션"
+   },
+   "passIncorrect": {
+      "message": "암호가 잘못되었습니다."
+   },
+   "password": {
+      "message": "암호"
+   },
+   "password_copied": {
+      "message": "암호 복사"
+   },
+   "password_history_item": {
+      "message": "암호 내역"
+   },
+   "password_history_tips": {
+      "message": "다음은 최근 %s 암호를 보여 줍니다."
+   },
+   "password_history_title": {
+      "message": "암호 내역"
+   },
+   "password_tip_one": {
+      "message": "최소 8자 이상. 16자 이상이 권장됩니다."
+   },
+   "password_tip_three": {
+      "message": "At least one symbol."
+   },
+   "password_tip_two": {
+      "message": "하나 이상의 숫자입니다."
+   },
+   "payment_Info": {
+      "message": "결제 정보"
+   },
+   "personal_Info": {
+      "message": "개인 정보"
+   },
+   "phoneNumber": {
+      "message": "전화 번호"
+   },
+   "phone_number_copied": {
+      "message": "전화 번호 복사"
+   },
+   "premiumExpiredPurchase": {
+      "message": "프리미엄이 \u003Cb class='text-red'>만료\u003C/b>되었습니다!"
+   },
+   "premiumExpiredPurchaseAlert": {
+      "message": "이제 고급 기능을 사용할 수 없습니다. 프리미엄 액세스를 계속하고 암호를 쉽게 보호하려면 업그레이드하십시오."
+   },
+   "premiumExpiringSoonPurchase": {
+      "message": "프리미엄이 \u003Cb class=\"text-yellow\">%s 일\u003C/b>밖에 남지 않았습니다!"
+   },
+   "premiumExpiringSoonPurchaseAlert": {
+      "message": "다음 고급 기능에 대한 프리미엄 액세스를 유지하려면 업그레이드하십시오"
+   },
+   "premiumFreePurchase": {
+      "message": "암호를 보다 쉽고 안전하게 관리하는 방법"
+   },
+   "premiumFreePurchaseAlert": {
+      "message": "지금 프리미엄을 시작하고 다음과 같은 고급 기능을 유지하십시오"
+   },
+   "premiumFreePurchaseAlert_New": {
+      "message": "지금 프리미엄을 시작하고 다음과 같은 고급 기능을 유지하십시오"
+   },
+   "premiumFreePurchase_New": {
+      "message": "보다 쉽고 안전한 암호 관리 방법"
+   },
+   "premiumPurchase": {
+      "message": "30일 프리미엄을 받으실 수 있습니다!"
+   },
+   "premiumPurchaseAlert": {
+      "message": "이제 다음과 같은 고급 기능을 즐기십시오:"
+   },
+   "premiun": {
+      "message": "프리미엄"
+   },
+   "purchase_Dark_Web_Monitor": {
+      "message": "다크 웹 모니터링 및 경고"
+   },
+   "purchase_Password_Health": {
+      "message": "암호 상태 검사"
+   },
+   "purchase_Password_Health_Check": {
+      "message": "암호 상태 검사"
+   },
+   "purchase_Unlimited_Devices": {
+      "message": "무제한 장치 간 동기화"
+   },
+   "questionMark": {
+      "message": "?"
+   },
+   "recovery_code_copied": {
+      "message": "복구 코드가 복사되었습니다"
+   },
+   "recycle_Bin": {
+      "message": "휴자통"
+   },
+   "refresh": {
+      "message": "새로 고침"
+   },
+   "rememberMeOnThisDevice": {
+      "message": "이 장치에서 나를 기억"
+   },
+   "remindExpirationDate": {
+      "message": "만료일 2개월 전에 알림"
+   },
+   "remind_me_after_days": {
+      "message": "7일 후에 다시 알려주세요"
+   },
+   "remind_me_tomorrow": {
+      "message": "내일 다시 알려 주세요"
+   },
+   "remind_password": {
+      "message": "90일 후 암호 변경 알림"
+   },
+   "remove": {
+      "message": "제거"
+   },
+   "remove_from_favorites": {
+      "message": "즐겨찾기에서 제거"
+   },
+   "remove_from_favorites_succ": {
+      "message": "즐겨찾기에서 제거됨"
+   },
+   "resend": {
+      "message": "재발송 "
+   },
+   "reset": {
+      "message": "재설정"
+   },
+   "reset_code_desc": {
+      "message": "마스터 암호를 재설정하려면 복구 코드를 입력하십시오. 복구 코드가 PDF 파일로 저장되었습니다."
+   },
+   "reset_code_title": {
+      "message": "복구 코드 입력"
+   },
+   "reset_desc": {
+      "message": "암호를 재설정하려면 확인된 이메일 주소를 입력하십시오"
+   },
+   "reset_email_place": {
+      "message": "확인된 이메일 주소를 입력하십시오"
+   },
+   "reset_master_title": {
+      "message": "마스터 암호 재설정"
+   },
+   "reset_recovery_code": {
+      "message": "복구 코드 재설정"
+   },
+   "reset_success_desc": {
+      "message": "마스터 암호가 재설정되었습니다. 새 마스터 암호로 로그인하십시오."
+   },
+   "reset_success_title": {
+      "message": "성공!"
+   },
+   "reset_title": {
+      "message": "암호 재설정"
+   },
+   "restore": {
+      "message": "복원"
+   },
+   "restoreSuccessfully": {
+      "message": "성공적으로 복원되었습니다."
+   },
+   "retry": {
+      "message": "재시도"
+   },
+   "save": {
+      "message": "저장"
+   },
+   "saveIn_DPM": {
+      "message": "DualSafe Password Manager에 저장"
+   },
+   "save_as_pdf": {
+      "message": "PDF로 저장"
+   },
+   "save_code_desc_login": {
+      "message": " 복구 코드를 PDF로 저장하십시오."
+   },
+   "save_code_desc_one": {
+      "message": "복구 코드를 PDF로 저장하고 인쇄하여 안전하게 보관하십시오."
+   },
+   "save_code_desc_options": {
+      "message": " 이제 이전 복구 코드가 유효하지 않습니다. 안전을 위해 새 복구 코드를 PDF로 저장하고 인쇄하십시오."
+   },
+   "save_code_desc_two": {
+      "message": "마스터 암호를 잊어버린 경우 Dual Safe Password Manager에 다시 접근할 수 있습니다."
+   },
+   "save_code_new_title": {
+      "message": "새 복구 코드 저장"
+   },
+   "save_code_tips": {
+      "message": "\u003Cb>중요:\u003C/b> 복구 코드는 마스터 암호를 잊어버린 경우 Dual Safe Password Manager에 다시 액세스할 수 있는 유일한 방법입니다."
+   },
+   "save_code_title": {
+      "message": "복구 코드 저장"
+   },
+   "save_totp": {
+      "message": "일회용 암호를 저장하시겠습니까?"
+   },
+   "savedFailedData": {
+      "message": "서버에서 최신 데이터가 동기화되었습니다."
+   },
+   "savedFailedSynced": {
+      "message": "저장 실패! 서버에서 최신 데이터가 동기화되었습니다."
+   },
+   "savedSuccessfully": {
+      "message": "성공적으로 저장되었습니다."
+   },
+   "scan_web_page_QRCode": {
+      "message": "웹 페이지 QR 코드 스캔 "
+   },
+   "search": {
+      "message": "검색"
+   },
+   "secure": {
+      "message": "보안"
+   },
+   "secureNotes": {
+      "message": "보안 노트"
+   },
+   "secure_notes_placeholder": {
+      "message": "여기에 중요 참고 사항을 입력하십시오 (최대 제한: %s 문자)"
+   },
+   "securityCode": {
+      "message": "보안 코드"
+   },
+   "security_code_copied": {
+      "message": "보안 코드 복사"
+   },
+   "send": {
+      "message": "보내기 "
+   },
+   "send_email_hint": {
+      "message": "이메일로 보내기"
+   },
+   "sending_desc": {
+      "message": "이메일 주소로 복구 코드를 보내는 중입니다."
+   },
+   "sending_title": {
+      "message": "보내기"
+   },
+   "sent_succ_desc": {
+      "message": "복구 코드가 %s 이메일 주소로 전송되었습니다. 받은 편지함에 없으면 스팸을 확인하십시오. 아니면 \u003Cbutton class=\"resndbtn\">resend\u003C/button> 도 가능합니다."
+   },
+   "sent_succ_title": {
+      "message": "성공적으로 전송되었습니다!"
+   },
+   "set_master_password": {
+      "message": "마스터 암호 설정"
+   },
+   "set_master_password_tips": {
+      "message": "계정 안전을 위해 Dual Safe Password Manager의 마스터 암호를 설정하는 것이 좋습니다."
+   },
+   "set_master_tips": {
+      "message": "\u003Cb>중요:\u003C/b> 마스터 암호는 Dual Safe Password Manager에 접근하는 데 유효한 유일한 암호입니다."
+   },
+   "set_master_title": {
+      "message": "마스터 암호 설정"
+   },
+   "set_success_desc": {
+      "message": "마스터 암호가 설정되었고 복구 코드가 성공적으로 저장되었습니다. 마스터 암호로 로그인하십시오."
+   },
+   "settings": {
+      "message": "설정"
+   },
+   "settings_Auto_Fill": {
+      "message": "자동 채우기"
+   },
+   "settings_Auto_Fill_Dec": {
+      "message": "저장된 로그인, 결제 정보 등을 자동으로 채웁니다."
+   },
+   "settings_Auto_Fill_Password": {
+      "message": "암호 자동 작성"
+   },
+   "settings_Auto_Fill_Password_Dec": {
+      "message": "저장된 웹 사이트에 로그인할 때 계정과 암호를 자동으로 채웁니다."
+   },
+   "settings_Auto_Lock": {
+      "message": "자동 잠금"
+   },
+   "settings_Auto_Lock_Dec": {
+      "message": "Dual Safe Password Manager를 지정된 빈도로 자동으로 잠급니다"
+   },
+   "settings_Auto_Save": {
+      "message": "자동 저장"
+   },
+   "settings_Auto_Save_Dec": {
+      "message": "입력한 사용자 이름 및 암호 자동 저장"
+   },
+   "settings_Autofill_and_Autosave": {
+      "message": "자동 채우기 및 자동 저장"
+   },
+   "settings_Clear_Clipboard": {
+      "message": "클립보드 지우기"
+   },
+   "settings_Clear_Clipboard_Dec": {
+      "message": "암호를 복사한 후 지정된 시간에 자동으로 클립보드 지우기"
+   },
+   "settings_Fill_Payments": {
+      "message": "결제 정보 작성"
+   },
+   "settings_Fill_Payments_Desc": {
+      "message": "한 번의 클릭만으로 카드 번호, 카드 홀더, 만료 날짜와 같은 저장된 결제 정보를 채울 수 있습니다"
+   },
+   "settings_Fill_Personal_Infol": {
+      "message": "개인 정보 작성"
+   },
+   "settings_Fill_Personal_Infol_Desc": {
+      "message": "한 번의 클릭만으로 이메일, 전화 번호, 주소와 같은 저장된 개인 정보를 채울 수 있습니다 "
+   },
+   "settings_General": {
+      "message": "일반"
+   },
+   "settings_General_Dec": {
+      "message": "DualSafe Password Manager를 기본 암호 관리자로 설정"
+   },
+   "settings_Limited_time_free": {
+      "message": "(기간 한정 제공)"
+   },
+   "settings_Security_Options": {
+      "message": "보안 옵션"
+   },
+   "settings_Show_Icon": {
+      "message": "아이콘 표시"
+   },
+   "settings_Show_Icon_Dec": {
+      "message": "모든 암호 입력 상자에 Dual Safe Password Manager 아이콘을 표시하여 클릭 한 번으로 로그인을 저장합니다"
+   },
+   "sevenDays": {
+      "message": "7일 "
+   },
+   "showCode": {
+      "message": "보안 코드 표시"
+   },
+   "showPass": {
+      "message": "암호 표시"
+   },
+   "signIn": {
+      "message": "로그인"
+   },
+   "signInAutoNow": {
+      "message": "로그인, 개인 정보 또는 결제 정보를 자동으로 채우려면 지금 로그인하십시오."
+   },
+   "signInLocked": {
+      "message": "계정이 잠겼습니다. 5분 후에 다시 시도하십시오."
+   },
+   "signInNow": {
+      "message": "이 사이트에 대한 로그인을 자동 채우려면 지금 로그인하십시오."
+   },
+   "signInSave": {
+      "message": "로그인 및 저장"
+   },
+   "signInTimeout": {
+      "message": "로그인 시간 초과! 네트워크를 확인하고 다시 시도하십시오!"
+   },
+   "signIn_DPM": {
+      "message": "DualSafe Password Manager에 로그인"
+   },
+   "signIn_Desc": {
+      "message": "\u003Ca class=\"btn-link btn-name\">\u003C/a>의 로그인을 저장하려면 지금 로그인하고 나중에 자동으로 채웁니다."
+   },
+   "signOut": {
+      "message": "로그 아웃"
+   },
+   "sign_in_again_desc": {
+      "message": "이전에 Google/Facebook에 로그인하셨기 때문에 아직 비밀번호를 설정하지 않으셨습니다. 확인을 클릭하여 Google / Facebook에 로그인할 수 있습니다."
+   },
+   "sign_in_now": {
+      "message": "지금 로그인"
+   },
+   "sign_in_with": {
+      "message": "또는 로그인"
+   },
+   "sign_in_with_app": {
+      "message": "데스크탑 앱으로 로그인"
+   },
+   "sign_in_with_facebook": {
+      "message": "Facebook으로 로그인"
+   },
+   "sign_in_with_google": {
+      "message": "Google로 로그인"
+   },
+   "sixtyDays": {
+      "message": "60일 "
+   },
+   "skip_for_now": {
+      "message": "지금 건너뛰기"
+   },
+   "sort_by": {
+      "message": "정령 기준 "
+   },
+   "sort_date_created": {
+      "message": "생성 날짜 "
+   },
+   "sort_date_modified": {
+      "message": "수정 날짜 "
+   },
+   "sort_newest_first": {
+      "message": "최신을 먼저Newest First"
+   },
+   "sort_oldest_first": {
+      "message": "오랜된 먼저Oldest First"
+   },
+   "sort_show_az": {
+      "message": "A-Z"
+   },
+   "sort_show_favorites": {
+      "message": "즐겨찾기 표시 "
+   },
+   "sort_show_title_az": {
+      "message": "제목: A에서 Z"
+   },
+   "sort_show_title_za": {
+      "message": "제목: Z에서 A"
+   },
+   "sort_show_za": {
+      "message": "Z-A"
+   },
+   "sort_title": {
+      "message": "제목"
+   },
+   "state": {
+      "message": "구"
+   },
+   "strong": {
+      "message": "강함"
+   },
+   "success_desc": {
+      "message": "확장 아이콘 \u003Cspan class=\"succ-icon\">\u003C/span>을 클릭하고 Dual Safe Password Manager를 도구 모음에 고정합니다. 그런 다음 언제든지 \u003Cspan class=\"succ-icon dpm\">\u003C/span>을 클릭하여 Dual Safe Password Manager를 사용할 수 있습니다."
+   },
+   "success_title": {
+      "message": "축하합니다 🎉🎉🎉 \u003Cbr>Dual Safe Password Manager가 준비되었습니다!"
+   },
+   "suggestion": {
+      "message": "제안"
+   },
+   "suggestion_tips": {
+      "message": "현재 열려 있는 웹 사이트의 저장된 로그인 데이터를 보여줍니다."
+   },
+   "symbols": {
+      "message": "기호 (%s)"
+   },
+   "systemLocks": {
+      "message": "시스템 잠금"
+   },
+   "tags": {
+      "message": "태그"
+   },
+   "tenMinutes": {
+      "message": "10분"
+   },
+   "thirtyDays": {
+      "message": "30일 "
+   },
+   "thirtyMinutes": {
+      "message": "30분"
+   },
+   "title": {
+      "message": "제목"
+   },
+   "title_placeholder": {
+      "message": "제목을 입력하십시오"
+   },
+   "tools": {
+      "message": "도구"
+   },
+   "tools_Dark_Web_Monitor": {
+      "message": "다크 웹 모니터"
+   },
+   "tools_Dark_Web_Monitor_Dec": {
+      "message": "다크 웹에서 중요한 데이터 누출을 모니터링할 수 있도록 지원"
+   },
+   "tools_Import_Export": {
+      "message": "가져오기 및 내보내기"
+   },
+   "tools_Import_Export_Dec": {
+      "message": "브라우저 또는 기타 암호 도구에서 데이터를 가져오고 한 번의 클릭만으로 저장된 데이터를 CSV 파일로 내보내기"
+   },
+   "tools_Password_Health": {
+      "message": "암호 상태"
+   },
+   "tools_Password_Health_Dec": {
+      "message": "약한, 재사용 또는 손상된 암호와 같은 취약한 암호를 확인하는 데 도움이 됩니다"
+   },
+   "tools_Unlimited_Passwords": {
+      "message": "무제한 암호"
+   },
+   "tools_Unlimited_Passwords_Only": {
+      "message": "(무료 요금제에서는 50개만 제공)"
+   },
+   "twoMinutes": {
+      "message": "2분"
+   },
+   "type": {
+      "message": "유형"
+   },
+   "unionpay": {
+      "message": "UnionPay"
+   },
+   "unknown": {
+      "message": "알 수 없음 "
+   },
+   "unlock": {
+      "message": "잠금 해제"
+   },
+   "unlockAutoNow": {
+      "message": "지금 잠금을 해제하여 로그인, 개인 정보 또는 결제 정보를 자동으로 채우십시오."
+   },
+   "unlockDPM": {
+      "message": "Dual Safe 암호 관리자 잠금 해제"
+   },
+   "unlockDPM_Desc": {
+      "message": "\u003Ca class=\"btn-link btn-name\">\u003C/a>의 로그인을 저장하려면 지금 잠금 해제하고 나중에 자동으로 채웁니다."
+   },
+   "unlockNow": {
+      "message": "지금 잠금을 해제하여 이 사이트에 대한 로그인을 자동 채우십시오."
+   },
+   "unlockSave": {
+      "message": "잠금 해제 및 저장"
+   },
+   "unlock_now": {
+      "message": "지금 잠금 해제"
+   },
+   "until_sign_out": {
+      "message": "로그아웃할 때까지 "
+   },
+   "update": {
+      "message": "업데이트"
+   },
+   "updateFailed": {
+      "message": "업데이트가 실패."
+   },
+   "updateLogins": {
+      "message": "로그인 업데이트"
+   },
+   "updateSuccessfully": {
+      "message": "업데이트되었습니다."
+   },
+   "upgradeBtn": {
+      "message": "업그레이드"
+   },
+   "upgradeNowBtn": {
+      "message": "지금 업그레이드"
+   },
+   "upper_case": {
+      "message": "대문자 (A-Z)"
+   },
+   "url": {
+      "message": "url"
+   },
+   "url_copied": {
+      "message": "웹 사이트 복사"
+   },
+   "use": {
+      "message": "사용"
+   },
+   "use_generator_password": {
+      "message": "암호 사용"
+   },
+   "user_manual": {
+      "message": "사용 설명서"
+   },
+   "username": {
+      "message": "사용자 이름"
+   },
+   "username_copied": {
+      "message": "사용자 이름 복사"
+   },
+   "username_placeholder": {
+      "message": "이메일 / 사용자 이름 / 전화 번호"
+   },
+   "view": {
+      "message": "보기"
+   },
+   "visa": {
+      "message": "Visa"
+   },
+   "visaelectron": {
+      "message": "Visa Electron"
+   },
+   "weak": {
+      "message": "약함"
+   },
+   "web_password_sync": {
+      "message": "참고: 웹 사이트의 암호를 업데이트하십시오"
+   },
+   "welcomeTo": {
+      "message": "어서오세요"
+   },
+   "year": {
+      "message": "년"
+   },
+   "yes": {
+      "message": "예"
+   },
+   "zip": {
+      "message": "우편 번호"
+   },
+   "zipPostalCode": {
+      "message": "우편 번호"
+   }
+}

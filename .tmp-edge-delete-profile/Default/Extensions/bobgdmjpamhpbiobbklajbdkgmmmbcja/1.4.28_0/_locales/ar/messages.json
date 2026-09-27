@@ -1,0 +1,1305 @@
+{
+   "M_Apr": {
+      "message": "أبريل"
+   },
+   "M_Aug": {
+      "message": "أغسطس"
+   },
+   "M_Dec": {
+      "message": "ديسمبر"
+   },
+   "M_Feb": {
+      "message": "فبراير"
+   },
+   "M_Jan": {
+      "message": "يناير"
+   },
+   "M_Jul": {
+      "message": "يوليو"
+   },
+   "M_Jun": {
+      "message": "يونيو"
+   },
+   "M_Mar": {
+      "message": "مارس"
+   },
+   "M_May": {
+      "message": "مايو"
+   },
+   "M_Nov": {
+      "message": "نوفمبر"
+   },
+   "M_Oct": {
+      "message": "أكتوبر"
+   },
+   "M_Sep": {
+      "message": "سبتمبر"
+   },
+   "Password_Generator": {
+      "message": "توليد كلمة سر"
+   },
+   "Password_Generator_Dec": {
+      "message": "انشاء كلمات سر قوية وآمنة بنقرة 1 فقط"
+   },
+   "Suggested_Password": {
+      "message": "كلمة السر المقترحة"
+   },
+   "Suggested_Password_Dec": {
+      "message": "اظهار كلمة السر المقترحة لجميع مربعات ادخال كلمة السر"
+   },
+   "Suggested_password_Case": {
+      "message": "كلمة السر المقترحة"
+   },
+   "TOTP_Tips": {
+      "message": "التوقيت المحلي لحاسوبك غير صحيح ، مما قد يتسبب في ان تصبح كلمة السر لمرة واحدة غير صالحة."
+   },
+   "TOTP_placeholder": {
+      "message": "ادخل مفتاح السر او رابط مثل بعد التمديد://*"
+   },
+   "Website": {
+      "message": "موقع ويب"
+   },
+   "about": {
+      "message": "حول"
+   },
+   "about_Acknowledgements": {
+      "message": "شكر وتقدير"
+   },
+   "about_Copyright": {
+      "message": " جميع الحقوق محفوظة .© iTop Inc."
+   },
+   "about_EULA": {
+      "message": "EULA"
+   },
+   "about_Privacy_Policy": {
+      "message": "سياسة الخصوصية"
+   },
+   "about_Version": {
+      "message": "الاصدار"
+   },
+   "account_blocked_disabled": {
+      "message": "تم حظر هذا الحساب أو تعطيله. يرجى الاتصال بفريق الدعم للحصول على المساعدة."
+   },
+   "addNew": {
+      "message": "اضافة جديدة"
+   },
+   "addNewAccount": {
+      "message": "اضافة حساب جديد"
+   },
+   "add_Login": {
+      "message": "اضافة تسجيل الدخول"
+   },
+   "add_Logins": {
+      "message": "اضافة عمليات تسجيل الدخول"
+   },
+   "add_Notes": {
+      "message": "اضافة ملاحظات"
+   },
+   "add_Payment_Info": {
+      "message": "اضافة معلومات الدفع"
+   },
+   "add_Payment_Info_Case": {
+      "message": "اضافة معلومات الدفع"
+   },
+   "add_Personal_Info": {
+      "message": "اضافة معلومات شخصية"
+   },
+   "add_Personal_Info_Case": {
+      "message": "اضافة معلومات شخصية"
+   },
+   "add_items": {
+      "message": "اضافة عناصر"
+   },
+   "add_new_website": {
+      "message": "اضافة موقع ويب جديد"
+   },
+   "add_secure_note": {
+      "message": "اضافة ملاحظة آمنة"
+   },
+   "add_tag": {
+      "message": "اضافة علامة"
+   },
+   "add_to_favorites": {
+      "message": "اضافة الى المفضلة"
+   },
+   "add_to_favorites_succ": {
+      "message": "اضيفت الى المفضلة"
+   },
+   "address": {
+      "message": "العنوان"
+   },
+   "address_copied": {
+      "message": "العنوان منسوخ"
+   },
+   "advancedOptions": {
+      "message": "خيارات متقدمة"
+   },
+   "all_Item": {
+      "message": "كل العناصر"
+   },
+   "alreadyAccount": {
+      "message": "* إذا كان لديك بالفعل حساب iTop، يرجى تسجيل الدخول مباشرة."
+   },
+   "already_saved": {
+      "message": "لقد قمت بالحفظ بالفعل"
+   },
+   "americanexpress": {
+      "message": "American Express"
+   },
+   "appName": {
+      "message": "DualSafe Password Manager"
+   },
+   "auth_bottom_desc": {
+      "message": "DualSafe Password Manager بمجرد الانتهاء من التفويض، يمكنك تسجيل الدخول ."
+   },
+   "auth_desc": {
+      "message": "في علامة تبويب المتصفح المفتوحة حديثا DualSafe Password Manager يرجى تفويض تسجيل الدخول الى."
+   },
+   "auth_subtitle": {
+      "message": "في انتظار الاذن…"
+   },
+   "auth_title": {
+      "message": "اذن"
+   },
+   "autoFillFailed": {
+      "message": "فشل في العثور على حقول إدخال تسجيل الدخول. يرجى محاولة نسخ ولصق معلومات تسجيل الدخول يدويًا."
+   },
+   "auto_save_confirm_desc": {
+      "message": " حفظ اسماء المستخدمين وكلمات سري  تلقائيا لجميع مواقع الويب في المستقبل."
+   },
+   "auto_save_passwords": {
+      "message": " حفظ كلمات السر تلقائيا "
+   },
+   "auto_save_passwords_desc": {
+      "message": " حفظ اسماء المستخدمين وكلمات سري تلقائيا لجميع مواقع الويب "
+   },
+   "auto_saved_successfully": {
+      "message": " حفظ تلقائي بنجاح "
+   },
+   "average": {
+      "message": "متوسط "
+   },
+   "back": {
+      "message": "للخلف"
+   },
+   "bannerExpiredPurchase": {
+      "message": "عفوا! قسطك \u003Cb>انتهت.\u003C/b>"
+   },
+   "bannerFreePurchase": {
+      "message": "قم بالترقية للاستسمتاع بالوصول الكامل المتميز"
+   },
+   "bannerPremiumPurchase": {
+      "message": "لديك  %s \u003Cspan class=\"day-words\">ايام\u003C/span> متبقي في الممتاز."
+   },
+   "birthday": {
+      "message": "يوم الميلاد"
+   },
+   "birthday_copied": {
+      "message": "تاريخ ميلاد منسوخ"
+   },
+   "browserReboot": {
+      "message": "اعادة تشغيل المتصفح"
+   },
+   "browser_extension": {
+      "message": "ملحق المتصفح"
+   },
+   "cancel": {
+      "message": "الغاء الامر"
+   },
+   "capitalize": {
+      "message": "(A-Z) احرف استهلاليه "
+   },
+   "cardNumber": {
+      "message": "رقم البطاقة"
+   },
+   "cardType": {
+      "message": "نوع البطاقة"
+   },
+   "cardType_placeholder": {
+      "message": "ادخل او حدد نوع البطاقة"
+   },
+   "card_number_copied": {
+      "message": "رقم البطاقة منسوخ"
+   },
+   "card_type_copied": {
+      "message": "نوع البطاقة منسوخ"
+   },
+   "cardholderName": {
+      "message": "اسم حامل البطاقة"
+   },
+   "cardholder_name_copied": {
+      "message": "اسم حامل البطاقة منسوخ"
+   },
+   "cardother": {
+      "message": "اخرى"
+   },
+   "carteblanche": {
+      "message": "Carte Blanche"
+   },
+   "change_desc": {
+      "message": "انت قمت بتغيير كلمة سرك الرئيسية..."
+   },
+   "change_master_password": {
+      "message": "تغيير كلمة السر الرئيسية"
+   },
+   "change_now": {
+      "message": "التغيير الآن"
+   },
+   "change_title": {
+      "message": "تغيير كلمة السر الرئيسية"
+   },
+   "cityTown": {
+      "message": "المدينة / البلدة"
+   },
+   "clear": {
+      "message": "مسح"
+   },
+   "clear_allpass_desc": {
+      "message": "لا يمكن استعادتها مرة واحدة تطهيرها."
+   },
+   "clear_allpass_title": {
+      "message": "هل انت متاكد انك تريد مسح جميع كلمات السر?"
+   },
+   "clear_deleted_desc": {
+      "message": "لا يمكن استعادتها بمجرد حذفها."
+   },
+   "clear_deleted_title": {
+      "message": "هل انت متاكد من حذف جميع العناصر من العناصر المحذوفة?"
+   },
+   "clear_password": {
+      "message": "مسح كلمة السر"
+   },
+   "cleared_successfully": {
+      "message": "مسح بنجاح."
+   },
+   "close": {
+      "message": "اغلاق"
+   },
+   "code_desc": {
+      "message": "يرجى ادخال كلمة السر الرئيسية لاعادة تعيين رمز استردادك"
+   },
+   "code_pairing_desc": {
+      "message": "قم بتاكيد الرمز من النافذة المنبثقة لتطبيق الحاسوب الشخصي وانقر فوق زر  اتصال  للسماح بتسجيل الدخول التلقائي والغاء القفل."
+   },
+   "code_pairing_title": {
+      "message": "كود الاتصال"
+   },
+   "code_title": {
+      "message": "اعادة تعيين رمز الاسترداد"
+   },
+   "comma": {
+      "message": ":"
+   },
+   "confirmMasterNewPass": {
+      "message": "تاكيد كلمة السر الرئيسية الجديدة"
+   },
+   "confirmMasterPass": {
+      "message": "تاكيد كلمة السر الرئيسية"
+   },
+   "continue": {
+      "message": "استمر"
+   },
+   "copied": {
+      "message": "منسوخ"
+   },
+   "copy": {
+      "message": "نسخ"
+   },
+   "copy_generator_password": {
+      "message": "نسخ كلمة السر"
+   },
+   "copy_notes": {
+      "message": "نسخ الملاحظات"
+   },
+   "copy_one_time_Password": {
+      "message": "نسخ كلمة السر لمرة واحدة"
+   },
+   "copy_password": {
+      "message": "كلمة السر"
+   },
+   "copy_username": {
+      "message": "نسخ اسم المستخدم"
+   },
+   "countryRegion": {
+      "message": "الدولة او المنطقة"
+   },
+   "countryRegion_placeholder": {
+      "message": "اختر بلدك او منطقتك"
+   },
+   "createNewAccount": {
+      "message": "انشاء حساب"
+   },
+   "create_new_account": {
+      "message": "انشاء حساب"
+   },
+   "createdAt": {
+      "message": "خلقت في"
+   },
+   "currentMasterPass": {
+      "message": "كلمة السر الرئيسية الحالية"
+   },
+   "day": {
+      "message": "يوم"
+   },
+   "days": {
+      "message": "ايام"
+   },
+   "days_case": {
+      "message": "ايام"
+   },
+   "default_password_manager": {
+      "message": "مدير كلمة السر الافتراضي"
+   },
+   "delete": {
+      "message": "حذف"
+   },
+   "delete_all": {
+      "message": "حذف الكل"
+   },
+   "delete_at": {
+      "message": "حذفت في"
+   },
+   "delete_item": {
+      "message": "هل انت متاكد من حذف هذا العنصر الى سلة المحذوفات?"
+   },
+   "delete_item_Recycle_Bin": {
+      "message": "هل انت متاكد من حذف هذا العنصر من سلة المحذوفات?"
+   },
+   "delete_item_Recycle_Bin_Dec": {
+      "message": "لا يمكن استعادته بمجرد حذفه."
+   },
+   "delete_item_dec": {
+      "message": "يمكنك استعادته من سلة المحذوفات طالما لم يتم حذفه نهائيا."
+   },
+   "deletedSuccessfully": {
+      "message": "تم حذفه بنجاح."
+   },
+   "deleted_this_item": {
+      "message": "حذف هذا العنصر"
+   },
+   "desktop_app": {
+      "message": "تطبيق سطح المكتب"
+   },
+   "details": {
+      "message": "تفاصيل"
+   },
+   "dinersclub": {
+      "message": "Diners Club"
+   },
+   "dir": {
+      "message": "ltr"
+   },
+   "discard": {
+      "message": "رفض"
+   },
+   "discard_change": {
+      "message": "هل انت متاكد من تجاهل التغييرات غير المحفوظة?"
+   },
+   "discover": {
+      "message": "discover"
+   },
+   "downloadApp": {
+      "message": "تحميل التطبيق"
+   },
+   "edit": {
+      "message": "تحرير"
+   },
+   "editInfo": {
+      "message": "معلومات التحرير"
+   },
+   "emailAddress": {
+      "message": "عنوان بريد الكتروني"
+   },
+   "emailOrPassIncorrect": {
+      "message": "عنوان بريد الكتروني او كلمة سر غير صحيحة."
+   },
+   "emailVerfy": {
+      "message": "تحقق من صحة هذا البريد الالكتروني"
+   },
+   "email_address_copied": {
+      "message": "البريد الالكتروني منسوخ"
+   },
+   "enterMasterNewPass": {
+      "message": "ادخل كلمة السر الرئيسية الجديدة"
+   },
+   "enterMasterPass": {
+      "message": "ادخل كلمة السر الرئيسية"
+   },
+   "enterRecoveryCass": {
+      "message": "ادخل رمز الاسترداد"
+   },
+   "enterYourPass": {
+      "message": "ادخل كلمة السر"
+   },
+   "enter_your_email_address": {
+      "message": "عنوان البريد الإلكتروني"
+   },
+   "expOptionDate": {
+      "message": "تاريخ انتهاء الصلاحية"
+   },
+   "expiration_date_copied": {
+      "message": "تاريخ انتهاء الصلاحية منسوخ"
+   },
+   "expired": {
+      "message": "انتهت"
+   },
+   "extDesc": {
+      "message": "على ادارة كلمات السر بامان في مكان واحد ويتيح لك حفظها تلقائيا وتعبئتها تلقائيا والوصول اليها في اي وقت DualSafe Password Manager يساعدك ملحق "
+   },
+   "extName": {
+      "description": "DualSafe Password Manager & Digital Vault",
+      "message": " DualSafe Password Manager وقبو رقمي"
+   },
+   "failedToDelete": {
+      "message": "فشل الحذف."
+   },
+   "failedToOpenLoading_DPM": {
+      "message": "تحميل اصدار سطح المكتب"
+   },
+   "failedToOpenLoading_Dark_Web_Monitor_Dec": {
+      "message": "ادناه لاعادة فتح النافذة المنبثقة %s فقط في اصدار سطح المكتب. يرجى النقر فوق  \"فتح\"  في نافذة التاكيد المنبثقة لتشغيل اصدار سطح المكتب. او انقر على الزر Dark Web Monitor يتوفر ."
+   },
+   "failedToOpenLoading_Emergency_Contact_Dec": {
+      "message": "ادناه لاعادة فتح النافذة المنبثقة %s فقط في اصدار سطح المكتب. يرجى النقر فوق  \"فتح\"  في نافذة التاكيد المنبثقة لتشغيل اصدار سطح المكتب. او انقر على الزر Emergency Contact يتوفر ."
+   },
+   "failedToOpenLoading_Import_Export_Dec": {
+      "message": "ادناه لاعادة فتح النافذة المنبثقة %s يتوفر الاستيراد والتصدير فقط في اصدار سطح المكتب. يرجى النقر فوق \"فتح\"  في نافذة التاكيد المنبثقة لتشغيل اصدار سطح المكتب. او انقر على الزر ."
+   },
+   "failedToOpenLoading_Password_Health_Dec": {
+      "message": "ادناه لاعادة فتح النافذة المنبثقة %s تتوفر حماية كلمة السر فقط في اصدار سطح المكتب. يرجى النقر فوق \"فتح\"  في نافذة التاكيد المنبثقة لتشغيل اصدار سطح المكتب. او انقر على الزر."
+   },
+   "failedToOpen_DPM": {
+      "message": "فشل فتح اصدار سطح المكتب"
+   },
+   "failedToOpen_Dark_Web_Monitor_Dec": {
+      "message": "لفتح مرة اخرى %s لتنزيل اصدار سطح المكتب وتثبيته. او انقر على الزر %d فقط في اصدار سطح المكتب. انقر على رمز Dark Web Monitor يتوفر ."
+   },
+   "failedToOpen_Emergency_Contact_Dec": {
+      "message": "لفتح مرة اخرى %s لتنزيل اصدار سطح المكتب وتثبيته. او انقر على الزر %d فقط في اصدار سطح المكتب. انقر على رمز Emergency Contact يتوفر ."
+   },
+   "failedToOpen_Import_Export_Dec": {
+      "message": "لفتح مرة اخرى %s لتنزيل اصدار سطح المكتب وتثبيته. او انقر على الزر %d يتوفر الاستيراد والتصدير فقط في اصدار سطح المكتب. انقر على رمز."
+   },
+   "failedToOpen_Password_Health_Dec": {
+      "message": "لفتح مرة اخرى %s لتنزيل اصدار سطح المكتب وتثبيته. او انقر على الزر %d تتوفر حماية كلمة السر فقط في اصدار سطح المكتب. انقر على رمز"
+   },
+   "failedToRestore": {
+      "message": "فشل في الاستعادة."
+   },
+   "favoties": {
+      "message": "المفضلة"
+   },
+   "feedback": {
+      "message": "ردود الفعل"
+   },
+   "fill": {
+      "message": "ملء"
+   },
+   "firstName": {
+      "message": "الاسم الاول"
+   },
+   "fiveMinutes": {
+      "message": "5 دقائق"
+   },
+   "forgotYourPass": {
+      "message": "نسيت كلمة السر?"
+   },
+   "fourHours": {
+      "message": "4 ساعات"
+   },
+   "free": {
+      "message": "مجاني"
+   },
+   "gender": {
+      "message": "الجنس "
+   },
+   "genderFemale": {
+      "message": "انثى"
+   },
+   "genderMale": {
+      "message": "ذكر"
+   },
+   "genderNone": {
+      "message": "لاشئ"
+   },
+   "genderOther": {
+      "message": "اخرى"
+   },
+   "gender_copied": {
+      "message": "الجنس منسوخ"
+   },
+   "goPremiumBtn": {
+      "message": "انتقل للممتاز"
+   },
+   "go_back_to_signin": {
+      "message": "العودة الى تسجيل الدخول"
+   },
+   "hideCode": {
+      "message": "اخفاء كلمة السر"
+   },
+   "hidePass": {
+      "message": "اخفاء كلمة السر"
+   },
+   "installDesktopApp": {
+      "message": "تثبيت تطبيق سطح المكتب"
+   },
+   "invalid_email": {
+      "message": "عنوان بريد الكتروني غير صالح. يرجى ادخال عنوان البريد الالكتروني الذي قمت بالتحقق منه."
+   },
+   "invalid_master_pass": {
+      "message": "كلمة السر الرئيسية غير صالحة!"
+   },
+   "invalid_master_tips": {
+      "message": "كلمة السر الرئيسية غير صالحة. يرجى التحقق والمحاولة مرة اخرى."
+   },
+   "invalid_recovery_code": {
+      "message": "رمز استرداد غير صالح. يرجى التحقق والمحاولة مرة اخرى."
+   },
+   "invalid_secret_key": {
+      "message": "مفتاح سري غير صالح!"
+   },
+   "item_remove_from_favorites": {
+      "message": "ازالة من المفضلة"
+   },
+   "jcb": {
+      "message": "JCB"
+   },
+   "lang": {
+      "message": "ar"
+   },
+   "lastModifiedAt": {
+      "message": "عدلت في"
+   },
+   "lastName": {
+      "message": "اسم العائلة"
+   },
+   "lastPasswordChangedAt": {
+      "message": "غيرت كلمات السر في"
+   },
+   "learn_more": {
+      "message": "تعلم اكثر"
+   },
+   "length": {
+      "message": "الطول "
+   },
+   "loading": {
+      "message": "التحميل ..."
+   },
+   "loading_data_error": {
+      "message": "فشل التحميل. يرجى التحقق من اتصال الشبكة."
+   },
+   "lock": {
+      "message": "قفل"
+   },
+   "lock_comfirm_btn": {
+      "message": "الغاء القفل يدويا"
+   },
+   "login_comfirm_btn": {
+      "message": "تسجيل الدخول يدويا"
+   },
+   "login_comfirm_desc": {
+      "message": "انقر على حسابك الى\u003Cbr> تفويض تسجيل الدخول التلقائي &الغاء القفل من تطبيق سطح المكتب."
+   },
+   "login_feature_auto": {
+      "message": "تلقائي - الوصول عبر اجهزة غير محدودة مع المزامنة التلقائية"
+   },
+   "login_feature_easy": {
+      "message": "سهل - الحفظ التلقائي والتعبئة التلقائية لكلمات السر بنقرات بسيطة"
+   },
+   "login_feature_safe": {
+      "message": "آمن - قم بتخزين بياناتك باستخدام التشفير الافضل في فئته"
+   },
+   "login_feature_secure": {
+      "message": "آمن - انشاء كلمات سر قوية وفريدة من نوعها"
+   },
+   "login_feature_unlimited": {
+      "message": "غير محدود - حفظ كلمات سر غير محدودة ، والمدفوعات ، وما الى ذلك."
+   },
+   "login_left_title": {
+      "message": "طريقة آمنة وبسيطة ولكنها مجانية لادارة كلمات السر ، ضرورية لحياتك الرقمية."
+   },
+   "login_waiting_title": {
+      "message": "في انتظار التفويض من تطبيق سطح المكتب…"
+   },
+   "logins": {
+      "message": "تسجيلات الدخول"
+   },
+   "lower_case": {
+      "message": "(a-z) الاحرف الصغيرة"
+   },
+   "maestro": {
+      "message": "Maestro"
+   },
+   "mastercard": {
+      "message": "Mastercard"
+   },
+   "masterpassIncorrect": {
+      "message": "كلمة السر الرئيسية غير صالحة."
+   },
+   "match_change_pass": {
+      "message": "كلمة السر لا تفي بالمتطلبات."
+   },
+   "match_master_pass": {
+      "message": "كلمات السر غير متطابقة."
+   },
+   "middleName": {
+      "message": "الاسم الاوسط"
+   },
+   "month": {
+      "message": "شهر"
+   },
+   "more": {
+      "message": "اكثر"
+   },
+   "name": {
+      "message": "الاسم"
+   },
+   "name_copied": {
+      "message": "الاسم منسوخ"
+   },
+   "networkError": {
+      "message": "خطا في اتصال الشبكة."
+   },
+   "never": {
+      "message": "ابدا"
+   },
+   "newUser": {
+      "message": "مستخدم جديد?"
+   },
+   "new_password": {
+      "message": "كلمة سر جديدة"
+   },
+   "new_tag": {
+      "message": "علامة جديدة"
+   },
+   "new_tag_number": {
+      "message": "علامة جديدة"
+   },
+   "noItemsAddAllItem": {
+      "message": "لا توجد عناصر مضافة."
+   },
+   "noItemsAddLoginItem": {
+      "message": "لم تضاف تسجيلات دخول."
+   },
+   "noItemsAddNotesItem": {
+      "message": "لم تضاف ملاحظات آمنة."
+   },
+   "noItemsAddPayItem": {
+      "message": "لم تضاف معلومات الدفع."
+   },
+   "noItemsAddPersonalItem": {
+      "message": "لم تضاف معلومات شخصية."
+   },
+   "noItemsAddRecycleItem": {
+      "message": "لا توجد عناصر هنا."
+   },
+   "noItemsFound": {
+      "message": "لم يعثر على عناصر."
+   },
+   "noResult": {
+      "message": "لا نتيجة!"
+   },
+   "noSaved": {
+      "message": "لم تحفظ تسجيلات الدخول لهذا الموقع."
+   },
+   "noSavedPrss": {
+      "message": "لم تحفظ كلمة السر!"
+   },
+   "no_password_history": {
+      "message": "لا يوجد تواريخ كلمة السر."
+   },
+   "no_valid_secret_key_found": {
+      "message": " لم يتم العثور على مفتاح سري صالح!"
+   },
+   "notNow": {
+      "message": "ليس الآن"
+   },
+   "not_have_code": {
+      "message": "ليس لديك رمز استرداد?"
+   },
+   "notes": {
+      "message": "ملاحظات"
+   },
+   "notes_characters_tips": {
+      "message": " الاحرف المتبقية %s"
+   },
+   "notes_copied": {
+      "message": "تم نسخ الملاحظات"
+   },
+   "notes_placeholder": {
+      "message": "(Max limit: %s characters) ادخل بعض الملاحظات لهذا العنصر "
+   },
+   "numWords": {
+      "message": "(0-9) ارقام"
+   },
+   "offer_to_save_passwords": {
+      "message": " عرض لحفظ كلمات السر "
+   },
+   "offer_to_save_passwords_desc": {
+      "message": " المطالبة بحفظ كلمات السر عند تسجيل الدخول او التسجيل "
+   },
+   "ok": {
+      "message": "موافق"
+   },
+   "okIgotIt": {
+      "message": "نعم. حصلت عليه."
+   },
+   "oneHour": {
+      "message": "1 ساعة"
+   },
+   "oneMinute": {
+      "message": "1 دقيقة"
+   },
+   "one_time_Password": {
+      "message": "كلمة سر لمرة واحدة"
+   },
+   "one_time_pass_copied": {
+      "message": "كلمة السر لمرة واحدة منسوخ"
+   },
+   "only": {
+      "message": "فقط"
+   },
+   "open": {
+      "message": "افتح"
+   },
+   "options": {
+      "message": "الخيارات"
+   },
+   "passIncorrect": {
+      "message": "كلمة سر غير صحيحة."
+   },
+   "password": {
+      "message": "كلمة سر"
+   },
+   "password_copied": {
+      "message": "كلمة السر منسوخة"
+   },
+   "password_history_item": {
+      "message": "تاريخ كلمة السر"
+   },
+   "password_history_tips": {
+      "message": "%s تظهر هنا احدث كلمات السر."
+   },
+   "password_history_title": {
+      "message": "تاريخ كلمة السر"
+   },
+   "password_same": {
+      "message": "لا يمكن أن تكون كلمة السرالرئيسية الجديدة هي نفسها القديمة."
+   },
+   "password_tip_note": {
+      "message": "\u003Cb>ملاحظة:\u003C/b> iTop password لا تستخدم هديتك."
+   },
+   "password_tip_one": {
+      "message": "8 احرف على الاقل. يوصى باكثر من 16 حرفا."
+   },
+   "password_tip_three": {
+      "message": "رمز واحد على الاقل."
+   },
+   "password_tip_two": {
+      "message": "رقم واحد على الاقل."
+   },
+   "payment_Info": {
+      "message": "معلومات الدفع"
+   },
+   "personal_Info": {
+      "message": "معلومات شخصية"
+   },
+   "phoneNumber": {
+      "message": "رقم الهاتف"
+   },
+   "phone_number_copied": {
+      "message": "رقم الهاتف منسوخ"
+   },
+   "premiumExpiredPurchase": {
+      "message": "قسطك \u003Cb class='text-red'>انتهت!\u003C/b>"
+   },
+   "premiumExpiredPurchaseAlert": {
+      "message": "الميزات المتقدمة غير متوفرة الآن. قم بالترقية لمتابعة الوصول المميز ، والحفاظ على امان كلمات سرك بسهولة."
+   },
+   "premiumExpiringSoonPurchase": {
+      "message": "فقط \u003Cb class=\"text-yellow\">%s ايام\u003C/b> من الممتاز متبقي!"
+   },
+   "premiumExpiringSoonPurchaseAlert": {
+      "message": "ترقية للبقاء في الوصول المتميز الى الميزات المتقدمة التالية:"
+   },
+   "premiumFreePurchase": {
+      "message": "طريقة اسهل واكثر امانا لادارة كلمات سرك"
+   },
+   "premiumFreePurchaseAlert": {
+      "message": "ابدا الممتاز اليوم و احتفظ بهذه الميزات المتقدمة:"
+   },
+   "premiumFreePurchaseAlert_New": {
+      "message": "ابدأ بريميوم اليوم واحصل على هذه الميزات المتقدمة:"
+   },
+   "premiumFreePurchase_New": {
+      "message": "طريقة أسهل وأكثر أمانًا\u003Cbr> إدارة كلمات المرور الخاصة بك"
+   },
+   "premiumPurchase": {
+      "message": "لديك 30 يوما من الممتاز!"
+   },
+   "premiumPurchaseAlert": {
+      "message": "الآن يرجى الاستمتاع بالميزات المتقدمة التالية:"
+   },
+   "premiun": {
+      "message": "ممتاز"
+   },
+   "purchase_Dark_Web_Monitor": {
+      "message": "مراقبة وتنبيهات الإنترنت المظلم"
+   },
+   "purchase_Password_Health": {
+      "message": "التحقق من صحة كلمة السر"
+   },
+   "purchase_Password_Health_Check": {
+      "message": "التحقق من صحة كلمة المرور"
+   },
+   "purchase_Unlimited_Devices": {
+      "message": "مزامنة عبر أجهزة غير محدودة"
+   },
+   "questionMark": {
+      "message": "?"
+   },
+   "recovery_code_copied": {
+      "message": "رمز الاسترداد الذي تم نسخه"
+   },
+   "recycle_Bin": {
+      "message": "سلة المهملات"
+   },
+   "refresh": {
+      "message": "انعاش"
+   },
+   "rememberMeOnThisDevice": {
+      "message": "تذكرني على هذا الجهاز"
+   },
+   "remindExpirationDate": {
+      "message": "تذكيري قبل شهرين من تاريخ انتهاء الصلاحية"
+   },
+   "remind_me_after_days": {
+      "message": "تذكيري بعد 7 ايام"
+   },
+   "remind_me_tomorrow": {
+      "message": "ذكرني غدا"
+   },
+   "remind_password": {
+      "message": "ذكرني بتغيير كلمة السر بعد 90 يوما"
+   },
+   "remove": {
+      "message": "ازالة"
+   },
+   "remove_from_favorites": {
+      "message": "رs"
+   },
+   "remove_from_favorites_succ": {
+      "message": "ازيلت من المفضلة"
+   },
+   "reset": {
+      "message": "اعاده تعيين"
+   },
+   "reset_code_desc": {
+      "message": "PDF يرجى ادخال رمز استردادك لاعادة تعيين كلمة السر الرئيسية. تم حفظ رمز الاسترداد كملف."
+   },
+   "reset_code_title": {
+      "message": "ادخل رمز الاسترداد"
+   },
+   "reset_desc": {
+      "message": "ادخل اضافات البريد الالكتروني التي تم التحقق منهاs"
+   },
+   "reset_email_place": {
+      "message": "ادخل عنوان بريدك الالكتروني الذي تم التحقق منه"
+   },
+   "reset_master_title": {
+      "message": "اعادة تعيين كلمة السر الرئيسية"
+   },
+   "reset_recovery_code": {
+      "message": "اعادة تعيين رمز الاسترداد"
+   },
+   "reset_success_desc": {
+      "message": "تمت اعادة تعيين كلمة السر الرئيسية. يرجى تسجيل الدخول باستخدام كلمة السر الرئيسية الجديدة."
+   },
+   "reset_success_title": {
+      "message": "نجاح!"
+   },
+   "reset_title": {
+      "message": "اعادة تعيين كلمة السر"
+   },
+   "restore": {
+      "message": "استعاده "
+   },
+   "restoreSuccessfully": {
+      "message": "تمت استعادته بنجاح."
+   },
+   "retry": {
+      "message": "اعاده المحاوله"
+   },
+   "save": {
+      "message": "حفظ"
+   },
+   "saveIn_DPM": {
+      "message": "DualSafe Password Manager حفظ في "
+   },
+   "save_as_pdf": {
+      "message": "PDF حفظ باسم"
+   },
+   "save_code_desc_login": {
+      "message": "PDF يرجى حفظ رمز استردادك على النحو التالي ."
+   },
+   "save_code_desc_one": {
+      "message": "وطباعته للحفاظ على امانه PDF يرجى حفظ رمز استردادك بتنسيق."
+   },
+   "save_code_desc_options": {
+      "message": "وطباعته للحفاظ على أمانه.PDF رمز الاسترداد السابق غير صالح من الآن فصاعدا. يرجى حفظ رمز الاسترداد الجديد كملف "
+   },
+   "save_code_desc_two": {
+      "message": "اذا نسيت كلمة سرك الرئيسية DualSafe Password Manager يسمح لك باستعادة الوصول الى ."
+   },
+   "save_code_new_title": {
+      "message": "حفظ رمز الاسترداد الجديد"
+   },
+   "save_code_tips": {
+      "message": "\u003Cb>مهم:\u003C/b> مرة اخرى اذا نسيت كلمة سرك الرئيسية DualSafe Password Manager رمز الاسترداد هو الطريقة الوحيدة لمساعدتك في الوصول الى."
+   },
+   "save_code_title": {
+      "message": "حفظ رمز الاسترداد"
+   },
+   "savedFailedData": {
+      "message": "تمت مزامنة احدث البيانات من الخادم."
+   },
+   "savedFailedSynced": {
+      "message": "فشل الحفظ! تمت مزامنة احدث البيانات من الخادم."
+   },
+   "savedSuccessfully": {
+      "message": "تم الحفظ بنجاح."
+   },
+   "scan_web_page_QRCode": {
+      "message": " مسح رمز الاستجابة السريعة لصفحة الويب "
+   },
+   "search": {
+      "message": "بحث"
+   },
+   "secure": {
+      "message": "آمن"
+   },
+   "secureNotes": {
+      "message": "ملاحظات آمنة"
+   },
+   "secure_notes_placeholder": {
+      "message": "(Max limit: %s characters) ادخل ملاحظاتك المهمة هنا"
+   },
+   "securityCode": {
+      "message": "رمز الحماية"
+   },
+   "security_code_copied": {
+      "message": "رمز الامان منسوخ"
+   },
+   "set_master_password": {
+      "message": "تعيين كلمة سر رئيسية"
+   },
+   "set_master_password_tips": {
+      "message": "DualSafe Password Manger من اجل سلامة حسابك ، نقترح تعيين كلمة سر رئيسية لـ."
+   },
+   "set_master_tips": {
+      "message": "\u003Cb>مهم:\u003C/b> DualSafe Password Manager ستكون كلمة السر الرئيسية هي كلمة السر الصالحة الوحيدة للوصول الى ."
+   },
+   "set_master_title": {
+      "message": "تعيين كلمة السر الرئيسية"
+   },
+   "set_success_desc": {
+      "message": "تم تعيين كلمة السر الرئيسية وتم حفظ رمز الاسترداد بنجاح. يرجى تسجيل الدخول باستخدام كلمة سرك الرئيسية."
+   },
+   "settings": {
+      "message": "الاعدادات"
+   },
+   "settings_Auto_Fill": {
+      "message": "الملء التلقائي"
+   },
+   "settings_Auto_Fill_Dec": {
+      "message": "املا تلقائيا عمليات تسجيل الدخول المحفوظة ومعلومات الدفع وما الى ذلك."
+   },
+   "settings_Auto_Lock": {
+      "message": "قفل تلقائي"
+   },
+   "settings_Auto_Lock_Dec": {
+      "message": "تلقائيا بالتردد المحدد DualSafe Password Manager قفل برنامج "
+   },
+   "settings_Auto_Save": {
+      "message": "الحفظ التلقائي"
+   },
+   "settings_Auto_Save_Dec": {
+      "message": "حفظ اسماء المستخدمين وكلمات السر التي تم ادخالها تلقائيا"
+   },
+   "settings_Autofill_and_Autosave": {
+      "message": "الملء التلقائية والحفظ التلقائي"
+   },
+   "settings_Clear_Clipboard": {
+      "message": "مسح الحافظة"
+   },
+   "settings_Clear_Clipboard_Dec": {
+      "message": "مسح الحافظة تلقائيا في الوقت المحدد بعد نسخ كلمة السر"
+   },
+   "settings_General": {
+      "message": "عام"
+   },
+   "settings_General_Dec": {
+      "message": "كمدير افتراضي لكلمات السر DualSafe Password Manager تعيين "
+   },
+   "settings_Security_Options": {
+      "message": "خيارات الامان"
+   },
+   "settings_Show_Icon": {
+      "message": "اظهر ايقونة "
+   },
+   "settings_Show_Icon_Dec": {
+      "message": "في جميع مربعات ادخال كلمة السر لحفظ عمليات تسجيل دخولك بنقرة واحدة فقط DualSafe Password Manager اظهر ايقونة "
+   },
+   "showCode": {
+      "message": "اظهار كلمة السر"
+   },
+   "showPass": {
+      "message": "اظهار كلمة السر"
+   },
+   "signIn": {
+      "message": "تسجيل الدخول"
+   },
+   "signInLocked": {
+      "message": "تم قفل حسابك. حاول مرة أخرى في غضون 5 دقائق."
+   },
+   "signInNow": {
+      "message": "سجل الدخول الآن للتعبئة التلقائية لعمليات تسجيل الدخول لهذا الموقع."
+   },
+   "signInSave": {
+      "message": "تسجيل الدخول &الحفظ"
+   },
+   "signInTimeout": {
+      "message": "انتهت مهلة تسجيل الدخول! يرجى التحقق من شبكتك وحاول مرة اخرى!"
+   },
+   "signIn_DPM": {
+      "message": "DualSafe Password Manager تسجيل الدخول الى برنامج "
+   },
+   "signIn_Desc": {
+      "message": "سجل الدخول الآن لحفظ تسجيلات دخولك ب \u003Ca class=\"btn-link btn-name\">\u003C/a> وقم بتعبئتها تلقائيًا لك في المستقبل."
+   },
+   "signOut": {
+      "message": "تسجيل الخروج"
+   },
+   "sign_in_now": {
+      "message": "تسجيل الدخول الآن"
+   },
+   "sign_in_with": {
+      "message": "او سجل الدخول باستخدام"
+   },
+   "sign_in_with_app": {
+      "message": "تسجيل الدخول باستخدام تطبيق سطح المكتب"
+   },
+   "sign_in_with_facebook": {
+      "message": "تسجيل الدخول باستخدام فيسبوك"
+   },
+   "sign_in_with_google": {
+      "message": "تسجيل الدخول باستخدام قوقل"
+   },
+   "skip_for_now": {
+      "message": "تخطي في الوقت الحالي"
+   },
+   "sort_by": {
+      "message": "فرز حسب"
+   },
+   "sort_date_created": {
+      "message": " تاريخ الانشاء "
+   },
+   "sort_date_modified": {
+      "message": " تاريخ التعديل "
+   },
+   "sort_newest_first": {
+      "message": " الاحدث اولا "
+   },
+   "sort_oldest_first": {
+      "message": " الاقدم اولا "
+   },
+   "sort_show_az": {
+      "message": "A-Z"
+   },
+   "sort_show_favorites": {
+      "message": " اظهار المفضلة "
+   },
+   "sort_show_title_az": {
+      "message": " A to Z العنوان : "
+   },
+   "sort_show_title_za": {
+      "message": " Z to A العنوان: "
+   },
+   "sort_show_za": {
+      "message": "Z-A"
+   },
+   "sort_title": {
+      "message": "العنوان"
+   },
+   "state": {
+      "message": "الولاية/المحافظة"
+   },
+   "strong": {
+      "message": "قوي"
+   },
+   "success_desc": {
+      "message": "انقر فوق رمز الامتداد \u003Cspan class=\"succ-icon\">\u003C/span> على شريط الادوات. ثم يمكنك النقر فوق DualSafe Password قم بتثبيت برنامج Manager \u003Cspan class=\"succ-icon dpm\">\u003C/span> في اي وقت DualSafe Password Manager لاستخدام برنامج."
+   },
+   "success_title": {
+      "message": "التطابق 🎉🎉🎉 \u003Cbr>جاهز للعمل DualSafe Password Manager كلمة سر!"
+   },
+   "suggestion": {
+      "message": "اقتراح"
+   },
+   "suggestion_tips": {
+      "message": "يظهر هنا بيانات تسجيل الدخول المحفوظة للموقع المفتوح حاليًا."
+   },
+   "symbols": {
+      "message": "(%s) الرموز"
+   },
+   "systemLocks": {
+      "message": "قفل النظام"
+   },
+   "tags": {
+      "message": "العلامات"
+   },
+   "tenMinutes": {
+      "message": "10 دقائق"
+   },
+   "thirtyMinutes": {
+      "message": "30 دقائق"
+   },
+   "title": {
+      "message": "العنوان"
+   },
+   "title_placeholder": {
+      "message": "الرجاء ادخال عنوان"
+   },
+   "token_invalid_desc": {
+      "message": "انتهت صلاحية جلستك. يرجى تسجيل الدخول مرة أخرى."
+   },
+   "tools": {
+      "message": "الادوات"
+   },
+   "tools_Dark_Web_Monitor": {
+      "message": "شاشة الويب المظلم"
+   },
+   "tools_Dark_Web_Monitor_Dec": {
+      "message": "مساعدتك في مراقبة تسرب البيانات الحساسة في الويب المظلم"
+   },
+   "tools_Import_Export": {
+      "message": "الاستيراد والتصدير"
+   },
+   "tools_Import_Export_Dec": {
+      "message": "بنقرة 1 فقط CSV استيراد البيانات من المتصفحات او ادوات كلمات السر الاخرى & تصدير بياناتك المحفوظة الى ملف"
+   },
+   "tools_Password_Health": {
+      "message": "صحة كلمة السر"
+   },
+   "tools_Password_Health_Dec": {
+      "message": "مساعدتك في التحقق من كلمات السر الضعيفة مثل كلمات السر الضعيفة او المعاد استخدامها او المخترقة"
+   },
+   "tools_Unlimited_Passwords": {
+      "message": "كلمات سر غير محدودة"
+   },
+   "tools_Unlimited_Passwords_Only": {
+      "message": "(فقط 50 على الخطة المجانية)"
+   },
+   "twoMinutes": {
+      "message": "2 دقائق"
+   },
+   "type": {
+      "message": "نوع"
+   },
+   "unionpay": {
+      "message": "unionpay"
+   },
+   "unlock": {
+      "message": "فك القفل"
+   },
+   "unlockDPM": {
+      "message": "DualSafe Password Manager فتح "
+   },
+   "unlockDPM_Desc": {
+      "message": "افتح القفل الآن لحفظ عمليات تسجيل دخولك ب \u003Ca class=\"btn-link btn-name\">\u003C/a> وتعبئتها تلقائيا لك في المستقبل."
+   },
+   "unlockNow": {
+      "message": "افتح القفل الآن لملء عمليات تسجيل الدخول تلقائيا لهذا الموقع."
+   },
+   "unlockSave": {
+      "message": "فتح و حفظ"
+   },
+   "unlock_now": {
+      "message": "افتح القفل الآن"
+   },
+   "update": {
+      "message": "تحديث"
+   },
+   "updateFailed": {
+      "message": "فشل التحديث."
+   },
+   "updateLogins": {
+      "message": "تحديث عمليات تسجيل الدخول"
+   },
+   "updateSuccessfully": {
+      "message": "حدثت بنجاح."
+   },
+   "upgradeBtn": {
+      "message": "تطوير"
+   },
+   "upgradeNowBtn": {
+      "message": "تحديث الآن"
+   },
+   "upper_case": {
+      "message": "(A-Z) الاحرف الكبيرة"
+   },
+   "url": {
+      "message": "رابط"
+   },
+   "url_copied": {
+      "message": "الموقع الالكتروني منسوخ"
+   },
+   "use": {
+      "message": "استخدام"
+   },
+   "use_generator_password": {
+      "message": "استخدام كلمة السر"
+   },
+   "user_manual": {
+      "message": "دليل الاستخدام"
+   },
+   "username": {
+      "message": " اسم المستخدم"
+   },
+   "username_copied": {
+      "message": "اسم المستخدم منسوخ"
+   },
+   "username_placeholder": {
+      "message": "بريد الكتروني / اسم المستخدم / رقم الهاتف"
+   },
+   "view": {
+      "message": "عرض"
+   },
+   "visa": {
+      "message": "Visa"
+   },
+   "visaelectron": {
+      "message": "visaelectron"
+   },
+   "weak": {
+      "message": "ضعيف"
+   },
+   "web_password_sync": {
+      "message": "ملاحظة: يرجى التاكد من تحديث كلمة السر للموقع"
+   },
+   "welcomeTo": {
+      "message": "مرحبا بكم في"
+   },
+   "year": {
+      "message": "سنة"
+   },
+   "yes": {
+      "message": "نعم"
+   },
+   "zip": {
+      "message": "ZIP"
+   },
+   "zipPostalCode": {
+      "message": "ZIP/الرمز البريدي"
+   }
+}

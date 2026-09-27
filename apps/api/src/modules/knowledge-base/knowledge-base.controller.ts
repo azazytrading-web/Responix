@@ -1,4 +1,19 @@
-import { Body, Controller, Delete, Get, Param, Post, Put, Query, Req, Version } from "@nestjs/common";
+import {
+  BadRequestException,
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  Put,
+  Query,
+  Req,
+  UploadedFile,
+  UseInterceptors,
+  Version
+} from "@nestjs/common";
+import { FileInterceptor } from "@nestjs/platform-express";
 import {
   ApiBadRequestResponse,
   ApiBearerAuth,
@@ -19,13 +34,15 @@ import {
   CreateKnowledgeSpaceDto,
   KnowledgeDocumentListQueryDto,
   KnowledgeNamedDto,
+  CreateKnowledgeTextDocumentDto,
   PublishKnowledgeDocumentDto,
   RollbackKnowledgeDocumentDto,
   UpdateKnowledgeCollectionDto,
   UpdateKnowledgeDocumentDto,
   UpdateKnowledgeFolderDto,
   UpdateKnowledgeNamedDto,
-  UpdateKnowledgeSpaceDto
+  UpdateKnowledgeSpaceDto,
+  UploadKnowledgeDocumentDto
 } from "./dto/knowledge-base.dto";
 
 @ApiTags("Knowledge Base")
@@ -44,6 +61,8 @@ export class KnowledgeBaseController {
   updateSpace(@Req() r: TenantRequest,@Param("id")id:string,@Body()dto:UpdateKnowledgeSpaceDto){const c=r.tenantContext!;return this.service.updateSpace(c.workspace.id,c.user.id,id,dto);}
   @Delete("spaces/:id") @Version("1") @Permissions("knowledge.base.delete") @ApiConflictResponse({description:"Knowledge space must be empty"}) @ApiOperation({ summary: "Soft-delete an empty knowledge space" })
   deleteSpace(@Req()r:TenantRequest,@Param("id")id:string){const c=r.tenantContext!;return this.service.deleteSpace(c.workspace.id,c.user.id,id);}
+  @Post("spaces/:id/publish") @Version("1") @Permissions("knowledge.base.publish") @ApiConflictResponse({description:"Space contains missing, failed, or unpublished knowledge documents"}) @ApiOperation({ summary: "Publish all indexed knowledge documents in a space" })
+  publishSpace(@Req()r:TenantRequest,@Param("id")id:string){const c=r.tenantContext!;return this.service.publishSpace(c.workspace.id,c.user.id,id);}
 
   @Get("collections") @Version("1") @Permissions("knowledge.base.read") @ApiOperation({ summary: "List knowledge collections" })
   collections(@Req()r:TenantRequest,@Query("spaceId")spaceId?:string){return this.service.listCollections(r.tenantContext!.workspace.id,spaceId);}
@@ -89,6 +108,11 @@ export class KnowledgeBaseController {
   history(@Req()r:TenantRequest,@Param("id")id:string){return this.service.history(r.tenantContext!.workspace.id,id);}
   @Post("documents") @Version("1") @Permissions("knowledge.base.write") @ApiBadRequestResponse({description:"Document hierarchy or metadata is invalid"}) @ApiOperation({ summary: "Create a knowledge document draft" })
   createDocument(@Req()r:TenantRequest,@Body()dto:CreateKnowledgeDocumentDto){const c=r.tenantContext!;return this.service.createDocument(c.workspace.id,c.user.id,dto);}
+  @Post("documents/upload") @Version("1") @Permissions("knowledge.base.write") @ApiBadRequestResponse({description:"Unsupported file type or missing upload field"}) @ApiConflictResponse({description:"Document slug already exists in the workspace"}) @ApiOperation({ summary: "Upload a knowledge document file and process it into indexed chunks" })
+  @UseInterceptors(FileInterceptor("file", { limits: { fileSize: 25 * 1024 * 1024 } }))
+  uploadDocument(@Req()r:TenantRequest,@UploadedFile()file:{buffer:Buffer;originalname:string;mimetype:string}|undefined,@Body()fields:UploadKnowledgeDocumentDto){if(!file) throw new BadRequestException("A file is required for document upload");const c=r.tenantContext!;return this.service.uploadDocument(c.workspace.id,c.user.id,{buffer:file.buffer,originalName:file.originalname,mimeType:file.mimetype},fields);}
+  @Post("documents/text") @Version("1") @Permissions("knowledge.base.write") @ApiConflictResponse({description:"Document slug already exists in the workspace"}) @ApiOperation({ summary: "Create a knowledge document from raw text and process it into indexed chunks" })
+  createTextDocument(@Req()r:TenantRequest,@Body()dto:CreateKnowledgeTextDocumentDto){const c=r.tenantContext!;return this.service.createTextDocument(c.workspace.id,c.user.id,dto);}
   @Put("documents/:id") @Version("1") @Permissions("knowledge.base.write") @ApiOperation({ summary: "Update knowledge document draft metadata" })
   updateDocument(@Req()r:TenantRequest,@Param("id")id:string,@Body()dto:UpdateKnowledgeDocumentDto){const c=r.tenantContext!;return this.service.updateDocument(c.workspace.id,c.user.id,id,dto);}
   @Post("documents/:id/publish") @Version("1") @Permissions("knowledge.base.publish") @ApiOperation({ summary: "Publish an immutable knowledge document revision" })

@@ -1,0 +1,3688 @@
+
+{
+	"##description":"This file is used to help DPM identify elements.",
+	"##Ver":"2022/1/5",
+	"$$":{
+		"websites":[
+			{
+				"use":"register",
+				"path_match":"(/signup|/sign-up|/register|/sign_up|/join|/Registration|/create-account)",
+				"search_match":"",
+				"href_match":"#/register$"
+			}
+		],
+		"forms": [
+			{
+				"id":"U",
+				"submit":"",
+				"selector": "*[id*=register]",
+				"use":"register",
+				"fields":[]
+			},
+			{
+				"id":"U",
+				"submit":"",
+				"selector": "*[id*=sign-up]",
+				"use":"register",
+				"fields":[]
+			},
+			{
+				"id":"U",
+				"submit":"",
+				"selector": "*[action*='/signup']",
+				"use":"register",
+				"fields":[]
+			},
+			{
+				"id":"U",
+				"submit":"",
+				"selector": "*[action*=sign-up]",
+				"use":"register",
+				"fields":[]
+			},
+			{
+				"id":"U",
+				"submit":"",
+				"selector": "*[action*=register]",
+				"use":"register",
+				"fields":[]
+			},
+			{
+				"id":"U",
+				"submit":"",
+				"selector": "*[id*=login]",
+				"use":"login",
+				"fields":[]
+			},
+			{
+				"id":"U",
+				"submit":"",
+				"selector": "*[class*=create-account]",
+				"use":"register",
+				"fields":[],
+				"##":"www.karativa.com register page"
+			},
+			{
+				"id":"U",
+				"submit":"",
+				"selector": "!",
+				"use":"PERSONINFO",
+				"fields":[
+					{
+						"selector":"input[type=email]",
+						"type": ["EMAIL"]
+					} 
+				]
+			}
+		]
+		,
+		"fields" : [
+			{
+				"selector":"input[autocomplete=new-password][type=password]",
+				"type": ["password"],
+				"use":"register",
+				"priority":-1
+			},
+			{
+				"selector":"input[name=otp-password],input[autocomplete=one-time-code],input[type=otp],#otp,#otpCode,input[name=otp],input[name*=totp],input[name=otpCode],.otp-input,.totp-code,.otp-code",
+				"type": ["totp"],
+				"use":"login",
+				"##1":"input[name=otpCode]kraken.com; input[name*=totp]builder.knack.com"
+			},
+			{
+				"selector":"input[autocomplete=email]",
+				"type": ["EMAIL"]
+			}
+			,
+			{
+				"selector":"input[autocomplete=username]",
+				"type": ["username"]
+			},
+			{
+				"selector":"input[type=email],input[name=email],input[name=memberId],input[name=user_id],input[name=login_email],input[name*=username],input[id*=username],input[name*=Username],input[name*=UserName],input[name*=UserId],input[name=login]",
+				"##":"input[name=username]<https://auth.services.adobe.com/>;pf.username<id.elsevier.com>;loginUsername<login.norton.com>;panAdhaarUserId<eportal.incometax.gov.in>",
+				"type": ["username"]
+			},
+			{
+				"selector":"INPUT[disable]",
+				"type": ["ignore"]
+			}
+		]
+		,
+		"except": [
+		]
+		,
+		"config":{
+			"loginText":["log in", "sign in", "login", "go", "submit", "continue", "next","登录"],
+			"registerText":["register","create account","sign up"],
+			"btnQuery":"*[class*=button],*[class*=btn],.btn,button,input[type=button],input[type=submit],*[role=button]",
+			"match":"button[id*=create-account],button[class*=register],input[class*=register],input[class*=login],button[id=sign-in],button[id*=login],button[class*=login]",
+			"match2":"button[type=submit]"
+		}
+	},
+	"127_0_0_1:5500" :{
+        "websites":[],
+        "forms": [
+            {
+                "selector": "#payment_1",
+                "use":"PAYMENT",
+                "fields":[
+                    {
+                        "selector":"select[name=cardtype]",
+                        "type": ["CARDTYPE"],
+                        "options":{
+                            "valuepair":"100000"
+                        }
+                    },
+                    {
+                        "selector":"input[name=number]",
+                        "type": ["NUMBER"]
+                    },
+                    {
+                        "selector":"input[name=securitycode]",
+                        "type": ["SECURITYCODE"]	
+                    },
+                    {
+                        "selector":"input[name=expire]",
+                        "type": ["EXPIRE"],
+                        "options":{
+                            "dtfmt":"{YYYY}-{MM}"
+                        }
+                    }
+                ],
+                "options":{
+                    "full":"payment"
+                }
+            },
+            {
+                "selector": "#payment_2",
+                "use":"PAYMENT",
+                "fields":[
+                    {
+                        "selector":"select[name=cardtype]",
+                        "type": ["CARDTYPE"],
+                        "options":{
+                            "valuepair":"100000"
+                        }
+                    },
+                    {
+                        "selector":"input[name=number]",
+                        "type": ["NUMBER"]
+                    },
+                    {
+                        "selector":"input[name=securitycode]",
+                        "type": ["SECURITYCODE"]	
+                    },
+                    {
+                        "selector":"input[name=eyear]",
+                        "type": ["EXPYEAR"],
+                        "options":{
+                            "dtfmt":"{YYYY}"
+                        }
+                    },
+                    {
+                        "selector":"input[name=emonth]",
+                        "type": ["EXPMONTH"],
+                        "options":{
+                            "dtfmt":"{M+}"
+                        }
+                    }
+                ],
+                "options":{
+                    "full":"payment"
+                }
+            },
+			{
+                "selector": "#payment_2",
+                "use":"PERSONINFO",
+				"urlmatch":"/personal.html", 
+                "fields":[
+                    {
+                        "selector":"input[type=email]",
+                        "type": ["EMAIL","~username"]
+					},
+					{
+                        "selector":"input[type=tel]",
+                        "type": ["NUMBER"]
+                    }
+                ],
+                "options":{
+                    "full":"peronalinfo"
+                }
+            }
+        ]
+        ,
+        "fields":[
+          
+        ]
+        ,
+        "except": [
+        ]
+    },
+	"192_168_2_240:5500":{
+		"forms": [ 
+			{
+			  "id": "4BDCB975-C690-5746-91FA-17F3E716282A",
+			  "selector": "!",
+			  "use": "PERSONINFO",
+			  "fields": [ 
+				{
+				  "selector": "input[type=email]",
+				  "type": [ "EMAIL","~username"]
+				}, 
+				{
+				  "selector": "input[type=tel]",
+				  "type": [ "PHONE" ]
+				}  ]
+			}
+		],
+		"fields":[
+			{
+				"selector":"input[type=email]",
+				"type": ["~username"]
+			}
+        ]
+	},
+	"www_tejar": {
+		"except": [
+			{"element":"img"} 		
+		]
+	},
+	"www_telemart" : {
+		"except": [
+			{"element":"img"} 			
+		]
+	},
+	"www_trade-copier_com" : {
+		"except": [
+			{"element":"img"} 	
+		]
+	},
+	"telemart": 
+	{
+	  "websites": ["telemart.pk"],
+	  "forms": [
+		{
+		  "id": "D0C33B3E-A685-4A86-FC1F-81AAC03E68EA",
+		  "selector": "form.w-full",
+		  "use": "PERSONINFO",
+		  "fields": [
+				{
+				"selector": "INPUT[type=email]#email",
+				"type": [ "EMAIL", "~username", "~ignore" ]
+				}, 
+				{
+				"selector": "INPUT[type=number]#phone",
+				"type": [ "PHONE", "~ignore" ]
+				} 
+			]
+		},
+		{
+			"submit":"",
+			"selector": "!",
+			"use":"login",
+			"fields":[
+				{
+					"selector":"input[tabindex='1'][type=email]",
+					"type": ["username"],
+					"use":"login"
+				},
+				{
+					"selector":"input[tabindex='2'][type=password]",
+					"type": ["password"],
+					"use":"login"
+				}
+			]
+		}
+	]
+	,
+	"fields": [],
+	"except": []
+	},	  
+	"my_vultr_com" : {
+		"websites": [],
+		"forms": [ 
+			{
+				"id":"4BDCB975-C690-5746-91FA-17F3E716FBVR",
+				"selector": "!",
+				"use": "PAYMENT",
+				"fields": [
+				{
+					"selector": "input[name=cc_number]",
+					"type": [ "NUMBER", "~ignore" ]
+				}, 
+				{
+					"selector": "input[name=cc_cscv]",
+					"type": [ "SECURITYCODE", "~ignore" ]
+				}, 
+				{
+					"selector": "input[name=cc_expiry]",
+					"type": [ "EXPIRE", "~ignore" ],
+					"options": 
+					{
+					"dtfmt": "{MM}/{YY}"
+					}
+				} ],
+				"options": 
+				{
+					"full": "payment"
+				}
+			}
+			,
+			{
+				"id": "4BDCB975-C690-5746-91FA-17F3E716FBAB",
+				"selector": "!",
+				"use": "PERSONINFO",
+				"fields": [ 
+				  {
+					"selector": "INPUT[name=cc_name]",
+					"type": [ "NAME", "~ignore" ]
+				  }, 
+				  {
+					"selector": "INPUT[name=cc_address]",
+					"type": [ "ADDRESS", "~ignore" ]
+				  }, 
+				  {
+					"selector": "INPUT[name=cc_city]",
+					"type": [ "CITY", "~ignore" ]
+				  }, 
+				  {
+					"selector": "INPUT[name=cc_zip]",
+					"type": [ "POST", "~ignore" ]
+				  } ]
+			  }
+	  ],
+		"fields": [],
+		"except": []
+	},
+	"js_stripe_com": {
+	  "websites": ["www.bark.us"],
+	  "forms": [ 
+		{
+		   "id":"4BDCB975-C690-5746-91FA-17F3E716HRVK",
+		  "selector": "!",
+		  "use": "PAYMENT",
+		  "fields": [ 
+			 
+			{
+			  "selector": "#Field-numberInput",
+			  "type": [ "NUMBER", "~ignore" ]
+			}, 
+			{
+			  "selector": "#Field-cvcInput",
+			  "type": [ "SECURITYCODE", "~ignore" ]
+			}, 
+			{
+			  "selector": "#Field-expiryInput",
+			  "type": [ "EXPIRE", "~ignore" ],
+			  "options": 
+			  {
+				"dtfmt": "{MM}/{YY}"
+			  }
+			} ],
+		  "options": 
+		  {
+			"full": "payment"
+		  }
+		} 
+	],
+	  "fields": [],
+	  "except": []
+	},
+	"jooble_org":{
+		"fields":[
+			{
+				"selector":"input[name=email]",
+				"type": ["username"]
+			}
+		]
+	},
+	"account_docusign_com":{
+		"fields":[
+			{
+				"selector":"input[name=email]",
+				"type": ["username"]
+			}
+		]
+	},
+	"www_indiamart_com":{
+		"fields":[
+			{
+				"selector":"input[name=mobile]",
+				"type": ["username"]
+			}
+		]
+	},
+	"seguro_elmundo":{
+		"fields":[
+			{
+				"selector":"input[name=email]",
+				"type": ["username"]
+			}
+		]
+	},
+	"login_libero":{
+		"fields":[
+			{
+				"selector":"input[name=LOGINID]",
+				"type": ["username"]
+			}
+		]
+	},
+	"id_condenast_com":{
+		"fields":[
+			{
+				"selector":"input[name=email]",
+				"type": ["username"]
+			}
+		]
+	},
+	"secure_npr_org":{
+		"fields":[
+			{
+				"selector":"input[name=email]",
+				"type": ["username"]
+			}
+		]
+	},
+	"secure_indeed_com":{
+		"fields":[
+			{
+				"selector":"input[name=__email]",
+				"type": ["username"]
+			}
+		]
+	},
+	"passport_yandex_com":{
+		"fields":[
+			{
+				"selector":"input[name=login]",
+				"type": ["username"]
+			},
+			{
+				"selector":"input[name=phone]",
+				"type": ["username"]
+			}
+		]
+	},
+	"www_mercadolivre_com":{
+		"fields":[
+			{
+				"selector":"input[type=email]",
+				"type": ["username"]
+			}
+		]
+	},
+	"slack_com":{
+		"fields":[
+			{
+				"selector":"input[name=email]",
+				"type": ["username"]
+			}
+		]
+	},
+	"accounts_intuit_com":{
+		"fields":[
+			{
+				"selector":"input[name=Email]",
+				"type": ["username"]
+			}
+		]
+	},
+	"seguro_marca_com":{
+		"fields":[
+			{
+				"selector":"input[name=email]",
+				"type": ["username"]
+			}
+		]
+	},	
+	"feedly_com":{
+		"fields":[
+			{
+				"selector":"input[name=login]",
+				"type": ["username"]
+			}
+		]
+	},
+	"www_cricbuzz_com":{
+		"fields":[
+			{
+				"selector":"input[type=email]",
+				"type": ["username"]
+			}
+		]
+	},
+	"www_grammarly_com":{
+		"fields":[
+			{
+				"selector":"input[type=email]",
+				"type": ["username"]
+			}
+		]
+	},
+	"identity_flickr_com":{
+		"fields":[
+			{
+				"selector":"input[type=email]",
+				"type": ["username"]
+			}
+		]
+	},
+	"www_trustpilot_com":{
+	"fields":[
+			{
+				"selector":"input[type=email]",
+				"type": ["username"]
+			}
+		]
+	},
+	"accounts_ft_com":{
+		"fields":[
+			{
+				"selector":"input[name=email]",
+				"type": ["username"]
+			}
+		]
+	},
+	"www_lavanguardia_com":{
+		"fields":[
+			{
+				"selector":"input[name=email_address]",
+				"type": ["username"]
+			}
+		]
+	},
+	"www_weebly_com":{
+		"fields":[
+			{
+				"selector":"input[name=email]",
+				"type": ["username"]
+			}
+		]
+	},
+	"www_indiatimes_com":{
+		"fields":[
+			{
+				"selector":"input[name=mobile]",
+				"type": ["username"]
+			}
+		]
+	},
+	"www_youtube_com":{
+		"except": [
+			{"elementObserver":"*"}
+		]
+	},
+	"mygift":{
+		"except": [
+			{"elementObserver":":not(body)"} 			
+		]
+	},
+	"login_centraalbeheer":{
+		"except": [
+			{"selector":"input[autocomplete=new-password][type=password]"}
+		]
+	},
+	"app_vidnoz_com":{
+		"forms":[{
+			"submit":"#email-signin-continue",
+			"selector": "!",
+			"use":"login",
+			"fields":[
+				{
+					"selector":"#signinemail",
+					"type": ["username"],
+					"use":"login"
+				},
+				{
+					"selector":"#signinpassword",
+					"type": ["password"],
+					"use":"login"
+				} 
+			]
+		}
+	]
+	},
+	"www_itopvpn_com": {
+		"forms": [ 
+			{
+				"id": "4BDCB975-C690-5746-91FA-17F3E716WFSG",
+				"selector": "!",
+				"urlmatch":"/signup", 
+				"use": "register",
+				"fields": 
+				[
+					{
+						"selector":"input[name=email]",
+						"type": ["~EMAIL","username"],
+						"options":{
+							"combination":"username"
+						}
+					},
+					{
+						"selector":"input[name=password]",
+						"type": ["~EMAIL","password"],
+						"options":{
+							"combination":"Password1"
+						}
+					},
+					{
+						"selector":"input[name=confirm]",
+						"type": ["~EMAIL","password"],
+						"options":{
+							"combination":"Password2"
+						}
+					}
+				]
+			},
+			{
+				"id": "4BDCB975-C690-5746-91FA-17F3E716WAFB",
+				"selector": "!",
+				"urlmatch":"/login", 
+				"use": "login",
+				"fields": 
+				[
+					{
+						"selector":"input[name=email]",
+						"type": ["~EMAIL","username"],
+						"options":{
+							"combination":"username"
+						}
+					},
+					{
+						"selector":"input[name=password]",
+						"type": ["~EMAIL","password"],
+						"options":{
+							"combination":"Password"
+						}
+					}
+				]
+			}
+		]
+	},
+	"account_samsung_com": {
+		"forms": [
+			{
+				"submit":"#submitForCaptcha",
+				"selector": "form[name=signUpForm]",
+				"use":"register",
+				"fields":[
+					{
+						"selector":"#signUpID",
+						"type": ["username"],
+						"options":{
+							"combination":"username"
+						}
+					},
+					{
+						"selector":"#password",
+						"type": ["password"],
+						"options":{
+							"combination":"Password1"
+						}
+					},
+					{
+						"selector":"#confirmPassword",
+						"type": ["password"],
+						"options":{
+							"combination":"Password2"
+						}
+					}
+				]
+			},
+			{
+				"id": "51424DA0-B790-4CC6-1B64-949212369E5A-AS",
+				"selector": "FORM[name='signUpForm']",
+				"use": "PERSONINFO",
+				"fields": [
+				  {
+					"selector": "[name='givenName1']",
+					"type": [ "FNAME", "~ignore" ]
+				  }, 
+				  {
+					"selector": "INPUT[name='familyName1']",
+					"type": [ "LNAME", "~ignore" ]
+				  }, 
+				  {
+					"selector": "INPUT[name='signUpID']",
+					"type": [ "EMAIL", "~username", "~ignore" ]
+				  }, 
+				  {
+					"selector": "INPUT[name='year']",
+					"type": [ "BYEAR", "~ignore" ]
+				  }, 
+				  {
+					"selector": "INPUT[name='day']",
+					"type": [ "BDAY", "~ignore" ]
+				  }, 
+				  {
+					"selector": "select[name='month']",
+					"type": [ "BMOTH", "~ignore" ]
+				  } , 
+				  {
+					"selector": "select[name='month']",
+					"type": [ "BMOTH", "~ignore" ]
+				  } ]
+				  ,
+                "options":{
+                    "full":"peronalinfo"
+                }
+			}
+		]
+	},
+	"connect_ubisoft_com": 
+	{
+	  "websites": [],
+	  "forms": [
+		{
+			"id": "EA1C6602-ED2E-41C5-8108-8DA6E9B91A75-2",
+			"selector": "!",
+			"use": "PERSONINFO",
+			"fields": [ 
+				{
+				"selector": "#Username",
+				"type": [ "NAME", "~ignore" ]
+				}
+			]
+		}
+		,
+		{
+			"id": "EA1C6602-ED2E-41C5-8108-8DA6E9B91A75-3",
+			"selector": "!",
+			"use": "PERSONINFO",
+			"fields": [ 
+				{
+				"selector": "#ConfirmAccountEmail",
+				"type": [ "EMAIL", "~username", "~ignore" ]
+				}]
+		},
+		{
+			"id": "EA1C6602-ED2E-41C5-8108-8DA6E9B91A75-1",
+			"selector": "!",
+			"use": "PERSONINFO",
+			"fields": [ 
+				{
+				"selector": "#AccountEmail",
+				"type": [ "EMAIL", "~username", "~ignore" ]
+				}]
+			}
+		],
+	  "fields": [],
+	  "except": []
+	},
+	"auth_taxbit_com":{
+		"forms": [ 
+			{
+			  "selector": "#signup-form",
+			  "use": "register",
+			  "fields":[]
+			}],
+        "fields":[
+			{
+				"selector":"input[name=code]",
+				"type": ["totp"]
+			}
+        ]
+	},
+	"app_phrase_com":{
+        "fields":[
+			{
+				"selector":"#code",
+				"type": ["totp"]
+			}
+        ]
+	},
+	"app_plex":{
+        "fields":[
+			{
+				"selector":"input[name=verificationCode]",
+				"type": ["totp"]
+			}
+        ]
+	},
+	"auth_meethue_com" : {
+        "fields":[
+			{
+				"selector":"#code",
+				"type": ["totp"]
+			}
+        ]
+	},
+	"app_koofr_net":{
+        "fields":[
+			{
+				"selector":"#code",
+				"type": ["totp"]
+			}
+        ]
+	},
+	"www_bilibili_com":{
+		"except": [
+			{"elementObserver":":not(.bili-mini-mask)"}
+		]
+	},
+	"www_paypal_com" :{
+		"websites":[],
+		"forms": [ 
+		]
+		,
+		"fields":[
+			{
+				"selector":"#cardNumber",
+				"type": ["cardNumber"],
+				"options":{
+					"checkOverlapped":true
+				}
+			},
+			{
+				"selector":"#verificationCode",
+				"type": ["cardNumber_verificationCode"],
+				"options":{
+					"checkOverlapped":true
+				}
+			}
+		]
+		,
+		"except": [
+		]
+	},
+	"dash_cloudflare_com":{
+		"forms": [
+		]
+		,
+		"fields":[
+			{
+				"selector":"input[name=google_authenticator_code]",
+				"type": ["totp"],
+				"use":"login"			
+			}
+
+		]
+		,
+		"except": [
+		]
+	},
+	"www_latimes_com":{
+		"forms": [
+			{
+				"submit":".reg-submit",
+				"selector": "!",
+				"use":"",
+				"fields":[
+					{
+						"selector":"input[name=zipCode]",
+						"type": ["ignore","zipCode"],
+						"use":"register",
+						"options":{
+							"reset":true,
+							"ignoreVisibleCheck":true
+						}
+					},
+					{
+						"selector":"input[name=password]",
+						"type": ["password"],
+						"options":{
+							"combination":"Password",
+							"ignoreVisibleCheck":true
+						}
+					},
+					{
+						"selector":"input[name=email]",
+						"type": ["EMAIL","username"],
+						"options":{
+							"combination":"username",
+							"ignoreVisibleCheck":true
+						}
+					}
+				]
+			}
+		]
+		,
+		"fields":[
+		]
+		,
+		"except": [
+		]
+	},
+	"www_last":{
+		"websites":[],
+		"forms": [
+			{
+				"submit":"button[class*=form-submit]",
+				"selector": "form[action='/join']",
+				"use":"register",
+				"fields":[
+					{
+						"selector":"#id_email",
+						"type": ["username","EMAIL"],
+						"options":{
+							"combination":"username"
+						}
+					},
+					{
+						"selector":"#id_userName",
+						"type": ["ignore"]
+					},
+					{
+						"selector":"#id_password",
+						"type": ["password"],
+						"options":{
+							"combination":"Password1"
+						}
+					},
+					{
+						"selector":"#id_passwordConf",
+						"type": ["password"],
+						"options":{
+							"combination":"Password2"
+						}
+					}
+				]
+			}
+		],
+		"fields":[
+		]
+		,
+		"except": [
+		]
+	},
+	"cdn_registerdisney_go_com":{
+		"websites":[],
+		"forms": [
+			{
+				"submit":"#BtnSubmit",
+				"selector": ".login",
+				"use":"login",
+				"fields":[
+					{
+						"selector":"#InputLoginValue",
+						"type": ["username","EMAIL"],
+						"use":"login",
+						"options":{
+							"combination":"username"
+						}
+					}
+				],
+				"important":"yes"
+			},
+			{
+				"submit":"#BtnSubmit",
+				"selector": ".registration",
+				"use":"register",
+				"fields":[
+					{
+						"selector":"#InputEmail",
+						"type": ["username","EMAIL"],
+						"use":"register",
+						"options":{
+							"combination":"username"
+						}
+					}
+				],
+				"important":"yes"
+			}
+		],
+		"fields":[
+		]
+		,
+		"except": [
+		]
+	},
+	"www_independent_co":{
+		"websites":[],
+		"forms": [
+			{
+				"submit":"button[class*=form-submit]",
+				"selector": "#reg-form",
+				"use":"register",
+				"fields":[
+					{
+						"selector":"#reg-form-email",
+						"type": ["EMAIL","username"],
+						"options":{
+							"combination":"username"
+						}
+					},
+					{
+						"selector":"#reg-form-firstname",
+						"type": ["ignore"]
+					},
+					{
+						"selector":"#reg-form-lastname",
+						"type": ["ignore"]
+					},
+					{
+						"selector":"#reg-form-password",
+						"type": ["password"],
+						"options":{
+							"combination":"Password"
+						}
+					}
+				]
+			}
+		],
+		"fields":[
+		]
+		,
+		"except": [
+		]
+	},
+	"www_amazon_com":{
+		"websites":[],
+		"forms": [],
+		"fields":[
+			{		 
+				"selector":"#ap_customer_name",
+				"type": ["ignore"],
+				"use":"login"
+			},
+			{
+				"selector":"#ap_email[tabindex='3']",
+				"type": ["username","EMAIL"],
+				"use":"",
+				"options":{
+					"combination":"username"
+				}
+			}, 
+			{
+				"selector":"#ap_email[tabindex='1']",
+				"type": ["username"]
+			}
+		]
+		,
+		"except": [
+		]
+	},
+	"www_standard_co":{
+		"forms": [],
+		"fields":[
+			{
+				"selector":"#register-login-form-email",
+				"type": ["username","EMAIL"],
+				"use":"login",
+				"options":{
+					"clear":true
+				}
+			},
+			{
+				"selector":"#register-login-form-password",
+				"type": ["password"],
+				"use":"login",
+				"options":{
+					"clear":true
+				}
+			},
+			{
+				"selector":"#register-email",
+				"type": ["username","EMAIL"],
+				"use":"register",
+				"options":{
+					"combination":"username",
+					"clear":true
+				}
+			},
+			{
+				"selector":"#register-firstname",
+				"type": ["ignore"],
+				"use":"register",
+				"options":{
+					"clear":true
+				}
+			},
+			{
+				"selector":"#register-lastname",
+				"type": ["ignore"],
+				"use":"register",
+				"options":{
+					"clear":true
+				}
+			},
+			{
+				"selector":"#register-lastname",
+				"type": ["ignore"],
+				"use":"register",
+				"options":{
+					"clear":true
+				}
+			},
+			{
+				"selector":"#register-password",
+				"type": ["password"],
+				"use":"register",
+				"options":{
+					"clear":true
+				}
+			}
+		]
+		,
+		"except": [
+		]
+	},
+	"auth_liberation":{
+		"websites":[],
+		"forms": []
+		,
+		"fields":[
+			{
+				"selector":"input[name=email]",
+				"type": ["username"],
+				"use":"",
+				"options":{
+					"clear":true
+				}
+			},
+			{
+				"selector":"input[name=password]",
+				"type": ["password"],
+				"use":"",
+				"options":{
+					"clear":true
+				}
+			},
+			{
+				"selector":"input[name=first_name]",
+				"type": ["ignore"],
+				"use":"register"
+			},
+			{
+				"selector":"input[name=last_name]",
+				"type": ["ignore"],
+				"use":"register"
+			}
+		]
+		,
+		"except": [
+		]
+	},
+	"www2_hm_com":{
+		"websites":[],
+		"forms": [
+			{
+				"submit":"",
+				"selector": "#js-join-modal-form",
+				"use":"register",
+				"fields":[
+				]
+			}
+		]
+		,
+		"fields":[
+	 
+		]
+		,
+		"except": [
+		]
+	},
+	"account_asus_com":{
+		"websites":[],
+		"forms": [
+			{
+				"submit":"#btnSubmit",
+				"selector": "form[action*='./signup.aspx']",
+				"use":"register",
+				"fields":[
+					{
+						"selector":"#txtAsusID",
+						"type": ["EMAIL","username"],
+						"options":{
+							"combination":"username",
+							"ignoreVisibleCheck":true
+						}
+					},
+					{
+						"selector":"#txtPassword",
+						"type": ["password"],
+						"options":{
+							"combination":"Password1",
+							"ignoreVisibleCheck":true
+						}
+					},
+					{
+						"selector":"#txtPasswordConfirm",
+						"type": ["password"],
+						"options":{
+							"combination":"Password2",
+							"ignoreVisibleCheck":true
+						}
+					}
+				]
+			}
+		],
+		"fields":[
+			{		 
+				"selector":"#txtMail",
+				"type": ["EMAIL","username"],
+				"use":"login"
+			},
+			{
+				"selector":"#txtPassword",
+				"type": ["password"],
+				"use":"login"
+			},
+			{
+				"selector":"#txtAsusID",
+				"type": ["username"],
+				"use":"",
+				"options":{
+					"combination":"username"
+				}
+			}
+		]
+		,
+		"except": [
+		]
+	},
+	"auth_linktr":{
+		"websites":[],
+		"forms": [
+		]
+		,
+		"fields":[	
+			{
+				"selector":"*[name=username]",
+				"type": ["username","EMAIL"],
+				"use":"",
+				"options":{
+					"ignoreOpacity":true
+				}
+			},
+			{		 
+				"selector":"*[name=password]",
+				"type": ["password"],
+				"use":"",
+				"options":{
+					"ignoreOpacity":true
+				}
+			}
+		]
+		,
+		"except": [
+		]		
+	},
+	"login_sina_com":{
+		"websites":[],
+		"forms": [
+			{
+				"submit":"#dologin",
+				"selector": "#vForm",
+				"use":"login",
+				"fields":[
+				]
+			}
+		]
+		,
+		"fields":[] 
+		,
+		"except": [
+		]	
+	},
+	"dl_reg_163_com":{
+		"websites":[],
+		"forms": [
+			{
+				"submit":"#dologin",
+				"selector": "!",
+				"use":"login",
+				"fields":[
+					{
+						"selector":"#password",
+						"type": ["password"],
+						"options":{
+							"combination":"Password",
+							"checkOverlapped":true
+						}
+					},
+					{
+						"selector":"#pwdtext",
+						"type": ["password"],
+						"options":{
+							"combination":"Password",
+							"checkOverlapped":true
+						}
+					},
+					{
+						"selector":"input[name=email]",
+						"type": ["EMAIL","username"],
+						"options":{
+							"combination":"username",
+							"suffix":"@163.com"
+						}
+					}
+				]
+			}
+		]
+		,
+		"fields":[]
+		,
+		"except": [
+			{"element":"#email"},
+			{"selector":"input[autocomplete=new-password][type=password]"}
+		]
+	},	
+	"192_168_1_40:3000":{
+		"websites":[],
+		"forms": [
+			{
+				"submit":"#idSIButton9",
+				"selector": "!",
+				"use":"login",
+				"fields":[
+					{
+						"selector":"#user_name",
+						"type": ["username","EMAIL"],
+						"use":"login"
+					}
+				]
+			}
+		]
+		,
+		"fields":[]
+		,
+		"except": []
+	},
+	"www_canva_com":{
+		"websites":[],
+		"forms": [
+			{
+				"submit":"._6j mvm _6wk _6wl _58mi _6o _6v",
+				"selector": "#reg",
+				"use":"register",
+				"fields":[
+					{
+						"selector":"input[inputmode=email]",
+						"type": ["username","EMAIL"],
+						"use":""
+					}
+				]
+			}
+		]
+		,
+		"fields":[
+			{
+				"selector":"#approvals_code",
+				"type": ["totp"],
+				"use":"login"
+			}
+		]
+		,
+		"except": [
+		]
+	},
+	"www_facebook_com": {
+		"websites":[],
+		"forms": [
+			{
+				"submit":"._6j mvm _6wk _6wl _58mi _6o _6v",
+				"selector": "#reg",
+				"use":"register",
+				"fields":[]
+			}
+		]
+		,
+		"fields":[
+			{
+				"selector":"#approvals_code",
+				"type": ["totp"],
+				"use":"login"
+			},
+			{
+				"selector":"INPUT:nth-child(2)[name='reg_email__']",
+				"type": ["username"] 
+			}
+		]
+		,
+		"except": [
+			{"element":"*[role=main] :not(form,input)"},
+			{"element":"*[role=banner] *"},
+			{"element":"*[data-pagelet='LeftRail'] *"},
+			{"element":"*[role=complementary] *"}
+		]
+	},
+	"vault_bitwarden_com":{
+		"websites":[],
+		"forms": [
+			{
+				"submit":".btn.btn-primary.btn-block.btn-submit",
+				"selector": "!",
+				"use":"login",
+				"fields":[
+					{
+						"selector":"#code",
+						"type": ["totp"],
+						"use":"login"
+					}
+				]
+			}
+		]
+	
+		,
+		"fields":[
+			{
+				"selector":"#kdfIterations",
+				"type": ["ignore"]
+			}
+		] 
+		,
+		"except": [
+		]
+	},
+	"login_live_com":{
+		"websites":[],
+		"forms": [
+			{
+				"submit":"#idSIButton9",
+				"selector": "!",
+				"use":"login",
+				"fields":[
+					{
+						"selector":"#i0116",
+						"type": ["username","EMAIL"],
+						"use":"login"
+					},
+					{
+						"selector":"#i0118",
+						"type": ["password"],
+						"use":"login"
+					}
+				]
+			}
+		]
+	},
+	"login_microsoftonline_com":{
+		"websites":[],
+		"forms": [
+			{
+				"submit":"#idSIButton9",
+				"selector": "!",
+				"use":"login",
+				"fields":[
+					{
+						"selector":"#i0116",
+						"type": ["username","EMAIL"],
+						"use":"login"
+					},
+					{
+						"selector":"#i0118",
+						"type": ["password"],
+						"use":"login"
+					}
+				]
+			}
+		]
+	},
+	"translate_google_com": {
+		"websites":[],
+		"forms": [
+		 
+		]
+		,
+		"fields":[] 
+		,
+		"except": [
+			{"elementObserver":"*"}
+		]
+	},
+	"analytics_google_com": {
+		"websites":[],
+		"forms": [
+		 
+		]
+		,
+		"fields":[] 
+		,
+		"except": [
+			{"elementObserver":"*"}
+		]
+	},
+	"accounts_google_com":{
+		"websites":[],
+		"forms": [
+			{
+				"submit":"button[jsaction*=p6p2H]",
+				"selector": "!",
+				"use":"login",
+				"fields":[
+					{
+						"selector":"#identifierId",
+						"type": ["username"],
+						"use":"login"
+					},
+					{
+						"selector":"input[autocomplete=current-password]",
+						"type": ["password"],
+						"use":"login"
+					},
+					{
+						"selector":"#totpPin",
+						"type": ["totp"],
+						"use":"login"	
+					}
+				]
+			},
+			{
+				"submit":".VfPpkd-LgbsSe.VfPpkd-LgbsSe-OWXEXe-k8QpJ.VfPpkd-LgbsSe-OWXEXe-dgl2Hf.nCP5yc.AjY5Oe.DuMIQc.qfvgSe.qIypjc.TrZEUc.lw1w4b",
+				"selector": "!",
+				"use":"register",
+				"fields":[
+					{
+						"selector":"#username",
+						"type": ["username"],
+						"use":"register",
+						"options":{
+							"suffix":"@gmail.com"
+						}
+					}
+				]	
+			}
+		]
+		,
+		"fields":[] 
+		,
+		"except": [
+		]
+	},
+	"signin_ea_com":{
+		"websites":[],
+		"forms": [
+			{
+				"submit":".otkbtn.otkbtn-primary",
+				"selector": "#login-form",
+				"use":"login",
+				"fields":[]
+			}
+		]
+		,
+		"fields":[] 
+		,
+		"except": []
+	},
+	"appleid_apple_com":{
+		"websites":[],
+		"forms": [
+			{
+				"submit":"#sign-in",
+				"selector": "!",
+				"use":"login",
+				"fields":[
+					{
+						"selector":"#account_name_text_field",
+						"type": ["username"],
+						"use":"login"
+					},
+					{
+						"selector":"#password_text_field",
+						"type": ["password"],
+						"use":"login"
+					}
+				]
+			} 
+		]
+		,
+		"fields":[] 
+		,
+		"except": [
+		]
+	},
+	"passport_baidu_com":{
+		"websites":[],
+		"forms": [
+			{
+				"submit":"#TANGRAM__PSP_4__submit",
+				"selector": "!",
+				"use":"register",
+				"fields":[
+					{
+						"selector":"#TANGRAM__PSP_4__userName",
+						"type": ["username"],
+						"use":"register"
+					},
+					{
+						"selector":"#TANGRAM__PSP_4__password",
+						"type": ["password"],
+						"use":"register"
+					}
+				]
+			}
+		]
+		,
+		"fields":[
+		]
+		,
+		"except": [
+		]
+	},
+	"bandcamp_com":{
+		"websites":[],
+		"forms": [
+			{
+				"submit":"",
+				"selector": "#signupform",
+				"use":"register",
+				"fields":[
+				]
+			} 
+		]
+		,
+		"fields":[
+			{
+				"selector":"#label-email",
+				"type": ["username"],
+				"use":"register"
+			}
+		]
+		,
+		"except": [
+		]
+	},
+	"disqus_com":{
+		"websites":[],
+		"forms": [
+		 
+		]
+		,
+		"fields":[
+			{
+				"selector":"#email-input",
+				"type": ["username"],
+				"use":"register"
+			}
+		]
+		,
+		"except": [
+		]
+	},
+	"www_academia_edu":{
+		"websites":[],
+		"forms": [
+			{
+				"submit":"",
+				"selector": ".js-signup-email-form",
+				"use":"register",
+				"fields":[
+				]
+			} 
+		]
+		,
+		"fields":[		
+				{
+				"selector":"#email-label",
+				"type": ["username"],
+				"use":"register"
+			}
+		]
+		,
+		"except": [
+		]
+	},
+	"www_ign_com":{
+		"websites":[],
+		"forms": [
+			{
+				"submit":"",
+				"selector": "!",
+				"use":"register",
+				"fields":[	
+					{
+						"selector":"#nickname",
+						"type": ["nouse"],
+						"use":"register"
+					}
+				]
+			}
+		]
+		,
+		"fields":[
+		]
+		,
+		"except": [
+		]
+	},
+	"www_dreamstime_com":{
+		"websites":[],
+		"forms": [
+			{
+				"submit":"",
+				"selector": "form[name=contfrm]",
+				"use":"register",
+				"fields":[
+				]
+			}
+		]
+		,
+		"fields":[
+		]
+		,
+		"except": [
+		]
+	},
+	"mylogin_abc_net":{
+		"websites":[],
+		"forms": [
+			{
+				"submit":"",
+				"selector": "!",
+				"use":"register",
+				"fields":[
+					{
+						"selector":"#email",
+						"type": ["username"],
+						"use":"register"
+					}
+				]
+			}
+		]
+		,
+		"fields":[
+		]
+		,
+		"except": [
+		]
+	},
+	"www_spotify_com":{
+		"websites":[],
+		"forms": [
+			{
+				"submit":"",
+				"selector": "!",
+				"use":"register",
+				"fields":[
+					{
+						"selector":"#confirm",
+						"type": ["ignore"],
+						"use":"register"
+					}
+				]
+			}
+		]
+		,
+		"fields":[
+		]
+		,
+		"except": [
+		]
+	},
+	"www_ebay_com":{
+		"websites":[],
+		"forms": [
+			{
+				"submit":"#sgnBt,#signin-continue-btn",
+				"selector": "#signin-form",
+				"use":"login",
+				"fields":[
+					{
+						"selector":"#userid",
+						"type": ["username"],
+						"use":"login"
+					},{
+						"selector":"#pass",
+						"type": ["password"],
+						"use":"login"	
+					}
+				]
+			}
+		]
+		,
+		"fields":[					
+ 
+		]
+		,
+		"except": [
+		]
+	},
+	"signin_ebay_com":{
+		"websites":[],
+		"forms": [
+			{
+				"submit":"#sgnBt,#signin-continue-btn",
+				"selector": "#signin-form",
+				"use":"login",
+				"fields":[
+					{
+						"selector":"#userid",
+						"type": ["username"],
+						"use":"login"
+					},{
+						"selector":"#pass",
+						"type": ["password"],
+						"use":"login"	
+					}
+				]
+			} 
+		]
+		,
+		"fields":[					
+ 
+		]
+		,
+		"except": [
+		]
+	},
+	"signup_ebay_com":{
+		"websites":[],
+		"forms": [
+			{
+				"submit":"",
+				"selector": "*[name=create-business-account-with-email]",
+				"use":"register",
+				"fields":[
+					{
+						"selector":"#businessEmail",
+						"type": ["username"],
+						"use":"register"
+					}
+				]
+			},
+			{
+				"submit":"",
+				"selector": "*[name=create-personal-account-with-email]",
+				"use":"register",
+				"fields":[
+					{
+						"selector":"#Email",
+						"type": ["username"],
+						"use":"register"
+					}
+				]
+			}
+		]
+		,
+		"fields":[					
+ 
+		]
+		,
+		"except": [
+		]
+	},
+	"sputniknews_com" : {
+		"websites":[],
+		"forms": [
+		]
+		,
+		"fields":[					
+			{
+				"selector":"#modalAuthEmailField",
+				"type": ["username","EMAIL"],
+				"use":"login",
+				"options":{
+					"ignoreOpacity":true
+				}
+			},
+			{
+				"selector":"#modalAuthPassword",
+				"type": ["password"],
+				"use":"login",
+				"options":{
+					"ignoreOpacity":true
+				}
+			},			
+			{
+				"selector":"#modalRegisterEmail",
+				"type": ["username"],
+				"use":"register",
+				"options":{
+					"ignoreOpacity":true
+				}
+			},			
+			{
+				"selector":"#modalRegisterPassword",
+				"type": ["password"],
+				"use":"register",
+				"options":{
+					"ignoreOpacity":true
+				}
+			}
+		]
+		,
+		"except": [
+		]
+	},
+	"accounts_theatlantic_com" : {
+		"websites":[],
+		"forms": [
+			{
+				"submit":"",
+				"selector": "!",
+				"use":"register",
+				"fields":[
+					{
+						"selector":"#first_name",
+						"type": ["ignore"],
+						"use":"register"
+					},					{
+						"selector":"#last_name",
+						"type": ["ignore"],
+						"use":"register"
+					}
+				]
+			}
+		]
+		,
+		"fields":[				
+		]
+		,
+		"except": [
+		]
+	},
+	"login_sapo_pt":{
+		"websites":[],
+		"forms": [
+			{
+				"submit":"#submit-username",
+				"selector": "#sapo_widget_login_form",
+				"use":"login",
+				"fields":[
+					{
+						"selector":"#username",
+						"type": ["username"],
+						"use":"login"
+					}
+				]
+			}
+		]
+		,
+		"fields":[				
+		]
+		,
+		"except": [
+		]
+	},
+	"account_icann_org":{
+		"websites":[],
+		"forms": [
+			{
+				"submit":"",
+				"selector": "!",
+				"use":"login",
+				"fields":[
+					{
+						"selector":"#emailAddressOrUsername",
+						"type": ["username","EMAIL"],
+						"use":"login",
+						"options":{
+							"ignoreVisibleCheck":true
+						}
+					}
+				]
+			},
+			{
+				"submit":"",
+				"selector": "!",
+				"use":"register",
+				"fields":[
+					{
+						"selector":"#emailAddress",
+						"type": ["username","EMAIL"],
+						"use":"register",
+						"options":{
+							"ignoreVisibleCheck":true
+						}
+					}
+				]
+			}
+		]
+		,
+		"fields":[				
+		]
+		,
+		"except": [
+		]
+	},
+	"discord_com": {
+		"websites":[],
+		"forms": [
+			{
+				"submit":"",
+				"selector": "!",
+				"use":"register",
+				"fields":[
+					{
+						"selector":"*[type=email]",
+						"type": ["username","EMAIL"],
+						"use":"register"
+					}
+				]
+			}
+		]
+		,
+		"fields":[				
+		]
+		,
+		"except": [
+		]
+	},
+	"social_fastcompany_com": {
+		"websites":[],
+		"forms": [
+			{
+				"submit":".btn.prime.form-btn",
+				"selector": "!",
+				"use":"login",
+				"fields":[
+					{
+						"selector":".form-container input:first-child",
+						"type": ["username","EMAIL"],
+						"use":"login"
+					}
+				]
+			}
+		]
+		,
+		"fields":[	
+						
+		]
+		,
+		"except": [
+		]
+	},
+	"ria": {
+		"websites":[],
+		"forms": [
+			{
+				"submit":".modal__submit.form__btn",
+				"selector": "!",
+				"use":"login",
+				"fields":[
+					{
+						"selector":"#modalAuthEmailField",
+						"type": ["username","EMAIL"],
+						"use":"login",
+						"options":{
+							"ignoreOpacity":true
+						}
+					},
+					{
+						"selector":"#modalAuthPassword",
+						"type": ["password"],
+						"use":"login",
+						"options":{
+							"ignoreOpacity":true
+						}
+					}
+				]
+			},
+			{
+				"submit":".modal__submit.form__btn",
+				"selector": "!",
+				"use":"register",
+				"fields":[
+					{
+						"selector":"#modalRegisterEmail",
+						"type": ["username","EMAIL"],
+						"use":"register",
+						"options":{
+							"ignoreOpacity":true
+						}
+					},
+					{
+						"selector":"#modalRegisterPassword",
+						"type": ["password"],
+						"use":"register",
+						"options":{
+							"ignoreOpacity":true
+						}
+					}
+				]
+			}
+		]
+		,
+		"fields":[	
+						
+		]
+		,
+		"except": [
+		]
+	},
+	"passport_yandex":{
+		"websites":[],
+		"forms": [
+			{
+				"submit":"#passp:sign-in",
+				"selector": "!",
+				"use":"login",
+				"fields":[
+					{
+						"selector":"#passp-field-login",
+						"type": ["username","EMAIL"],
+						"use":"login"
+					}
+				]
+			}
+		]
+		,
+		"fields":[	
+						
+		]
+		,
+		"except": [
+		]
+	},
+	"id_freepikcompany_com":{
+		"websites":[],
+		"forms": [
+			{
+				"submit":"button[type=submit]",
+				"selector": "!",
+				"use":"login",
+				"fields":[
+					{
+						"selector":"#login-username",
+						"type": ["username","EMAIL"],
+						"use":"login",
+						"options":{
+							"ignoreVisibleCheck":true,
+							"combination":"username"
+						}
+					},
+					{
+						"selector":"#login-password",
+						"type": ["password"],
+						"use":"login",
+						"options":{
+							"ignoreVisibleCheck":true,
+							"combination":"Password"
+						}
+					}
+				]
+			},
+			{
+				"submit":"button[type=submit]",
+				"selector": "!",
+				"use":"register",
+				"fields":[
+					{
+						"selector":"#register-username",
+						"type": ["ignore"],
+						"use":"register",
+						"options":{
+							"ignoreVisibleCheck":true,
+							"combination":"username"
+						}
+					},
+					{
+						"selector":"#register-email",
+						"type": ["username","EMAIL"],
+						"use":"register",
+						"options":{
+							"ignoreVisibleCheck":true,
+							"combination":"username"
+						}
+					},
+					{
+						"selector":"#register-password",
+						"type": ["password"],
+						"use":"register",
+						"options":{
+							"ignoreVisibleCheck":true,
+							"combination":"Password"
+						}
+					}
+				]
+			}
+		]
+		,
+		"fields":[	
+						
+		]
+		,
+		"except": [
+		]
+	},
+	"www_tripadvisor_com":{
+		"forms": [
+		]
+		,
+		"fields":[
+			{
+				"selector":"input[id='regSignIn.email']",
+				"type": ["username","EMAIL"],
+				"use":"",
+				"options":{
+					"clear":true
+				}
+			},
+			{
+				"selector":"input[id='regSignIn.password']",
+				"type": ["password"],
+				"use":"",
+				"options":{
+					"clear":true
+				}
+			},
+			{
+				"selector":"input[id='regSignUp.firstName']",
+				"type": ["ignore"],
+				"use":"",
+				"options":{
+					"clear":true
+				}
+			},
+			{
+				"selector":"input[id='regSignUp.lastName']",
+				"type": ["ignore"],
+				"use":"",
+				"options":{
+					"clear":true
+				}
+			}
+		]
+		,
+		"except": [
+		]
+	},
+	"users_wix_com":{
+		"websites":[],
+		"forms": [
+			{
+				"submit":".signup-btn",
+				"selector": ".signup",
+				"use":"register",
+				"fields":[
+					{
+						"selector":"input[name=emailConfirm]",
+						"type": ["ignore"],
+						"use":"register"
+					}
+				]
+			}
+		]
+		,
+		"fields":[		
+		]
+		,
+		"except": [
+		]	
+	},
+	"www_gofundme_com":{
+		"websites":[],
+		"forms": [
+			{
+				"submit":"button[data-gfm-element-id=btn_signup_email_signup_confirm]",
+				"selector": "!",
+				"use":"register",
+				"fields":[
+					{
+						"selector":"input[data-gfm-element-id=input_signuppage_email]",
+						"type": ["EMAIL","username"],
+						"use":"register"
+					}
+				]
+			}
+		]
+		,
+		"fields":[		
+		]
+		,
+		"except": [
+		]	
+	},
+	"account_booking_com":{
+		"websites":[],
+		"forms": [
+		]
+		,
+		"fields":[
+			{
+				"selector":"#hidden-password",
+				"type": ["password"],
+				"use":"login",
+				"options":{
+					"checkOverlapped":true
+				}
+			}
+		]
+		,
+		"except": [
+		]
+	},
+	"www_dropbox_com":{
+		"websites":[],
+		"forms": [
+			{
+				"submit":".login-button",
+				"selector": ".register-form",
+				"use":"register",
+				"fields":[
+				]
+			}
+		]
+		,
+		"fields":[
+			{
+				"selector":"*[name=code]",
+				"type": ["totp"],
+				"use":"login"
+			}
+		]
+		,
+		"except": [
+		]
+	},
+	"login_yahoo_com":{
+		"websites":[],
+		"forms": [
+		]
+		,
+		"fields":[
+			{
+				"selector":"#usernamereg-userId",
+				"type": ["username"],
+				"use":"register",						
+				"options":{
+					"suffix":"@yahoo.com"
+				}
+			}
+		]
+		,
+		"except": [
+		]
+	},
+	"login_wordpress_org":{
+		"websites":[],
+		"forms": [
+		]
+		,
+		"fields":[
+			{
+				"selector":"#pass1",
+				"type": ["password"],
+				"use":"register"
+			}
+		]
+		,
+		"except": [
+		]		
+	},
+	"www_e-monsite_com":{
+		"websites":[],
+		"forms": [
+		]
+		,
+		"fields":[
+			{
+				"selector":"#login-id",
+				"type": ["username"],
+				"use":"login",
+				"options":{
+					"checkOverlapped":true
+				}
+			},			
+			{
+				"selector":"#login-pasword",
+				"type": ["password"],
+				"use":"login",
+				"options":{
+					"checkOverlapped":true
+				}
+			},
+			{
+				"selector":"#login-email",
+				"type": ["EMAIL","username"],
+				"use":"login",
+				"options":{
+					"checkOverlapped":true
+				}
+			}
+		],
+		"except": [
+		]
+	},
+	"my_1password_com":{
+		"websites":[],
+		"forms": [
+			{
+				"submit":".signin-actions button",
+				"selector": "!",
+				"use":"",
+				"fields":[
+					{
+						"selector":"#email",
+						"type": ["EMAIL","username"],
+						"use":""
+					},{
+						"selector":"#master-password",
+						"type": ["password"],
+						"use":""
+					}
+				]
+			}
+		]
+		,
+		"fields":[
+	 
+		]
+		,
+		"except": [
+		]
+	},
+	"uniportal_huawei_com":{
+		"websites":[],
+		"forms": [
+		]
+		,
+		"fields":[
+				{
+					"selector":"*[name='registerVO.userId']",
+					"type": ["username"],
+					"use":"register"
+				}	 
+		]
+		,
+		"except": [
+		]
+	},
+	"myaccount_economist_com":{
+		"websites":[],
+		"forms": [
+			{
+				"submit":"",
+				"selector": "!",
+				"use":"",
+				"fields":[
+					{
+						"selector":"*[name='firstname']",
+						"type": ["ignore"],
+						"use":"register"
+					},
+					{
+						"selector":"*[name='lastname']",
+						"type": ["ignore"],
+						"use":"register"
+					}
+				]
+			}
+		]
+		,
+		"fields":[
+			{
+				"selector":"input[name=password]",
+				"type": ["password"],
+				"use":"",
+				"options":{
+					"combination":"Password"
+				}
+			}
+		]
+		,
+		"except": [
+		]
+	},
+	"idmsa_apple_com":{
+		"websites":[],
+		"forms": [
+			{
+				"submit":"#sign-in",
+				"selector": "!",
+				"use":"",
+				"fields":[
+					{
+						"selector":"#password_text_field",
+						"type": ["password"]
+					}
+					, 
+					{
+						"selector":"#account_name_text_field",
+						"type": ["username"]
+					}
+				]
+			}
+		]
+		,
+		"fields":[
+		]
+		,
+		"except": [
+		]
+	},
+	"www_oreilly_com":{
+		"websites":[],
+		"forms": [
+			{
+				"submit":".orm-Button-root",
+				"selector": ".form--o0lnD",
+				"use":"register",
+				"fields":[
+				]
+			}
+		]
+		,
+		"fields":[
+			{
+				"selector":"input[name=email]",
+				"type": ["username"]
+			}
+		]
+		,
+		"except": [
+		]
+	},
+	"www_pinterest_com":{
+		"websites":[],
+		"forms": [
+			{
+				"submit":".orm-Button-root",
+				"selector": ".form--o0lnD",
+				"use":"register",
+				"fields":[
+				]
+			}
+		]
+		,
+		"fields":[
+			{
+				"selector":"*[autocomplete=new-password]",
+				"type": ["password"],
+				"use":""
+			},
+			{
+				"selector":"*[name=age]",
+				"type": ["ignore"],
+				"use":"register"
+			}
+		]
+		,
+		"except": [
+		]
+	},
+	"www_evernote_com":{
+		"websites":[],
+		"forms": [
+			{
+				"submit":".orm-Button-root,input[name=register]",
+				"selector": ".form--o0lnD,#registration",
+				"use":"register",
+				"fields":[
+				]
+			}
+		]
+		,
+		"fields":[
+			{
+				"selector":"#otc-code",
+				"type": ["totp"],
+				"use":"login"
+			},
+			{
+				"selector":"#username",
+				"type": ["username"]
+			}
+		]
+		,
+		"except": [
+		]
+	},
+	"www_biblegateway_com":{
+		"websites":[],
+		"forms": [
+		]
+		,
+		"fields":[
+			{
+				"selector":"#email",
+				"type": ["username","EMAIL"],
+				"options":{
+					"clear":true
+				}
+			},
+			{
+				"selector":"#password",
+				"type": ["password"],
+				"options":{
+					"clear":true
+				}
+			},
+			{
+				"selector":"input[name=first_name]",
+				"type": ["ignore"],
+				"use":"register",
+				"options":{
+					"clear":true
+				}
+			},
+			{
+				"selector":"input[name=last_name]",
+				"type": ["ignore"],
+				"use":"register",
+				"options":{
+					"clear":true
+				}
+			}
+		]
+		,
+		"except": [
+		]
+	},
+	"digital_asahi_com":{
+		"websites":[],
+		"forms": [
+		]
+		,
+		"fields":[
+			{
+				"selector":"#login_id_again",
+				"type": ["ignore"]
+			},
+			{
+				"selector":"#login_id",
+				"type": ["username","EMAIL"],
+				"options":{
+					"combination":"username"
+				}
+			},
+			{
+				"selector":"#password1",
+				"type": ["password"],
+				"options":{
+					"combination":"Password1"
+				}
+			},
+			{
+				"selector":"#password2",
+				"type": ["password"],
+				"options":{
+					"combination":"Password2"
+				}
+			}
+		]
+		,
+		"except": [
+		]
+	},
+	"bugzilla_mozilla_org":{
+		"websites":[],
+		"forms": [
+		]
+		,
+		"fields":[
+			{
+				"selector":"#code",
+				"type": ["totp"]
+			},
+			{						
+				"selector":"#passwd1",
+				"type": ["password"],
+				"options":{
+					"combination":"password1"
+				}
+			},
+			{						
+				"selector":"#passwd2",
+				"type": ["password"],
+				"options":{
+					"combination":"password2"
+				}
+			}
+		]
+		,
+		"except": [
+		]	
+	},
+	"www_linkedin_com":{
+		"websites":[],
+		"forms": [
+		]
+		,
+		"fields":[
+			{
+				"selector":"input[name=pin]",
+				"type": ["totp"]
+			}
+		]
+		,
+		"except": [
+		]	
+	},
+	"signup_live_com":{
+		"websites":[],
+		"forms": [
+			{
+				"submit":"#iSignupAction",
+				"selector": "!",
+				"use":"register",
+				"fields":[
+					{
+						"selector":"#PasswordInput",
+						"type": ["password"],
+						"use":"register"
+					}					
+				]
+			}
+			,
+			{
+				"submit":"#iSignupAction",
+				"selector": "!",
+				"use":"login",
+				"fields":[
+					{
+						"selector":"#MemberName",
+						"type": ["EMAIL","username"],
+						"use":"login"
+					}					
+				]
+			}
+		]
+		,
+		"fields":[
+		]
+		,
+		"except": [
+		]	
+	},
+	"www_dailymotion_com":{
+		"websites":[],
+		"forms": [
+			{
+				"submit":"",
+				"selector": "form[class*=EmailSignup__container]",
+				"use":"register",
+				"fields":[
+				
+				]
+			}
+			,
+			{
+				"submit":"",
+				"selector": "form[class*=EmailSignin__container]",
+				"use":"login",
+				"fields":[
+				
+				]
+			}
+			,
+			{
+				"submit":"",
+				"selector": "form[class*=UpdateYourEmailStep__form]",
+				"use":"login",
+				"fields":[
+					{
+						"selector":"input[type=text]",
+						"type": ["ignore"]
+					}
+				]
+			}
+		]
+		,
+		"fields":[
+		]
+		,
+		"except": [
+		]
+	},
+	"auth_forbes_com":{
+		"websites":[],
+		"forms": [
+			{
+				 
+				"submit":"",
+				"selector": "!",
+				"use":"register",
+				"fields":[
+					{
+						"selector":"input[fieldregisteremail]",
+						"type": ["EMAIL","username"],
+						"use":"register"
+					}					
+				],
+				"important":"yes"
+			},
+			{
+				"submit":"",
+				"selector": "!",
+				"use":"login",
+				"fields":[
+					{
+						"selector":"input[fieldloginemail]",
+						"type": ["EMAIL","username"],
+						"use":"login"
+					}				
+				],
+				"important":"yes"
+			}
+		]
+		,
+		"fields":[
+		]
+		,
+		"except": [
+		]
+	},
+	"vimeo_com":{
+		"websites":[],
+		"forms": [
+			{
+				"submit":"",
+				"selector": "!",
+				"use":"",
+				"fields":[
+					{
+						"selector":"#name",
+						"type": ["ignore"],
+						"use":"register"
+					},							
+					{
+						"selector":"#email",
+						"type": ["username","EMAIL"],
+						"use":"login"
+					}
+				]
+			}
+		]
+		,
+		"fields":[
+		]
+		,
+		"except": [
+		]
+	},
+	"login_globo_com":{
+		"websites":[],
+		"forms": [
+			{
+				"submit":"",
+				"selector": "form[ng-submit='register()']",
+				"use":"register",
+				"fields":[
+				]
+			}
+		]
+		,
+		"fields":[
+		]
+		,
+		"except": [
+		]
+	},
+	"haveibeenpwned_com":{
+		"websites":[],
+		"forms": [
+		]
+		,
+		"fields":[			
+			{
+				"selector":"#Account",
+				"type": ["ignore"]
+			}
+		]
+		,
+		"except": [
+		]
+	},
+	"auth_huffpost_com":{
+		"websites":[],
+		"forms": [
+			{
+				"submit":"",
+				"selector": "!",
+				"use":"",
+				"fields":[
+					{
+						"selector":"input[name=given_name]",
+						"type": ["ignore"],
+						"use":"register"
+					}
+				],
+				"once":"yes"
+			},
+			{
+				"submit":"",
+				"selector": "!",
+				"use":"",
+				"fields":[
+					{
+						"selector":"input[name=email]",
+						"type": ["username","EMAIL"],
+						"use":"login"
+					}
+				],
+				"once":"yes"
+			}
+		]
+		,
+		"fields":[			
+		]
+		,
+		"except": [
+		]
+	},
+	"sedo_com":{
+		"websites":[],
+		"forms": [
+			{
+				"submit":"#account-create-btn",
+				"selector": "#form-registration-step1",
+				"use":"register",
+				"fields":[
+					{
+						"selector":"#username",
+						"type": ["username"],
+						"use":"register"
+					},
+					{
+						"selector":"#email",
+						"type": ["ignore"],
+						"use":"register"
+					},
+					{
+						"selector":"#confirm-email",
+						"type": ["ignore"],
+						"use":"register"
+					}
+				] 
+			}
+		]
+		,
+		"fields":[			
+		]
+		,
+		"except": [
+		]
+	},
+	"issuu_com":{
+		"websites":[],
+		"forms": [
+		]
+		,
+		"fields":[					
+			{
+				"selector":"#username",
+				"type": ["ignore"],
+				"use":""
+			}			
+		]
+		,
+		"except": [
+		]	
+	},
+	"github_com":{
+		"websites":[],
+		"forms": [
+			{
+				"submit":"button[data-optimizely-event*=signup_continue]",
+				"selector": "form[action='/signup']",
+				"use":"register",
+				"fields":[
+					{
+						"selector":"#email",
+						"type": ["username","EMAIL"],
+						"use":"register",
+						"options":{
+							"combination":"username",
+							"ignoreVisibleCheck":true
+						}
+					},
+					{
+						"selector":"#password",
+						"type": ["password"],
+						"use":"register",
+						"options":{
+							"combination":"Password",
+							"ignoreVisibleCheck":true
+						}
+					}
+				] 
+			}
+		]
+		,
+		"fields":[
+			{
+				"selector":"#app_totp",
+				"type": ["totp"]
+			}								
+		]
+		,
+		"except": [
+		]	
+	},
+	"wordpress_com":{
+		"websites":[],
+		"forms": [
+		]
+		,
+		"fields":[					
+			{
+				"selector":"input[type=email].form-text-input.signup-form__input",
+				"type": ["username","EMAIL"],
+				"use":"register"
+			}
+		]
+		,
+		"except": [
+		]
+	},
+	"store_cpanel_net":{
+		"websites":[],
+		"forms": [
+			{
+				"submit":"#submit",
+				"selector": "#account-registration",
+				"use":"register",
+				"fields":[
+				] 	
+			}
+		]
+		,
+		"fields":[					
+	 
+		]
+		,
+		"except": [
+		]
+	},
+	"squareup_com":{
+		"websites":[],
+		"forms": [
+		]
+		,
+		"fields":[					
+			{
+				"selector":"#email-confirmation",
+				"type": ["ignore"]
+			}
+		]
+		,
+		"except": [
+		]	
+	},
+	"www_focus":{
+		"websites":[],
+		"forms": [
+			{
+				"submit":"a[onclick*='registerValidate']",
+				"selector": "#userRegisterForm",
+				"use":"login",
+				"fields":[
+				] 	
+			},
+			{
+				"submit":"a[onclick*='loginUser']",
+				"selector": "#ctfform1",
+				"use":"login",
+				"fields":[
+				]
+			}
+		]
+		,
+		"fields":[					
+	 
+		]
+		,
+		"except": [
+		]
+	},
+	"register_rediff_com":{
+		"websites":[],
+		"forms": [
+			{
+				"submit":"#Register",
+				"selector": "form[action*=register]",
+				"use":"register",
+				"fields":[
+					{
+						"selector":"input[name*=login]",
+						"type": ["username"],
+						"use":"register",
+						"options":{
+							"suffix":"@rediffmail.com"
+						}
+					}
+				]
+			}
+		]
+		,
+		"fields":[					
+	 
+		]
+		,
+		"except": [
+		]
+	},
+	"themeforest_net":{
+		"websites":[],
+		"forms": [
+		]
+		,
+		"fields":[
+			{
+				"selector":"#firstName",
+				"type": ["ignore"],
+				"use":"register"
+			}
+		]
+		,
+		"except": [
+		]
+	},
+	"imageshack_com":{
+		"websites":[],
+		"forms":[
+			{
+				"submit"  :".yellow-btn",
+				"selector": "form",
+				"use":"",
+				"fields":[]
+			}
+		],
+		"fields":[
+		],
+		"except": [
+		]
+	},
+	"www_tiktok_com":{
+		"websites":[],
+		 
+		"fields":[
+			
+	 
+			{
+				"selector":"#loginContainer>DIV>FORM:nth-child(3)>DIV:nth-child(2)>DIV>INPUT:nth-child(1)",
+				"type": ["password"],
+				"use":"login"
+			},
+			{
+				"selector":"#loginContainer>DIV>FORM:nth-child(3)>DIV:nth-child(1)>INPUT:nth-child(1)[name='username']",
+				"type": ["username","EMAIL"],
+				"use":"login"
+			},
+			{
+				"selector":"#loginContainer>DIV>FORM>DIV:nth-child(6)>DIV>INPUT:nth-child(1)[name='email']",
+				"type": ["username","EMAIL"],
+				"use":"register"
+			},
+			{
+				"selector":"#loginContainer>DIV>FORM>DIV:nth-child(7)>DIV>INPUT:nth-child(1)",
+				"type": ["password"],
+				"use":"register"
+			} 
+			
+		],
+		"except": [
+		]
+	},
+	"www_firefox_com": {
+		"websites":[],
+		"forms":[],
+		"fields":[
+			{
+				"selector":"#fxa-email-field",
+				"type": ["username","EMAIL"],
+				"use":"register"
+			}
+		],
+		"except": [
+		]
+	},
+	"accounts_firefox_com": {
+		"websites":[],
+		"forms":[],
+		"fields":[
+			{
+				"selector":"input[name=email]",
+				"type": ["username","EMAIL"]
+			}
+		],
+		"except": [
+		]
+	},
+	"acesso_estadao_com": {
+		"websites":[],
+		"forms":[
+			{
+				"submit":"",
+				"selector": "!",
+				"use":"",
+				"fields":[
+					{
+						"selector":"#nome",
+						"type": ["ignore"],
+						"use":"register"
+					}
+				]
+			}
+		],
+		"fields":[
+		],
+		"except": [
+		]
+	},
+	"www_businessinsider_com": {
+		"websites":[],
+		"forms":[
+			{
+				"submit":"",
+				"selector": "!",
+				"use":"",
+				"fields":[
+					{
+						"selector":".authentication-wrapper-create-account #email",
+						"type": ["username","EMAIL"],
+						"use":"register"
+					}
+				],
+				"important":"yes"
+			},
+			{
+				"submit":"",
+				"selector": "!",
+				"use":"",
+				"fields":[
+					{
+						"selector":".authentication-wrapper-login #email",
+						"type": ["username","EMAIL"],
+						"use":"login",
+						"options":{
+							"combination":"username",
+							"replace":true
+						}
+					},
+					{
+						"selector":".authentication-wrapper-login #password",
+						"type": ["password"],
+						"use":"login",
+						"options":{
+							"combination":"Password",
+							"replace":true
+						}
+					}
+				],
+				"important":"yes"
+			}
+		],
+		"fields":[
+		],
+		"except": [
+		]
+	},
+	"www_4shared_com": {
+		"websites":[],
+		"forms":[
+			{
+				"submit":"",
+				"selector": ".jsRegularSignupForm",
+				"use":"register",
+				"fields":[
+				]
+			}
+		],
+		"fields":[
+		],
+		"except": [
+		]
+	},
+	"www_aliexpress_com": {
+		"websites":[],
+		"forms":[
+			{
+				"submit":"",
+				"selector": ".fm-join",
+				"use":"register",
+				"fields":[
+				]
+			},
+			{
+				"submit":"",
+				"selector": ".fm-login",
+				"use":"login",
+				"fields":[
+				]	
+			}
+		],
+		"fields":[
+		],
+		"except": [
+		]
+	},
+	"secure_telegraph_co":{
+		"websites":[],
+		"forms":[
+			{
+				"submit":"",
+				"selector": ".lite-register-form",
+				"use":"register",
+				"fields":[
+					{
+						"selector":"input[name=password]",
+						"type": ["password"],
+						"options":{
+							"combination":"Password"
+						}
+					},
+					{
+						"selector":"input[name=email]",
+						"type": ["EMAIL","username"],
+						"options":{
+							"combination":"username"
+						}
+					}
+				]
+			}
+		],
+		"except": [
+		],
+		"fields":[
+			{
+				"selector":"input[name=email]",
+				"type": ["username"]
+			}
+		]
+	},
+	"www_namecheap_com":{
+		"websites":[],
+		"forms":[
+			{
+				"submit":"#ctl00_ctl00_ctl00_ctl00_base_content_web_base_content_topNavLoginLink",
+				"selector": ".sign-in-form",
+				"use":"login",
+				"fields":[
+				 
+				]
+			}
+		],
+		"except": [
+		],
+		"fields":[
+		]
+	},
+	"www_hatena_ne":{
+		"websites":[],
+		"forms":[
+			{
+				"submit":"#submit-button",
+				"selector": "#registration-form",
+				"use":"register",
+				"fields":[
+					{
+						"selector":"#password-input",
+						"type": ["password"],
+						"options":{
+							"combination":"Password"
+						}
+					},
+					{
+						"selector":"#mail-input",
+						"type": ["EMAIL","username"],
+						"options":{
+							"combination":"username"
+						}
+					},
+					{
+						"selector":"#username-input",
+						"type": ["ignore"]
+					}
+				]
+			} 
+		],
+		"except": [
+		],
+		"fields":[
+		]
+	},
+	"account_thesun_co":{
+		"websites":[],
+		"forms": [
+			{
+				"submit":"",
+				"selector": "!",
+				"use":"register",
+				"fields":[
+					{
+						"selector":"input[name=firstName]",
+						"type": ["ignore"],
+						"use":"register"
+					},					{
+						"selector":"input[name=lastName]",
+						"type": ["ignore"],
+						"use":"register"
+					}
+				]
+			}
+		]
+		,
+		"fields":[				
+		]
+		,
+		"except": [
+		]
+	},
+	"twitter_com": {
+		"websites":[],
+		"forms": [
+		]
+		,
+		"fields":[
+			{
+				"selector":"input[name=phone_number]",
+				"type": ["username","tel"]
+			},
+			{
+				"selector":"input[autocomplete=username]",
+				"type": ["username"]
+			},
+			{
+				"selector":"input[data-testid=ocfEnterTextTextInput].r-30o5oe",
+				"type": ["totp"]
+			}
+		]
+		,
+		"except": [
+		]
+	},
+	"pwm-test_itopvpn_com": {
+		"websites":[],
+		"forms": [
+		]
+		,
+		"fields":[
+			{
+				"selector":"#psw",
+				"type": ["password"],
+				"options":{
+					"combination":"Password"
+				}
+			}
+		]
+		,
+		"except": [
+		]
+	},
+	"members_radiocherwell_com":{
+		"websites":[],
+		"forms": [
+		]
+		,
+		"fields":[
+			{
+				"selector":"#login_email",
+				"type": ["EMAIL","username"]
+			}
+		]
+		,
+		"except": [
+			{"selector":"input[autocomplete=email]"},
+			{"selector":"input[name=email]"},
+			{"selector":"input[type=email]"}  
+		]
+	},
+	"migadu_com":{
+		"websites":[],
+		"forms": [
+		]
+		,
+		"fields":[
+			{
+				"selector":"#otp_form_otp_token",
+				"type": ["totp"],
+				"use":"login"
+			}
+		]
+		,
+		"except": [
+		]
+
+	},
+	"auth_monday_com": {
+		"websites":[],
+		"forms": [
+		],
+		"fields":[
+			{
+				"selector":"#user_email",
+				"type": ["username","EMAIL"],
+				"use":"login"
+			}
+		],
+		"except": [
+		]
+	},
+	"app_mural": {
+		"websites":[],
+		"forms": [
+		],
+		"fields":[
+			{
+				"selector":".code > .ui-form-label > input",
+				"type": ["totp"],
+				"use":"login"
+			}
+		],
+		"except": [
+		]
+	},
+	"www_namebase": {
+		"websites":[],
+		"forms": [
+		],
+		"fields":[
+			{
+				"selector":".cHwTRy > .kGMitR > input",
+				"type": ["totp"],
+				"use":"login"
+			}
+		],
+		"except": [
+		]
+	},
+	"dashboard_plaid_com": {
+		"websites":[],
+		"forms": [
+		],
+		"fields":[
+			{
+				"selector":"input[name=mfaCode]",
+				"type": ["totp"],
+				"use":"login"
+			}
+		],
+		"except": [
+		]
+	},
+	"www_reddit_com" : {
+		"websites":[],
+		"forms": [
+			{
+				"submit":".SignupButton",
+				"selector": "!",
+				"use":"register",
+				"fields":[
+					{
+						"selector":"#regUsername",
+						"type": ["username"],
+						"use":"register"
+					},					{
+						"selector":"#regPassword",
+						"type": ["password"],
+						"use":"register"
+					}
+				]
+			}
+		],
+		"fields":[
+			{
+				"selector":"input[name=fakeemailremembered]",
+				"type": ["ignore"]
+			},
+			{
+				"selector":"input[name=fakeusernameremembered]",
+				"type": ["ignore"]
+			},
+			{
+				"selector":"input[name=fakepasswordremembered]",
+				"type": ["ignore"]
+			},
+			{
+				"selector":"input[data-description=dummyEmail]",
+				"type": ["ignore"]
+			},
+			{
+				"selector":"input[data-description=dummyUsername]",
+				"type": ["ignore"]
+			},
+			{
+				"selector":"input[data-description=dummyPassword]",
+				"type": ["ignore"]
+			},			
+			{
+				"selector":"#regEmail",
+				"type": ["username","EMAIL"],
+				"options":{
+					"ignoreVisibleCheck":true
+				}
+			},			
+			{
+				"selector":"#loginUsername",
+				"type": ["username","EMAIL"],
+				"options":{
+					"ignoreVisibleCheck":true
+				}
+			}
+		],
+		"except": [
+			{"selector":"*[id*=register]"}  
+		]
+	},
+	"phemex_com":{
+		"websites":[],
+		"forms": [
+		 
+		],
+		"fields":[
+			{
+				"selector":"body > div.warp.svelte-rr9eit > div > div.czjz.f1.mainWarp.svelte-rr9eit > div.main.svelte-rr9eit > div > div:nth-child(2) > div > div > div:nth-child(5) > input",
+				"type": ["totp"]
+			},
+			{
+				"selector":".qrcode",
+				"type": ["qrcodeimg"]	
+			}
+		],
+		"except": [
+		]
+	},
+	"accounts_pixieset_com" :{
+		"websites":[],
+		"forms": [
+		 
+		],
+		"fields":[
+			{
+				"selector":"#UserVerify2faForm_code",
+				"type": ["totp"]
+			}
+		],
+		"except": [
+		]
+	},
+	"9z3n2d7nr03p_kintone_com" :{
+		"websites":[],
+		"forms": [
+		 
+		],
+		"fields":[
+			{
+				"selector":"input[name=tfaPassword]",
+				"type": ["totp"]
+			}
+		],
+		"except": [
+		]
+	},
+	"krystal":{
+		"websites":[],
+		"forms": [
+		 
+		],
+		"fields":[
+			{
+				"selector":"input[name=second_factor]#auth_key",
+				"type": ["totp"]
+			}
+		],
+		"except": [
+		]
+	},
+	"www_000webhost_com":{
+		"websites":[],
+		"forms": [
+		],
+		"fields":[
+			{
+				"selector":"input[type=password]",
+				"type": ["password"]
+				 
+			},
+			{
+				"selector":"input[type=email]",
+				"type": ["EMAIL","username"]
+			}
+		],
+		"except": [
+		]
+	},
+	"my_account_sony_com": {
+		"fields":[
+			{
+				"selector":"#signin-entrance-input-signinId",
+				"type": ["username"]
+			}
+		]
+	}
+}

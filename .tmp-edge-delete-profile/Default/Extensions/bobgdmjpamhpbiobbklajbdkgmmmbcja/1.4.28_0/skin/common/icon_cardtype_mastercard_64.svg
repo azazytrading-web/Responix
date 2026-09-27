@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64">
+  <g id="icon_cardtype_mastercard_64" transform="translate(-110 -137)">
+    <rect id="矩形_1397" data-name="矩形 1397" width="64" height="64" transform="translate(110 137)" fill="#fff"/>
+    <g id="icon_cardtype_mastercard" transform="translate(-5039.517 -127.943)">
+      <g id="组_1090" data-name="组 1090" transform="translate(5157.489 282.097)">
+        <path id="路径_1367" data-name="路径 1367" d="M5162.575,299.1h12.968V275.9h-12.968Z" transform="translate(-5145.077 -272.518)" fill="#ff5f00"/>
+        <path id="路径_1368" data-name="路径 1368" d="M5173.434,289.3a14.66,14.66,0,0,1,5.711-11.646,14.827,14.827,0,0,0-24.026,11.646,14.768,14.768,0,0,0,14.87,14.753,14.5,14.5,0,0,0,9.156-3.2,14.61,14.61,0,0,1-5.711-11.559" transform="translate(-5155.119 -274.457)" fill="#eb001b"/>
+        <path id="路径_1369" data-name="路径 1369" d="M5188.931,298.547v-.533h-.179l-.182.443-.18-.443h-.182v.533h.09V298.1l.182.354h.091l.182-.354v.443Zm-.994,0V298.1h.182v-.089h-.454v.089h.181v.443Zm1.451-9.156a14.772,14.772,0,0,1-14.871,14.758,14.515,14.515,0,0,1-9.159-3.2,14.725,14.725,0,0,0,0-23.292,14.828,14.828,0,0,1,24.03,11.733Z" transform="translate(-5141.331 -274.457)" fill="#f79e1b"/>
+      </g>
+      <rect id="矩形_1378" data-name="矩形 1378" width="56" height="56" transform="translate(5153.517 268.943)" fill="#ef9f38" opacity="0"/>
+    </g>
+  </g>
+</svg>

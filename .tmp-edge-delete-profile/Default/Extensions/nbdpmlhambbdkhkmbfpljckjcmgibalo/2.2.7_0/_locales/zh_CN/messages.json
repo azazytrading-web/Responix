@@ -1,0 +1,10 @@
+{
+   "appDescription": {
+      "description": "The description of the application",
+      "message": "通往 Web3 世界的大门"
+   },
+   "appName": {
+      "description": "The name of the application",
+      "message": "Halo"
+   }
+}

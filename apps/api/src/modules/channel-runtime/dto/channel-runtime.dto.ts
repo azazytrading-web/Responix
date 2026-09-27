@@ -1,7 +1,7 @@
 import { Type } from "class-transformer";
 import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
 import { ChannelConnectionState, ChannelMessageState, ChannelMessageType, ChannelState } from "@prisma/client";
-import { ArrayMaxSize, IsArray, IsBase64, IsEnum, IsInt, IsObject, IsOptional, IsString, IsUUID, Matches, Max, MaxLength, Min, ValidateNested } from "class-validator";
+import { ArrayMaxSize, IsArray, IsBase64, IsBoolean, IsEnum, IsInt, IsObject, IsOptional, IsString, IsUUID, Matches, Max, MaxLength, Min, ValidateNested } from "class-validator";
 
 export class CreateChannelDto {
   @ApiProperty({ maxLength: 120 }) @IsString() @MaxLength(120) name!: string;
@@ -44,9 +44,25 @@ export class CreateChannelConnectionDto {
   @ApiProperty({ writeOnly: true }) @IsString() @MaxLength(512) appSecret!: string;
 }
 
+export class UpdateChannelConnectionDto {
+  @ApiPropertyOptional({ maxLength: 128 }) @IsOptional() @Matches(/^\d+$/) businessAccountId?: string;
+  @ApiPropertyOptional({ maxLength: 128 }) @IsOptional() @Matches(/^\d+$/) phoneNumberId?: string;
+  @ApiPropertyOptional({ example: "+15551234567" }) @IsOptional() @IsString() @MaxLength(20) displayPhoneNumber?: string;
+  @ApiPropertyOptional({ example: "v23.0" }) @IsOptional() @IsString() @MaxLength(16) apiVersion?: string;
+  @ApiPropertyOptional({ writeOnly: true }) @IsOptional() @IsString() @MaxLength(4096) accessToken?: string;
+  @ApiPropertyOptional({ writeOnly: true }) @IsOptional() @IsString() @MaxLength(512) verifyToken?: string;
+  @ApiPropertyOptional({ writeOnly: true }) @IsOptional() @IsString() @MaxLength(512) appSecret?: string;
+  @ApiProperty({ minimum: 0 }) @IsInt() @Min(0) expectedStateVersion!: number;
+}
+
 export class UpdateChannelConfigurationDto {
   @ApiProperty({ type: "object", additionalProperties: true }) @IsObject() configuration!: Record<string, unknown>;
   @ApiProperty({ minimum: 0 }) @IsInt() @Min(0) expectedStateVersion!: number;
+}
+
+export class AgentProducerDto {
+  @ApiProperty({ format: "uuid" }) @IsUUID() agentId!: string;
+  @ApiPropertyOptional({ maxLength: 200 }) @IsOptional() @IsString() @MaxLength(200) agentName?: string;
 }
 
 export class SendChannelMessageDto {
@@ -58,6 +74,16 @@ export class SendChannelMessageDto {
   @ApiPropertyOptional({ type: [String], format: "uuid", maxItems: 20 }) @IsOptional() @IsArray() @ArrayMaxSize(20) @IsUUID("4", { each: true }) attachmentIds?: string[];
   @ApiPropertyOptional({ format: "uuid" }) @IsOptional() @IsUUID() replyToMessageId?: string;
   @ApiProperty({ maxLength: 200 }) @Matches(/^[A-Za-z0-9._:-]+$/) @MaxLength(200) idempotencyKey!: string;
+  /**
+   * Optional provenance: the Responix that produced this outbound message.
+   * Recorded on the persisted channel message so shared conversation history
+   * can be attributed per agent (Agent Context Boundary). Never sent to the
+   * provider.
+   */
+  @ApiPropertyOptional({ type: AgentProducerDto })
+  @IsOptional() @ValidateNested()
+  @Type(() => AgentProducerDto)
+  producer?: AgentProducerDto;
 }
 
 export class UploadChannelAttachmentDto {
@@ -93,6 +119,10 @@ export class TransitionChannelMessageDto {
   @ApiProperty({ enum: ChannelMessageState }) @IsEnum(ChannelMessageState) state!: ChannelMessageState;
   @ApiProperty({ minimum: 0 }) @IsInt() @Min(0) expectedStateVersion!: number;
   @ApiPropertyOptional({ maxLength: 2000 }) @IsOptional() @IsString() @MaxLength(2000) reason?: string;
+}
+
+export class SetConversationExecutionDto {
+  @ApiProperty() @IsBoolean() enabled!: boolean;
 }
 
 export class TransitionChannelConnectionDto {

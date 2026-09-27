@@ -186,6 +186,16 @@ describe("PromptCompilerRepository", () => {
     }));
   });
 
+  it("surfaces the exact compiler diagnostic when compilation is rejected", async () => {
+    await expect(repository.compile("workspace", "actor", dto({ maxPromptSizeBytes: 10 })))
+      .rejects.toMatchObject({
+        response: expect.objectContaining({
+          message: expect.stringContaining("PROMPT_SIZE_EXCEEDED at resolvedPrompt")
+        })
+      });
+    expect(prisma.compiledPrompt.create).not.toHaveBeenCalled();
+  });
+
   it("rejects wrong-workspace prompts and transactionally audits diagnostics", async () => {
     prisma.promptLibraryItem.findFirst.mockResolvedValue(null);
     await expect(repository.compile("workspace", "actor", dto()))

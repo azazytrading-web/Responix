@@ -2,6 +2,8 @@
 
 import type { ReactNode } from "react";
 import { useState } from "react";
+import { PageSkeleton } from "@responix/ui";
+import { usePlatformBootstrap } from "../platform";
 import { Sidebar } from "./sidebar";
 import { Topbar } from "./topbar";
 import { CommandPalette } from "./command-palette";
@@ -12,6 +14,15 @@ interface AppShellProps {
 
 export function AppShell({ children }: AppShellProps) {
   const [mobileOpen, setMobileOpen] = useState(false);
+  const { isReady } = usePlatformBootstrap();
+
+  if (!isReady) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-background">
+        <PageSkeleton rows={6} />
+      </div>
+    );
+  }
 
   return (
     <div className="relative flex min-h-screen">

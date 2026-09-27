@@ -120,6 +120,17 @@ export class ChannelRuntimeRepository {
         data: { stateVersion: { increment: 1 } } }); if (updated.count !== 1) throw new ConflictException("Channel connection state changed");
       await this.audit(tx, workspaceId, actorId, connection.channelId, "whatsapp.configuration.changed", { connectionId, revision, hash }); return version; });
   }
+  async updateConnection(workspaceId: string, actorId: string, id: string, data: {
+    businessAccountId?: string; phoneNumberId?: string; displayPhoneNumber?: string; apiVersion?: string;
+  }, expected: number) {
+    return this.prisma.$transaction(async (tx) => { const current = await tx.channelConnection.findFirst({ where: { id, workspaceId } });
+      if (!current) throw new NotFoundException("Channel connection was not found"); if (current.stateVersion !== expected) throw new ConflictException("Channel connection state changed");
+      const updated = await tx.channelConnection.updateMany({ where: { id, workspaceId, stateVersion: expected },
+        data: { ...data, stateVersion: { increment: 1 } } });
+      if (updated.count !== 1) throw new ConflictException("Channel connection state changed");
+      await this.audit(tx, workspaceId, actorId, current.channelId, "whatsapp.connection.updated",
+        { connectionId: id, updatedFields: Object.keys(data) });
+      return tx.channelConnection.findUniqueOrThrow({ where: { id }, select: this.connectionSelect }); }); }
   async transitionConnection(workspaceId: string, actorId: string, id: string, state: ChannelConnectionState, expected: number) {
     return this.prisma.$transaction(async (tx) => { const current = await tx.channelConnection.findFirst({ where: { id, workspaceId } });
       if (!current) throw new NotFoundException("Channel connection was not found"); if (current.stateVersion !== expected) throw new ConflictException("Channel connection state changed");
@@ -171,7 +182,7 @@ export class ChannelRuntimeRepository {
 
   async queueOutgoing(workspaceId: string, actorId: string, input: { channelId: string; connectionId: string;
     recipient: string; type: NormalizedChannelMessage["type"]; text?: string; content?: Record<string, unknown>;
-    idempotencyKey: string; replyToMessageId?: string }) {
+    idempotencyKey: string; replyToMessageId?: string; producer?: { agentId: string; agentName?: string } }) {
     await this.requireChannel(this.prisma, workspaceId, input.channelId);
     const connection = await this.prisma.channelConnection.findFirst({ where: { id: input.connectionId, channelId: input.channelId, workspaceId } });
     if (!connection) throw new NotFoundException("Channel connection was not found");
@@ -182,7 +193,8 @@ export class ChannelRuntimeRepository {
       channelId: input.channelId, externalConversationId: input.recipient } }, create: { workspaceId, channelId: input.channelId,
         sessionId: session.id, externalConversationId: input.recipient }, update: {} });
     const normalizedPayload = { externalUserId: input.recipient, externalConversationId: input.recipient, direction: "OUTGOING",
-      type: input.type, text: input.text, content: input.content ?? {}, timestamp: new Date().toISOString() };
+      type: input.type, text: input.text, content: input.content ?? {}, timestamp: new Date().toISOString(),
+      ...(input.producer ? { producer: { agentId: input.producer.agentId, agentName: input.producer.agentName ?? null } } : {}) };
     const payloadHash = this.hash(normalizedPayload);
     try { return await this.prisma.$transaction(async (tx) => { const value = await tx.channelMessage.create({ data: { workspaceId,
         channelId: input.channelId, connectionId: input.connectionId, conversationId: conversation.id, direction: "OUTGOING", type: input.type,
@@ -271,7 +283,24 @@ export class ChannelRuntimeRepository {
     const where: Prisma.ChannelMessageWhereInput = { workspaceId, state: query.state, type: query.type, conversationId: query.conversationId };
     return this.prisma.$transaction([this.prisma.channelMessage.findMany({ where, select: this.messageSelect, skip: (page - 1) * limit, take: limit, orderBy: { createdAt: "desc" } }),
       this.prisma.channelMessage.count({ where })]).then(([data, total]) => ({ data, pagination: { page, limit, total, totalPages: Math.ceil(total / limit) } })); }
-  conversations(workspaceId: string, channelId?: string) { return this.prisma.channelConversation.findMany({ where: { workspaceId, channelId }, orderBy: { updatedAt: "desc" } }); }
+  conversations(workspaceId: string, channelId?: string) { return this.prisma.channelConversation.findMany({ where: { workspaceId, channelId }, orderBy: { updatedAt: "desc" },
+    include: { messages: { orderBy: { createdAt: "desc" }, take: 1, select: { createdAt: true } } } }); }
+  async conversationExecution(workspaceId: string, conversationId: string) {
+    const record = await this.prisma.channelConversation.findFirst({
+      where: { id: conversationId, workspaceId }, select: { id: true, channelId: true, metadata: true, updatedAt: true }
+    });
+    if (!record) throw new NotFoundException("Channel conversation was not found");
+    return record;
+  }
+  async setConversationExecution(workspaceId: string, actorId: string, conversationId: string, enabled: boolean) {
+    const record = await this.conversationExecution(workspaceId, conversationId);
+    const metadata = record.metadata && typeof record.metadata === "object" && !Array.isArray(record.metadata)
+      ? (record.metadata as Record<string, unknown>) : {};
+    return this.prisma.channelConversation.update({
+      where: { id: record.id },
+      data: { metadata: json({ ...metadata, agentExecution: { enabled, updatedById: actorId, updatedAt: new Date().toISOString() } }) }
+    });
+  }
   attachments(workspaceId: string, channelId?: string) { return this.prisma.channelAttachment.findMany({ where: { workspaceId, channelId },
     select: this.attachmentSelect, orderBy: { createdAt: "desc" } }); }
   async attachmentReferences(workspaceId: string, channelId: string, ids: readonly string[]) { const values = await this.prisma.channelAttachment.findMany({
@@ -300,8 +329,54 @@ export class ChannelRuntimeRepository {
     this.prisma.channelConfiguration.findMany({ where: { connectionId }, orderBy: { revision: "desc" } })); }
   latestConfiguration(workspaceId: string, connectionId: string) { return this.getConnection(workspaceId, connectionId).then(() =>
     this.prisma.channelConfiguration.findFirst({ where: { connectionId }, orderBy: { revision: "desc" } })); }
+  async agentAutomaticExecutionEnabled(workspaceId: string, agentId: string) {
+    const agent = await this.prisma.aiAgent.findFirst({
+      where: { id: agentId, workspaceId, deletedAt: null }, select: { runtimeConfiguration: true }
+    });
+    if (!agent) return false;
+    const runtime = agent.runtimeConfiguration && typeof agent.runtimeConfiguration === "object" && !Array.isArray(agent.runtimeConfiguration)
+      ? agent.runtimeConfiguration as Record<string, unknown> : {};
+    const automatic = runtime.automaticExecution && typeof runtime.automaticExecution === "object" && !Array.isArray(runtime.automaticExecution)
+      ? runtime.automaticExecution as Record<string, unknown> : {};
+    return automatic.enabled !== false;
+  }
   linkConversation(workspaceId: string, id: string, conversationRuntimeId: string) {
     return this.prisma.channelConversation.updateMany({ where: { id, workspaceId }, data: { conversationRuntimeId } });
+  }
+  async conversationHistoryBefore(workspaceId: string, conversationId: string,
+    currentMessageId: string, limit = 20, maxCharacters = 32_000) {
+    const current = await this.prisma.channelMessage.findFirst({
+      where: { id: currentMessageId, workspaceId, conversationId },
+      select: { id: true, createdAt: true }
+    });
+    if (!current) throw new NotFoundException("Current channel message was not found");
+    const rows = await this.prisma.channelMessage.findMany({
+      where: {
+        workspaceId, conversationId,
+        state: { notIn: [ChannelMessageState.FAILED, ChannelMessageState.CANCELLED] },
+        OR: [{ createdAt: { lt: current.createdAt } }, { createdAt: current.createdAt, id: { lt: current.id } }]
+      },
+      orderBy: [{ createdAt: "desc" }, { id: "desc" }], take: limit,
+      select: { id: true, direction: true, normalizedPayload: true, createdAt: true }
+    });
+    const history = rows.reverse().map((row) => {
+      const payload = row.normalizedPayload as Record<string, unknown>;
+      const content = typeof payload.text === "string" && payload.text.trim()
+        ? payload.text : JSON.stringify(payload.content ?? {});
+      const producer = payload.producer && typeof payload.producer === "object" && !Array.isArray(payload.producer)
+        ? payload.producer as Record<string, unknown> : {};
+      const agentId = this.string(producer.agentId);
+      const agentName = this.string(producer.agentName);
+      return { id: row.id, role: row.direction === "INCOMING" ? "user" as const : "assistant" as const,
+        content, createdAt: row.createdAt,
+        ...(agentId ? { agentId, ...(agentName ? { agentName } : {}) } : {}) };
+    }).filter(({ content }) => content.trim().length > 0);
+    let used = 0;
+    return history.reverse().filter(({ content }) => {
+      if (used + content.length > maxCharacters) return false;
+      used += content.length;
+      return true;
+    }).reverse();
   }
 
   private requireChannel(client: PrismaService | Prisma.TransactionClient, workspaceId: string, id: string) { return client.channel.findFirst({ where: { id, workspaceId }, select: this.channelSelect })
@@ -324,7 +399,7 @@ export class ChannelRuntimeRepository {
     if (value && typeof value === "object") return `{${Object.entries(value).sort(([a], [b]) => a.localeCompare(b)).map(([k, v]) => `${JSON.stringify(k)}:${this.stable(v)}`).join(",")}}`;
     return JSON.stringify(value) ?? "null"; }
   private string(value: unknown, fallback = "") { return typeof value === "string" ? value : fallback; }
-  private readonly channelSelect = { id: true, workspaceId: true, providerId: true, name: true, state: true,
+  private readonly channelSelect = { id: true, workspaceId: true, providerId: true, provider: { select: { name: true } }, name: true, state: true,
     compatibilityVersion: true, version: true, stateVersion: true, configurationHash: true, checksum: true, createdById: true,
     updatedById: true, createdAt: true, updatedAt: true, archivedAt: true } satisfies Prisma.ChannelSelect;
   private readonly connectionSelect = { id: true, workspaceId: true, channelId: true, state: true, stateVersion: true,

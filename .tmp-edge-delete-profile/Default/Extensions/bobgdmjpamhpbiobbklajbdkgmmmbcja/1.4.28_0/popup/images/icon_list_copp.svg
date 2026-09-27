@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+  <g id="icon_list_copy" transform="translate(-605.198 -378.413)">
+    <g id="copy" transform="translate(607.072 380.574)">
+      <path id="Vector" d="M0,0H24V24H0Z" transform="translate(-1.874 -2.161)" fill="#fff" opacity="0"/>
+      <path id="Vector-2" data-name="Vector" d="M11.639,4.074V7.565c0,2.91-1.164,4.074-4.074,4.074H4.074C1.164,11.639,0,10.475,0,7.565V4.074C0,1.164,1.164,0,4.074,0H7.565C10.475,0,11.639,1.164,11.639,4.074Z" transform="translate(1.663 6.651)" fill="none" stroke="#4d5670" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/>
+      <path id="Vector-3" data-name="Vector" d="M11.639,4.074V7.565c0,2.91-1.164,4.074-4.074,4.074H6.651V9.062c0-2.91-1.164-4.074-4.074-4.074H0V4.074C0,1.164,1.164,0,4.074,0H7.565C10.475,0,11.639,1.164,11.639,4.074Z" transform="translate(6.651 1.663)" fill="none" stroke="#4d5670" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/>
+    </g>
+  </g>
+</svg>

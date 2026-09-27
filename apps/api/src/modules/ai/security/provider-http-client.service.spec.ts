@@ -125,6 +125,11 @@ describe("ProviderHttpClient", () => {
     const callback = jest.fn();
     lookup("api.openai.com", {}, callback);
     expect(callback).toHaveBeenCalledWith(null, "104.18.26.120", 4);
+    const allCallback = jest.fn();
+    lookup("api.openai.com", { all: true }, allCallback);
+    expect(allCallback).toHaveBeenCalledWith(null, [
+      { address: "104.18.26.120", family: 4 }
+    ]);
     expect(fixture.requestOptions()).toMatchObject({
       agent: false,
       servername: "api.openai.com",

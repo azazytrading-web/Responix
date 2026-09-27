@@ -1,5 +1,6 @@
 import { BadRequestException, Injectable, NotFoundException } from "@nestjs/common";
 import {
+  ConversationRuntimeMessageRole,
   ConversationRuntimeParticipantType,
   ConversationRuntimeStateType,
   ConversationRuntimeStatus,
@@ -49,6 +50,77 @@ export class ConversationRuntimeRepository {
     });
     if (!outcome.ok) this.throwValidation(outcome.validation);
     return outcome.runtime;
+  }
+
+  async prepareChannelConversation(workspaceId: string, actorId: string,
+    channelConversationId: string, dto: PrepareConversationRuntimeDto) {
+    return this.prisma.$transaction(async (tx) => {
+      await tx.$queryRaw`SELECT id FROM channel_conversations
+        WHERE id = ${channelConversationId}::uuid AND workspace_id = ${workspaceId}::uuid FOR UPDATE`;
+      const conversation = await tx.channelConversation.findFirst({
+        where: { id: channelConversationId, workspaceId },
+        select: { id: true, conversationRuntimeId: true }
+      });
+      if (!conversation) throw new NotFoundException("Channel conversation was not found");
+      if (conversation.conversationRuntimeId) {
+        return this.requireRuntime(tx, workspaceId, conversation.conversationRuntimeId);
+      }
+      const assembled = await this.assemble(tx, workspaceId, dto);
+      if (!assembled.validation.valid) this.throwValidation(assembled.validation);
+      const runtime = await this.createRuntime(tx, workspaceId, actorId,
+        assembled.normalized, assembled.package);
+      await tx.channelConversation.update({
+        where: { id: conversation.id }, data: { conversationRuntimeId: runtime.id }
+      });
+      await this.mutationAudit(tx, workspaceId, actorId, runtime.id,
+        "conversation.runtime.channel_created", null, runtime, { channelConversationId });
+      return runtime;
+    });
+  }
+
+  async appendChannelMessage(workspaceId: string, actorId: string, runtimeId: string,
+    message: { messageIdentifier: string; role: ConversationRuntimeMessageRole;
+      participantKey?: string; contentHash: string; metadata?: Record<string, unknown> }) {
+    return this.prisma.$transaction(async (tx) => {
+      await tx.$queryRaw`SELECT id FROM conversation_runtimes
+        WHERE id = ${runtimeId}::uuid AND workspace_id = ${workspaceId}::uuid FOR UPDATE`;
+      const runtime = await this.requireRuntime(tx, workspaceId, runtimeId);
+      this.assertMutable(runtime);
+      const existing = runtime.messages.find((item) =>
+        item.messageIdentifier === message.messageIdentifier);
+      if (existing) return runtime;
+      const ordinal = runtime.messages.reduce((maximum, item) => Math.max(maximum, item.ordinal), -1) + 1;
+      const nextMessage = {
+        messageIdentifier: message.messageIdentifier, ordinal, role: message.role,
+        participantKey: message.participantKey, contentHash: message.contentHash,
+        metadata: message.metadata ?? {}, tokenMetadata: {}
+      };
+      await tx.conversationRuntimeMessage.create({ data: {
+        runtimeId, messageIdentifier: nextMessage.messageIdentifier, ordinal,
+        role: nextMessage.role, participantKey: nextMessage.participantKey,
+        contentHash: nextMessage.contentHash, metadata: json(nextMessage.metadata), tokenMetadata: {}
+      } });
+      const currentPackage = this.record(runtime.runtimePackage);
+      const input = this.record(currentPackage.input);
+      const messages = [...runtime.messages.map((item) => ({
+        messageIdentifier: item.messageIdentifier, ordinal: item.ordinal, role: item.role,
+        participantKey: item.participantKey ?? undefined, contentHash: item.contentHash ?? undefined,
+        metadata: item.metadata, tokenMetadata: item.tokenMetadata
+      })), nextMessage];
+      const core = this.packageCore({ ...currentPackage, input: { ...input, messages }, messages });
+      const packageHash = this.hash(core);
+      const checksum = this.hash({ packageHash, compatibilityVersion: runtime.compatibilityVersion });
+      const updated = await tx.conversationRuntime.update({
+        where: { id: runtimeId }, data: {
+          revision: { increment: 1 }, updatedById: actorId, packageHash, checksum,
+          runtimePackage: json({ ...core, hashes: { packageHash, checksum }, preparedAt: new Date().toISOString() })
+        }, select: this.runtimeSelect
+      });
+      await this.mutationAudit(tx, workspaceId, actorId, runtimeId,
+        "conversation.runtime.message_appended", runtime, updated,
+        { messageIdentifier: message.messageIdentifier, role: message.role });
+      return updated;
+    });
   }
 
   async validate(workspaceId: string, actorId: string, id: string) {

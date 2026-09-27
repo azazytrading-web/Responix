@@ -94,6 +94,18 @@ describe("KnowledgeBaseRepository", () => {
     expect(prisma.auditLog.create).toHaveBeenCalledTimes(2);
   });
 
+  it("lists only active spaces in the requested workspace, excluding soft-deleted and archived records", async () => {
+    prisma.knowledgeBase.findMany.mockResolvedValue([space]);
+
+    const result = await repository.listSpaces("workspace");
+
+    expect(prisma.knowledgeBase.findMany).toHaveBeenCalledWith(expect.objectContaining({
+      where: { workspaceId: "workspace", deletedAt: null, archivedAt: null },
+      orderBy: { name: "asc" }
+    }));
+    expect(result).toEqual([space]);
+  });
+
   it("rejects cross-workspace hierarchy references", async () => {
     prisma.knowledgeCollection.findFirst.mockResolvedValue(null);
     await expect(repository.createDocument("workspace", "actor", {

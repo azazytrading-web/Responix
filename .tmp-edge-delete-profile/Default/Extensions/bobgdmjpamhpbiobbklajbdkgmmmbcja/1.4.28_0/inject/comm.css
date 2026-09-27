@@ -1,0 +1,290 @@
+.DualSafe-inputfiled-icon {
+  background-position: center !important;
+  display: inline-block !important;
+  background-repeat: no-repeat !important;
+  width: 20px !important;
+  height: 20px !important;
+  vertical-align: middle !important;
+  position: absolute !important;
+  cursor: pointer !important;
+  pointer-events:auto !important;
+}
+
+.DualSafe-fill-iframe {
+  width: 352px;
+  box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.2);
+  border-radius: 4px;
+  z-index: 2147483647 !important;
+  display: block !important;
+  clip-path: none !important;
+  clip: auto !important;
+  mask: none !important;
+  filter: none !important;
+  pointer-events: auto !important;
+  resize: none !important;
+  border-width: 0px;
+  border-style: initial;
+  border-color: initial;
+  border-image: initial;
+  visibility: hidden;
+  margin: 0px !important;
+  padding: 0px !important;
+  -webkit-mask: none !important;
+  position: absolute !important;
+  min-width: 224px !important;
+  max-width: 700px !important;
+  min-height: 35px !important;
+  max-height: 700px !important;
+  transition-property: height !important;
+  transition-timing-function: ease-out !important;
+  transition-duration: 0.1s !important;
+}
+
+.DualSafe-confirm-iframe {
+  position: fixed !important;
+  display: block  !important;
+  z-index: 2147483647 !important;
+  width: 380px;
+  background: #f4f5f8 !important;
+  transform: scale(0.2);
+  opacity: 0;
+  box-shadow: 0px 3px 6px rgba(55, 59, 71, 0.2) ;
+  transition-property: transform, opacity;
+  transition-timing-function: ease-out;
+  transition-duration: 0.4s;
+  right: 20px;
+  top: 20px;
+}
+
+.DualSafe-confirm-iframe.active {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.DualSafe-animated-rightslide {
+  padding: 0;
+  margin: 0;
+  border: none !important;
+  background: none !important;
+  box-sizing: border-box !important;
+  -webkit-appearance: none;
+  border-radius: 0 !important;
+  outline: none !important;
+  /* box-sizing: content-box !important; */
+}
+
+.DualSafe-animated-rightslide[type="password"]::-ms-clear,
+.DualSafe-animated-rightslide[type="password"]::-ms-reveal {
+  display: none;
+}
+
+.DualSafe-animated-rightslide::-ms-clear {
+  display: none;
+}
+
+.DualSafe-animated-rightslide::-ms-reveal {
+  display: none;
+}
+
+.DualSafe-animated-rightslide:-internal-autofill-previewed,
+.DualSafe-animated-rightslide:-internal-autofill-selected {
+  -webkit-text-fill-color: none !important;
+}
+
+.DualSafe-animated-body {
+  overflow-x: hidden !important;
+}
+
+.DualSafe-animated-fill {
+  animation: DualSafedpmfill 200ms ease-in-out 0ms 1;
+  -webkit-animation: DualSafedpmfill 200ms ease-in-out 0ms 1;
+}
+
+.animate__bounceInRight {
+  -webkit-animation: bounceInRight 400ms both;
+  animation: bounceInRight 400ms both;
+}
+
+@-webkit-keyframes DualSafedpmfill {
+  0% {
+    -webkit-transform: scale(1, 1);
+    transform-origin: 50% 50%;
+  }
+
+  50% {
+    -webkit-transform: scale(1.5, 1.5);
+    transform-origin: 50% 50%;
+  }
+
+  100% {
+    -webkit-transform: scale(1, 1);
+    transform-origin: 50% 50%;
+  }
+}
+
+@-moz-keyframes DualSafedpmfill {
+  0% {
+    transform: scale(1, 1);
+    transform-origin: 50% 50%;
+  }
+
+  50% {
+    transform: scale(1.5, 1.5);
+    transform-origin: 50% 50%;
+  }
+
+  100% {
+    transform: scale(1, 1);
+    transform-origin: 50% 50%;
+  }
+}
+
+@-webkit-keyframes bounceInRight {
+
+  from,
+  60%,
+  75%,
+  90%,
+  to {
+    -webkit-animation-timing-function: cubic-bezier(0.215, 0.61, 0.355, 0);
+    animation-timing-function: cubic-bezier(0.215, 0.61, 0.355, 0);
+  }
+
+  from {
+    opacity: 0;
+    -webkit-transform: translate3d(100%, 0, 0);
+    transform: translate3d(100%, 0, 0);
+  }
+
+  60% {
+    opacity: 1;
+    -webkit-transform: translate3d(-25px, 0, 0);
+    transform: translate3d(-25px, 0, 0);
+  }
+
+  75% {
+    -webkit-transform: translate3d(10px, 0, 0);
+    transform: translate3d(10px, 0, 0);
+  }
+
+  90% {
+    -webkit-transform: translate3d(-5px, 0, 0);
+    transform: translate3d(-5px, 0, 0);
+  }
+
+  to {
+    -webkit-transform: translate3d(0, 0, 0);
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes bounceInRight {
+
+  from,
+  60%,
+  75%,
+  90%,
+  to {
+    -webkit-animation-timing-function: cubic-bezier(0.215, 0.61, 0.355, 0);
+    animation-timing-function: cubic-bezier(0.215, 0.61, 0.355, 0);
+  }
+
+  from {
+    opacity: 0;
+    -webkit-transform: translate3d(100%, 0, 0);
+    transform: translate3d(100%, 0, 0);
+  }
+
+  60% {
+    opacity: 1;
+    -webkit-transform: translate3d(-25px, 0, 0);
+    transform: translate3d(-25px, 0, 0);
+  }
+
+  75% {
+    -webkit-transform: translate3d(10px, 0, 0);
+    transform: translate3d(10px, 0, 0);
+  }
+
+  90% {
+    -webkit-transform: translate3d(-5px, 0, 0);
+    transform: translate3d(-5px, 0, 0);
+  }
+
+  to {
+    -webkit-transform: translate3d(0, 0, 0);
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+.DualSafe-Icon-QRCode {
+  background-position: center !important;
+  vertical-align: middle !important;
+  cursor: pointer !important;
+  pointer-events:auto !important;
+  display: flex !important;
+  align-items: center;
+  overflow: hidden;
+  background: #FFFFFF 0% 0% no-repeat padding-box;
+  box-shadow: 0px 4px 10px #00000029;
+  border: 1px solid #71849433;
+  border-radius: 4px;
+  opacity: 1;
+}
+
+.DualSafe-Icon-QRCode:hover {
+  background: #EEF2F8 0% 0% no-repeat padding-box;
+  box-shadow: 0px 4px 10px #00000029;
+  border: 1px solid #71849433;
+  border-radius: 4px;
+  opacity: 1;
+}
+
+.DualSafe-Icon-QRCode-warp {
+  position: absolute !important;
+  z-index: 2147483647 !important;
+  padding: 0px;
+  border: 0px;
+  margin: 0px;
+  opacity: 1; 
+}
+
+.DualSafe-qr-p {
+  /* UI Properties */
+  display: block;
+  padding: 0;
+  margin: 6px 6px 6px 0px;
+  text-align: left;
+  font-family: "Segoe UI", Arial, "Microsoft Yahei", sans-serif !important;
+  font-size: 14px;
+  line-height: 19px;
+  font-weight: 400;
+  letter-spacing: 0px;
+  color: #1A1B1E;
+  word-break: break-all;
+}
+
+.DualSafe-qr-icon {
+  /* UI Properties */
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  margin: 6px;
+}
+
+.DualSafe-qr-closebtn {
+  position: absolute;
+  width: 24px;
+  height: 24px;
+  background: transparent url('img/btn_close.svg') 0% 0% no-repeat padding-box;
+  opacity: 1;
+}
+
+.DualSafe-qr-closebtn:hover {
+  background: transparent url('img/btn_close_hover.svg') 0% 0% no-repeat padding-box;
+}
+
+.DSafe-flag {
+ border: 2px solid red !important; 
+}
+.DualSafe__purchase{position:fixed;top:0;right:0;z-index:9999999;width:380px;padding:16px;background-color:#fff;border:1px solid rgba(169,178,203,0.3)}.DualSafe__purchase *{padding:0;margin:0;font-family:"Segoe UI", Arial, "Microsoft Yahei", sans-serif !important}.DualSafe__purchase>*{font-family:"Segoe UI", Arial, "Microsoft Yahei", sans-serif !important}.DualSafe__purchase_content{display:-webkit-box;display:-ms-flexbox;display:flex;-webkit-box-orient:vertical;-webkit-box-direction:normal;-ms-flex-direction:column;flex-direction:column}.DualSafe__purchase_header,.DualSafe__purchase_body,.DualSafe__purchase_footer{display:-webkit-box;display:-ms-flexbox;display:flex;-webkit-box-align:stretch;-ms-flex-align:stretch;align-items:stretch;-webkit-box-pack:justify;-ms-flex-pack:justify;justify-content:space-between}.DualSafe__purchase_body{-webkit-box-flex:1;-ms-flex-positive:1;flex-grow:1}.DualSafe__purchase_body,.DualSafe__purchase_footer{-webkit-box-align:center;-ms-flex-align:center;align-items:center}.DualSafe__purchase_header{-webkit-padding-after:36px;padding-block-end:36px}.DualSafe__purchase_footer{-webkit-padding-before:42px;padding-block-start:42px}.DualSafe__purchase_title{display:-webkit-box;display:-ms-flexbox;display:flex;-webkit-box-align:center;-ms-flex-align:center;align-items:center;line-height:24px;-webkit-padding-start:32px;-moz-padding-start:32px;padding-inline-start:32px;-webkit-padding-end:12px;-moz-padding-end:12px;padding-inline-end:12px;color:#4D5670;font-size:14px;-ms-flex-negative:0;flex-shrink:0;font-weight:600;background-size:24px;background-position:0 4px;background-repeat:no-repeat;background-image:url(../inject/images/confirm__purchase_icon.svg);font-family:"Segoe UI", Arial, "Microsoft Yahei", sans-serif !important}.DualSafe__purchase_close{min-width:0;padding:0;width:32px;height:32px;-ms-flex-negative:0;flex-shrink:0;background-size:24px !important;background-position:center center !important;background-repeat:no-repeat !important;background-image:url(../inject/images/confirm__purchase_close.svg) !important;border:none !important;background-color:transparent !important;opacity:0.6 !important}.DualSafe__purchase_close:hover,.DualSafe__purchase_close:active{opacity:1 !important}.DualSafe__purchase_thank{min-width:0;padding:0;color:#A9B2CB;font-size:14px;line-height:1.5;font-weight:400;height:auto;border:none !important;background:transparent !important;font-family:"Segoe UI", Arial, "Microsoft Yahei", sans-serif !important;cursor:pointer !important}.DualSafe__purchase_thank:hover{color:#4D5670;text-decoration:underline}.DualSafe__purchase_enable{padding:4px 16px;height:32px;color:#fff;font-size:14px;line-height:1.4;font-weight:400;min-width:106px;background:#FF9900;border:none !important;font-family:"Segoe UI", Arial, "Microsoft Yahei", sans-serif !important;cursor:default !important;border-radius:4px}.DualSafe__purchase_enable:hover{opacity:0.8 !important;background:#FF9900}.DualSafe__purchase_pic{-ms-flex-negative:0;flex-shrink:0;width:74px;height:74px}.DualSafe__purchase_pic>img{width:100%}.DualSafe__purchase_cont{-webkit-box-flex:1;-ms-flex:1;flex:1;-ms-flex-negative:0;flex-shrink:0;-webkit-padding-start:16px;-moz-padding-start:16px;padding-inline-start:16px}.DualSafe__purchase_name{line-height:1.5;color:#1A1B1E;font-size:14px;font-weight:700;font-family:"Segoe UI", Arial, "Microsoft Yahei", sans-serif !important;text-align:left}.DualSafe__purchase_name>*{color:#FF9900;font-weight:700;font:inherit}.DualSafe__purchase_desc{-webkit-padding-before:4px;padding-block-start:4px;line-height:1.2;color:#4D5670;font-size:12px;font-weight:400;text-align:left;font-family:"Segoe UI", Arial, "Microsoft Yahei", sans-serif !important}

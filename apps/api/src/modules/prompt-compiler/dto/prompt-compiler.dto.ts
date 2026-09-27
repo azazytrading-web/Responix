@@ -175,7 +175,7 @@ export class CompilePromptDto {
   @IsOptional() @IsObject()
   workspaceMetadata?: Record<string, unknown>;
 
-  @ApiPropertyOptional({ minimum: 1, maximum: 1000000, default: 100000 })
+  @ApiPropertyOptional({ minimum: 1, maximum: 1000000, default: 500000 })
   @IsOptional() @IsInt() @Min(1) @Max(1000000)
   maxPromptSizeBytes?: number;
 }
@@ -206,4 +206,3 @@ export class CompareCompiledPromptsDto {
   @ApiProperty({ format: "uuid" }) @IsUUID()
   rightId!: string;
 }
-

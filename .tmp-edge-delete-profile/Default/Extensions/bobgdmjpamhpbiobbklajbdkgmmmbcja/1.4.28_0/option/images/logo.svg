@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="88" height="88" viewBox="0 0 88 88">
+  <defs>
+    <clipPath id="clip-path">
+      <rect id="矩形_1316" data-name="矩形 1316" width="88" height="88" transform="translate(146 56)" fill="#fff" stroke="#707070" stroke-width="1"/>
+    </clipPath>
+    <linearGradient id="linear-gradient" x1="0.07" y1="0.07" x2="0.93" y2="0.93" gradientUnits="objectBoundingBox">
+      <stop offset="0" stop-color="#5874ac"/>
+      <stop offset="1" stop-color="#35558a"/>
+    </linearGradient>
+    <filter id="路径_1272" x="14.299" y="10.133" width="59.402" height="47.497" filterUnits="userSpaceOnUse">
+      <feOffset dy="12" input="SourceAlpha"/>
+      <feGaussianBlur stdDeviation="4" result="blur"/>
+      <feFlood flood-color="#141723" flood-opacity="0.361"/>
+      <feComposite operator="in" in2="blur"/>
+      <feComposite in="SourceGraphic"/>
+    </filter>
+    <linearGradient id="linear-gradient-2" x1="0.5" x2="0.5" y2="1" gradientUnits="objectBoundingBox">
+      <stop offset="0" stop-color="#20b9fd"/>
+      <stop offset="1" stop-color="#198df7"/>
+    </linearGradient>
+    <filter id="椭圆_180" x="10.374" y="23.114" width="67.252" height="67.252" filterUnits="userSpaceOnUse">
+      <feOffset dy="5" input="SourceAlpha"/>
+      <feGaussianBlur stdDeviation="2.5" result="blur-2"/>
+      <feFlood flood-color="#102744" flood-opacity="0.329"/>
+      <feComposite operator="in" in2="blur-2"/>
+      <feComposite in="SourceGraphic"/>
+    </filter>
+  </defs>
+  <g id="logo_88" transform="translate(-146 -56)" clip-path="url(#clip-path)">
+    <g id="组_1026" data-name="组 1026" transform="translate(-1200.627 -490.745)">
+      <rect id="矩形_1313" data-name="矩形 1313" width="88" height="88" rx="21.067" transform="translate(1346.627 546.745)" fill="url(#linear-gradient)"/>
+      <g id="组_1025" data-name="组 1025">
+        <g transform="matrix(1, 0, 0, 1, 1346.63, 546.74)" filter="url(#路径_1272)">
+          <path id="路径_1272-2" data-name="路径 1272" d="M1408.328,580.375h-7.108V574.58a10.593,10.593,0,1,0-21.186,0v5.795h-7.108V574.58a17.7,17.7,0,1,1,35.4,0Z" transform="translate(-1346.63 -546.74)" fill="#fff"/>
+        </g>
+        <path id="路径_1273" data-name="路径 1273" d="M1390.627,563.987a10.6,10.6,0,0,1,10.593,10.593v2.241h-21.186V574.58a10.6,10.6,0,0,1,10.593-10.593m0-3.554a14.147,14.147,0,0,0-14.147,14.147v5.795h28.294V574.58a14.147,14.147,0,0,0-14.147-14.147Z" fill="#3d5c92" opacity="0.3"/>
+        <g transform="matrix(1, 0, 0, 1, 1346.63, 546.74)" filter="url(#椭圆_180)">
+          <circle id="椭圆_180-2" data-name="椭圆 180" cx="26.126" cy="26.126" r="26.126" transform="translate(17.87 25.61)" fill="url(#linear-gradient-2)"/>
+        </g>
+        <path id="路径_1274" data-name="路径 1274" d="M1390.627,624.611a26.126,26.126,0,0,1,0-52.252Z" fill="#fff" opacity="0.11"/>
+        <path id="路径_1275" data-name="路径 1275" d="M1391.574,617.545a2.181,2.181,0,0,1-1.9,0c-3.43-1.679-13.653-7.741-13.653-14.968V588.849a2.159,2.159,0,0,1,1.387-2.043,34.533,34.533,0,0,1,26.432,0,2.163,2.163,0,0,1,1.387,2.043v13.728C1405.23,609.8,1395.007,615.866,1391.574,617.545Z" fill="#fff" opacity="0.8"/>
+        <path id="路径_1276" data-name="路径 1276" d="M1390.625,584.175a34.046,34.046,0,0,0-13.214,2.631,2.159,2.159,0,0,0-1.387,2.043v13.728c0,7.227,10.223,13.289,13.653,14.968a2.019,2.019,0,0,0,.948.217Z" fill="#fff"/>
+        <path id="路径_1277" data-name="路径 1277" d="M1398.052,600.832l-2.669-1.541,2.669-1.541a2.379,2.379,0,0,0-2.379-4.12L1393,595.171v-3.082a2.379,2.379,0,0,0-4.758,0v3.082l-2.669-1.541a2.379,2.379,0,0,0-2.378,4.12l2.668,1.541-2.668,1.541a2.379,2.379,0,0,0,2.378,4.12l2.669-1.541v3.082a2.379,2.379,0,1,0,4.758,0v-3.082l2.669,1.541a2.379,2.379,0,0,0,2.379-4.12Z" fill="#198df7"/>
+      </g>
+    </g>
+  </g>
+</svg>

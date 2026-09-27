@@ -127,7 +127,11 @@ export class ProviderHttpClient {
     const connectionTimeoutMs = this.config.getOrThrow<number>("ai.network.connectionTimeoutMs");
     const readTimeoutMs = this.config.getOrThrow<number>("ai.network.readTimeoutMs");
     const providerTimeoutMs = this.config.getOrThrow<number>("ai.requestTimeoutMs");
-    const lookup: LookupFunction = (_hostname, _options, callback) => {
+    const lookup: LookupFunction = (_hostname, options, callback) => {
+      if (options.all) {
+        callback(null, [{ address: destination.address, family: destination.family }]);
+        return;
+      }
       callback(null, destination.address, destination.family);
     };
     return new Promise((resolve, reject) => {
@@ -207,7 +211,11 @@ export class ProviderHttpClient {
     const providerTimeoutMs = this.config.getOrThrow<number>("ai.requestTimeoutMs");
     const configuredMaximum = this.config.getOrThrow<number>("ai.network.maxResponseBytes");
     const maximumBytes = Math.min(configuredMaximum, input.maximumResponseBytes ?? configuredMaximum);
-    const lookup: LookupFunction = (_hostname, _options, callback) => {
+    const lookup: LookupFunction = (_hostname, options, callback) => {
+      if (options.all) {
+        callback(null, [{ address: input.address, family: input.family }]);
+        return;
+      }
       callback(null, input.address, input.family);
     };
 

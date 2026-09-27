@@ -26,6 +26,7 @@ import { DeepSeekProviderAdapter } from "./providers/deepseek-provider.adapter";
 import { ProviderConfigurationRepository } from "./providers/provider-configuration.repository";
 import { ProviderCredentialService } from "./providers/provider-credential.service";
 import { ProviderDiscoveryService } from "./providers/provider-discovery.service";
+import { ProviderManagementService } from "./providers/provider-management.service";
 import { ProviderFactory } from "./providers/provider.factory";
 import { ProviderRegistry } from "./providers/provider.registry";
 import { ProviderRepository } from "./providers/provider.repository";
@@ -88,6 +89,7 @@ import { RuntimeRecoveryService } from "./runtime/runtime-recovery.service";
     RuntimeRecoveryService,
     ProviderCredentialService,
     ProviderDiscoveryService,
+    ProviderManagementService,
     ProviderRegistry,
     ProviderFactory,
     RoutingRepository,

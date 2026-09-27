@@ -1,0 +1,80 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html" charset="utf-8">
+    <title>Prayer times</title>
+  <script type="module" crossorigin src="/assets/popup.html-B80fWkX3.js"></script>
+  <link rel="modulepreload" crossorigin href="/assets/modulepreload-polyfill-B5Qt9EMX.js">
+  <link rel="modulepreload" crossorigin href="/assets/utils-BUW5jZl9.js">
+  <link rel="modulepreload" crossorigin href="/assets/location-helper-DrjkutPO.js">
+  <link rel="stylesheet" crossorigin href="/assets/location-helper-DuofReN0.css">
+</head>
+
+<body>
+
+<div id="center-page">
+    <div class="header">
+        <div class="logo">
+            <a href=""><img src="/mathaneh.png" alt="Prayertimes" /></a>
+        </div>
+        <div class="button" id="show">
+            <a href="#"><span class="item5"></span></a>
+        </div>
+        <div class="clear-float"></div>
+		<div class="nav2">
+			<ul>
+				<li><a href="popup.html"><span class="item0" id="menuHome"></span></a></li>
+				<li><a href="timetable.html" target="_blank"><span class="item1" id="menuTimetable"></span></a></li>
+				<li><a href="options.html" target="_blank"><span class="item2" id="menuOptions"></span></a></li>
+				<li><a href="#"><span class="item3" id="playpause"></span></a></li>
+				<li>
+					<label class="item6" for="slider-hor">Volume</label><input type="range" id="slider-hor" min="0" max="100" style="width: 100%;" />
+					<span id="amount"></span>
+				</li>
+				<!-- Moved spans inside a <li> and fixed IDs -->
+				<li>
+				</li>
+
+				<li><a href="#" id="close"><span class="item4" id="menuClose"></span></a></li>
+			</ul>
+		</div>
+	</div>
+    <div class="content">
+		<div class="post" id="ptimes">
+			<img src="/loader.gif" id="optionsloader" alt="loading" style="visibility: hidden">
+			<div class="pending" id="pending">
+			<span id="message"></span>
+			</div>
+		</div>
+    </div>
+	<div class="footer">
+		<p>&copy; <span id="year"></span> <span id="version"></span></p>
+	</div>
+
+	<table id="settingsheader" class="right">
+		<tr>
+			<td>
+				<span class="item7" id="settingslabel" style="color: #ae2d00;font-size:9px; text-align:center;">Settings</span>
+				<span class="showsettingsicon"></span>
+			</td>
+		</tr>
+	</table>
+
+	<div class="quicksettings">
+	<table class="right">
+	<tr>
+		<td>
+			<input type="text" id="locationInputPopup" class="textinput item7" placeholder="Type address ..." />
+			<br>
+		</td>
+	</tr>
+		<tr>
+		<td>
+			<span class="item2" id="additionalsettingslbl" style="color: #ae2d00;font-size:9px;">Additional Settings</span>
+		</td>
+	</tr>
+	</table>
+	</div>
+</div>
+</body>
+</html>

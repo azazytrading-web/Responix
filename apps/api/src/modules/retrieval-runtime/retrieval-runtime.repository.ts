@@ -239,6 +239,32 @@ export class RetrievalRuntimeRepository {
     return { data, pagination: { page, limit, total, totalPages: Math.ceil(total / limit) } };
   }
 
+  async getPublishedSnapshot(workspaceId: string, runtimeId: string) {
+    const runtime = await this.prisma.retrievalRuntime.findFirst({
+      where: { id: runtimeId, workspaceId },
+      select: { id: true, status: true, latestSnapshotRevision: true }
+    });
+    if (!runtime) throw new NotFoundException("Retrieval Runtime was not found");
+    if (
+      runtime.status !== RetrievalRuntimeStatus.PUBLISHED ||
+      runtime.latestSnapshotRevision <= 0
+    ) {
+      throw new BadRequestException(
+        "Retrieval Runtime must be published before it can be bound to an Agent"
+      );
+    }
+    const snapshot = await this.prisma.retrievalRuntimeSnapshot.findFirst({
+      where: {
+        workspaceId,
+        runtimeId: runtime.id,
+        revision: runtime.latestSnapshotRevision
+      },
+      select: this.snapshotSelect
+    });
+    if (!snapshot) throw new NotFoundException("Published Retrieval Runtime has no snapshot");
+    return snapshot;
+  }
+
   async listSnapshots(workspaceId: string, query: RetrievalSnapshotListQueryDto) {
     const page = query.page ?? 1;
     const limit = query.limit ?? 25;
@@ -485,8 +511,12 @@ export class RetrievalRuntimeRepository {
     });
 
     const validation = this.validator.validate(dto, diagnostics);
+    // Normalize the input to a plain object so the package hash is stable across
+    // prepare (a class-transformer instance with undefined optional fields) and
+    // publish (the JSON round-trip of retrievalPackage.input, which drops them).
+    const normalizedInput = JSON.parse(JSON.stringify(dto)) as PrepareRetrievalRuntimeDto;
     const corePackage = {
-      input: dto,
+      input: normalizedInput,
       workspaceId,
       space: space ?? { id: dto.knowledgeBaseId, unavailable: true },
       sources: resolvedSources.map(({ documentId, versionId, sourceType, mimeType, language,

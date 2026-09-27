@@ -1,0 +1,1344 @@
+{
+   "Checkbox_Keep_signed": {
+      "message": "Залишати мене в обліковому записі для"
+   },
+   "Checkbox_Keep_signed_Hint": {
+      "message": "Ви ввійдете автоматично протягом зазначеного періоду часу. Переконайтеся, що ваше комп’ютерне середовище безпечне. Якщо ви користуєтеся публічним комп’ютером, будь ласка не встановлюйте цей параметр."
+   },
+   "Delete_Exclude_website": {
+      "message": "Видалити та виключити цей веб-сайт"
+   },
+   "Emergency_Desc": {
+      "message": "Зробіть легким і безпечним повторний доступ до свого облікового запису в екстрених випадках, як-от втрата  чи викрадення паролів."
+   },
+   "Emergency_Title": {
+      "message": "\u003Cb>Екстрений доступ\u003C/b>у разі аварії"
+   },
+   "Enable_Now": {
+      "message": "Увімкнути зараз"
+   },
+   "Enter_your_email": {
+      "message": "Введіть свій email"
+   },
+   "Exclude_website_new": {
+      "message": "Виключити цей веб-сайт"
+   },
+   "Invalid_Recovery_Code_New": {
+      "message": " Недійсний код відновлення. Переконайтеся, що введено дійсний код. Або \u003Ca class=\"btn-link contactUsLink\">зв'яжіться з нами.\u003C/a>"
+   },
+   "Keep_Safe_Desc": {
+      "message": "Увімкніть Password Health, щоб перевірити пароль і посилити ваші слабкі, старі та повторно використовувані паролі»."
+   },
+   "Keep_Safe_Title": {
+      "message": "Тримайте всі паролі \u003Cb>в безпеці\u003C/b>"
+   },
+   "No_Worries_Desc": {
+      "message": " Увімкніть Моніторинг  Темної Мережі, щоб отримувати сповіщення, якщо вашу особисту інформацію було викрадено."
+   },
+   "No_Worries_Title": {
+      "message": "\u003Cb>Не\u003C/b> турбуйтесь  про \u003Cb>витоки даних\u003C/b>"
+   },
+   "No_thanks": {
+      "message": "Ні, дякую"
+   },
+   "Password_Generator": {
+      "message": "Генератор паролів"
+   },
+   "Password_Generator_Dec": {
+      "message": "Створюйте надійні та безпечні паролі лише одним клацанням миші"
+   },
+   "Suggested_Password": {
+      "message": "Пропонований пароль"
+   },
+   "Suggested_Password_Dec": {
+      "message": "Показати запропонований пароль для всіх полів введення пароля"
+   },
+   "Suggested_password_Case": {
+      "message": "Пропонований пароль"
+   },
+   "TOTP_Tips": {
+      "message": "Місцевий час вашого ПК невірний,що може призвести до того що одноразовий пароль стане недійсним."
+   },
+   "TOTP_placeholder": {
+      "message": "Введіть секретний ключ або URL-адресу,наприклад otpauth://*"
+   },
+   "Unlimited_Desc": {
+      "message": "Легко керуйте,зберігайте та створюйте безпечні паролі на будь-якому пристрої  чи платформі лише за допомогою одного облікового запису ."
+   },
+   "Unlimited_Title": {
+      "message": " Синхронізація даних на \u003Cb>необмеженій кількості пристроїв\u003C/b>"
+   },
+   "Website": {
+      "message": "Веб-сайт"
+   },
+   "about": {
+      "message": "Про нас"
+   },
+   "about_Acknowledgements": {
+      "message": "Подяка цим людям"
+   },
+   "about_Copyright": {
+      "message": "© iTop Inc.Усі права захищено. "
+   },
+   "about_EULA": {
+      "message": "ЛУКК"
+   },
+   "about_Privacy_Policy": {
+      "message": "Політика конфіденційності"
+   },
+   "about_Version": {
+      "message": "Версія"
+   },
+   "add": {
+      "message": "Додати"
+   },
+   "addNew": {
+      "message": "Додати новий"
+   },
+   "addNewAccount": {
+      "message": "Додати новий обліковий запис"
+   },
+   "add_Login": {
+      "message": "Додати логін"
+   },
+   "add_Logins": {
+      "message": "Додати логіни"
+   },
+   "add_Notes": {
+      "message": "Додати нотатки"
+   },
+   "add_Payment_Info": {
+      "message": "Додати Платіжну інформацію"
+   },
+   "add_Payment_Info_Case": {
+      "message": "Додайте платіжну інформацію"
+   },
+   "add_Personal_Info": {
+      "message": "Додати особисту інформацію"
+   },
+   "add_Personal_Info_Case": {
+      "message": "Додайте особисту інформацію"
+   },
+   "add_exclude": {
+      "message": "Додайте веб-сайти для виключення"
+   },
+   "add_items": {
+      "message": "Додати елементи"
+   },
+   "add_new_website": {
+      "message": "Додати новий веб-сайт"
+   },
+   "add_secure_note": {
+      "message": "Додати захищену нотатку"
+   },
+   "add_to_favorites": {
+      "message": "Додати до вибраного"
+   },
+   "add_to_favorites_succ": {
+      "message": "Додано до вибраного"
+   },
+   "add_totp": {
+      "message": "Додати одноразовий пароль?"
+   },
+   "add_website": {
+      "message": "Додати веб-сайт"
+   },
+   "add_website_placeholder": {
+      "message": "Введіть веб-сайт"
+   },
+   "address": {
+      "message": "Адреса"
+   },
+   "address_copied": {
+      "message": "Адресу скопійовано"
+   },
+   "advancedOptions": {
+      "message": "Розширені опції"
+   },
+   "all_Item": {
+      "message": "Усі елементи"
+   },
+   "alreadyAccount": {
+      "message": "* Якщо у вас уже є обліковий запис iTop,тоді увійдіть напряму ."
+   },
+   "already_saved": {
+      "message": "Я вже зберіг"
+   },
+   "americanexpress": {
+      "message": "American Express"
+   },
+   "appName": {
+      "message": "DualSafe Password Manager"
+   },
+   "auth_bottom_desc": {
+      "message": "Після завершення авторизації ви зможете увійти в DualSafe Password Manager."
+   },
+   "auth_desc": {
+      "message": "Авторизуйте вхід у DualSafe Password Manager у щойно відкритій вкладці браузера."
+   },
+   "auth_subtitle": {
+      "message": "Очікування авторизації…"
+   },
+   "auth_title": {
+      "message": "Авторизація"
+   },
+   "autoFillFailed": {
+      "message": "Не вдалося знайти поля для входу.Спробуйте скопіювати та вставити дані для входу вручну."
+   },
+   "average": {
+      "message": "Середній"
+   },
+   "back": {
+      "message": "Назад"
+   },
+   "bannerExpiredPurchase": {
+      "message": "Ой! Термін дії вашого преміум \u003Cb>закінчився.\u003C/b>"
+   },
+   "bannerFreePurchase": {
+      "message": "Перейдіть на повний преміум-доступ"
+   },
+   "bannerPremiumPurchase": {
+      "message": "У вас залишилося %s \u003Cspan class=\"day-words\">днів\u003C/span> Преміум."
+   },
+   "birthday": {
+      "message": "День народження"
+   },
+   "birthday_copied": {
+      "message": "Дату народження скопійовано"
+   },
+   "browserReboot": {
+      "message": "Перезавантаження браузера"
+   },
+   "browser_extension": {
+      "message": "Розширення браузера"
+   },
+   "cancel": {
+      "message": "Скасувати"
+   },
+   "capitalize": {
+      "message": " Великі літери (A-Z)"
+   },
+   "cardNumber": {
+      "message": "Номер картки"
+   },
+   "cardType": {
+      "message": "Тип карти"
+   },
+   "cardType_placeholder": {
+      "message": "Введіть або виберіть тип картки"
+   },
+   "card_number_copied": {
+      "message": "Номер картки скопійовано"
+   },
+   "card_type_copied": {
+      "message": "Тип картки скопійовано"
+   },
+   "cardholderName": {
+      "message": "Ім'я власника картки"
+   },
+   "cardholder_name_copied": {
+      "message": "Ім’я власника картки скопійовано"
+   },
+   "cardother": {
+      "message": "Інші"
+   },
+   "carteblanche": {
+      "message": "Carte Blanche"
+   },
+   "change_desc": {
+      "message": "Ви змінюєте свій головний пароль..."
+   },
+   "change_master_password": {
+      "message": "Змінити головний пароль"
+   },
+   "change_now": {
+      "message": "Змінити зараз"
+   },
+   "change_title": {
+      "message": "Змінити головний пароль"
+   },
+   "cityTown": {
+      "message": "«Місто"
+   },
+   "clear": {
+      "message": "Очистити"
+   },
+   "clear_allpass_desc": {
+      "message": "Після очищення вони не можуть бути відновлені."
+   },
+   "clear_allpass_title": {
+      "message": "Видалити усі паролі?"
+   },
+   "clear_deleted_desc": {
+      "message": "Після видалення їх неможливо відновити."
+   },
+   "clear_deleted_title": {
+      "message": "Ви впевнені,що бажаєте очистити всі елементи з Видалених елементів??"
+   },
+   "clear_password": {
+      "message": "Очистити пароль"
+   },
+   "cleared_successfully": {
+      "message": "Успішно видалено."
+   },
+   "close": {
+      "message": "Закрити"
+   },
+   "code_desc": {
+      "message": "Введіть головний пароль,щоб скинути код відновлення"
+   },
+   "code_pairing_desc": {
+      "message": "Підтвердьте код у спливаючому вікні програми для ПК і натисніть кнопку «Під'єднатись»,щоб авторизувати автоматичний вхід та розблокування."
+   },
+   "code_pairing_title": {
+      "message": "Код з'єднання"
+   },
+   "code_title": {
+      "message": "Скинути код відновлення"
+   },
+   "comma": {
+      "message": ":"
+   },
+   "comprehensive_pwd_Desc": {
+      "message": "Комплексна перевірка справності пароля"
+   },
+   "confirmMasterNewPass": {
+      "message": "Підтвердьте новий головний пароль"
+   },
+   "confirmMasterPass": {
+      "message": "Підтвердьте свій головний пароль"
+   },
+   "continue": {
+      "message": "Продовжити"
+   },
+   "continue_sign_in": {
+      "message": "Продовжити Вхід"
+   },
+   "copied": {
+      "message": "скопійовано"
+   },
+   "copy": {
+      "message": "Скопіювати"
+   },
+   "copy_generator_password": {
+      "message": "Скопіювати пароль"
+   },
+   "copy_notes": {
+      "message": "Копіювати нотатки"
+   },
+   "copy_one_time_Password": {
+      "message": "Скопіювати одноразовий пароль"
+   },
+   "copy_password": {
+      "message": "пароль"
+   },
+   "copy_username": {
+      "message": "Скопіювати ім'я користувача"
+   },
+   "countryRegion": {
+      "message": "Країна або регіон"
+   },
+   "countryRegion_placeholder": {
+      "message": "Виберіть свою країну або регіон"
+   },
+   "createNewAccount": {
+      "message": "Створити аккаунт"
+   },
+   "create_new_account": {
+      "message": "Створити аккаунт"
+   },
+   "createdAt": {
+      "message": "Створено в"
+   },
+   "currentMasterPass": {
+      "message": "Поточний головний пароль"
+   },
+   "day": {
+      "message": "День"
+   },
+   "days": {
+      "message": "Днів"
+   },
+   "days_case": {
+      "message": "днів"
+   },
+   "default_password_manager": {
+      "message": "Default Password Manager"
+   },
+   "delete": {
+      "message": "Видалити"
+   },
+   "delete_all": {
+      "message": "Видалити все"
+   },
+   "delete_at": {
+      "message": "Видалено в"
+   },
+   "delete_item": {
+      "message": "Ви впевнені,що бажаєте видалили цей елемент у кошик?"
+   },
+   "delete_item_Recycle_Bin": {
+      "message": "Ви впевнені,що бажаєте видалили цей елемент із кошика?"
+   },
+   "delete_item_Recycle_Bin_Dec": {
+      "message": "Його неможливо відновити після видалення."
+   },
+   "delete_item_dec": {
+      "message": "Ви можете відновити його з кошика,якщо він не видалений остаточно."
+   },
+   "deletedSuccessfully": {
+      "message": "Успішно видалено."
+   },
+   "deleted_this_item": {
+      "message": "Видалити цей елемент"
+   },
+   "desktop": {
+      "message": "Робочий стіл"
+   },
+   "desktop_app": {
+      "message": "Настільний додаток"
+   },
+   "details": {
+      "message": "Деталі"
+   },
+   "device_limit_desc": {
+      "message": "Ви досягли максимального ліміту для входу на 3 пристроях. Оновіть зараз, щоб насолоджуватися необмеженим доступом до пристрою та всіма переліченими нижче перевагами:"
+   },
+   "device_limit_tips": {
+      "message": "* Ви вийдете з цього пристрою:"
+   },
+   "device_limit_title": {
+      "message": "Досягнуто ліміту пристроїв!"
+   },
+   "dinersclub": {
+      "message": "Diners Club"
+   },
+   "dir": {
+      "message": "ltr"
+   },
+   "discard": {
+      "message": "Скасувати"
+   },
+   "discard_change": {
+      "message": "Ви впевнені,що бажаєте відхилили незбережені зміни?"
+   },
+   "discover": {
+      "message": "Discover"
+   },
+   "downloadApp": {
+      "message": "Завантажити додаток"
+   },
+   "edit": {
+      "message": "Редагувати"
+   },
+   "editInfo": {
+      "message": "Редагувати інформацію"
+   },
+   "emailAddress": {
+      "message": "Адреса е-пошти"
+   },
+   "emailOrPassIncorrect": {
+      "message": "Невірний email або пароль."
+   },
+   "emailVerfy": {
+      "message": "Підтвердьте адресу е-пошти"
+   },
+   "email_address_copied": {
+      "message": "Адресу е-пошти скопійовано"
+   },
+   "emergency_contact": {
+      "message": "Екстрений доступ"
+   },
+   "emergency_contact_Desc": {
+      "message": "Якщо ви втратите доступ до своїх даних, особа  якій ви надаєте екстрений доступ, може подати запит на експорт ваших даних або змінити ваш головний пароль."
+   },
+   "enterMasterNewPass": {
+      "message": "Введіть новий головний пароль"
+   },
+   "enterMasterPass": {
+      "message": "Введіть головний пароль"
+   },
+   "enterRecoveryCass": {
+      "message": "Введіть код відновлення"
+   },
+   "enterYourPass": {
+      "message": "Введіть свій пароль"
+   },
+   "enter_email_desc": {
+      "message": "Будь ласка,введіть свою електронну адресу,щоб отримати код відновлення!"
+   },
+   "enter_email_tips": {
+      "message": "Недійсна електронна адреса. Будь ласка, перевірте та введіть ще раз!"
+   },
+   "exclude_website": {
+      "message": "Виключити веб-сайт"
+   },
+   "exclude_website_list": {
+      "message": "Список виключених веб-сайтів"
+   },
+   "expOptionDate": {
+      "message": "Термін дії"
+   },
+   "expiration_date_copied": {
+      "message": "Термін дії скопійовано"
+   },
+   "expired": {
+      "message": "МИНУВ"
+   },
+   "extDesc": {
+      "message": "DualSafe Password Manager допомагає безпечно керувати паролями в одному місці та дозволяє автоматично: зберігати,заповнювати,отримувати доступ до них у будь-який час."
+   },
+   "extName": {
+      "description": "DualSafe Password Manager & Цифрове сховище",
+      "message": "DualSafe Password Manager & Цифрове сховище "
+   },
+   "extension": {
+      "message": "Продовжити"
+   },
+   "failedToDelete": {
+      "message": "Не вдалося видалити."
+   },
+   "failedToOpenLoading_DPM": {
+      "message": "Завантаження десктопної версії"
+   },
+   "failedToOpenLoading_Dark_Web_Monitor_Dec": {
+      "message": "Dark Web Моніторинг доступний лише у настільній версії.Натисніть \"Відкрити\" у спливаючому вікні підтвердження,та запустіть версію для комп’ютера. Або натисніть кнопку %s нижче,щоб знову відкрити спливаюче вікно."
+   },
+   "failedToOpenLoading_Emergency_Contact_Dec": {
+      "message": "Emergency Contact доступний лише у настільній версії.Натисніть \"Відкрити\" у спливаючому вікні підтвердження,та запустіть версію для комп’ютера. Або натисніть кнопку %s нижче,щоб знову відкрити спливаюче вікно."
+   },
+   "failedToOpenLoading_Import_Export_Dec": {
+      "message": "Імпорт та експорт доступні лише у настільній версії.Натисніть \"Відкрити\" у спливаючому вікні підтвердження,та запустіть версію для комп’ютера.Або натисніть кнопку %s нижче,щоб знову відкрити спливаюче вікно."
+   },
+   "failedToOpenLoading_Password_Health_Dec": {
+      "message": "Password Health доступний лише у настільній версії.Натисніть \"Відкрити\" у спливаючому вікні підтвердження,та запустіть версію для комп’ютера. Або натисніть кнопку %s нижче,щоб знову відкрити спливаюче вікно."
+   },
+   "failedToOpen_DPM": {
+      "message": "Не вдалося відкрити настільну версію"
+   },
+   "failedToOpen_Dark_Web_Monitor_Dec": {
+      "message": "Dark Web Моніторинг доступний лише у настільній версії.Натисніть кнопку %d,щоб завантажити та встановити настільну версію.Або натисніть кнопку %s,щоб знову відкрити."
+   },
+   "failedToOpen_Emergency_Contact_Dec": {
+      "message": "Emergency Contact доступний лише у настільній версії.Натисніть кнопку %d,щоб завантажити та встановити настільну версію.Або натисніть кнопку %s,щоб знову відкрити."
+   },
+   "failedToOpen_Import_Export_Dec": {
+      "message": "Імпорт та експорт доступні лише у настільній версії.Натисніть кнопку %d,щоб завантажити та встановити настільну версію.Або натисніть кнопку %s,щоб знову відкрити."
+   },
+   "failedToOpen_Password_Health_Dec": {
+      "message": "Password Health доступний лише у настільній версії.Натисніть кнопку %d,щоб завантажити та встановити настільну версію.Або натисніть кнопку %s,щоб відкрити знову."
+   },
+   "failedToRestore": {
+      "message": "Не вдалося відновити."
+   },
+   "failed_send_desc": {
+      "message": "Не вдалося надіслати електронний лист із кодом відновлення.Будь ласка спробуйте ще раз."
+   },
+   "failed_send_title": {
+      "message": "Не вдалося надіслати."
+   },
+   "favoties": {
+      "message": "Вибране"
+   },
+   "feedback": {
+      "message": "Зворотній зв'язок"
+   },
+   "fill": {
+      "message": "Заповнити"
+   },
+   "firstName": {
+      "message": "Ім'я"
+   },
+   "fiveMinutes": {
+      "message": "5 хвилин"
+   },
+   "forgotYourPass": {
+      "message": "Забули свій пароль?"
+   },
+   "fourHours": {
+      "message": "4 годони"
+   },
+   "fourteenDays": {
+      "message": "14 днів"
+   },
+   "free": {
+      "message": "БЕЗКОШТОВНО"
+   },
+   "gender": {
+      "message": "Стать"
+   },
+   "genderFemale": {
+      "message": "Жіноча"
+   },
+   "genderMale": {
+      "message": "Чоловіча"
+   },
+   "genderNone": {
+      "message": "Жодна"
+   },
+   "genderOther": {
+      "message": "Інша"
+   },
+   "gender_copied": {
+      "message": "Стать скопійовано"
+   },
+   "goPremiumBtn": {
+      "message": "Перейдіть на преміум"
+   },
+   "go_back_to_signin": {
+      "message": "Повернутися до входу"
+   },
+   "hideCode": {
+      "message": "Приховати код безпеки"
+   },
+   "hidePass": {
+      "message": "Приховати пароль"
+   },
+   "ignore_website": {
+      "message": "Ігноруйте цей веб-сайт"
+   },
+   "installDesktopApp": {
+      "message": "Встановіть настільний додаток"
+   },
+   "invalid_email": {
+      "message": "Невірна адреса електронної пошти.Введіть адресу електронної пошти,яку ви підтвердили."
+   },
+   "invalid_master_pass": {
+      "message": "Увійти за допомогою настільного додатка"
+   },
+   "invalid_master_tips": {
+      "message": "Недійсний головний пароль. Перевірте та повторіть спробу."
+   },
+   "invalid_recovery_code": {
+      "message": "Недійсний код відновлення.Перевірте та спробуйте  ще раз."
+   },
+   "invalid_secret_key": {
+      "message": "Недійсний секретний ключ!"
+   },
+   "item_remove_from_favorites": {
+      "message": "Видалити з вибраного"
+   },
+   "jcb": {
+      "message": "JCB"
+   },
+   "lang": {
+      "message": "ua"
+   },
+   "lastModifiedAt": {
+      "message": "Змінено о"
+   },
+   "lastName": {
+      "message": "Прізвище"
+   },
+   "lastPasswordChangedAt": {
+      "message": "Пароль змінено о"
+   },
+   "learn_more": {
+      "message": "Дізнатись більше"
+   },
+   "length": {
+      "message": "Довжина"
+   },
+   "loading": {
+      "message": "Завантаження..."
+   },
+   "loading_data_error": {
+      "message": "Не вдалося завантажити.Перевірте з'єднання з мережею."
+   },
+   "lock": {
+      "message": "Заблокувати"
+   },
+   "lock_comfirm_btn": {
+      "message": "Розблокувати вручну"
+   },
+   "login_comfirm_btn": {
+      "message": "Увійти вручну"
+   },
+   "login_comfirm_desc": {
+      "message": "Натисніть свій обліковий запис,щоб \u003Cbr> авторизувти автоматичний вхід та розблокувати з настільної програми."
+   },
+   "login_waiting_title": {
+      "message": "Очікування авторизації від настільного додатка…"
+   },
+   "logins": {
+      "message": "Логін"
+   },
+   "lower_case": {
+      "message": "Малі літери (a-z)"
+   },
+   "maestro": {
+      "message": "Maestro"
+   },
+   "mastercard": {
+      "message": "Mastercard"
+   },
+   "masterpassIncorrect": {
+      "message": "Недійсний головний пароль."
+   },
+   "match_change_pass": {
+      "message": "Пароль не відповідає вимогам."
+   },
+   "match_master_pass": {
+      "message": "Паролі не співпадають."
+   },
+   "middleName": {
+      "message": "По батькові"
+   },
+   "month": {
+      "message": "Місяць"
+   },
+   "more": {
+      "message": "Більше"
+   },
+   "name": {
+      "message": "Ім'я"
+   },
+   "name_copied": {
+      "message": "Ім'я скопійовано"
+   },
+   "networkError": {
+      "message": "Помилка з'єднання з мережею."
+   },
+   "never": {
+      "message": "Ніколи"
+   },
+   "newUser": {
+      "message": "Новий користувач?"
+   },
+   "new_password": {
+      "message": "Новий пароль"
+   },
+   "ninetyDays": {
+      "message": "90 днів"
+   },
+   "noItemsAddAllItem": {
+      "message": "Немає доданих елементів."
+   },
+   "noItemsAddLoginItem": {
+      "message": "Жодних логінів не додано."
+   },
+   "noItemsAddNotesItem": {
+      "message": "Немає захищених нотаток."
+   },
+   "noItemsAddPayItem": {
+      "message": "Платіжна інформація не додається."
+   },
+   "noItemsAddPersonalItem": {
+      "message": "Особисті дані не додаються."
+   },
+   "noItemsAddRecycleItem": {
+      "message": "Тут немає жодних елементів."
+   },
+   "noItemsFound": {
+      "message": "Немає елементів."
+   },
+   "noResult": {
+      "message": "Немає результату!"
+   },
+   "noSaved": {
+      "message": "Для цього сайту не збережено жодних логінів."
+   },
+   "noSavedPrss": {
+      "message": "Немає збереженого пароля!"
+   },
+   "no_excluded_websites": {
+      "message": "Немає виключених веб-сайтів."
+   },
+   "no_password_history": {
+      "message": "Немає історії паролів."
+   },
+   "notNow": {
+      "message": "Не зараз"
+   },
+   "not_have_code": {
+      "message": "Немає коду відновлення?"
+   },
+   "notes": {
+      "message": "Нотатки"
+   },
+   "notes_characters_tips": {
+      "message": "%s символів залишилося"
+   },
+   "notes_copied": {
+      "message": "Нотатки скопійовано"
+   },
+   "notes_placeholder": {
+      "message": "Введіть кілька нотаток для цього елемента (максимальне обмеження: %s символів)"
+   },
+   "numWords": {
+      "message": "Цифри (0-9)"
+   },
+   "ok": {
+      "message": "Добре"
+   },
+   "okIgotIt": {
+      "message": "ДОБРЕ.Зрозумів."
+   },
+   "oneHour": {
+      "message": "1 година"
+   },
+   "oneMinute": {
+      "message": "1 хвилина"
+   },
+   "one_time_Password": {
+      "message": "Одноразовий пароль"
+   },
+   "one_time_pass_copied": {
+      "message": "Одноразовий пароль скопійовано"
+   },
+   "only": {
+      "message": "Тільки"
+   },
+   "open": {
+      "message": "Відкрити"
+   },
+   "options": {
+      "message": "Параметри"
+   },
+   "passIncorrect": {
+      "message": "Невірний пароль."
+   },
+   "password": {
+      "message": "Пароль"
+   },
+   "password_copied": {
+      "message": "Пароль скопійовано"
+   },
+   "password_history_item": {
+      "message": "Історія паролів"
+   },
+   "password_history_tips": {
+      "message": "Тут показано останні паролі %s."
+   },
+   "password_history_title": {
+      "message": "Історія паролів"
+   },
+   "password_tip_one": {
+      "message": "Мінімум 8 символів. Рекомендовано більше 16 символів."
+   },
+   "password_tip_three": {
+      "message": "Хоча б один символ."
+   },
+   "password_tip_two": {
+      "message": "Хоча б одне число."
+   },
+   "payment_Info": {
+      "message": "Інформація про оплату"
+   },
+   "personal_Info": {
+      "message": "Особиста інформація"
+   },
+   "phoneNumber": {
+      "message": "Номер телефону"
+   },
+   "phone_number_copied": {
+      "message": "Номер телефону скопійовано"
+   },
+   "premiumExpiredPurchase": {
+      "message": "Термін дії вашого преміум \u003Cb class='text-red'>закінчився!\u003C/b>"
+   },
+   "premiumExpiredPurchaseAlert": {
+      "message": "Розширені функції зараз недоступні.Оновіть,щоб продовжити преміум-доступ та легко зберігайте свої паролі в безпеці."
+   },
+   "premiumExpiringSoonPurchase": {
+      "message": "Залишилося лише \u003Cb class=\"text-yellow\">%s днів\u003C/b> Преміум!"
+   },
+   "premiumExpiringSoonPurchaseAlert": {
+      "message": "Оновіть,щоб залишитися з преміум-доступом до таких розширених функцій:"
+   },
+   "premiumFreePurchase": {
+      "message": "Простий та безпечніший спосіб керування паролями"
+   },
+   "premiumFreePurchaseAlert": {
+      "message": "Розпочніть Преміум вже сьогодні та збережіть ці розширені функції:"
+   },
+   "premiumFreePurchaseAlert_New": {
+      "message": "Запустіть Premium сьогодні та збережіть ці розширені функції:"
+   },
+   "premiumFreePurchase_New": {
+      "message": "Простіший і безпечніший спосіб керувати своїми паролями"
+   },
+   "premiumPurchase": {
+      "message": "У вас 30 днів преміум!"
+   },
+   "premiumPurchaseAlert": {
+      "message": "Тепер насолоджуйтесь такими розширеними функціями:"
+   },
+   "premiun": {
+      "message": "ПРЕМІУМ"
+   },
+   "purchase_Dark_Web_Monitor": {
+      "message": "Темний веб-моніторинг та сповіщення"
+   },
+   "purchase_Password_Health": {
+      "message": "Перевірка працездатності пароля"
+   },
+   "purchase_Password_Health_Check": {
+      "message": "Перевірка надійності пароля"
+   },
+   "purchase_Unlimited_Devices": {
+      "message": "Sync Across Unlimited Devices"
+   },
+   "questionMark": {
+      "message": "?"
+   },
+   "recovery_code_copied": {
+      "message": "Код відновлення скопійовано"
+   },
+   "recycle_Bin": {
+      "message": "Сміттєва корзина"
+   },
+   "refresh": {
+      "message": "Оновити"
+   },
+   "rememberMeOnThisDevice": {
+      "message": "Запам'ятати мене на цьому пристрої"
+   },
+   "remindExpirationDate": {
+      "message": "Нагадати за 2 місяці до завершення терміну дії"
+   },
+   "remind_me_after_days": {
+      "message": "Нагадати мені через 7 днів"
+   },
+   "remind_me_tomorrow": {
+      "message": "Нагадати мені завтра"
+   },
+   "remind_password": {
+      "message": "Нагадати мені змінити пароль через 90 днів"
+   },
+   "remove_from_favorites": {
+      "message": "Видалити з вибраного"
+   },
+   "remove_from_favorites_succ": {
+      "message": "Видалено з вибраного"
+   },
+   "resend": {
+      "message": "Надіслати повторно"
+   },
+   "reset": {
+      "message": "Скинути"
+   },
+   "reset_code_desc": {
+      "message": "Введіть код відновлення,щоб скинути головний пароль.Ваш код відновлення збережено у форматі PDF."
+   },
+   "reset_code_title": {
+      "message": "Введіть код відновлення"
+   },
+   "reset_desc": {
+      "message": "Будь ласка,введіть свою підтверджену адресу електронної пошти,щоб змінити пароль"
+   },
+   "reset_email_place": {
+      "message": "Введіть свою підтверджену електронну адресу"
+   },
+   "reset_master_title": {
+      "message": "Скинути головний пароль"
+   },
+   "reset_recovery_code": {
+      "message": "Скинути код відновлення"
+   },
+   "reset_success_desc": {
+      "message": "Ваш головний пароль скинуто.Будь ласка,увійдіть використовуючи новий головний пароль."
+   },
+   "reset_success_title": {
+      "message": "Готово!"
+   },
+   "reset_title": {
+      "message": "Скинути пароль"
+   },
+   "restore": {
+      "message": "Оновити"
+   },
+   "restoreSuccessfully": {
+      "message": "Успішно відноновлено"
+   },
+   "retry": {
+      "message": "Спробувати ще раз"
+   },
+   "save": {
+      "message": "Зберегти"
+   },
+   "saveIn_DPM": {
+      "message": "Зберегти в DualSafe Password Manager"
+   },
+   "save_as_pdf": {
+      "message": "Зберегти в PDF"
+   },
+   "save_code_desc_one": {
+      "message": "Збережіть свій код відновлення у форматі PDF та роздрукуйте його,щоб не забути."
+   },
+   "save_code_desc_two": {
+      "message": "Це дозволить Вам відновити доступ до менеджера паролів DualSafe,якщо ви забули головний пароль."
+   },
+   "save_code_new_title": {
+      "message": "Збережіть свій новий код відновлення"
+   },
+   "save_code_tips": {
+      "message": "\u003Cb>Важливо:\u003C/b> код відновлення — це єдиний спосіб допомогти вам знову отримати доступ до DualSafe Password Manager,якщо ви забули свій головний пароль."
+   },
+   "save_code_title": {
+      "message": "Зберегти код відновлення"
+   },
+   "save_totp": {
+      "message": "Зберегти одноразовий пароль?"
+   },
+   "savedFailedData": {
+      "message": "Останні дані були синхронізовані із сервером."
+   },
+   "savedFailedSynced": {
+      "message": "Не вдалося зберегти! Останні дані були синхронізовані із сервером."
+   },
+   "savedSuccessfully": {
+      "message": "Успішно збережено"
+   },
+   "search": {
+      "message": "Пошук"
+   },
+   "secure": {
+      "message": "Безпечний"
+   },
+   "secureNotes": {
+      "message": "Захищені нотатки"
+   },
+   "secure_notes_placeholder": {
+      "message": "Введіть важливі нотатки тут (максимальне обмеження: %s символів)"
+   },
+   "securityCode": {
+      "message": "Код безпеки"
+   },
+   "security_code_copied": {
+      "message": "Код безпеки скопійовано"
+   },
+   "send": {
+      "message": " Надіслати "
+   },
+   "send_email_hint": {
+      "message": "Надіслати на свою електронну пошту"
+   },
+   "sending_desc": {
+      "message": "Надсилання коду відновлення на вашу електронну адресу."
+   },
+   "sending_title": {
+      "message": "Надсилання"
+   },
+   "sent_succ_desc": {
+      "message": "Ваш код відновлення надіслано на електронну адресу %s. Якщо його немає у вашій папці Вхідні,перевірте спам.Або ви можете \u003Cbutton class=\"resndbtn\">надіслати повторно\u003C/button>."
+   },
+   "sent_succ_title": {
+      "message": "Успішно надіслано!"
+   },
+   "set_master_password": {
+      "message": "Встановити головний пароль"
+   },
+   "set_master_password_tips": {
+      "message": "Для безпеки вашого облікового запису пропонується встановити головний пароль для DualSafe Password Manager."
+   },
+   "set_master_tips": {
+      "message": "\u003Cb>Важливо:\u003C/b> Головний пароль буде єдиним дійсним паролем для доступу до вашого менеджера паролів DualSafe."
+   },
+   "set_master_title": {
+      "message": "Встановити головний пароль"
+   },
+   "set_success_desc": {
+      "message": "Головний пароль встановлено,а код відновлення успішно збережено.Будь ласка, увійдіть використовуючи свій головний пароль."
+   },
+   "settings": {
+      "message": "Налаштування"
+   },
+   "settings_Auto_Fill": {
+      "message": "Автозаповнення"
+   },
+   "settings_Auto_Fill_Dec": {
+      "message": "Автоматично заповнювати збережені логіни,платіжну інформацію тощо."
+   },
+   "settings_Auto_Fill_Password": {
+      "message": "Автозаповнення пароля"
+   },
+   "settings_Auto_Fill_Password_Dec": {
+      "message": "Автоматично заповнюйте облікові записи та паролі, коли ви входите на збережені веб-сайти."
+   },
+   "settings_Auto_Lock": {
+      "message": "Автоблокування"
+   },
+   "settings_Auto_Lock_Dec": {
+      "message": "Автоматично блокувати DualSafe Password Manager із зазначеною частотою"
+   },
+   "settings_Auto_Save": {
+      "message": "Автозбереження"
+   },
+   "settings_Auto_Save_Dec": {
+      "message": "Автоматично зберігати введені імена користувачів та паролі"
+   },
+   "settings_Autofill_and_Autosave": {
+      "message": "Автозаповнення та автозбереження"
+   },
+   "settings_Clear_Clipboard": {
+      "message": "Очистити буфер обміну"
+   },
+   "settings_Clear_Clipboard_Dec": {
+      "message": "Автоматично очищати буфер обміну в зазначений час після копіювання пароля"
+   },
+   "settings_Fill_Payments": {
+      "message": "Заповніть платіжну інформацію"
+   },
+   "settings_Fill_Payments_Desc": {
+      "message": "Допоможе вам заповнити збережену платіжну інформацію, як-от номер картки, власника картки та термін дії, лише одним клацанням миші"
+   },
+   "settings_Fill_Personal_Infol": {
+      "message": "Заповніть особисту інформацію"
+   },
+   "settings_Fill_Personal_Infol_Desc": {
+      "message": "Допоможе вам заповнити вашу збережену особисту інформацію, як-от електронну пошту, номер телефону й адресу, лише одним клацанням миші"
+   },
+   "settings_General": {
+      "message": "Загальний"
+   },
+   "settings_General_Dec": {
+      "message": "Встановіть DualSafe Password Manager як менеджер паролів за замовчуванням"
+   },
+   "settings_Limited_time_free": {
+      "message": "(Пропозиція з обмеженим часом)"
+   },
+   "settings_Security_Options": {
+      "message": "Параметри безпеки"
+   },
+   "settings_Show_Icon": {
+      "message": "Показати значок"
+   },
+   "settings_Show_Icon_Dec": {
+      "message": "Відображення піктограми DualSafe Password Manager у всіх полях введення пароля,для збереження ваших логінів лише одним клацанням миші"
+   },
+   "sevenDays": {
+      "message": "7 днів"
+   },
+   "showCode": {
+      "message": "Показати код безпеки"
+   },
+   "showPass": {
+      "message": "Показати пароль"
+   },
+   "signIn": {
+      "message": "Увійти"
+   },
+   "signInAutoNow": {
+      "message": "Увійдіть зараз,щоб автоматично заповнити свої логіни,особисту інформацію або платіжну інформацію."
+   },
+   "signInLocked": {
+      "message": "Ваш обліковий запис заблоковано.Спробуйте ще раз через 5 хвилин."
+   },
+   "signInNow": {
+      "message": "Увійдіть зараз,щоб автоматично заповнити логіни для цього сайту."
+   },
+   "signInSave": {
+      "message": "Увійти та зберегти"
+   },
+   "signInTimeout": {
+      "message": "Час очікування завершився! Перевірте мережу та повторіть спробу!"
+   },
+   "signIn_DPM": {
+      "message": "Увійти у систему DualSafe Password Manager"
+   },
+   "signIn_Desc": {
+      "message": "Увійдіть зараз,щоб зберегти логіни \u003Ca class=\"btn-link btn-name\">\u003C/a> та автоматично заповнювати їх у майбутньому."
+   },
+   "signOut": {
+      "message": "Вийти"
+   },
+   "sign_in_again_desc": {
+      "message": "Ви ще не встановили пароль,оскільки раніше входили за допомогою Google/Facebook. Ви можете натиснути OK, щоб увійти за допомогою Google / Facebook."
+   },
+   "sign_in_now": {
+      "message": "Увійти зараз"
+   },
+   "sign_in_with": {
+      "message": "Або увійдіть за допомогою"
+   },
+   "sign_in_with_app": {
+      "message": "Увійти за допомогою настільного додатка"
+   },
+   "sign_in_with_facebook": {
+      "message": "Увійти через Facebook"
+   },
+   "sign_in_with_google": {
+      "message": "Увійти за допомогою Google"
+   },
+   "sixtyDays": {
+      "message": "60 днів"
+   },
+   "skip_for_now": {
+      "message": "Пропустити поки що"
+   },
+   "state": {
+      "message": "Держава"
+   },
+   "strong": {
+      "message": "Сильний"
+   },
+   "success_desc": {
+      "message": "Натисніть піктограму розширення \u003Cspan class=\"succ-icon\">\u003C/span> і закріпіть DualSafe Password Manager на панелі інструментів. Потім ви можете натиснути \u003Cspan class=\"succ-icon dpm\">\u003C/span>, щоб будь-коли використовувати менеджер паролів DualSafe."
+   },
+   "success_title": {
+      "message": "Вітаємо 🎉🎉🎉 \u003Cbr>Менеджер паролів DualSafe готовий до роботи!"
+   },
+   "suggestion": {
+      "message": "Пропозиція"
+   },
+   "suggestion_tips": {
+      "message": "Тут показано збережені дані для входу на поточний відкритий веб-сайт."
+   },
+   "symbols": {
+      "message": "Символи (%s)"
+   },
+   "systemLocks": {
+      "message": "Блокування системи"
+   },
+   "tenMinutes": {
+      "message": "10 хвилин"
+   },
+   "thirtyDays": {
+      "message": "30 днів"
+   },
+   "thirtyMinutes": {
+      "message": "30 хвилин"
+   },
+   "title": {
+      "message": "Назва"
+   },
+   "title_placeholder": {
+      "message": "Будь ласка,введіть назву"
+   },
+   "tools": {
+      "message": "Інструменти"
+   },
+   "tools_Dark_Web_Monitor": {
+      "message": "Моніторинг "
+   },
+   "tools_Dark_Web_Monitor_Dec": {
+      "message": "Допоможе вам у відстежені витоків конфіденційності у Dark Web "
+   },
+   "tools_Import_Export": {
+      "message": "Імпорт та експорт"
+   },
+   "tools_Import_Export_Dec": {
+      "message": "Імпортуйте дані зі своїх браузерів або інших інструментів для паролів та експортуйте збережені дані у файл CSV лише одним клацанням миші"
+   },
+   "tools_Password_Health": {
+      "message": "Працездатність пароля"
+   },
+   "tools_Password_Health_Dec": {
+      "message": "Допоможе вам перевірити вразливі паролі,наприклад слабкі,повторно використані або зламані"
+   },
+   "tools_Unlimited_Passwords": {
+      "message": "Необмежена кількість паролів"
+   },
+   "tools_Unlimited_Passwords_Only": {
+      "message": "(Лише 50 у безкоштовній версії)"
+   },
+   "twoMinutes": {
+      "message": "2 хвилини"
+   },
+   "unionpay": {
+      "message": "UnionPay"
+   },
+   "unknown": {
+      "message": "Невідомий"
+   },
+   "unlock": {
+      "message": "Розблокувати"
+   },
+   "unlockAutoNow": {
+      "message": "Розблокуйте зараз,щоб автоматично заповнювати свої логіни,особисту інформацію чи платіжну інформацію."
+   },
+   "unlockDPM": {
+      "message": "Розблокувати DualSafe Password Manager"
+   },
+   "unlockDPM_Desc": {
+      "message": "Розблокуйте зараз,щоб зберегти логіни \u003Ca class=\"btn-link btn-name\">\u003C/a> та автоматично заповнювати їх у майбутньому."
+   },
+   "unlockNow": {
+      "message": "Розблокуйте зараз,щоб автоматично заповнювати логіни для цього сайту."
+   },
+   "unlockSave": {
+      "message": "Розблокувати та зберегти"
+   },
+   "unlock_now": {
+      "message": "Розблокувати зараз"
+   },
+   "until_sign_out": {
+      "message": "Поки я не вийду"
+   },
+   "update": {
+      "message": "Оновити"
+   },
+   "updateFailed": {
+      "message": "Помилка оновлення."
+   },
+   "updateLogins": {
+      "message": "Оновити логіни"
+   },
+   "updateSuccessfully": {
+      "message": "Оновлено успішно."
+   },
+   "upgradeBtn": {
+      "message": "Оновлення"
+   },
+   "upgradeNowBtn": {
+      "message": "Оновити зараз"
+   },
+   "upper_case": {
+      "message": "Великі літери (A-Z)"
+   },
+   "url": {
+      "message": "url"
+   },
+   "url_copied": {
+      "message": "Веб-сайт скопійовано"
+   },
+   "use": {
+      "message": "Використати"
+   },
+   "use_generator_password": {
+      "message": "Використати пароль"
+   },
+   "user_manual": {
+      "message": "Посібник користувача"
+   },
+   "username": {
+      "message": "Ім'я користувача"
+   },
+   "username_copied": {
+      "message": "Ім'я користувача скопійовано"
+   },
+   "username_placeholder": {
+      "message": "Електронна адреса / Ім'я користувача / Номер телефону"
+   },
+   "view": {
+      "message": "Переглянути"
+   },
+   "visa": {
+      "message": "Visa"
+   },
+   "visaelectron": {
+      "message": "Visa Electron"
+   },
+   "weak": {
+      "message": "Слабкий"
+   },
+   "web_password_sync": {
+      "message": "Примітка.Не забудьте оновити пароль для веб-сайту"
+   },
+   "welcomeTo": {
+      "message": "Ласкаво просимо до"
+   },
+   "year": {
+      "message": "Рік"
+   },
+   "yes": {
+      "message": "Так"
+   },
+   "zip": {
+      "message": "ZIP"
+   },
+   "zipPostalCode": {
+      "message": "ZIP/Поштовий індекс"
+   }
+}

@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>DualSafe Password Manager</title>
+	<link href="../skin/icons/log_icon_24.png" rel="shortcut icon">
+	<link rel="stylesheet" href="../css/bootstrap.min.css">
+	<link rel="stylesheet" href="../css/jquery-editable-select.min.css">
+	<link rel="stylesheet" href="../css/toastr.min.css">
+	<link rel="stylesheet" href="../css/dpmlogin.css">
+</head>
+
+<body>
+	<div class="login-body">
+		<div class="login-left">
+			<div class="left-inner">
+				<div class="left-screen">
+					<img decoding="async" sizes="(min-width: 592px) 592px, 100vw" srcset="./images/login_screen.png 148w,
+								                        ./images/login_screen.png 296w,
+								                        ./images/login_screen.png 592w" alt="DualSafe Password Manager" width="592" height="410" />
+				</div>
+				<h1 class="left-title" data-properties="login_left_title">A secure, simple but free way to manage passwords, essential for your digital life.</h1>
+				<ul class="feature-list">
+					<li data-properties="login_feature_unlimited"><b>Unlimited</b> - Save unlimited passwords, payments, etc.</li>
+					<li data-properties="login_feature_easy"><b>Easy</b> - Autosave and autofill passwords in simple clicks</li>
+					<li data-properties="login_feature_secure"><b>Secure</b> - Generate strong, unique passwords</li>
+					<li data-properties="login_feature_safe"><b>Safe</b> - Store your data with best-in-class encryption</li>
+					<li data-properties="login_feature_auto"><b>Auto</b> - Access across unlimited devices with auto sync</li>
+				</ul>
+			</div>
+		</div>
+		<div  class="login-right">
+			<header class="login-header"></header>
+			<div class="login-wrapper">
+				<div>
+					<div id="dpmLogin" style="display:block;"></div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="modal login-modal" id="loglockTokenModal" tabindex="-1" aria-labelledby="loglockTokenLabel"
+			aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"></div>
+	<div class="modal fade login-modal" id="devicePopovers" tabindex="-1" aria-labelledby="devicePopoversLabel" aria-hidden="true"
+			data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"></div>
+	<div class="modal fade login-modal send-modal" id="sendEmailPopovers" tabindex="-1" aria-labelledby="sendEmailPopoversLabel" aria-hidden="true"
+			data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"></div>
+			
+	<div class="modal fade login-modal again-modal" id="againSignPopovers" tabindex="-1" aria-labelledby="againSignLabel"
+		aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1">
+		<div class="modal-dialog modal-dialog-centered">
+			<div class="modal-content again-content">
+				<div class="modal-header">
+					<div class="confirm-info">
+						<div class="confirm-icon"><div class="website-icon"></div></div>
+						<div class="modal-title" data-properties="sign_in_again_desc"></div>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="button-css button-blue  button-again"
+						data-bs-dismiss="modal" aria-label="Close"  data-properties="ok"></button>
+				</div>
+			</div>
+		</div>
+	</div>
+	<script src="../polyfill/polyfill-firefox.js"></script>
+	<script src="../popup/js/bootstrap.bundle.min.js"></script>
+	<script src="../popup/js/jquery-3.6.0.min.js"></script>
+	
+	
+    <script src="../popup/js/vendor/jquery-selectBox.js"></script>
+    <script src="../popup/js/vendor.js"></script>
+    <script src="../popup/js/vendor/clipboard.js"></script>
+    <script src="../popup/js/vendor/fuse.js"></script>
+    <script src="../popup/js/vendor/jq-pause.js"></script>
+    <script src="../popup/js/vendor/jq-easing.js"></script>
+    <script src="../popup/js/vendor/jquery.marquee.js"></script>
+    <script src="../popup/js/vendor/validator.js"></script>
+
+
+	<script src="./jspdf.umd.min.js"></script>
+	<script src="./SaveRecoverCode.js"></script>
+	<script src="../popup/main.main.js"></script>
+	<script src="../popup/message.js"></script>
+	<script src="../popup/js/toastr.min.js"></script>
+	<script src="./login-common.js"></script>
+	<script src="../uri2color.js"></script>
+	<script src="./login.js"></script>
+</body>
+
+</html>

@@ -22,6 +22,10 @@ export class RetrievalRuntimeService {
     return this.repository.publish(workspaceId, actorId, id);
   }
 
+  async getPublishedSnapshot(workspaceId: string, id: string) {
+    return this.repository.getPublishedSnapshot(workspaceId, id);
+  }
+
   archive(workspaceId: string, actorId: string, id: string) {
     return this.repository.archive(workspaceId, actorId, id);
   }

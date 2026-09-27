@@ -6,6 +6,7 @@ import type {
   PrepareConversationRuntimeDto,
   TransitionConversationStateDto
 } from "./dto/conversation-runtime.dto";
+import type { ConversationRuntimeMessageRole } from "@prisma/client";
 import { ConversationRuntimeRepository } from "./conversation-runtime.repository";
 
 @Injectable()
@@ -13,6 +14,16 @@ export class ConversationRuntimeService {
   constructor(private readonly repository: ConversationRuntimeRepository) {}
   prepare(workspaceId: string, actorId: string, dto: PrepareConversationRuntimeDto) {
     return this.repository.prepare(workspaceId, actorId, dto);
+  }
+  prepareChannelConversation(workspaceId: string, actorId: string, channelConversationId: string,
+    dto: PrepareConversationRuntimeDto) {
+    return this.repository.prepareChannelConversation(workspaceId, actorId, channelConversationId, dto);
+  }
+  appendChannelMessage(workspaceId: string, actorId: string, runtimeId: string, message: {
+    messageIdentifier: string; role: ConversationRuntimeMessageRole; participantKey?: string;
+    contentHash: string; metadata?: Record<string, unknown>;
+  }) {
+    return this.repository.appendChannelMessage(workspaceId, actorId, runtimeId, message);
   }
   validate(workspaceId: string, actorId: string, id: string) {
     return this.repository.validate(workspaceId, actorId, id);

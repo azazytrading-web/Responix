@@ -1,0 +1,16 @@
+{
+    "chat.tools.terminal.autoApprove": {
+        "/^cd /d \"g:\\\\Trading\\\\Responix_Git\\\\apps\\\\api\"; pnpm exec jest src/modules/channel-runtime/adapters/meta-whatsapp-cloud\\.adapter\\.spec\\.ts --runInBand$/": {
+            "approve": true,
+            "matchCommandLine": true
+        },
+        "/^powershell -NoProfile -Command \"Select-String -Path 'apps/api/dist/main\\.js' -Pattern 'connections/:id','channel-runtime','verify-token','health' \\| Select-Object -First 200 \\| Format-List\"$/": {
+            "approve": true,
+            "matchCommandLine": true
+        },
+        "/^powershell -NoProfile -Command \"Get-Content apps/api/dist/main\\.js \\| Select-Object -Index 13030\\.\\.13080 \\| ForEach-Object \\{ \\$_ \\}\"$/": {
+            "approve": true,
+            "matchCommandLine": true
+        }
+    }
+}

@@ -76,6 +76,10 @@ export class PromptLibraryService {
     return this.repository.restore(workspaceId, actorId, id);
   }
 
+  delete(workspaceId: string, actorId: string, id: string) {
+    return this.repository.deleteDraft(workspaceId, actorId, id);
+  }
+
   favorite(workspaceId: string, actorId: string, id: string, favorite: boolean) {
     return this.repository.setFavorite(workspaceId, actorId, id, favorite);
   }

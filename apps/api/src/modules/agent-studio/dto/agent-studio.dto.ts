@@ -231,6 +231,22 @@ export class AgentConfigurationDto {
   fallbackStrategy?: Record<string, unknown>;
 }
 
+/**
+ * Working-context control for conversation history.
+ *
+ * This is a purely operational flag: it decides whether the Agent is allowed
+ * to use conversation history as *working context* at execution time. It never
+ * deletes or mutates the stored conversation, and when ON the history still
+ * flows through the Multi-Responix Context Boundary (other Responix messages
+ * stay attributed and can never redefine the current Agent's identity).
+ */
+export class ConversationHistoryConfigDto {
+  @ApiPropertyOptional({ default: false, description: "Whether the Agent may use conversation history as working context" })
+  @IsOptional()
+  @IsBoolean()
+  enabled?: boolean;
+}
+
 export class CreateAgentDto {
   @ApiProperty()
   @IsString()
@@ -292,6 +308,16 @@ export class CreateAgentDto {
   @ValidateNested({ each: true })
   @Type(() => AgentPromptBindingDto)
   promptBindings?: AgentPromptBindingDto[];
+
+  @ApiPropertyOptional({
+    type: ConversationHistoryConfigDto,
+    description:
+      "Whether this Agent may use conversation history as working context. Defaults to OFF for new Agents."
+  })
+  @IsOptional()
+  @ValidateNested()
+  @Type(() => ConversationHistoryConfigDto)
+  conversationHistory?: ConversationHistoryConfigDto;
 }
 
 export class UpdateAgentDraftDto extends PartialType(CreateAgentDto) {}
@@ -321,6 +347,75 @@ export class CloneAgentDto {
   @Matches(slugPattern)
   @MaxLength(160)
   slug!: string;
+}
+
+export class SwitchChannelAgentDto {
+  @ApiProperty({ minimum: 0, description: "Expected ChannelConnection state version for optimistic concurrency" })
+  @IsInt()
+  @Min(0)
+  expectedStateVersion!: number;
+}
+
+export class BindRetrievalRuntimeDto {
+  @ApiProperty({
+    format: "uuid",
+    description: "Id of a published RetrievalRuntime to bind to the agent"
+  })
+  @IsUUID()
+  retrievalRuntimeId!: string;
+}
+
+/**
+ * Operational controls deliberately live outside the immutable Agent
+ * definition lifecycle.  `base` is the selected behaviour; `intensity` is
+ * only a multiplier applied at execution time.
+ */
+export class PersonalityDimensionDto {
+  @ApiProperty({ minimum: 0, maximum: 100 })
+  @IsInt()
+  @Min(0)
+  @Max(100)
+  base!: number;
+
+  @ApiProperty({ minimum: 0, maximum: 100 })
+  @IsInt()
+  @Min(0)
+  @Max(100)
+  intensity!: number;
+}
+
+export class UpdateOperationalPersonalityDto {
+  @ApiProperty({ type: PersonalityDimensionDto })
+  @ValidateNested()
+  @Type(() => PersonalityDimensionDto)
+  warmth!: PersonalityDimensionDto;
+
+  @ApiProperty({ type: PersonalityDimensionDto })
+  @ValidateNested()
+  @Type(() => PersonalityDimensionDto)
+  enthusiasm!: PersonalityDimensionDto;
+
+  @ApiProperty({ type: PersonalityDimensionDto })
+  @ValidateNested()
+  @Type(() => PersonalityDimensionDto)
+  formality!: PersonalityDimensionDto;
+}
+
+/**
+ * Operational control for a published (or draft) Agent's conversation-history
+ * working-context flag. Deliberately lives outside the immutable Agent
+ * definition lifecycle, exactly like the operational personality controls.
+ */
+export class UpdateConversationHistoryDto {
+  @ApiProperty({ description: "Whether the Agent may use conversation history as working context" })
+  @IsBoolean()
+  enabled!: boolean;
+}
+
+export class UpdateAutomaticExecutionDto {
+  @ApiProperty({ description: "Whether this Agent may automatically execute on inbound channel messages" })
+  @IsBoolean()
+  enabled!: boolean;
 }
 
 export class AgentListQueryDto {

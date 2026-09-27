@@ -58,6 +58,48 @@ export class AgentToolCallDto {
   timeoutMs?: number;
 }
 
+export class AgentConversationMessageDto {
+  @ApiProperty({ enum: ["user", "assistant"] })
+  @IsString()
+  role!: "user" | "assistant";
+
+  @ApiProperty({ maxLength: 250000 })
+  @IsString()
+  @MaxLength(250000)
+  content!: string;
+
+  /**
+   * Optional provenance for `assistant` turns. When present, the runtime
+   * enables the Agent Context Boundary and renders any turn not produced by
+   * the current agent as attributed historical data (never as the current
+   * agent's own `assistant` output). Absent for single-agent history, which
+   * keeps the legacy role-mapping behavior.
+   */
+  @ApiPropertyOptional({ format: "uuid" })
+  @IsOptional()
+  @IsString()
+  agentId?: string;
+
+  @ApiPropertyOptional({ maxLength: 200 })
+  @IsOptional()
+  @IsString()
+  @MaxLength(200)
+  agentName?: string;
+}
+
+export class AgentIdentityDto {
+  @ApiPropertyOptional({ format: "uuid" })
+  @IsOptional()
+  @IsString()
+  agentId?: string;
+
+  @ApiPropertyOptional({ maxLength: 200 })
+  @IsOptional()
+  @IsString()
+  @MaxLength(200)
+  agentName?: string;
+}
+
 export class CancelAgentExecutionDto {
   @ApiPropertyOptional({ maxLength: 2000 }) @IsOptional() @IsString() @MaxLength(2000)
   reason?: string;
@@ -68,6 +110,20 @@ export class ExecuteAgentExecutionDto extends PrepareAgentExecutionDto {
   taskType!: string;
   @ApiPropertyOptional({ maxLength: 250000 }) @IsOptional() @IsString() @MaxLength(250000)
   userMessage?: string;
+  @ApiPropertyOptional({ type: [AgentConversationMessageDto], maxItems: 100 })
+  @IsOptional() @IsArray() @ArrayMaxSize(100) @ValidateNested({ each: true })
+  @Type(() => AgentConversationMessageDto)
+  conversationHistory?: AgentConversationMessageDto[];
+  /**
+   * Identity of the Responix executing this request. Used to authoritatively
+   * declare the current agent at the context-assembly boundary and to
+   * distinguish the current agent's own history from other agents' history.
+   * Optional: single-agent callers may omit it (legacy behavior is preserved).
+   */
+  @ApiPropertyOptional({ type: AgentIdentityDto })
+  @IsOptional() @ValidateNested()
+  @Type(() => AgentIdentityDto)
+  agentIdentity?: AgentIdentityDto;
   @ApiPropertyOptional({ maxLength: 12 }) @IsOptional() @IsString() @MaxLength(12)
   language?: string;
   @ApiPropertyOptional({ format: "uuid" }) @IsOptional() @IsUUID()

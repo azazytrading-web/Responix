@@ -1,5 +1,39 @@
 # Responix AI Context
 
+## WhatsApp Onboarding Baseline - 2026-08-09
+
+The first user-facing Channel surface is implemented at `/channels/whatsapp`. It is a registered plugin and backend-manifest navigation entry, uses workspace-scoped TanStack Query state and the canonical API client, and consumes the existing Channel Runtime channel/connection/health/state APIs. The form submits Meta access token, verify token, and app secret as write-only password fields; responses and query data contain only safe connection metadata. Manual Meta Cloud configuration is supported; OAuth/Embedded Signup is not exposed by the backend and was not fabricated.
+
+The active development manifest is revision 5 and authenticated bootstrap resolves WhatsApp alongside the existing FM-5/FM-6/FM-7 features. Dashboard typecheck, lint, 16 focused/regression tests, production build, database typecheck, targeted manifest/permission seeds, live health/bootstrap/API/route checks, and diff check pass.
+
+## Real Provider and Agent Smoke - 2026-08-09
+
+The earlier credential blocker is resolved. A Dashboard-configured encrypted DeepSeek credential validated successfully, a minimal published Agent executed through Agent Execution and Provider Runtime, and the real response matched `DEEPSEEK_SMOKE_OK`. Runtime/provider/model/usage records were persisted without credential material. Two runtime defects found by the smoke were fixed: Node 22 `lookup({all:true})` support in the pinned-DNS transport and PostgreSQL advisory-lock `void` deserialization. Agent Studio now persists the safe provider-configuration ID required by execution.
+
+## FM-7 Live Smoke Status - 2026-08-09
+
+The local production builds were started successfully: Dashboard `:3000`, API `:4000`, PostgreSQL, and Redis are healthy. Development authentication, `platform/current`, and `dashboard-runtime/bootstrap` pass; manifest revision 4 resolves Dashboard, Company, Platform Control, Team, Agents, Providers, and Prompt Library, and the Administrator resolves all three provider permissions. All six provider definitions and their safe configuration endpoints respond, with no credential material returned.
+
+No real provider credential exists in process/user/machine environment variables or repository environment files, and the workspace has zero configured credentials. External provider validation and real Agent execution are therefore **BLOCKED by credential availability**, not by a code defect. No provider configuration or Agent record was fabricated. The post-FM-7 frontend milestone is not explicitly ordered in current roadmap records and must not start until this smoke test resumes with an authorized credential.
+
+## Frontend Feature Status - FM-7 - 2026-08-09
+
+FM-7 is complete in the working tree. Provider discovery/capability UI at `/ai/providers` now uses workspace-scoped safe configuration read/upsert and live validation contracts in addition to `GET /api/v1/ai/providers`. Credentials are write-only, AES-256-GCM encrypted, fingerprinted, never returned, and preserved when omitted. Prompt Library management is implemented at `/ai/prompts`, `/ai/prompts/new`, and `/ai/prompts/[promptId]` with real list/search/pagination, draft create/update, publish, archive/restore, favorite, categories, tags, variables, and immutable-state behavior.
+
+Providers and Prompt Library are registered plugins and development-manifest entries using permission-only visibility. Provider actions require `ai.providers.read`, `ai.providers.write`, and `ai.providers.validate`; discovery retains `ai.configure` compatibility. Focused backend and frontend validation, API and Dashboard builds, Prisma validation, database typecheck, permission seed, and diff check pass. Do not invent or expose secrets.
+
+## Frontend Feature Status - FM-6 - 2026-08-09
+
+FM-6 is complete in the working tree. Agent Studio is a registered built-in plugin with real workspace-scoped list, create, persisted draft edit, and publish flows at `/ai/agents`, `/ai/agents/new`, and `/ai/agents/[agentId]`. It consumes Agent Studio CRUD/publish, AI provider/model capability data, and Prompt Library bindings through the canonical API client and TanStack Query.
+
+Do not invent inline prompt fields, provider/model catalogs, credentials, resource IDs, or workflow assignments. The Agent DTO supports an existing Prompt Library binding plus capability booleans; it does not support memory/retrieval/tool resource IDs or workflow assignment. Dashboard typecheck, lint, 72/72 tests, production build, and diff check pass. The next frontend milestone is provider and prompt resource configuration; do not revisit FM-1 through FM-6 without a concrete defect.
+
+## Frontend Feature Status - FM-5 - 2026-08-09
+
+FM-5 is complete in the working tree. The Dashboard now has four coherent built-in feature modules: backend-bootstrap-backed Dashboard Home, current Workspace Management with real GET/PATCH integration, read-only Platform Control, and Team Management with real workspace-member APIs. Team Management provides permission-aware listing, pagination, invitations for existing users, role changes, suspend/restore, invitation cancellation, and member removal at `/company/members`.
+
+Dashboard typecheck, lint, 10 focused feature test files with 33 tests, the final 3-file Team subset with 9 tests, and the Dashboard production build pass. Database typecheck, the focused workspace response DTO test, and `git diff --check` pass. The next frontend milestone is Agent configuration; do not revisit FM-1 through FM-5 without a demonstrated defect.
+
 ## Frontend Foundation Status - FM-4 - 2026-08-02
 
 FM-4 is complete. `@responix/state` owns the canonical workspace-keyed platform bootstrap service for `platform/current` and `dashboard-runtime/bootstrap`. The Dashboard composes Theme, Query, Auth, and Platform bootstrap providers and waits for authentication and bootstrap readiness before rendering protected content. Permissions, features, workspace metadata, and navigation are exposed atomically. Bootstrap caches invalidate on logout, workspace switch, and authentication loss. FM-5 is not started.

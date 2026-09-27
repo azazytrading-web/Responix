@@ -1,0 +1,1446 @@
+{
+   "Checkbox_Keep_signed": {
+      "message": "Kekalkan daftar masuk saya selama"
+   },
+   "Checkbox_Keep_signed_Hint": {
+      "message": "Anda akan didaftar masuk secara automatik dalam tempoh masa yang tertentu. Sila pastikan persekitaran komputer anda selamat. Apabila menggunakan komputer awam, jangan tandakan pilihan ini."
+   },
+   "Delete_Exclude_website": {
+      "message": "Padam & Kecualikan tapak sesawang ini"
+   },
+   "Emergency_Desc": {
+      "message": "Pastikan anda dapat mengakses semula akaun anda dengan mudah dan selamat sekiranya berlaku kecemasan seperti kecurian atau kehilangan kata laluan."
+   },
+   "Emergency_Title": {
+      "message": "\u003Cb>Akses Kecemasan\u003C/b> jika berlaku Kemalangan"
+   },
+   "Enable_Now": {
+      "message": "Dayakan Sekarang"
+   },
+   "Enter_your_email": {
+      "message": "Masukkan e-mel anda"
+   },
+   "Exclude_website_new": {
+      "message": "Kecualikan tapak sesawang ini"
+   },
+   "Invalid_Recovery_Code_New": {
+      "message": "Kod Pemulihan tidak sah. Sila pastikan anda masukkan kod yang betul atau yang terkini. Atau \u003Ca class=\"btn-link contactUsLink\">hubungi kami.\u003C/a>"
+   },
+   "Keep_Safe_Desc": {
+      "message": "Dayakan Kesihatan Kata Laluan untuk menjalankan pemeriksaan kata laluan dan memperkukuhkan kata laluan anda yang lemah, lapuk, dan telah digunakan."
+   },
+   "Keep_Safe_Title": {
+      "message": "Pastikan Semua Kata Laluan \u003Cb>Selamat\u003C/b>"
+   },
+   "No_Worries_Desc": {
+      "message": "Dayakan Pemantau Web Tertutup untuk menerima pemberitahuan jika maklumat dan data peribadi anda dicerobohi."
+   },
+   "No_Worries_Title": {
+      "message": "\u003Cb>Tidak Perlu\u003C/b> Risau Tentang \u003Cb>Pencerobohan Data\u003C/b>"
+   },
+   "No_thanks": {
+      "message": "Tidak, terima kasih"
+   },
+   "Password_Generator": {
+      "message": "Penjana Kata Laluan"
+   },
+   "Password_Generator_Dec": {
+      "message": "Cipta kata laluan yang kukuh dan selamat dengan hanya 1 klik"
+   },
+   "Suggested_Password": {
+      "message": "Kata Laluan Dicadangkan"
+   },
+   "Suggested_Password_Dec": {
+      "message": "Tunjukkan kata laluan yang dicadangkan untuk semua kotak input kata laluan"
+   },
+   "Suggested_password_Case": {
+      "message": "Kata laluan dicadangkan"
+   },
+   "TOTP_Tips": {
+      "message": "Waktu tempatan PC anda tidak betul. Ini boleh menyebabkan kata laluan satu kali menjadi tidak sah."
+   },
+   "TOTP_placeholder": {
+      "message": "Masukkan URL atau kekunci rahsia seperti otpauth://*"
+   },
+   "Unlimited_Desc": {
+      "message": "Uruskan, simpan, dan cipta kata laluan yang terjamin selamat dengan mudah merentas sebarang peranti atau platform dengan hanya satu akaun."
+   },
+   "Unlimited_Title": {
+      "message": "Penyegerakan Data Merentas \u003Cb>Peranti Tanpa Had\u003C/b>"
+   },
+   "Website": {
+      "message": "Tapak Sesawang"
+   },
+   "about": {
+      "message": "Tentang"
+   },
+   "about_Acknowledgements": {
+      "message": "Penghargaan"
+   },
+   "about_Copyright": {
+      "message": "© iTop Inc. Semua hak cipta terpelihara."
+   },
+   "about_EULA": {
+      "message": "EULA"
+   },
+   "about_Privacy_Policy": {
+      "message": "Dasar Privasi"
+   },
+   "about_Version": {
+      "message": "Versi"
+   },
+   "add": {
+      "message": "Tambah"
+   },
+   "addNew": {
+      "message": "Tambah Baharu"
+   },
+   "addNewAccount": {
+      "message": "Tambah akaun baharu"
+   },
+   "add_Login": {
+      "message": "Tambah log masuk"
+   },
+   "add_Logins": {
+      "message": "Tambah Log Masuk"
+   },
+   "add_Notes": {
+      "message": "Tambah Nota"
+   },
+   "add_Payment_Info": {
+      "message": "Tambah Maklumat Pembayaran"
+   },
+   "add_Payment_Info_Case": {
+      "message": "Tambah maklumat pembayaran"
+   },
+   "add_Personal_Info": {
+      "message": "Tambah Maklumat Peribadi"
+   },
+   "add_Personal_Info_Case": {
+      "message": "Tambah maklumat peribadi"
+   },
+   "add_exclude": {
+      "message": "Tambah tapak sesawang untuk dikecualikan"
+   },
+   "add_items": {
+      "message": "Tambah Item"
+   },
+   "add_new_website": {
+      "message": "Tambah tapak sesawang"
+   },
+   "add_secure_note": {
+      "message": "Tambah nota selamat"
+   },
+   "add_tag": {
+      "message": "Tambah tag"
+   },
+   "add_to_favorites": {
+      "message": "Tambah ke Kegemaran"
+   },
+   "add_to_favorites_succ": {
+      "message": "Ditambahkan ke Kegemaran"
+   },
+   "add_to_onetime_pwd": {
+      "message": "Tambah ke Kata Laluan Satu Kali"
+   },
+   "add_totp": {
+      "message": "Tambah kata laluan satu kali?"
+   },
+   "add_website": {
+      "message": "Tambah tapak sesawang"
+   },
+   "add_website_placeholder": {
+      "message": "Masukkan tapak sesawang"
+   },
+   "address": {
+      "message": "Alamat"
+   },
+   "address_copied": {
+      "message": "Alamat disalin"
+   },
+   "advancedOptions": {
+      "message": "Pilihan Lanjutan"
+   },
+   "all_Item": {
+      "message": "Semua Item"
+   },
+   "alreadyAccount": {
+      "message": "* Jika anda sudah mempunyai akaun iTop, sila daftar masuk terus."
+   },
+   "already_saved": {
+      "message": "Saya telah menyimpannya"
+   },
+   "americanexpress": {
+      "message": "American Express"
+   },
+   "appName": {
+      "message": "DualSafe Password Manager"
+   },
+   "auth_bottom_desc": {
+      "message": "Setelah selesai pengesahan, anda boleh mendaftar masuk ke DualSafe Password Manager."
+   },
+   "auth_desc": {
+      "message": "Sila sahkan daftar masuk DualSafe Password Manager pada tab pelayar yang baru dibuka."
+   },
+   "auth_subtitle": {
+      "message": "Menunggu pengesahan…"
+   },
+   "auth_title": {
+      "message": "Pengesahan"
+   },
+   "autoFillFailed": {
+      "message": "Gagal menemui ruang input log masuk. Sila cuba salin & tampal maklumat log masuk secara manual."
+   },
+   "auto_save_confirm_desc": {
+      "message": "Simpan nama pengguna dan kata laluan saya secara automatik untuk semua tapak sesawang pada masa akan datang."
+   },
+   "auto_save_passwords": {
+      "message": "Auto simpan kata laluan"
+   },
+   "auto_save_passwords_desc": {
+      "message": "Simpan nama pengguna dan kata laluan saya secara automatik untuk semua tapak sesawang"
+   },
+   "auto_saved_successfully": {
+      "message": "Auto simpan berjaya"
+   },
+   "average": {
+      "message": "Sederhana"
+   },
+   "back": {
+      "message": "Kembali"
+   },
+   "bannerExpiredPurchase": {
+      "message": "Maaf! Premium anda sudah \u003Cb>luput.\u003C/b>"
+   },
+   "bannerFreePurchase": {
+      "message": "Naik taraf untuk menikmati akses Premium penuh"
+   },
+   "bannerPremiumPurchase": {
+      "message": "Anda mempunyai  %s \u003Cspan class=\"day-words\">hari\u003C/span> lagi untuk Premium."
+   },
+   "birthday": {
+      "message": "Tarikh lahir"
+   },
+   "birthday_copied": {
+      "message": "Tarikh lahir disalin"
+   },
+   "browserReboot": {
+      "message": "Pelayar dimulakan semula"
+   },
+   "browser_extension": {
+      "message": "Ekstensi Pelayar"
+   },
+   "cancel": {
+      "message": "Batal"
+   },
+   "capitalize": {
+      "message": "Huruf besar (A-Z)"
+   },
+   "cardNumber": {
+      "message": "Nombor kad"
+   },
+   "cardType": {
+      "message": "Jenis kad"
+   },
+   "cardType_placeholder": {
+      "message": "Masukkan atau pilih jenis kad"
+   },
+   "card_number_copied": {
+      "message": "Nombor kad disalin"
+   },
+   "card_type_copied": {
+      "message": "Jenis kad disalin"
+   },
+   "cardholderName": {
+      "message": "Nama pemegang kad"
+   },
+   "cardholder_name_copied": {
+      "message": "Nama pemegang kad disalin"
+   },
+   "cardother": {
+      "message": "Lain-lain"
+   },
+   "carteblanche": {
+      "message": "Carte Blanche"
+   },
+   "change_desc": {
+      "message": "Anda sedang menukar kata laluan utama anda..."
+   },
+   "change_master_password": {
+      "message": "Tukar kata laluan utama"
+   },
+   "change_now": {
+      "message": "Tukar Sekarang"
+   },
+   "change_title": {
+      "message": "Tukar Kata Laluan Utama"
+   },
+   "cityTown": {
+      "message": "Bandar/Pekan"
+   },
+   "clear": {
+      "message": "Kosongkan"
+   },
+   "clear_allpass_desc": {
+      "message": "Kata laluan ini tidak boleh dipulihkan kembali setelah dikosongkan."
+   },
+   "clear_allpass_title": {
+      "message": "Adakah anda pasti mahu mengosongkan semua kata laluan?"
+   },
+   "clear_deleted_desc": {
+      "message": "Item ini tidak boleh dipulihkan kembali setelah dipadamkan."
+   },
+   "clear_deleted_title": {
+      "message": "Adakah anda pasti mahu memadamkan semua item dari Item Dipadam?"
+   },
+   "clear_password": {
+      "message": "Kosongkan kata laluan"
+   },
+   "cleared_successfully": {
+      "message": "Berjaya dikosongkan."
+   },
+   "close": {
+      "message": "Tutup"
+   },
+   "code_desc": {
+      "message": "Sila masukkan kata laluan utama anda untuk menetapkan semula kod pemulihan anda"
+   },
+   "code_pairing_desc": {
+      "message": "Sahkan kod dari pop-timbul aplikasi PC dan klik butang Sambung untuk mengesahkan auto daftar masuk & buka kunci."
+   },
+   "code_pairing_title": {
+      "message": "Kod Sambungan"
+   },
+   "code_title": {
+      "message": "Tetapkan Semula Kod Pemulihan"
+   },
+   "comma": {
+      "message": ":"
+   },
+   "comprehensive_pwd_Desc": {
+      "message": "Pemeriksaan Kesihatan Kata Laluan Komprehensif"
+   },
+   "confirmMasterNewPass": {
+      "message": "Sahkan kata laluan utama yang baharu"
+   },
+   "confirmMasterPass": {
+      "message": "Sahkan kata laluan utama anda"
+   },
+   "continue": {
+      "message": "Teruskan"
+   },
+   "continue_sign_in": {
+      "message": "Teruskan Daftar Masuk"
+   },
+   "copied": {
+      "message": "Disalin"
+   },
+   "copy": {
+      "message": "Salin"
+   },
+   "copy_generator_password": {
+      "message": "Salin kata laluan"
+   },
+   "copy_notes": {
+      "message": "Salin Nota"
+   },
+   "copy_one_time_Password": {
+      "message": "Salin Kata Laluan Satu Kali"
+   },
+   "copy_password": {
+      "message": "kata laluan"
+   },
+   "copy_username": {
+      "message": "Salin Nama Pengguna"
+   },
+   "countryRegion": {
+      "message": "Negara atau Rantau"
+   },
+   "countryRegion_placeholder": {
+      "message": "Pilih negara atau rantau anda"
+   },
+   "createNewAccount": {
+      "message": "Cipta Akaun"
+   },
+   "create_new_account": {
+      "message": "Cipta akaun"
+   },
+   "createdAt": {
+      "message": "Dicipta pada"
+   },
+   "currentMasterPass": {
+      "message": "Kata laluan utama semasa"
+   },
+   "day": {
+      "message": "Hari"
+   },
+   "days": {
+      "message": "Hari"
+   },
+   "days_case": {
+      "message": "hari"
+   },
+   "default_password_manager": {
+      "message": "Pengurus Kata Laluan Lalai"
+   },
+   "delete": {
+      "message": "Padam"
+   },
+   "delete_all": {
+      "message": "Padam Semua"
+   },
+   "delete_at": {
+      "message": "Dipadamkan pada"
+   },
+   "delete_item": {
+      "message": "Adakah anda pasti mahu membuang item ini ke Tong Kitar Semula?"
+   },
+   "delete_item_Recycle_Bin": {
+      "message": "Adakah anda pasti mahu memadamkan item ini dari Tong Kitar Semula?"
+   },
+   "delete_item_Recycle_Bin_Dec": {
+      "message": "Ia tidak boleh dipulihkan setelah dipadam."
+   },
+   "delete_item_dec": {
+      "message": "Anda boleh memulihkannya dari Tong Kitar Semula selagi ia tidak dipadamkan secara kekal."
+   },
+   "deletedSuccessfully": {
+      "message": "Berjaya dipadamkan."
+   },
+   "deleted_this_item": {
+      "message": "Padam item ini"
+   },
+   "desktop": {
+      "message": "Desktop"
+   },
+   "desktop_app": {
+      "message": "Aplikasi Desktop"
+   },
+   "details": {
+      "message": "Butiran"
+   },
+   "device_limit_desc": {
+      "message": "Anda telah mencapai had maksimum daftar masuk pada 3 peranti. Naik Taraf Sekarang untuk menikmati Akses Peranti Tanpa Had dan semua kelebihan di bawah:"
+   },
+   "device_limit_tips": {
+      "message": "* Anda akan didaftar keluar daripada peranti ini:"
+   },
+   "device_limit_title": {
+      "message": "Had peranti dicapai!"
+   },
+   "dinersclub": {
+      "message": "Diners Club"
+   },
+   "dir": {
+      "message": "ltr"
+   },
+   "discard": {
+      "message": "Discard"
+   },
+   "discard_change": {
+      "message": "Adakah anda pasti mahu membuang perubahan yang tidak disimpan?"
+   },
+   "discover": {
+      "message": "Discover"
+   },
+   "downloadApp": {
+      "message": "Muat Turun Aplikasi"
+   },
+   "edit": {
+      "message": "Sunting"
+   },
+   "editInfo": {
+      "message": "Sunting maklumat"
+   },
+   "emailAddress": {
+      "message": "Alamat e-mel"
+   },
+   "emailOrPassIncorrect": {
+      "message": "Alamat e-mel atau kata laluan salah."
+   },
+   "emailVerfy": {
+      "message": "Sahkan E-mel Ini"
+   },
+   "email_address_copied": {
+      "message": "Alamat e-mel disalin"
+   },
+   "emergency_contact": {
+      "message": "Akses Kecemasan"
+   },
+   "emergency_contact_Desc": {
+      "message": "Apabila anda kehilangan akses ke data anda, orang yang anda berikan akses kecemasan boleh meminta untuk mengeksport data anda atau menukar Kata Laluan Utama anda."
+   },
+   "enterMasterNewPass": {
+      "message": "Masukkan kata laluan utama yang baharu"
+   },
+   "enterMasterPass": {
+      "message": "Masukkan kata laluan utama anda"
+   },
+   "enterRecoveryCass": {
+      "message": "Masukkan kod pemulihan"
+   },
+   "enterYourPass": {
+      "message": "Masukkan kata laluan anda"
+   },
+   "enter_email_desc": {
+      "message": "Sila masukkan alamat e-mel anda untuk menerima Kod Pemulihan!"
+   },
+   "enter_email_tips": {
+      "message": "Alamat e-mel tidak sah. Sila semak dan masukkan semula!"
+   },
+   "exclude_website": {
+      "message": "Kecualikan Tapak Sesawang"
+   },
+   "exclude_website_list": {
+      "message": "Senarai tapak sesawang yang dikecualikan"
+   },
+   "expOptionDate": {
+      "message": "Taarikh luput"
+   },
+   "expiration_date_copied": {
+      "message": "Tarikh luput disalin"
+   },
+   "expired": {
+      "message": "LUPUT"
+   },
+   "extDesc": {
+      "message": "Ekstensi DualSafe Password Manager membantu anda mengurus kata laluan dengan selamat di satu tempat dan membolehkan anda autosimpan, autoisi & aksesnya pada bila-bila masa saja."
+   },
+   "extName": {
+      "description": "DualSafe Password Manager & Digital Vault",
+      "message": "DualSafe Password Manager & Digital Vault"
+   },
+   "extension": {
+      "message": "Ekstensi"
+   },
+   "failedToDelete": {
+      "message": "Gagal memadamkan."
+   },
+   "failedToOpenLoading_DPM": {
+      "message": "Memuatkan versi desktop"
+   },
+   "failedToOpenLoading_Dark_Web_Monitor_Dec": {
+      "message": "Pemantau Web Tertutup hanya tersedia pada versi desktop. Sila klik \"Open\" pada pop timbul pengesahan untuk menjalankan versi desktop. Atau klik butang %s di bawah untuk membuka semula pop timbul."
+   },
+   "failedToOpenLoading_Emergency_Contact_Dec": {
+      "message": "Emergency Contact hanya tersedia pada versi desktop. Sila klik \"Open\" pada pop timbul pengesahan untuk menjalankan versi desktop. Atau klik butang %s di bawah untuk membuka semula pop timbul."
+   },
+   "failedToOpenLoading_Import_Export_Dec": {
+      "message": "Import dan Eksport hanya tersedia pada versi desktop. Sila klik \"Open\" pada pop timbul pengesahan untuk menjalankan versi desktop. Atau klik butang %s di bawah untuk membuka semula pop timbul."
+   },
+   "failedToOpenLoading_Password_Health_Dec": {
+      "message": "Kesihatan Kata Laluan hanya tersedia pada versi desktop. Sila klik \"Open\" pada pop timbul pengesahan untuk menjalankan versi desktop. Atau klik butang %s di bawah untuk membuka semula pop timbul."
+   },
+   "failedToOpen_DPM": {
+      "message": "Gagal membuka versi desktop"
+   },
+   "failedToOpen_Dark_Web_Monitor_Dec": {
+      "message": "Pemantau Web Tertutup hanya tersedia pada versi desktop. Klik butang %d untuk memuat turun dan memasang versi desktop. Atau klik butang %s untuk membuka semula."
+   },
+   "failedToOpen_Emergency_Contact_Dec": {
+      "message": "Emergency Contact hanya tersedia pada versi desktop. Klik butang %d untuk memuat turun dan memasang versi desktop. Atau klik butang %s untuk membuka semula."
+   },
+   "failedToOpen_Import_Export_Dec": {
+      "message": "Import dan Eksport hanya tersedia pada versi desktop. Klik butang %d untuk memuat turun dan memasang versi desktop. Atau klik butang %s untuk membuka semula."
+   },
+   "failedToOpen_Password_Health_Dec": {
+      "message": "Kesihatan Kata Laluan hanya tersedia pada versi desktop. Klik butang %d untuk memuat turun dan memasang versi desktop. Atau klik butang %s untuk membuka semula."
+   },
+   "failedToRestore": {
+      "message": "Gagal memulihkan."
+   },
+   "failed_send_desc": {
+      "message": "Gagal menghantar kod pemulihan ke e-mel. Sila cuba lagi."
+   },
+   "failed_send_title": {
+      "message": "Gagal menghantar."
+   },
+   "favoties": {
+      "message": "Kegemaran"
+   },
+   "feedback": {
+      "message": "Maklum Balas"
+   },
+   "fill": {
+      "message": "Isi"
+   },
+   "firstName": {
+      "message": "Nama pertama"
+   },
+   "fiveMinutes": {
+      "message": "5 minit"
+   },
+   "forgotYourPass": {
+      "message": "Lupa kata laluan anda?"
+   },
+   "fourHours": {
+      "message": "4 jam"
+   },
+   "fourteenDays": {
+      "message": "14 hari"
+   },
+   "free": {
+      "message": "PERCUMA"
+   },
+   "gender": {
+      "message": "Jantina"
+   },
+   "genderFemale": {
+      "message": "Perempuan"
+   },
+   "genderMale": {
+      "message": "Lelaki"
+   },
+   "genderNone": {
+      "message": "Tiada"
+   },
+   "genderOther": {
+      "message": "Lain-lain"
+   },
+   "gender_copied": {
+      "message": "Jantina disalin"
+   },
+   "goPremiumBtn": {
+      "message": "Dapatkan Premium"
+   },
+   "go_back_to_signin": {
+      "message": "Kembali ke Datar masuk"
+   },
+   "hideCode": {
+      "message": "Sembunyikan kod keselamatan"
+   },
+   "hidePass": {
+      "message": "Sembunyikan kata laluan"
+   },
+   "ignore_website": {
+      "message": "Abaikan tapak sesawang ini"
+   },
+   "installDesktopApp": {
+      "message": "Pasang Aplikasi Desktop"
+   },
+   "invalid_email": {
+      "message": "Alamat e-mel tidak sah. Sila masukan alamat e-mel yang anda telah sahkan."
+   },
+   "invalid_master_pass": {
+      "message": "Kata laluan utama tidak sah!"
+   },
+   "invalid_master_tips": {
+      "message": "Kata laluan utama tidak sah. Sila semak dan cuba lagi."
+   },
+   "invalid_recovery_code": {
+      "message": "Kod pemulihan tidak sah. Sila semak dan cuba lagi."
+   },
+   "invalid_secret_key": {
+      "message": "Kunci rahsia tidak sah!"
+   },
+   "item_remove_from_favorites": {
+      "message": "Buang dari Kegemaran"
+   },
+   "jcb": {
+      "message": "JCB"
+   },
+   "lang": {
+      "message": "ms"
+   },
+   "lastModifiedAt": {
+      "message": "Diubah suai pada"
+   },
+   "lastName": {
+      "message": "Nama Akhir"
+   },
+   "lastPasswordChangedAt": {
+      "message": "Kata laluan ditukar pada"
+   },
+   "learn_more": {
+      "message": "Ketahui lagi"
+   },
+   "length": {
+      "message": "Panjang"
+   },
+   "loading": {
+      "message": "Memuatkan ..."
+   },
+   "loading_data_error": {
+      "message": "Gagal memuatkan. Sila periksa sambungan rangkaian anda."
+   },
+   "lock": {
+      "message": "Kunci"
+   },
+   "lock_comfirm_btn": {
+      "message": "Buka kunci secara manual"
+   },
+   "login_comfirm_btn": {
+      "message": "Daftar masuk secara manual"
+   },
+   "login_comfirm_desc": {
+      "message": "Klik akaun anda untuk\u003Cbr> mengesahkan auto daftar masuk & buka kunci dari aplikasi desktop."
+   },
+   "login_feature_auto": {
+      "message": "\u003Cb>Auto\u003C/b> - Akses merentas peranti tanpa had dengan auto segerak"
+   },
+   "login_feature_easy": {
+      "message": "\u003Cb>Mudah\u003C/b> - Autosimpan dan autoisi kata laluan dengan beberapa klik mudah"
+   },
+   "login_feature_safe": {
+      "message": "\u003Cb>Selamat\u003C/b> - Simpan data anda dengan penyulitan yang terbaik"
+   },
+   "login_feature_secure": {
+      "message": "\u003Cb>Terjamin\u003C/b> - Janakan kata laluan yang kukuh dan unik"
+   },
+   "login_feature_unlimited": {
+      "message": "\u003Cb>Tanpa Had\u003C/b> - Simpan kata laluan, pembayaran, dsb. tanpa had"
+   },
+   "login_left_title": {
+      "message": "Cara yang selamat, mudah dan percuma untuk menguruskan kata laluan, penting untuk kehidupan digital anda."
+   },
+   "login_waiting_title": {
+      "message": "Menunggu pengesahan dari aplikasi desktop…"
+   },
+   "logins": {
+      "message": "Log Masuk"
+   },
+   "lower_case": {
+      "message": "Huruf kecil (a-z)"
+   },
+   "maestro": {
+      "message": "Maestro"
+   },
+   "mastercard": {
+      "message": "Mastercard"
+   },
+   "masterpassIncorrect": {
+      "message": "Kata laluan utama tidak sah."
+   },
+   "match_change_pass": {
+      "message": "Kata laluan tidak memenuhi keperluan."
+   },
+   "match_master_pass": {
+      "message": "Kata laluan tidak sepadan."
+   },
+   "middleName": {
+      "message": "Nama Tengah"
+   },
+   "month": {
+      "message": "Bulan"
+   },
+   "more": {
+      "message": "Lagi"
+   },
+   "name": {
+      "message": "Nama"
+   },
+   "name_copied": {
+      "message": "Nama disalin"
+   },
+   "networkError": {
+      "message": "Ralat sambungan rangkaian."
+   },
+   "never": {
+      "message": "Jangan sesekali"
+   },
+   "newUser": {
+      "message": "Pengguna baharu?"
+   },
+   "new_password": {
+      "message": "Kata laluan baharu"
+   },
+   "new_tag": {
+      "message": "Tag baharu"
+   },
+   "new_tag_number": {
+      "message": "Tag baharu"
+   },
+   "ninetyDays": {
+      "message": "90 hari"
+   },
+   "noItemsAddAllItem": {
+      "message": "Tiada item ditambah."
+   },
+   "noItemsAddLoginItem": {
+      "message": "Tiada log masuk ditambah."
+   },
+   "noItemsAddNotesItem": {
+      "message": "Tiada nota selamat ditambah."
+   },
+   "noItemsAddPayItem": {
+      "message": "Tiada maklumat pembayaran ditambah."
+   },
+   "noItemsAddPersonalItem": {
+      "message": "Tiada maklumat pembayaran ditambah."
+   },
+   "noItemsAddRecycleItem": {
+      "message": "Tiada item di sini."
+   },
+   "noItemsFound": {
+      "message": "Tiada item ditemui."
+   },
+   "noResult": {
+      "message": "Tiada Keputusan!"
+   },
+   "noSaved": {
+      "message": "Tiada log masuk disimpan untuk tapak ini."
+   },
+   "noSavedPrss": {
+      "message": "Tiada kata laluan disimpan!"
+   },
+   "no_excluded_websites": {
+      "message": "Tiada tapak sesawang yang dikecualikan."
+   },
+   "no_password_history": {
+      "message": "Tiada sejarah kata laluan."
+   },
+   "no_valid_secret_key_found": {
+      "message": "Tiada kekunci rahsia yang sah ditemui!"
+   },
+   "notNow": {
+      "message": "Bukan sekarang"
+   },
+   "not_have_code": {
+      "message": "Tidak mempunyai kod pemulihan?"
+   },
+   "notes": {
+      "message": "Nota"
+   },
+   "notes_characters_tips": {
+      "message": "%s aksara lagi"
+   },
+   "notes_copied": {
+      "message": "Nota disalin"
+   },
+   "notes_placeholder": {
+      "message": "Masukkan beberapa nota untuk item ini (Had maksimum: %s aksara)"
+   },
+   "numWords": {
+      "message": "Digit (0-9)"
+   },
+   "offer_to_save_passwords": {
+      "message": "Tawarkan untuk menyimpan kata laluan"
+   },
+   "offer_to_save_passwords_desc": {
+      "message": "Gesa untuk menyimpan kata laluan apabila anda mengelog masuk atau mendaftar"
+   },
+   "ok": {
+      "message": "OK"
+   },
+   "okIgotIt": {
+      "message": "OK. Baiklah."
+   },
+   "oneHour": {
+      "message": "1 jam"
+   },
+   "oneMinute": {
+      "message": "1 minit"
+   },
+   "one_time_Password": {
+      "message": "Kata Laluan Satu Kali"
+   },
+   "one_time_pass_copied": {
+      "message": "Kata Laluan Satu Kali disalin"
+   },
+   "only": {
+      "message": "Hanya"
+   },
+   "open": {
+      "message": "Buka"
+   },
+   "options": {
+      "message": "Pilihan"
+   },
+   "passIncorrect": {
+      "message": "Kata laluan salah."
+   },
+   "password": {
+      "message": "Kata Laluan"
+   },
+   "password_copied": {
+      "message": "Kata Laluan disalin"
+   },
+   "password_history_item": {
+      "message": "Sejarah kata laluan"
+   },
+   "password_history_tips": {
+      "message": "Di sini dipaparkan %s kata laluan terkini."
+   },
+   "password_history_title": {
+      "message": "Sejarah Kata Laluan"
+   },
+   "password_tip_one": {
+      "message": "Sekurang-kurangnya 8 aksara. Lebih daripada 16 aksara adalah disarankan."
+   },
+   "password_tip_three": {
+      "message": "Sekurang-kurangnya satu simbol."
+   },
+   "password_tip_two": {
+      "message": "Sekurang-kurangnya satu nombor."
+   },
+   "payment_Info": {
+      "message": "Maklumat Pembayaran"
+   },
+   "personal_Info": {
+      "message": "Maklumat Peribadi"
+   },
+   "phoneNumber": {
+      "message": "Nombor telefon"
+   },
+   "phone_number_copied": {
+      "message": "Nombor telefon disalin"
+   },
+   "premiumExpiredPurchase": {
+      "message": "Premium Anda Sudah \u003Cb class='text-red'>Luput!\u003C/b>"
+   },
+   "premiumExpiredPurchaseAlert": {
+      "message": "Ciri-ciri lanjutan sekarang tidak tersedia. Naik taraf untuk meneruskan akses Premium, dan memastikan kata laluan anda selamat dengan mudah."
+   },
+   "premiumExpiringSoonPurchase": {
+      "message": "Hanya Tinggal \u003Cb class=\"text-yellow\">%s Hari\u003C/b> Lagi Untuk Premium!"
+   },
+   "premiumExpiringSoonPurchaseAlert": {
+      "message": "Naik taraf untuk mengekalkan akses Premium untuk ciri-ciri lanjutan berikut:"
+   },
+   "premiumFreePurchase": {
+      "message": "Cara Yang Lebih Mudah & Selamat Untuk Menguruskan Kata Laluan Anda"
+   },
+   "premiumFreePurchaseAlert": {
+      "message": "Mulakan Premium hari ini dan kekalkan ciri-ciri lanjutan ini:"
+   },
+   "premiumFreePurchaseAlert_New": {
+      "message": "Mulakan Premium hari ini dan kekalkan ciri-ciri lanjutan ini:"
+   },
+   "premiumFreePurchase_New": {
+      "message": "Cara yang Lebih Mudah dan Selamat untuk Menguruskan Kata Laluan Anda"
+   },
+   "premiumPurchase": {
+      "message": "Anda telah mendapat 30 hari Premium!"
+   },
+   "premiumPurchaseAlert": {
+      "message": "Kini sila nikmati ciri-ciri lanjutan berikut:"
+   },
+   "premiun": {
+      "message": "PREMIUM"
+   },
+   "purchase_Dark_Web_Monitor": {
+      "message": "Dark Web Monitoring & Alerts"
+   },
+   "purchase_Password_Health": {
+      "message": "Pemeriksaan Kesihatan Kata Laluan"
+   },
+   "purchase_Password_Health_Check": {
+      "message": "Password Health Check"
+   },
+   "purchase_Unlimited_Devices": {
+      "message": "Sync Across Unlimited Devices"
+   },
+   "questionMark": {
+      "message": "?"
+   },
+   "recovery_code_copied": {
+      "message": "Kod pemulihan disalin"
+   },
+   "recycle_Bin": {
+      "message": "Tong Kitar Semula"
+   },
+   "refresh": {
+      "message": "Muat semula"
+   },
+   "rememberMeOnThisDevice": {
+      "message": "Ingat saya pada peranti ini"
+   },
+   "remindExpirationDate": {
+      "message": "Ingatkan saya 2 bulan sebelum tarikh luput"
+   },
+   "remind_me_after_days": {
+      "message": "Ingatkan saya selepas 7 hari"
+   },
+   "remind_me_tomorrow": {
+      "message": "Ingatkan saya besok"
+   },
+   "remind_password": {
+      "message": "Ingatkan saya untuk menukar kata laluan selepas 90 hari"
+   },
+   "remove": {
+      "message": "Buang"
+   },
+   "remove_from_favorites": {
+      "message": "Buang dari Kegemaran"
+   },
+   "remove_from_favorites_succ": {
+      "message": "Dibuang dari Kegemaran"
+   },
+   "resend": {
+      "message": "Hantar semula"
+   },
+   "reset": {
+      "message": "Tetapkan semula"
+   },
+   "reset_code_desc": {
+      "message": "Sila masukkan kod pemulihan anda untuk menetapkan semula kata laluan utama anda. Kod pemulihan anda telah disimpan sebagai fail PDF."
+   },
+   "reset_code_title": {
+      "message": "Masukkan Kod Pemulihan"
+   },
+   "reset_desc": {
+      "message": "Sila masukkan alamat e-mel anda yang disahkan untuk menetapkan semula kata laluan"
+   },
+   "reset_email_place": {
+      "message": "Masukkan alamat e-mel anda yang disahkan"
+   },
+   "reset_master_title": {
+      "message": "Tetapkan Semula Kata Laluan Utama"
+   },
+   "reset_recovery_code": {
+      "message": "Tetapkan semula kod pemulihan"
+   },
+   "reset_success_desc": {
+      "message": "Kata laluan utama anda telah ditetapkan semula. Sila daftar masuk dengan kata laluan utama yang baharu."
+   },
+   "reset_success_title": {
+      "message": "Berjaya!"
+   },
+   "reset_title": {
+      "message": "Tetapkan Semula Kata Laluan"
+   },
+   "restore": {
+      "message": "Pulihkan"
+   },
+   "restoreSuccessfully": {
+      "message": "Berjaya dipulihkan."
+   },
+   "retry": {
+      "message": "Cuba Semula"
+   },
+   "save": {
+      "message": "Simpan"
+   },
+   "saveIn_DPM": {
+      "message": "Simpan dalam DualSafe Password Manager"
+   },
+   "save_as_pdf": {
+      "message": "Simpan sebagai PDF"
+   },
+   "save_code_desc_login": {
+      "message": "Sila simpan kod pemulihan anda sebagai PDF."
+   },
+   "save_code_desc_one": {
+      "message": "Sila simpan kod pemulihan anda sebagai PDF dan cetak untuk memastikannya selamat."
+   },
+   "save_code_desc_options": {
+      "message": "Kod pemulihan anda sebelum ini tidak sah mulai sekarang. Sila simpan kod pemulihan baharu anda sebagai PDF dan cetak untuk memastikannya selamat."
+   },
+   "save_code_desc_two": {
+      "message": "Ini membolehkan anda mendapatkan semula akses ke DualSafe Password Manager anda jika anda lupa kata laluan utama anda."
+   },
+   "save_code_new_title": {
+      "message": "Simpan Kod Pemulihan Baharu Anda"
+   },
+   "save_code_tips": {
+      "message": "\u003Cb>Penting:\u003C/b> Kod Pemulihan adalah satu-satunya cara untuk membantu anda mengakses DualSafe Password Manager semula jika anda lupa kata laluan utama anda."
+   },
+   "save_code_title": {
+      "message": "Simpan Kod Pemulihan"
+   },
+   "save_totp": {
+      "message": "Simpan kata laluan satu kali? "
+   },
+   "savedFailedData": {
+      "message": "Data terkini telah disegerakkan daripada pelayan."
+   },
+   "savedFailedSynced": {
+      "message": "Gagal menyimpan! Data terkini telah disegerakkan daripada pelayan."
+   },
+   "savedSuccessfully": {
+      "message": "Berjaya disimpan."
+   },
+   "scan_web_page_QRCode": {
+      "message": "Imbas kod QR halaman sesawang"
+   },
+   "search": {
+      "message": "Cari"
+   },
+   "secure": {
+      "message": "Selamat"
+   },
+   "secureNotes": {
+      "message": "Nota Selamat"
+   },
+   "secure_notes_placeholder": {
+      "message": "Masukkan nota penting anda di sini (Had maksimum: %s aksara)"
+   },
+   "securityCode": {
+      "message": "Kod keselamatan"
+   },
+   "security_code_copied": {
+      "message": "Kod keselamatan disalin"
+   },
+   "send": {
+      "message": "Hantar"
+   },
+   "send_email_hint": {
+      "message": "Hantar ke e-mel anda"
+   },
+   "sending_desc": {
+      "message": "Menghantar Kod Pemulihan ke alamat e-mel anda."
+   },
+   "sending_title": {
+      "message": "Menghantar"
+   },
+   "sent_succ_desc": {
+      "message": "Kod Pemulihan anda telah dihantar ke alamat e-mel %s. Jika ia tidak berada dalam Peti Masuk anda, sila semak dalam Spam. Atau anda boleh \u003Cbutton class=\"resndbtn\">hantar semula\u003C/button>."
+   },
+   "sent_succ_title": {
+      "message": "Berjaya Dihantar!"
+   },
+   "set_master_password": {
+      "message": "Tetapkan kata laluan utama"
+   },
+   "set_master_password_tips": {
+      "message": "Demi keselamatan akaun anda, disarankan agar anda menetapkan kata laluan utama untuk DualSafe Password Manager."
+   },
+   "set_master_tips": {
+      "message": "\u003Cb>Penting:\u003C/b> Kata laluan utama akan menjadi satu-satunya kata laluan yang sah untuk mengakses DualSafe Password Manager anda."
+   },
+   "set_master_title": {
+      "message": "Tetapkan Kata Laluan Utama"
+   },
+   "set_success_desc": {
+      "message": "Kata laluan utama telah ditetapkan dan kod pemulihan telah berjaya disimpan. Sila daftar masuk dengan kata laluan utama anda."
+   },
+   "settings": {
+      "message": "Tetapan"
+   },
+   "settings_Auto_Fill": {
+      "message": "Autoisi"
+   },
+   "settings_Auto_Fill_Dec": {
+      "message": "Isi secara automatik log masuk, maklumat pembayaran, dll. yang disimpan"
+   },
+   "settings_Auto_Fill_Password": {
+      "message": "Auto-isi Kata Laluan"
+   },
+   "settings_Auto_Fill_Password_Dec": {
+      "message": "Mengisi akaun dan kata laluan secara automatik apabila anda mengelog masuk ke tapak sesawang yang anda simpan."
+   },
+   "settings_Auto_Lock": {
+      "message": "Auto Kunci"
+   },
+   "settings_Auto_Lock_Dec": {
+      "message": "Kunci DualSafe Password Manager secara automatik pada kekerapan tertentu"
+   },
+   "settings_Auto_Save": {
+      "message": "Autosimpan"
+   },
+   "settings_Auto_Save_Dec": {
+      "message": "Simpan secara automatik nama pengguna dan kata laluan yang dimasukkan"
+   },
+   "settings_Autofill_and_Autosave": {
+      "message": "Autoisi dan Autosimpan"
+   },
+   "settings_Clear_Clipboard": {
+      "message": "Clear Clipboard"
+   },
+   "settings_Clear_Clipboard_Dec": {
+      "message": "Kosongkan papan keratan secara automatik pada masa tertentu selepas menyalin kata laluan"
+   },
+   "settings_Fill_Payments": {
+      "message": "Isi Maklumat Pembayaran"
+   },
+   "settings_Fill_Payments_Desc": {
+      "message": "Membantu anda mengisi Maklumat Pembayaran yang anda simpan seperti nombor kad, pemegang kad, dan tarikh luput dengan hanya satu klik"
+   },
+   "settings_Fill_Personal_Infol": {
+      "message": "Isi Maklumat Peribadi"
+   },
+   "settings_Fill_Personal_Infol_Desc": {
+      "message": "Membantu anda mengisi Maklumat Peribadi yang anda simpan seperti e-mel, nombor telefon, dan alamat dengan hanya satu klik"
+   },
+   "settings_General": {
+      "message": "Umum"
+   },
+   "settings_General_Dec": {
+      "message": "Tetapkan DualSafe Password Manager sebagai pengurus kata laluan lalai"
+   },
+   "settings_Limited_time_free": {
+      "message": "(Tawaran Masa Terhad)"
+   },
+   "settings_Security_Options": {
+      "message": "Tetapan Keselamatan"
+   },
+   "settings_Show_Icon": {
+      "message": "Tunjukkan Ikon"
+   },
+   "settings_Show_Icon_Dec": {
+      "message": "Tunjukkan ikon DualSafe Password Manager pada semua kotak input kata laluan untuk menyimpan log masuk anda dengan satu klik"
+   },
+   "sevenDays": {
+      "message": "7 hari"
+   },
+   "showCode": {
+      "message": "Tunjukkan kod keselamatan"
+   },
+   "showPass": {
+      "message": "Tunjukkan kata laluan"
+   },
+   "signIn": {
+      "message": "Daftar masuk"
+   },
+   "signInAutoNow": {
+      "message": "Daftar masuk sekarang untuk auto isi daftar masuk, maklumat peribadi, atau maklumat pembayaran anda."
+   },
+   "signInLocked": {
+      "message": "Akaun anda telah dikunci. Cuba lagi dalam masa 5 minit."
+   },
+   "signInNow": {
+      "message": "Daftar masuk sekarang untuk autoisi log masuk untuk tapak ini."
+   },
+   "signInSave": {
+      "message": "Daftar masuk & Simpan"
+   },
+   "signInTimeout": {
+      "message": "Daftar masuk tamat masa! Sila periksa rangkaian anda dan cuba lagi!"
+   },
+   "signIn_DPM": {
+      "message": "Daftar masuk DualSafe Password Manager"
+   },
+   "signIn_Desc": {
+      "message": "Daftar masuk sekarang untuk menyimpan log masuk \u003Ca class=\"btn-link btn-name\">\u003C/a> dan autoisinya untuk anda pada masa akan datang."
+   },
+   "signOut": {
+      "message": "Daftar keluar"
+   },
+   "sign_in_again_desc": {
+      "message": "Anda masih belum menetapkan kata laluan kerana anda mendaftar masuk dengan Google / Facebook sebelum ini. Anda boleh mengklik OK untuk mendaftar masuk dengan Google / Facebook."
+   },
+   "sign_in_now": {
+      "message": "Daftar Masuk Sekarang"
+   },
+   "sign_in_with": {
+      "message": "Atau daftar masuk dengan"
+   },
+   "sign_in_with_app": {
+      "message": "Daftar masuk dengan aplikasi desktop"
+   },
+   "sign_in_with_facebook": {
+      "message": "Daftar masuk dengan Facebook"
+   },
+   "sign_in_with_google": {
+      "message": "Daftar masuk dengan Google"
+   },
+   "sixtyDays": {
+      "message": "60 hari"
+   },
+   "skip_for_now": {
+      "message": "Langkau buat masa ini"
+   },
+   "sort_by": {
+      "message": "Isih mengikut"
+   },
+   "sort_date_created": {
+      "message": "Tarikh Dicipta"
+   },
+   "sort_date_modified": {
+      "message": "Tarikh Diubahsuai"
+   },
+   "sort_newest_first": {
+      "message": "Terbaru Dahulu"
+   },
+   "sort_oldest_first": {
+      "message": "Terlama Dahulu"
+   },
+   "sort_show_az": {
+      "message": "A-Z"
+   },
+   "sort_show_favorites": {
+      "message": "Tunjukkan Kegemaran"
+   },
+   "sort_show_title_az": {
+      "message": "Tajuk: A ke Z"
+   },
+   "sort_show_title_za": {
+      "message": "Tajuk: Z ke A"
+   },
+   "sort_show_za": {
+      "message": "Z-A"
+   },
+   "sort_title": {
+      "message": "Tajuk"
+   },
+   "state": {
+      "message": "Negeri"
+   },
+   "strong": {
+      "message": "Kukuh"
+   },
+   "success_desc": {
+      "message": "Klik ikon ekstensi \u003Cspan class=\"succ-icon\">\u003C/span> dan pinkan DualSafe Password Manager pada bar alatan. Kemudian anda boleh mengklik \u003Cspan class=\"succ-icon dpm\">\u003C/span> untuk menggunakan DualSafe Password Manager pada bila-bila masa sahaja."
+   },
+   "success_title": {
+      "message": "Syabas 🎉🎉🎉 \u003Cbr>DualSafe Password Manager sudah bersedia!"
+   },
+   "suggestion": {
+      "message": "Cadangan"
+   },
+   "suggestion_tips": {
+      "message": "Di sini dipaparkan data log masuk yang disimpan untuk tapak sesawang yang sedang dibuka."
+   },
+   "symbols": {
+      "message": "Simbol (%s)"
+   },
+   "systemLocks": {
+      "message": "Kunci Sistem"
+   },
+   "tags": {
+      "message": "Tag"
+   },
+   "tenMinutes": {
+      "message": "10 minit"
+   },
+   "thirtyDays": {
+      "message": "30 hari"
+   },
+   "thirtyMinutes": {
+      "message": "30 minit"
+   },
+   "title": {
+      "message": "Tajuk"
+   },
+   "title_placeholder": {
+      "message": "Sila masukkan tajuk"
+   },
+   "tools": {
+      "message": "Alatan"
+   },
+   "tools_Dark_Web_Monitor": {
+      "message": "Pemantau Web Tertutup"
+   },
+   "tools_Dark_Web_Monitor_Dec": {
+      "message": "Membantu anda memantau kebocoran data sensitif dalam Web Tertutup"
+   },
+   "tools_Import_Export": {
+      "message": "Import dan Eksport"
+   },
+   "tools_Import_Export_Dec": {
+      "message": "Import data daripada pelayar atau alatan kata laluan lain anda & eksport data simpanan anda ke fail CSV dengan hanya 1 klik"
+   },
+   "tools_Password_Health": {
+      "message": "Kesihatan Kata Laluan"
+   },
+   "tools_Password_Health_Dec": {
+      "message": "Membantu anda memeriksa kata laluan yang rentan seperti yang lemah, digunakan semula, atau yang terjejas"
+   },
+   "tools_Unlimited_Passwords": {
+      "message": "Kata Laluan Tanpa Had"
+   },
+   "tools_Unlimited_Passwords_Only": {
+      "message": "(Hanya 50 pada Pelan Percuma)"
+   },
+   "twoMinutes": {
+      "message": "2 minit"
+   },
+   "type": {
+      "message": "Jenis"
+   },
+   "unionpay": {
+      "message": "UnionPay"
+   },
+   "unknown": {
+      "message": "Tidak diketahui"
+   },
+   "unlock": {
+      "message": "Nyahkunci"
+   },
+   "unlockAutoNow": {
+      "message": "Buka kunci sekarang untuk auto isi daftar masuk, maklumat peribadi, atau maklumat pembayaran anda."
+   },
+   "unlockDPM": {
+      "message": "Nyahkunci DualSafe Password Manager"
+   },
+   "unlockDPM_Desc": {
+      "message": "Nyahkunci sekarang untuk menyimpan log masuk \u003Ca class=\"btn-link btn-name\">\u003C/a> dan autoisinya untuk anda pada masa akan datang."
+   },
+   "unlockNow": {
+      "message": "Nyahkunci sekarang untuk autoisi log masuk untuk tapak ini."
+   },
+   "unlockSave": {
+      "message": "Nyahkunci & Simpan"
+   },
+   "unlock_now": {
+      "message": "Buka Kunci Sekarang"
+   },
+   "until_sign_out": {
+      "message": "Sehingga saya mendaftar keluar"
+   },
+   "update": {
+      "message": "Kemaskini"
+   },
+   "updateFailed": {
+      "message": "Kemas kini gagal."
+   },
+   "updateLogins": {
+      "message": "Kemaskini Log Masuk"
+   },
+   "updateSuccessfully": {
+      "message": "Berjaya dikemas kini."
+   },
+   "upgradeBtn": {
+      "message": "Naik Taraf"
+   },
+   "upgradeNowBtn": {
+      "message": "Naik Taraf Sekarang"
+   },
+   "upper_case": {
+      "message": "Huruf besar (A-Z)"
+   },
+   "url": {
+      "message": "url"
+   },
+   "url_copied": {
+      "message": "Tapak Sesawang disalin"
+   },
+   "use": {
+      "message": "Guna"
+   },
+   "use_generator_password": {
+      "message": "Guna kata laluan"
+   },
+   "user_manual": {
+      "message": "Panduan pengguna"
+   },
+   "username": {
+      "message": "Nama Pengguna"
+   },
+   "username_copied": {
+      "message": "Nama Pengguna disalin"
+   },
+   "username_placeholder": {
+      "message": "E-mel / Nama Pengguna / Nombor Telefon"
+   },
+   "view": {
+      "message": "Lihat"
+   },
+   "visa": {
+      "message": "Visa"
+   },
+   "visaelectron": {
+      "message": "Visa Electron"
+   },
+   "weak": {
+      "message": "Lemah"
+   },
+   "web_password_sync": {
+      "message": "Nota: Sila pastikan anda mengemaskini kata laluan untuk tapak sesawang ini"
+   },
+   "welcomeTo": {
+      "message": "Selamat datang ke"
+   },
+   "year": {
+      "message": "Tahun"
+   },
+   "yes": {
+      "message": "Ya"
+   },
+   "zip": {
+      "message": "ZIP"
+   },
+   "zipPostalCode": {
+      "message": "Poskod/ZIP"
+   }
+}

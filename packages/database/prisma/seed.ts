@@ -33,6 +33,78 @@ const developmentPlatformManifest = {
         order: 2,
         placement: "sidebar",
         visibility: { permissions: ["workspace.read"] }
+      },
+      {
+        id: "platform",
+        label: "Platform Control",
+        route: "/platform",
+        icon: { name: "Settings" },
+        order: 3,
+        placement: "sidebar",
+        visibility: { permissions: ["platform.configure"] }
+      },
+      {
+        id: "team",
+        label: "Team",
+        route: "/company/members",
+        icon: { name: "Users" },
+        order: 4,
+        placement: "sidebar",
+        visibility: { permissions: ["workspace.members.read"] }
+      },
+      {
+        id: "agents",
+        label: "Agents",
+        route: "/ai/agents",
+        icon: { name: "Bot" },
+        order: 5,
+        placement: "sidebar",
+        visibility: { permissions: ["agent.studio.read"] }
+      },
+      {
+        id: "providers",
+        label: "Providers",
+        route: "/ai/providers",
+        icon: { name: "Plug" },
+        order: 6,
+        placement: "sidebar",
+        visibility: { permissions: ["ai.configure"] }
+      },
+      {
+        id: "prompts",
+        label: "Prompt Library",
+        route: "/ai/prompts",
+        icon: { name: "BookOpen" },
+        order: 7,
+        placement: "sidebar",
+        visibility: { permissions: ["prompt.library.read"] }
+      },
+      {
+        id: "whatsapp",
+        label: "WhatsApp Business",
+        route: "/channels/whatsapp",
+        icon: { name: "MessageCircle" },
+        order: 8,
+        placement: "sidebar",
+        visibility: { permissions: ["channel.runtime.read", "whatsapp.connection.read"] }
+      },
+      {
+        id: "inbox",
+        label: "Inbox",
+        route: "/inbox",
+        icon: { name: "MessageSquare" },
+        order: 9,
+        placement: "sidebar",
+        visibility: { permissions: ["channel.runtime.read"] }
+      },
+      {
+        id: "knowledge",
+        label: "Knowledge Base",
+        route: "/knowledge",
+        icon: { name: "Database" },
+        order: 10,
+        placement: "sidebar",
+        visibility: { permissions: ["knowledge.base.read"] }
       }
     ]
   },
@@ -54,6 +126,78 @@ const developmentPlatformManifest = {
         order: 2,
         sections: [],
         visibility: { permissions: ["workspace.read"] }
+      },
+      {
+        id: "platform",
+        title: "Platform Control",
+        route: "/platform",
+        layout: "grid",
+        order: 3,
+        sections: [],
+        visibility: { permissions: ["platform.configure"] }
+      },
+      {
+        id: "team",
+        title: "Team",
+        route: "/company/members",
+        layout: "grid",
+        order: 4,
+        sections: [],
+        visibility: { permissions: ["workspace.members.read"] }
+      },
+      {
+        id: "agents",
+        title: "Agents",
+        route: "/ai/agents",
+        layout: "grid",
+        order: 5,
+        sections: [],
+        visibility: { permissions: ["agent.studio.read"] }
+      },
+      {
+        id: "providers",
+        title: "Providers",
+        route: "/ai/providers",
+        layout: "grid",
+        order: 6,
+        sections: [],
+        visibility: { permissions: ["ai.configure"] }
+      },
+      {
+        id: "prompts",
+        title: "Prompt Library",
+        route: "/ai/prompts",
+        layout: "grid",
+        order: 7,
+        sections: [],
+        visibility: { permissions: ["prompt.library.read"] }
+      },
+      {
+        id: "whatsapp",
+        title: "WhatsApp Business",
+        route: "/channels/whatsapp",
+        layout: "grid",
+        order: 8,
+        sections: [],
+        visibility: { permissions: ["channel.runtime.read", "whatsapp.connection.read"] }
+      },
+      {
+        id: "inbox",
+        title: "Inbox",
+        route: "/inbox",
+        layout: "grid",
+        order: 9,
+        sections: [],
+        visibility: { permissions: ["channel.runtime.read"] }
+      },
+      {
+        id: "knowledge",
+        title: "Knowledge Base",
+        route: "/knowledge",
+        layout: "grid",
+        order: 10,
+        sections: [],
+        visibility: { permissions: ["knowledge.base.read"] }
       }
     ]
   },
@@ -85,6 +229,7 @@ async function seedDevelopmentWorkspaceManifestOnly(): Promise<void> {
     update: {
       schemaVersion: developmentPlatformManifest.schemaVersion,
       compatibilityVersion: "1.0",
+      revision: { increment: 1 },
       manifest: developmentPlatformManifest
     },
     create: {
@@ -96,18 +241,61 @@ async function seedDevelopmentWorkspaceManifestOnly(): Promise<void> {
   });
 }
 
+async function seedDevelopmentWorkspaceUpdatePermissionOnly(): Promise<void> {
+  const permissionCodes = [
+    "workspace.update", "workspace.members.read", "workspace.members.manage",
+    "ai.providers.read", "ai.providers.write", "ai.providers.validate",
+    "channel.runtime.read", "channel.runtime.write", "channel.runtime.admin",
+    "whatsapp.connection.read", "whatsapp.connection.write", "whatsapp.connection.admin"
+  ];
+  const permissionRecords = await Promise.all(permissionCodes.map((code) =>
+    prisma.permission.upsert({ where: { code }, update: {}, create: { code }, select: { id: true, code: true } })
+  ));
+  const [role, workspace] = await Promise.all([
+    prisma.role.findFirst({
+      where: { workspaceId: null, name: developmentAdministrator.roleName, deletedAt: null },
+      select: { id: true }
+    }),
+    prisma.workspace.findUnique({
+      where: { slug: developmentAdministrator.workspaceSlug },
+      select: { id: true }
+    })
+  ]);
+  if (!role || !workspace) {
+    throw new Error("The existing workspace, permissions, and Administrator role are required");
+  }
+  for (const permission of permissionRecords) {
+    await prisma.rolePermission.upsert({
+      where: { roleId_permissionId: { roleId: role.id, permissionId: permission.id } },
+      update: {},
+      create: { roleId: role.id, permissionId: permission.id }
+    });
+  }
+  await prisma.workspace.update({
+    where: { id: workspace.id },
+    data: { permissionRevision: { increment: 1 } }
+  });
+}
+
 const permissions = [
   "users.create",
   "users.update",
   "crm.view",
   "billing.update",
   "ai.configure",
+  "ai.providers.read",
+  "ai.providers.write",
+  "ai.providers.validate",
   "ai.invoke",
   "ai.logs.read",
   "knowledge.upload",
   "reports.export",
   "platform.read",
   "platform.configure",
+  "workspace.read",
+  "workspace.update",
+  "workspace.members.read",
+  "workspace.members.manage",
   "studio.project.read",
   "studio.project.write",
   "studio.project.publish",
@@ -119,6 +307,7 @@ const permissions = [
   "prompt.library.rollback",
   "prompt.library.archive",
   "prompt.library.manage",
+  "prompt.library.delete",
   "agent.studio.read",
   "agent.studio.write",
   "agent.studio.publish",
@@ -252,6 +441,10 @@ async function seed(): Promise<void> {
     await seedDevelopmentWorkspaceManifestOnly();
     return;
   }
+  if (process.env.RESPONIX_SEED_WORKSPACE_UPDATE_ONLY === "true") {
+    await seedDevelopmentWorkspaceUpdatePermissionOnly();
+    return;
+  }
   for (const code of permissions) {
     await prisma.permission.upsert({
       where: { code },
@@ -323,6 +516,24 @@ async function seed(): Promise<void> {
       status: "ACTIVE"
     }
   });
+  const existingSubscription = await prisma.subscription.findFirst({
+    where: {
+      workspaceId: workspace.id,
+      deletedAt: null,
+      status: { in: ["ACTIVE", "TRIAL"] }
+    },
+    orderBy: { createdAt: "desc" }
+  });
+  const subscription = existingSubscription ?? await prisma.subscription.create({
+    data: {
+      workspaceId: workspace.id,
+      planId: starterPlan.id,
+      billingCycle: "MONTHLY",
+      status: "TRIAL",
+      startedAt: new Date(),
+      autoRenew: false
+    }
+  });
   const administrator = await prisma.user.upsert({
     where: {
       workspaceId_email: {
@@ -354,7 +565,7 @@ async function seed(): Promise<void> {
   });
   await prisma.workspace.update({
     where: { id: workspace.id },
-    data: { ownerId: administrator.id }
+    data: { ownerId: administrator.id, subscriptionId: subscription.id }
   });
   await prisma.workspaceMembership.upsert({
     where: {
@@ -383,6 +594,7 @@ async function seed(): Promise<void> {
     update: {
       schemaVersion: developmentPlatformManifest.schemaVersion,
       compatibilityVersion: "1.0",
+      revision: { increment: 1 },
       manifest: developmentPlatformManifest
     },
     create: {
@@ -415,6 +627,7 @@ async function seed(): Promise<void> {
   for (const channel of [
     { name: "web", displayName: "Web" },
     { name: "whatsapp", displayName: "WhatsApp" },
+    { name: "baileys", displayName: "Baileys" },
     { name: "email", displayName: "Email" }
   ]) {
     await prisma.channelProvider.upsert({

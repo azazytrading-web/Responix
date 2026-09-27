@@ -1,0 +1,1449 @@
+{
+   "Checkbox_Keep_signed": {
+      "message": "Να παραμένω συνδεδεμένος για"
+   },
+   "Checkbox_Keep_signed_Hint": {
+      "message": "Θα συνδεθείτε αυτόματα κατά τη διάρκεια της καθορισμένης χρονικής περιόδου. Βεβαιωθείτε ότι το περιβάλλον του υπολογιστή σας είναι ασφαλές. Όταν χρησιμοποιείτε δημόσιο υπολογιστή, μην επιλέξετε αυτήν την επιλογή."
+   },
+   "Delete_Exclude_website": {
+      "message": "Διαγραφή και εξαίρεση αυτού του ιστότοπου"
+   },
+   "Emergency_Desc": {
+      "message": "Κάντε εύκολη και ασφαλή την πρόσβαση στον λογαριασμό σας ξανά σε περίπτωση έκτακτης ανάγκης, όπως χαμένοι ή κλεμμένοι κωδικοί πρόσβασης."
+   },
+   "Emergency_Title": {
+      "message": "\u003Cb>Πρόσβαση έκτακτης ανάγκης\u003C/b> σε περίπτωση Ατυχήματος"
+   },
+   "Enable_Now": {
+      "message": "Enable Now"
+   },
+   "Enter_your_email": {
+      "message": "Εισάγετε το email σας"
+   },
+   "Exclude_website_new": {
+      "message": "Εξαίρεση αυτού του ιστότοπου"
+   },
+   "Invalid_Recovery_Code_New": {
+      "message": "Μη έγκυρος κωδικός ανάκτησης. Βεβαιωθείτε ότι έχετε εισαγάγει το σωστό ή το πιο πρόσφατο. Ή \u003Ca class=\"btn-link contactUsLink\">επικοινωνήστε μαζί μας.\u003C/a>"
+   },
+   "Keep_Safe_Desc": {
+      "message": "Ενεργοποίηση του Password Health για να κάνετε έλεγχο κωδικού πρόσβασης και να ενισχύσετε τους αδύναμους, παλιούς και επαναχρησιμοποιημένους κωδικούς σας."
+   },
+   "Keep_Safe_Title": {
+      "message": "Διατήρηση όλων των κωδικών πρόσβασης \u003Cb>Ασφαλή\u003C/b>"
+   },
+   "No_Worries_Desc": {
+      "message": "Ενεργοποιήστε την παρακολούθηση Dark Web για να λαμβάνετε ειδοποιήσεις εάν τα προσωπικά σας στοιχεία έχουν υποστεί παραβίαση δεδομένων."
+   },
+   "No_Worries_Title": {
+      "message": "\u003Cb>Όχι\u003C/b> Ανησυχίες σχετικά με \u003Cb>Παραβιάσεις δεδομένων\u003C/b>"
+   },
+   "No_thanks": {
+      "message": "Όχι, ευχαριστώ"
+   },
+   "Password_Generator": {
+      "message": "Γεννήτρια κωδικού"
+   },
+   "Password_Generator_Dec": {
+      "message": "Δημιουργήστε ισχυρούς και ασφαλείς κωδικούς με 1 μόνο κλικ"
+   },
+   "Suggested_Password": {
+      "message": "Προτεινόμενος κωδικός"
+   },
+   "Suggested_Password_Dec": {
+      "message": "Εμφάνιση προτεινόμενου κωδικού για όλα τα πλαίσια εισαγωγής κωδικού"
+   },
+   "Suggested_password_Case": {
+      "message": "Προτεινόμενος κωδικός"
+   },
+   "TOTP_Tips": {
+      "message": "Η τοπική ώρα του υπολογιστή σας είναι λανθασμένη, γεγονός που μπορεί να προκαλέσει την ακύρωση του κωδικού πρόσβασης μίας χρήσης."
+   },
+   "TOTP_placeholder": {
+      "message": "Εισαγάγετε το μυστικό κλειδί ή τη διεύθυνση URL όπως otpauth://*"
+   },
+   "Unlimited_Desc": {
+      "message": "Διαχειριστείτε, αποθηκεύστε και δημιουργήστε εύκολα ασφαλείς κωδικούς πρόσβασης σε οποιαδήποτε συσκευή ή πλατφόρμα με έναν μόνο λογαριασμό."
+   },
+   "Unlimited_Title": {
+      "message": "Συγχρονισμός δεδομένων σε \u003Cb>Απεριόριστες συσκευές\u003C/b>"
+   },
+   "Website": {
+      "message": "Ιστοσελίδα"
+   },
+   "about": {
+      "message": "Σχετικά"
+   },
+   "about_Acknowledgements": {
+      "message": "Ευχαριστίες"
+   },
+   "about_Copyright": {
+      "message": "© iTop Inc. All rights reserved."
+   },
+   "about_EULA": {
+      "message": "Άδεια χρήσης"
+   },
+   "about_Privacy_Policy": {
+      "message": "Πολιτική απορρήτου"
+   },
+   "about_Version": {
+      "message": "Έκδοση"
+   },
+   "add": {
+      "message": "Προσθήκη"
+   },
+   "addNew": {
+      "message": "Προσθήκη νέου"
+   },
+   "addNewAccount": {
+      "message": "Προσθήκη νέου λογαριασμού"
+   },
+   "add_Login": {
+      "message": "Προσθήκη σύνδεσης"
+   },
+   "add_Logins": {
+      "message": "Προσθήκη συνδέσεων"
+   },
+   "add_Notes": {
+      "message": "Προσθήκη σημειώσεων"
+   },
+   "add_Payment_Info": {
+      "message": "Προσθήκη στοιχείων πληρωμής"
+   },
+   "add_Payment_Info_Case": {
+      "message": "Προσθήκη στοιχείων πληρωμής"
+   },
+   "add_Personal_Info": {
+      "message": "Προσθήκη Προσωπικών Στοιχείων"
+   },
+   "add_Personal_Info_Case": {
+      "message": "Προσθήκη Προσωπικών Στοιχείων"
+   },
+   "add_exclude": {
+      "message": "Προσθήκη ιστότοπων για εξαίρεση"
+   },
+   "add_items": {
+      "message": "Προσθήκη στοιχείων"
+   },
+   "add_new_website": {
+      "message": "Προσθήκη νέου ιστότοπου"
+   },
+   "add_secure_note": {
+      "message": "Προσθέστε μια ασφαλή σημείωση"
+   },
+   "add_tag": {
+      "message": "Προσθήκη ετικέτας"
+   },
+   "add_to_favorites": {
+      "message": "Προσθήκη στα Αγαπημένα"
+   },
+   "add_to_favorites_succ": {
+      "message": "Προστέθηκε στα Αγαπημένα"
+   },
+   "add_to_onetime_pwd": {
+      "message": "Προσθήκη στον κωδικό πρόσβασης μίας χρήσης"
+   },
+   "add_totp": {
+      "message": "Προσθήκη κωδικού πρόσβασης μίας χρήσης;"
+   },
+   "add_website": {
+      "message": "Προσθήκη ιστότοπου"
+   },
+   "add_website_placeholder": {
+      "message": "Είσοδος στον ιστότοπο"
+   },
+   "address": {
+      "message": "Διεύθυνση"
+   },
+   "address_copied": {
+      "message": "Η διεύθυνση αντιγράφηκε"
+   },
+   "advancedOptions": {
+      "message": "Προχωρημένες επιλογές"
+   },
+   "all_Item": {
+      "message": "Όλα τα στοιχεία"
+   },
+   "alreadyAccount": {
+      "message": "* Εάν έχετε ήδη λογαριασμό iTop, συνδεθείτε απευθείας."
+   },
+   "already_saved": {
+      "message": "Έχω ήδη αποθηκεύσει"
+   },
+   "americanexpress": {
+      "message": "American Express"
+   },
+   "appName": {
+      "message": "DualSafe Password Manager"
+   },
+   "auth_bottom_desc": {
+      "message": "Μόλις ολοκληρώσετε την εξουσιοδότηση, μπορείτε να συνδεθείτε στο DualSafe Password Manager."
+   },
+   "auth_desc": {
+      "message": "Εξουσιοδοτήστε τη σύνδεση του DualSafe Password Manager στην καρτέλα του προγράμματος περιήγησης που άνοιξε πρόσφατα."
+   },
+   "auth_subtitle": {
+      "message": "Αναμονή για εξουσιοδότηση…"
+   },
+   "auth_title": {
+      "message": "Εξουσιοδότηση"
+   },
+   "autoFillFailed": {
+      "message": "Αποτυχία εύρεσης πεδίων εισαγωγής σύνδεσης. Δοκιμάστε να αντιγράψετε και να επικολλήσετε τα στοιχεία με μη αυτόματο τρόπο."
+   },
+   "auto_save_confirm_desc": {
+      "message": "Αυτόματη αποθήκευση των ονομάτων χρήστη και των κωδικών πρόσβασής μου για όλους τους ιστότοπους στο μέλλον."
+   },
+   "auto_save_passwords": {
+      "message": "Αυτόματη αποθήκευση κωδικών πρόσβασης"
+   },
+   "auto_save_passwords_desc": {
+      "message": "Αυτόματη αποθήκευση των ονομάτων χρήστη και των κωδικών πρόσβασής μου για όλους τους ιστότοπους"
+   },
+   "auto_saved_successfully": {
+      "message": "Αποθηκεύτηκε αυτόματα επιτυχώς"
+   },
+   "average": {
+      "message": "Μέτριος"
+   },
+   "back": {
+      "message": "Πίσω"
+   },
+   "bannerExpiredPurchase": {
+      "message": "Ουπς! Η έκδοση Premium έχει \u003Cb>λήξει.\u003C/b>"
+   },
+   "bannerFreePurchase": {
+      "message": "Κάντε αναβάθμιση για να απολαύσετε πλήρη πρόσβαση Premium"
+   },
+   "bannerPremiumPurchase": {
+      "message": "Σας απομένουν  %s \u003Cspan class=\"day-words\">ημέρες\u003C/span> στην έκδοση Premium."
+   },
+   "birthday": {
+      "message": "Γενέθλια"
+   },
+   "birthday_copied": {
+      "message": "Τα γενέθλια αντιγράφηκαν"
+   },
+   "browserReboot": {
+      "message": "Επανεκκίνηση του προγράμματος περιήγησης"
+   },
+   "browser_extension": {
+      "message": "Επέκταση προγράμματος περιήγησης"
+   },
+   "cancel": {
+      "message": "Ακύρωση"
+   },
+   "capitalize": {
+      "message": "Κεφαλαία γράμματα (A-Z)"
+   },
+   "cardNumber": {
+      "message": "Αριθμός κάρτας"
+   },
+   "cardType": {
+      "message": "Τύπος κάρτας"
+   },
+   "cardType_placeholder": {
+      "message": "Εισαγάγετε ή επιλέξτε τον τύπο της κάρτας"
+   },
+   "card_number_copied": {
+      "message": "Ο αριθμός κάρτας αντιγράφηκε"
+   },
+   "card_type_copied": {
+      "message": "Ο τύπος κάρτας αντιγράφηκε"
+   },
+   "cardholderName": {
+      "message": "Όνομα κατόχου κάρτας"
+   },
+   "cardholder_name_copied": {
+      "message": "Το όνομα κατόχου κάρτας αντιγράφηκε"
+   },
+   "cardother": {
+      "message": "Άλλη"
+   },
+   "carteblanche": {
+      "message": "Carte Blanche"
+   },
+   "change_desc": {
+      "message": "Αλλάζετε τον κύριο κωδικό πρόσβασης..."
+   },
+   "change_master_password": {
+      "message": "Αλλαγή κύριου κωδικού πρόσβασης"
+   },
+   "change_now": {
+      "message": "Αλλαγή τώρα"
+   },
+   "change_title": {
+      "message": "Αλλαγή Κύριου Κωδικού πρόσβασης"
+   },
+   "cityTown": {
+      "message": "Πόλη"
+   },
+   "clear": {
+      "message": "Εκκαθάριση"
+   },
+   "clear_allpass_desc": {
+      "message": "Δεν μπορούν να αποκατασταθούν μετά την εκκαθάριση."
+   },
+   "clear_allpass_title": {
+      "message": "Είστε βέβαιοι ότι θέλετε να διαγράψετε όλους τους κωδικούς πρόσβασης;"
+   },
+   "clear_deleted_desc": {
+      "message": "Δεν είναι δυνατή η επαναφορά τους μετά τη διαγραφή τους."
+   },
+   "clear_deleted_title": {
+      "message": "Είστε βέβαιοι ότι θα διαγράψετε όλα τα στοιχεία από τα Διαγραμμένα;"
+   },
+   "clear_password": {
+      "message": "Εκκαθάριση κωδικού πρόσβασης"
+   },
+   "cleared_successfully": {
+      "message": "Διαγράφηκε με επιτυχία."
+   },
+   "close": {
+      "message": "Κλείσιμο"
+   },
+   "code_desc": {
+      "message": "Εισαγάγετε τον κύριο κωδικό πρόσβασης για επαναφορά του κωδικού ανάκτησης"
+   },
+   "code_pairing_desc": {
+      "message": "Επιβεβαιώστε τον κωδικό από το αναδυόμενο παράθυρο της εφαρμογής υπολογιστή και κάντε κλικ στο κουμπί Σύνδεση για να εξουσιοδοτήσετε την αυτόματη σύνδεση και ξεκλείδωμα."
+   },
+   "code_pairing_title": {
+      "message": "Κωδικός σύνδεσης"
+   },
+   "code_title": {
+      "message": "Επαναφορά κωδικού ανάκτησης"
+   },
+   "comma": {
+      "message": ":"
+   },
+   "comprehensive_pwd_Desc": {
+      "message": "Πλήρης έλεγχος εύρυθμης λειτουργίας κωδικού πρόσβασης"
+   },
+   "confirmMasterNewPass": {
+      "message": "Επιβεβαιώστε τον νέο κύριο κωδικό πρόσβασης"
+   },
+   "confirmMasterPass": {
+      "message": "Επιβεβαιώστε τον κύριο κωδικό πρόσβασής σας"
+   },
+   "continue": {
+      "message": "Συνέχιση"
+   },
+   "continue_sign_in": {
+      "message": "Συνέχεια Σύνδεσης"
+   },
+   "copied": {
+      "message": "αντιγράφηκε"
+   },
+   "copy": {
+      "message": "Αντιγραφή"
+   },
+   "copy_generator_password": {
+      "message": "Αντιγραφή κωδικού"
+   },
+   "copy_notes": {
+      "message": "Αντιγραφή σημειώσεων"
+   },
+   "copy_one_time_Password": {
+      "message": "Αντιγραφή κωδικού μίας χρήσης"
+   },
+   "copy_password": {
+      "message": "κωδικός"
+   },
+   "copy_username": {
+      "message": "Αντιγραφή ονόματος χρήστη"
+   },
+   "countryRegion": {
+      "message": "Χώρα ή Περιοχή"
+   },
+   "countryRegion_placeholder": {
+      "message": "Επιλέξτε τη χώρα ή την περιοχή σας"
+   },
+   "createNewAccount": {
+      "message": "Δημιουργία λογαριασμού"
+   },
+   "create_new_account": {
+      "message": "Δημιουργία λογαριασμού"
+   },
+   "createdAt": {
+      "message": "Δημιουργήθηκε στις"
+   },
+   "currentMasterPass": {
+      "message": "Τρέχων κύριος κωδικός πρόσβασης"
+   },
+   "day": {
+      "message": "Ημέρα"
+   },
+   "days": {
+      "message": "Ημέρες"
+   },
+   "days_case": {
+      "message": "ημέρες"
+   },
+   "default_password_manager": {
+      "message": "Προεπιλεγμένος διαχειριστής κωδικών πρόσβασης"
+   },
+   "delete": {
+      "message": "Διαγραφή"
+   },
+   "delete_all": {
+      "message": "Διαγραφή όλων"
+   },
+   "delete_at": {
+      "message": "Διαγράφηκε στις"
+   },
+   "delete_item": {
+      "message": "Είστε βέβαιοι ότι θα μεταφέρετε αυτό το αντικείμενο στον Κάδο Ανακύκλωσης;"
+   },
+   "delete_item_Recycle_Bin": {
+      "message": "Είστε βέβαιοι ότι θα διαγράψετε αυτό το αντικείμενο από τον Κάδο Ανακύκλωσης;"
+   },
+   "delete_item_Recycle_Bin_Dec": {
+      "message": "Δεν μπορεί να γίνει επαναφορά αφού διαγραφεί."
+   },
+   "delete_item_dec": {
+      "message": "Μπορείτε να το επαναφέρετε από τον Κάδο Ανακύκλωσης, εφόσον δεν έχει διαγραφεί οριστικά."
+   },
+   "deletedSuccessfully": {
+      "message": "Διαγράφηκε με επιτυχία."
+   },
+   "deleted_this_item": {
+      "message": "Διαγράψτε αυτό το στοιχείο"
+   },
+   "desktop": {
+      "message": "Επιφάνεια εργασίας"
+   },
+   "desktop_app": {
+      "message": "Εφαρμογή για υπολογιστές"
+   },
+   "details": {
+      "message": "Λεπτομέρειες"
+   },
+   "device_limit_desc": {
+      "message": "Έχετε συμπληρώσει το μέγιστο όριο για σύνδεση σε 3 συσκευές. Αναβαθμίστε τώρα για να απολαύσετε απεριόριστη πρόσβαση στη συσκευή και όλα τα παρακάτω πλεονεκτήματα:"
+   },
+   "device_limit_tips": {
+      "message": "* Θα αποσυνδεθείτε από αυτήν τη συσκευή:"
+   },
+   "device_limit_title": {
+      "message": "Το όριο συσκευών συμπληρώθηκε!"
+   },
+   "dinersclub": {
+      "message": "Diners Club"
+   },
+   "dir": {
+      "message": "ltr"
+   },
+   "discard": {
+      "message": "Απόρριψη"
+   },
+   "discard_change": {
+      "message": "Είστε βέβαιοι ότι θα απορρίψετε τις μη αποθηκευμένες αλλαγές;"
+   },
+   "discover": {
+      "message": "Discover"
+   },
+   "downloadApp": {
+      "message": "Λήψη εφαρμογής"
+   },
+   "edit": {
+      "message": "Επεξεργασία"
+   },
+   "editInfo": {
+      "message": "Επεξεργασία πληροφοριών"
+   },
+   "emailAddress": {
+      "message": "Διεύθυνση Email"
+   },
+   "emailOrPassIncorrect": {
+      "message": "Λανθασμένη διεύθυνση email ή κωδικός πρόσβασης."
+   },
+   "emailVerfy": {
+      "message": "Επιβεβαίωση Email"
+   },
+   "email_address_copied": {
+      "message": "Η διεύθυνση email αντιγράφηκε"
+   },
+   "emergency_contact": {
+      "message": "Πρόσβαση έκτακτης ανάγκης"
+   },
+   "emergency_contact_Desc": {
+      "message": "Όταν χάσετε την πρόσβαση στα δεδομένα σας, το άτομο στο οποίο παραχωρείτε πρόσβαση έκτακτης ανάγκης μπορεί να ζητήσει την εξαγωγή των δεδομένων σας ή την αλλαγή του κύριου κωδικού πρόσβασής σας."
+   },
+   "enterMasterNewPass": {
+      "message": "Εισαγάγετε νέο κύριο κωδικό πρόσβασης"
+   },
+   "enterMasterPass": {
+      "message": "Εισαγάγετε τον κύριο κωδικό πρόσβασής σας"
+   },
+   "enterRecoveryCass": {
+      "message": "Εισαγάγετε τον κωδικό ανάκτησης"
+   },
+   "enterYourPass": {
+      "message": "Εισάγετε τον κωδικό σας"
+   },
+   "enter_email_desc": {
+      "message": "Εισαγάγετε τη διεύθυνση ηλεκτρονικού ταχυδρομείου σας για να λάβετε τον κωδικό ανάκτησης!"
+   },
+   "enter_email_tips": {
+      "message": "Μη έγκυρη διεύθυνση ηλεκτρονικού ταχυδρομείου. Ελέγξτε και εισαγάγετε ξανά!"
+   },
+   "exclude_website": {
+      "message": "Εξαίρεση ιστότοπου"
+   },
+   "exclude_website_list": {
+      "message": "Λίστα εξαιρούμενων ιστότοπων"
+   },
+   "exit": {
+      "message": "Έξοδος"
+   },
+   "expOptionDate": {
+      "message": "Ημερομηνία λήξης"
+   },
+   "expiration_date_copied": {
+      "message": "Η ημερομηνία λήξης αντιγράφηκε"
+   },
+   "expired": {
+      "message": "ΕΛΗΞΕ"
+   },
+   "extDesc": {
+      "message": "Η επέκταση DualSafe Password Manager σάς βοηθά να διαχειρίζεστε με ασφάλεια τους κωδικούς πρόσβασης σε ένα μέρος και σας επιτρέπει να αποθηκεύετε αυτόματα, να συμπληρώνετε αυτόματα και να έχετε πρόσβαση σε αυτούς οποιαδήποτε στιγμή."
+   },
+   "extName": {
+      "description": "DualSafe Password Manager & Digital Vault",
+      "message": "DualSafe Password Manager & Digital Vault"
+   },
+   "extension": {
+      "message": "Επέκταση"
+   },
+   "failedToDelete": {
+      "message": "Η διαγραφή απέτυχε."
+   },
+   "failedToOpenLoading_DPM": {
+      "message": "Φόρτωση της έκδοσης για υπολογιστή"
+   },
+   "failedToOpenLoading_Dark_Web_Monitor_Dec": {
+      "message": "Η Παρακολούθηση Dark Web είναι διαθέσιμη μόνο στην έκδοση για υπολογιστές. Κάντε κλικ στο \"Άνοιγμα\" στο αναδυόμενο παράθυρο επιβεβαίωσης για να εκτελέσετε την έκδοση για υπολογιστές. Ή κάντε κλικ στο κουμπί %s παρακάτω για να ανοίξετε ξανά το αναδυόμενο παράθυρο."
+   },
+   "failedToOpenLoading_Emergency_Contact_Dec": {
+      "message": "Emergency Contact είναι διαθέσιμη μόνο στην έκδοση για υπολογιστές. Κάντε κλικ στο \"Άνοιγμα\" στο αναδυόμενο παράθυρο επιβεβαίωσης για να εκτελέσετε την έκδοση για υπολογιστές. Ή κάντε κλικ στο κουμπί %s παρακάτω για να ανοίξετε ξανά το αναδυόμενο παράθυρο."
+   },
+   "failedToOpenLoading_Import_Export_Dec": {
+      "message": "Η εισαγωγή και εξαγωγή είναι διαθέσιμη μόνο στην έκδοση για υπολογιστές. Κάντε κλικ στο \"Άνοιγμα\" στο αναδυόμενο παράθυρο επιβεβαίωσης για να εκτελέσετε την έκδοση για υπολογιστές. Ή κάντε κλικ στο κουμπί %s παρακάτω για να ανοίξετε ξανά το αναδυόμενο παράθυρο."
+   },
+   "failedToOpenLoading_Password_Health_Dec": {
+      "message": "Το Password Health είναι διαθέσιμο μόνο στην έκδοση για υπολογιστές. Κάντε κλικ στο \"Άνοιγμα\" στο αναδυόμενο παράθυρο επιβεβαίωσης για να εκτελέσετε την έκδοση για υπολογιστές. Ή κάντε κλικ στο κουμπί %s παρακάτω για να ανοίξετε ξανά το αναδυόμενο παράθυρο.."
+   },
+   "failedToOpen_DPM": {
+      "message": "Απέτυχε το άνοιγμα της έκδοσης για υπολογιστές"
+   },
+   "failedToOpen_Dark_Web_Monitor_Dec": {
+      "message": "Η Παρακολούθηση Dark Web είναι διαθέσιμη μόνο στην έκδοση για υπολογιστές. Κάντε κλικ στο κουμπί %d για λήψη και εγκατάσταση της έκδοσης για υπολογιστή. Ή κάντε κλικ στο κουμπί %s για να ανοίξει ξανά."
+   },
+   "failedToOpen_Emergency_Contact_Dec": {
+      "message": "Emergency Contact είναι διαθέσιμη μόνο στην έκδοση για υπολογιστές. Κάντε κλικ στο κουμπί %d για λήψη και εγκατάσταση της έκδοσης για υπολογιστή. Ή κάντε κλικ στο κουμπί %s για να ανοίξει ξανά."
+   },
+   "failedToOpen_Import_Export_Dec": {
+      "message": "Η εισαγωγή και εξαγωγή είναι διαθέσιμη μόνο στην έκδοση για υπολογιστές. Κάντε κλικ στο κουμπί %d για λήψη και εγκατάσταση της έκδοσης για υπολογιστή. Ή κάντε κλικ στο κουμπί %s για να ανοίξει ξανά."
+   },
+   "failedToOpen_Password_Health_Dec": {
+      "message": "Το Password Health είναι διαθέσιμο μόνο στην έκδοση για υπολογιστές. Κάντε κλικ στο κουμπί %d για λήψη και εγκατάσταση της έκδοσης για υπολογιστή. Ή κάντε κλικ στο κουμπί %s για να ανοίξει ξανά."
+   },
+   "failedToRestore": {
+      "message": "Αποτυχία επαναφοράς."
+   },
+   "failed_send_desc": {
+      "message": "Αποτυχία αποστολής του μηνύματος ηλεκτρονικού ταχυδρομείου κωδικού ανάκτησης. Παρακαλώ προσπαθήστε ξανά."
+   },
+   "failed_send_title": {
+      "message": "Αποτυχία αποστολής."
+   },
+   "favoties": {
+      "message": "Αγαπημένα"
+   },
+   "feedback": {
+      "message": "Σχόλια"
+   },
+   "fill": {
+      "message": "Συμπλήρωση"
+   },
+   "firstName": {
+      "message": "Όνομα"
+   },
+   "fiveMinutes": {
+      "message": "5 λεπτά"
+   },
+   "forgotYourPass": {
+      "message": "Ξέχασες τον κωδικό σου;"
+   },
+   "fourHours": {
+      "message": "4 ώρες"
+   },
+   "fourteenDays": {
+      "message": "14 ημέρες"
+   },
+   "free": {
+      "message": "ΔΩΡΕΑΝ"
+   },
+   "gender": {
+      "message": "Φύλο"
+   },
+   "genderFemale": {
+      "message": "Γυναίκα"
+   },
+   "genderMale": {
+      "message": "Άντρας"
+   },
+   "genderNone": {
+      "message": "Κανένα"
+   },
+   "genderOther": {
+      "message": "Άλλο"
+   },
+   "gender_copied": {
+      "message": "Το φύλο αντιγράφηκε"
+   },
+   "goPremiumBtn": {
+      "message": "Πάμε Premium"
+   },
+   "go_back_to_signin": {
+      "message": "Επιστρέψτε στη Σύνδεση"
+   },
+   "hideCode": {
+      "message": "Hide security code"
+   },
+   "hidePass": {
+      "message": "Απόκρυψη κωδικού"
+   },
+   "ignore_website": {
+      "message": "Αγνοήστε αυτόν τον ιστότοπο"
+   },
+   "installDesktopApp": {
+      "message": "Εγκαταστήστε την εφαρμογή για υπολογιστή"
+   },
+   "invalid_email": {
+      "message": "Μη έγκυρο email. Εισαγάγετε το email που επαληθεύσατε."
+   },
+   "invalid_master_pass": {
+      "message": "Μη έγκυρος κύριος κωδικός πρόσβασης!"
+   },
+   "invalid_master_tips": {
+      "message": "Μη έγκυρος κύριος κωδικός πρόσβασης. Παρακαλούμε ελέγξτε και προσπαθήστε ξανά."
+   },
+   "invalid_recovery_code": {
+      "message": "Μη έγκυρος κωδικός ανάκτησης. Παρακαλούμε ελέγξτε και προσπαθήστε ξανά."
+   },
+   "invalid_secret_key": {
+      "message": "Μη έγκυρο μυστικό κλειδί!"
+   },
+   "item_remove_from_favorites": {
+      "message": "Αφαίρεση από τα Αγαπημένα"
+   },
+   "jcb": {
+      "message": "JCB"
+   },
+   "lang": {
+      "message": "el"
+   },
+   "lastModifiedAt": {
+      "message": "Τροποποιήθηκε στις"
+   },
+   "lastName": {
+      "message": "Επώνυμο"
+   },
+   "lastPasswordChangedAt": {
+      "message": "Ο κωδικός άλλαξε στις"
+   },
+   "learn_more": {
+      "message": "Μάθετε περισσότερα"
+   },
+   "length": {
+      "message": "Μήκος"
+   },
+   "loading": {
+      "message": "Φόρτωση ..."
+   },
+   "loading_data_error": {
+      "message": "Απέτυχε να φορτώσει. Ελέγξτε τη σύνδεσή σας στο δίκτυο."
+   },
+   "lock": {
+      "message": "Κλείδωμα"
+   },
+   "lock_comfirm_btn": {
+      "message": "Ξεκλείδωμα χειροκίνητα"
+   },
+   "login_comfirm_btn": {
+      "message": "Συνδεθείτε χειροκίνητα"
+   },
+   "login_comfirm_desc": {
+      "message": "Κάντε κλικ στον λογαριασμό σας για εξουσιοδότηση αυτόματης σύνδεσης και ξεκλειδώματος από την εφαρμογή επιφάνειας εργασίας."
+   },
+   "login_feature_auto": {
+      "message": "\u003Cb>Αυτόματο\u003C/b> - Πρόσβαση σε απεριόριστες συσκευές με αυτόματο συγχρονισμό"
+   },
+   "login_feature_easy": {
+      "message": "\u003Cb>Εύκολο\u003C/b> - Αυτόματη αποθήκευση και αυτόματη συμπλήρωση κωδικών πρόσβασης με απλά κλικ"
+   },
+   "login_feature_safe": {
+      "message": "\u003Cb>Ασφαλές\u003C/b> - Αποθηκεύστε τα δεδομένα σας με την καλύτερη κρυπτογράφηση στην κατηγορία"
+   },
+   "login_feature_secure": {
+      "message": "\u003Cb>Ασφαλές\u003C/b> - Δημιουργήστε ισχυρούς, μοναδικούς κωδικούς πρόσβασης"
+   },
+   "login_feature_unlimited": {
+      "message": "\u003Cb>Απεριόριστο\u003C/b> - Αποθηκεύστε απεριόριστους κωδικούς πρόσβασης, πληρωμές κ.λπ."
+   },
+   "login_left_title": {
+      "message": "Ένας ασφαλής, απλός αλλά δωρεάν τρόπος διαχείρισης κωδικών πρόσβασης, απαραίτητος για την ψηφιακή σας ζωή."
+   },
+   "login_waiting_title": {
+      "message": "Αναμονή για εξουσιοδότηση από την εφαρμογή επιφάνειας εργασίας…"
+   },
+   "logins": {
+      "message": "Συνδέσεις"
+   },
+   "lower_case": {
+      "message": "Πεζά (a-z)"
+   },
+   "maestro": {
+      "message": "Maestro"
+   },
+   "mastercard": {
+      "message": "Mastercard"
+   },
+   "masterpassIncorrect": {
+      "message": "Μη έγκυρος κύριος κωδικός πρόσβασης."
+   },
+   "match_change_pass": {
+      "message": "Ο κωδικός πρόσβασης δεν πληροί τις απαιτήσεις."
+   },
+   "match_master_pass": {
+      "message": "Οι κωδικοί πρόσβασης δεν ταιριάζουν."
+   },
+   "middleName": {
+      "message": "Μεσαίο όνομα"
+   },
+   "month": {
+      "message": "Μήνας"
+   },
+   "more": {
+      "message": "Περισσότερα"
+   },
+   "name": {
+      "message": "Όνομα"
+   },
+   "name_copied": {
+      "message": "Το όνομα αντιγράφηκε"
+   },
+   "networkError": {
+      "message": "Σφάλμα σύνδεσης δικτύου."
+   },
+   "never": {
+      "message": "Ποτέ"
+   },
+   "newUser": {
+      "message": "Νέος χρήστης;"
+   },
+   "new_password": {
+      "message": "Νέος κωδικός πρόσβασης"
+   },
+   "new_tag": {
+      "message": "Νέα ετικέτα"
+   },
+   "new_tag_number": {
+      "message": "Νέα ετικέτα"
+   },
+   "ninetyDays": {
+      "message": "90 ημέρες"
+   },
+   "noItemsAddAllItem": {
+      "message": "Δεν προστέθηκαν στοιχεία."
+   },
+   "noItemsAddLoginItem": {
+      "message": "Δεν προστέθηκαν στοιχεία σύνδεσης."
+   },
+   "noItemsAddNotesItem": {
+      "message": "Δεν προστέθηκαν ασφαλείς σημειώσεις."
+   },
+   "noItemsAddPayItem": {
+      "message": "Δεν προστέθηκαν πληροφορίες πληρωμής."
+   },
+   "noItemsAddPersonalItem": {
+      "message": "Δεν προστέθηκαν προσωπικά στοιχεία."
+   },
+   "noItemsAddRecycleItem": {
+      "message": "Δεν υπάρχουν στοιχεία εδώ."
+   },
+   "noItemsFound": {
+      "message": "Δεν βρέθηκαν στοιχεία."
+   },
+   "noResult": {
+      "message": "Κανένα αποτέλεσμα!"
+   },
+   "noSaved": {
+      "message": "Δεν έχουν αποθηκευτεί στοιχεία σύνδεσης για αυτόν τον ιστότοπο."
+   },
+   "noSavedPrss": {
+      "message": "Δεν υπάρχει αποθηκευμένος κωδικός!"
+   },
+   "no_excluded_websites": {
+      "message": "Δεν εξαιρούνται ιστότοποι."
+   },
+   "no_password_history": {
+      "message": "Δεν υπάρχει ιστορικό κωδικού πρόσβασης."
+   },
+   "no_valid_secret_key_found": {
+      "message": "Δεν βρέθηκε έγκυρο μυστικό κλειδί!"
+   },
+   "notNow": {
+      "message": "Όχι τώρα"
+   },
+   "not_have_code": {
+      "message": "Δεν έχετε κωδικό ανάκτησης;"
+   },
+   "notes": {
+      "message": "Σημειώσεις"
+   },
+   "notes_characters_tips": {
+      "message": "%s χαρακτήρες απομένουν"
+   },
+   "notes_copied": {
+      "message": "Οι σημειώσεις αντιγράφηκαν"
+   },
+   "notes_placeholder": {
+      "message": "Εισαγάγετε μερικές σημειώσεις για αυτό το στοιχείο (Μέγιστο όριο: %s χαρακτήρες)"
+   },
+   "numWords": {
+      "message": "Ψηφία (0-9)"
+   },
+   "offer_to_save_passwords": {
+      "message": "Προσφορά αποθήκευσης κωδικών πρόσβασης"
+   },
+   "offer_to_save_passwords_desc": {
+      "message": "Ζητήστε να αποθηκεύσετε τους κωδικούς πρόσβασης κατά τη σύνδεση ή την εγγραφή σας"
+   },
+   "ok": {
+      "message": "OK"
+   },
+   "okIgotIt": {
+      "message": "OK. Κατάλαβα."
+   },
+   "oneHour": {
+      "message": "1 ώρα"
+   },
+   "oneMinute": {
+      "message": "1 λεπτό"
+   },
+   "one_time_Password": {
+      "message": "Κωδικός μιας χρήσης"
+   },
+   "one_time_pass_copied": {
+      "message": "Ο κωδικός μίας χρήσης αντιγράφηκε"
+   },
+   "only": {
+      "message": "Μόνο"
+   },
+   "open": {
+      "message": "Άνοιγμα"
+   },
+   "options": {
+      "message": "Επιλογές"
+   },
+   "passIncorrect": {
+      "message": "Λάθος κωδικός."
+   },
+   "password": {
+      "message": "Κωδικός"
+   },
+   "password_copied": {
+      "message": "Ο κωδικός αντιγράφηκε"
+   },
+   "password_history_item": {
+      "message": "Ιστορικό κωδικού πρόσβασης"
+   },
+   "password_history_tips": {
+      "message": "Εδώ εμφανίζονται οι πρόσφατοι κωδικοί %s πρόσβασης."
+   },
+   "password_history_title": {
+      "message": "Ιστορικό κωδικού πρόσβασης"
+   },
+   "password_tip_one": {
+      "message": "Τουλάχιστον 8 χαρακτήρες. Συνιστώνται περισσότεροι από 16 χαρακτήρες."
+   },
+   "password_tip_three": {
+      "message": "Τουλάχιστον ένα σύμβολο."
+   },
+   "password_tip_two": {
+      "message": "Τουλάχιστον ένας αριθμός."
+   },
+   "payment_Info": {
+      "message": "Πληροφορίες πληρωμής"
+   },
+   "personal_Info": {
+      "message": "Προσωπικά στοιχεία"
+   },
+   "phoneNumber": {
+      "message": "Αριθμός τηλεφώνου"
+   },
+   "phone_number_copied": {
+      "message": "Ο αριθμός τηλεφώνου αντιγράφηκε"
+   },
+   "premiumExpiredPurchase": {
+      "message": "Η έκδοση Premium έχει \u003Cb class='text-red'>λήξει!\u003C/b>"
+   },
+   "premiumExpiredPurchaseAlert": {
+      "message": "Οι προηγμένες λειτουργίες δεν είναι πλέον διαθέσιμες. Κάντε αναβάθμιση για να συνεχίσετε την πρόσβαση Premium και να διατηρήσετε εύκολα τους κωδικούς σας ασφαλείς."
+   },
+   "premiumExpiringSoonPurchase": {
+      "message": "Μόνο \u003Cb class=\"text-yellow\">%s Ημέρες\u003C/b> Premium έμειναν!"
+   },
+   "premiumExpiringSoonPurchaseAlert": {
+      "message": "Κάντε αναβάθμιση για να έχετε Premium πρόσβαση στις ακόλουθες προηγμένες λειτουργίες:"
+   },
+   "premiumFreePurchase": {
+      "message": "Ένας ευκολότερος, ασφαλέστερος τρόπος διαχείρισης των κωδικών σας"
+   },
+   "premiumFreePurchaseAlert": {
+      "message": "Ξεκινήστε την έκδοση Premium σήμερα και διατηρήστε αυτές τις προηγμένες λειτουργίες:"
+   },
+   "premiumFreePurchaseAlert_New": {
+      "message": "εκινήστε το Premium σήμερα και διατηρήστε αυτές τις προηγμένες λειτουργίες:"
+   },
+   "premiumFreePurchase_New": {
+      "message": "Ένας ευκολότερος, ασφαλέστερος τρόπος διαχείρισης των κωδικών πρόσβασής σας"
+   },
+   "premiumPurchase": {
+      "message": "Έχετε 30 ημέρες Premium!"
+   },
+   "premiumPurchaseAlert": {
+      "message": "Τώρα απολαύστε τις παρακάτω προηγμένες λειτουργίες:"
+   },
+   "premiun": {
+      "message": "PREMIUM"
+   },
+   "purchase_Dark_Web_Monitor": {
+      "message": "Dark Web Monitoring & Alerts"
+   },
+   "purchase_Password_Health": {
+      "message": "Έλεγχος υγείας κωδικού"
+   },
+   "purchase_Password_Health_Check": {
+      "message": "Password Health Check"
+   },
+   "purchase_Unlimited_Devices": {
+      "message": "Sync Across Unlimited Devices"
+   },
+   "questionMark": {
+      "message": ";"
+   },
+   "recovery_code_copied": {
+      "message": "Ο κωδικός ανάκτησης αντιγράφηκε"
+   },
+   "recycle_Bin": {
+      "message": "Κάδος Ανακύκλωσης"
+   },
+   "refresh": {
+      "message": "Ανανέωση"
+   },
+   "rememberMeOnThisDevice": {
+      "message": "Να με θυμάσαι σε αυτήν τη συσκευή"
+   },
+   "remindExpirationDate": {
+      "message": "Υπενθύμιση 2 μήνες πριν την ημερομηνία λήξης"
+   },
+   "remind_me_after_days": {
+      "message": "Θύμισέ μου μετά από 7 μέρες"
+   },
+   "remind_me_tomorrow": {
+      "message": "Θύμισέ μου αύριο"
+   },
+   "remind_password": {
+      "message": "Υπενθύμισέ μου να αλλάξω τον κωδικό πρόσβασης μετά από 90 ημέρες"
+   },
+   "remove": {
+      "message": "Αφαίρεση"
+   },
+   "remove_from_favorites": {
+      "message": "Αφαίρεση από τα Αγαπημένα"
+   },
+   "remove_from_favorites_succ": {
+      "message": "Αφαιρέθηκε από τα Αγαπημένα"
+   },
+   "resend": {
+      "message": "Ξαναστείλετε"
+   },
+   "reset": {
+      "message": "Επαναφορά"
+   },
+   "reset_code_desc": {
+      "message": "Εισαγάγετε τον κωδικό ανάκτησής σας για να επαναφέρετε τον κύριο κωδικό πρόσβασής σας. Ο κωδικός ανάκτησής σας αποθηκεύτηκε ως αρχείο PDF."
+   },
+   "reset_code_title": {
+      "message": "Εισαγάγετε τον κωδικό ανάκτησης"
+   },
+   "reset_desc": {
+      "message": "Εισαγάγετε την επαληθευμένη διεύθυνση email σας για επαναφορά του κωδικού πρόσβασης"
+   },
+   "reset_email_place": {
+      "message": "Εισαγάγετε την επαληθευμένη διεύθυνση email σας"
+   },
+   "reset_master_title": {
+      "message": "Επαναφορά κύριου κωδικού πρόσβασης"
+   },
+   "reset_recovery_code": {
+      "message": "Επαναφορά κωδικού ανάκτησης"
+   },
+   "reset_success_desc": {
+      "message": "Έγινε επαναφορά του κύριου κωδικού πρόσβασής σας. Συνδεθείτε με τον νέο κύριο κωδικό πρόσβασης."
+   },
+   "reset_success_title": {
+      "message": "Επιτυχία!"
+   },
+   "reset_title": {
+      "message": "Επαναφέρετε τον κωδικό πρόσβασης"
+   },
+   "restore": {
+      "message": "Επαναφορά"
+   },
+   "restoreSuccessfully": {
+      "message": "Έγινε επαναφορά με επιτυχία."
+   },
+   "retry": {
+      "message": "Προσπαθήστε ξανά"
+   },
+   "save": {
+      "message": "Αποθήκευση"
+   },
+   "saveIn_DPM": {
+      "message": "Αποθήκευση στο DualSafe Password Manager"
+   },
+   "save_as_pdf": {
+      "message": "Αποθήκευση ως PDF"
+   },
+   "save_code_desc_login": {
+      "message": "Αποθηκεύστε τον κωδικό ανάκτησης ως PDF."
+   },
+   "save_code_desc_one": {
+      "message": "Αποθηκεύστε τον κωδικό ανάκτησης ως PDF και εκτυπώστε τον για να τον διατηρήσετε ασφαλή."
+   },
+   "save_code_desc_options": {
+      "message": "Ο προηγούμενος κωδικός ανάκτησής σας δεν είναι έγκυρος από εδώ και στο εξής. Αποθηκεύστε τον νέο σας κωδικό ανάκτησης ως PDF και εκτυπώστε τον για να τον διατηρήσετε ασφαλή."
+   },
+   "save_code_desc_two": {
+      "message": "Σας επιτρέπει να ανακτήσετε την πρόσβαση στο DualSafe Password Manager, εάν ξεχάσατε τον κύριο κωδικό πρόσβασής σας."
+   },
+   "save_code_new_title": {
+      "message": "Αποθηκεύστε τον νέο σας κωδικό ανάκτησης"
+   },
+   "save_code_tips": {
+      "message": "\u003Cb>Σημαντικό:\u003C/b> Ο κωδικός ανάκτησης είναι ο μόνος τρόπος για να σας βοηθήσει να αποκτήσετε ξανά πρόσβαση στο DualSafe Password Manager εάν ξεχάσετε τον κύριο κωδικό πρόσβασης."
+   },
+   "save_code_title": {
+      "message": "Αποθήκευση κωδικού ανάκτησης"
+   },
+   "save_totp": {
+      "message": "Αποθήκευση κωδικού πρόσβασης μίας χρήσης; "
+   },
+   "savedFailedData": {
+      "message": "Τα πιο πρόσφατα δεδομένα συγχρονίστηκαν από τον διακομιστή."
+   },
+   "savedFailedSynced": {
+      "message": "Η αποθήκευση απέτυχε! Τα πιο πρόσφατα δεδομένα συγχρονίστηκαν από τον διακομιστή."
+   },
+   "savedSuccessfully": {
+      "message": "Αποθηκεύτηκε επιτυχώς."
+   },
+   "scan_web_page_QRCode": {
+      "message": "Σάρωση κώδικα QR ιστοσελίδας"
+   },
+   "search": {
+      "message": "Αναζήτηση"
+   },
+   "secure": {
+      "message": "Ασφαλής"
+   },
+   "secureNotes": {
+      "message": "Ασφαλείς σημειώσεις"
+   },
+   "secure_notes_placeholder": {
+      "message": "Εισαγάγετε τις σημαντικές σημειώσεις σας εδώ (Μέγιστο όριο: %s χαρακτήρες)"
+   },
+   "securityCode": {
+      "message": "Κωδικός ασφαλείας"
+   },
+   "security_code_copied": {
+      "message": "Ο κωδικός ασφαλείας αντιγράφηκε"
+   },
+   "send": {
+      "message": "Αποστολή"
+   },
+   "send_email_hint": {
+      "message": "Αποστολή στο email σας"
+   },
+   "sending_desc": {
+      "message": "Αποστολή κωδικού ανάκτησης στη διεύθυνση ηλεκτρονικού ταχυδρομείου σας."
+   },
+   "sending_title": {
+      "message": "Αποστολή"
+   },
+   "sent_succ_desc": {
+      "message": "Ο κωδικός ανάκτησης έχει σταλεί στη διεύθυνση ηλεκτρονικού ταχυδρομείου %s. Εάν δεν βρίσκεται στα Εισερχόμενά σας, ελέγξτε τα Ανεπιθύμητα. Ή μπορείτε να \u003Cbutton class=\"resndbtn\">resend\u003C/button>."
+   },
+   "sent_succ_title": {
+      "message": "Στάλθηκε με επιτυχία!"
+   },
+   "set_master_password": {
+      "message": "Ορισμός κύριου κωδικού πρόσβασης"
+   },
+   "set_master_password_tips": {
+      "message": "Για την ασφάλεια του λογαριασμού σας, προτείνεται να ορίσετε έναν κύριο κωδικό πρόσβασης για το DualSafe Password Manger."
+   },
+   "set_master_tips": {
+      "message": "\u003Cb>Σημαντικό:\u003C/b> Ο κύριος κωδικός πρόσβασης θα είναι ο μόνος έγκυρος κωδικός πρόσβασης για πρόσβαση στο DualSafe Password Manager."
+   },
+   "set_master_title": {
+      "message": "Ορίστε τον κύριο κωδικό πρόσβασης"
+   },
+   "set_success_desc": {
+      "message": "Ο κύριος κωδικός πρόσβασης ορίστηκε και ο κωδικός ανάκτησης αποθηκεύτηκε με επιτυχία. Συνδεθείτε με τον κύριο κωδικό πρόσβασής σας."
+   },
+   "settings": {
+      "message": "Ρυθμίσεις"
+   },
+   "settings_Auto_Fill": {
+      "message": "Αυτόματη συμπλήρωση"
+   },
+   "settings_Auto_Fill_Dec": {
+      "message": "Συμπληρώστε αυτόματα τις αποθηκευμένες συνδέσεις, τα στοιχεία πληρωμής κ.λπ."
+   },
+   "settings_Auto_Fill_Password": {
+      "message": "Αυτόματη συμπλήρωση κωδικού πρόσβασης"
+   },
+   "settings_Auto_Fill_Password_Dec": {
+      "message": "Αυτόματη συμπλήρωση λογαριασμών και κωδικών πρόσβασης όταν συνδέεστε στους αποθηκευμένους ιστότοπούς σας."
+   },
+   "settings_Auto_Lock": {
+      "message": "Αυτόματο κλείδωμα"
+   },
+   "settings_Auto_Lock_Dec": {
+      "message": "Κλείδωμα του DualSafe Password Manager αυτόματα στην καθορισμένη συχνότητα"
+   },
+   "settings_Auto_Save": {
+      "message": "Αυτόματη αποθήκευση"
+   },
+   "settings_Auto_Save_Dec": {
+      "message": "Αποθηκεύστε αυτόματα τα εισαχθέντα ονόματα χρήστη και κωδικούς πρόσβασης"
+   },
+   "settings_Autofill_and_Autosave": {
+      "message": "Αυτόματη συμπλήρωση και αυτόματη αποθήκευση"
+   },
+   "settings_Clear_Clipboard": {
+      "message": "Καθαρισμός Πρόχειρου"
+   },
+   "settings_Clear_Clipboard_Dec": {
+      "message": "Αυτόματη διαγραφή του Πρόχειρου την καθορισμένη ώρα μετά την αντιγραφή ενός κωδικού πρόσβασης"
+   },
+   "settings_Fill_Payments": {
+      "message": "Συμπληρώστε πληροφορίες πληρωμών"
+   },
+   "settings_Fill_Payments_Desc": {
+      "message": "Σας βοηθά να συμπληρώσετε τα αποθηκευμένα στοιχεία πληρωμής, όπως τον αριθμό της κάρτας, τον κάτοχο της κάρτας και την ημερομηνία λήξης, με ένα μόνο κλικ"
+   },
+   "settings_Fill_Personal_Infol": {
+      "message": "Συμπληρώστε προσωπικά στοιχεία"
+   },
+   "settings_Fill_Personal_Infol_Desc": {
+      "message": "Να σας βοηθήσουμε να συμπληρώσετε τα αποθηκευμένα προσωπικά σας στοιχεία, όπως email, αριθμό τηλεφώνου και διεύθυνση, με ένα μόνο κλικ"
+   },
+   "settings_General": {
+      "message": "Γενικά"
+   },
+   "settings_General_Dec": {
+      "message": "Ορίστε το DualSafe Password Manager ως τον προεπιλεγμένο διαχειριστή κωδικών πρόσβασης"
+   },
+   "settings_Limited_time_free": {
+      "message": "(Προσφορά περιορισμένου χρόνου)"
+   },
+   "settings_Security_Options": {
+      "message": "Επιλογές ασφαλείας"
+   },
+   "settings_Show_Icon": {
+      "message": "Εμφάνιση εικονιδίου"
+   },
+   "settings_Show_Icon_Dec": {
+      "message": "Εμφανίστε το εικονίδιο του DualSafe Password Manager σε όλα τα πλαίσια εισαγωγής κωδικού πρόσβασης για να αποθηκεύσετε τις συνδέσεις σας με ένα μόνο κλικ"
+   },
+   "sevenDays": {
+      "message": "7 ημέρες"
+   },
+   "showCode": {
+      "message": "Show security code"
+   },
+   "showPass": {
+      "message": "Εμφάνιση κωδικού"
+   },
+   "signIn": {
+      "message": "Σύνδεση"
+   },
+   "signInAutoNow": {
+      "message": "Συνδεθείτε τώρα για να συμπληρώσετε αυτόματα τα στοιχεία σύνδεσης, τα προσωπικά στοιχεία ή τα στοιχεία πληρωμής σας."
+   },
+   "signInLocked": {
+      "message": "Ο λογαριασμός σας έχει κλειδωθεί. Δοκιμάστε ξανά σε 5 λεπτά."
+   },
+   "signInNow": {
+      "message": "Συνδεθείτε τώρα για να συμπληρώσετε αυτόματα τα στοιχεία σύνδεσης για αυτόν τον ιστότοπο."
+   },
+   "signInSave": {
+      "message": "Είσοδος & Αποθήκευση"
+   },
+   "signInTimeout": {
+      "message": "Λήξη χρονικού ορίου σύνδεσης! Ελέγξτε το δίκτυό σας και δοκιμάστε ξανά!"
+   },
+   "signIn_DPM": {
+      "message": "Συνδεθείτε στο DualSafe Password Manager"
+   },
+   "signIn_Desc": {
+      "message": "Συνδεθείτε τώρα για να αποθηκεύσετε τα στοιχεία σύνδεσης του \u003Ca class=\"btn-link btn-name\">\u003C/a> και να συμπληρώνονται αυτόματα στο μέλλον."
+   },
+   "signOut": {
+      "message": "Αποσύνδεση"
+   },
+   "sign_in_again_desc": {
+      "message": "Δεν έχετε ορίσει ακόμα κωδικό πρόσβασης καθώς συνδεθήκατε με το Google / Facebook στο παρελθόν. Μπορείτε να κάνετε κλικ στο OK για να συνδεθείτε με το Google / Facebook."
+   },
+   "sign_in_now": {
+      "message": "Συνδεθείτε τώρα"
+   },
+   "sign_in_with": {
+      "message": "Ή συνδεθείτε με"
+   },
+   "sign_in_with_app": {
+      "message": "Συνδεθείτε με την εφαρμογή για υπολογιστές"
+   },
+   "sign_in_with_facebook": {
+      "message": "Συνδεθείτε με το Facebook"
+   },
+   "sign_in_with_google": {
+      "message": "Συνδεθείτε με το Google"
+   },
+   "sixtyDays": {
+      "message": "60 ημέρες"
+   },
+   "skip_for_now": {
+      "message": "Παράλειψη προς το παρόν"
+   },
+   "sort_by": {
+      "message": "Ταξινόμηση κατά"
+   },
+   "sort_date_created": {
+      "message": "Ημερομηνία Δημιουργίας"
+   },
+   "sort_date_modified": {
+      "message": "Ημερομηνία Τροποποίησης"
+   },
+   "sort_newest_first": {
+      "message": "Πρώτα τα νεότερα"
+   },
+   "sort_oldest_first": {
+      "message": "Πρώτα τα παλαιότερα"
+   },
+   "sort_show_az": {
+      "message": "A-Ω"
+   },
+   "sort_show_favorites": {
+      "message": "Εμφάνιση Αγαπημένων"
+   },
+   "sort_show_title_az": {
+      "message": "Τίτλος: Α έως Ω"
+   },
+   "sort_show_title_za": {
+      "message": "Τίτλος: Ω έως Α"
+   },
+   "sort_show_za": {
+      "message": "Ω-A"
+   },
+   "sort_title": {
+      "message": "Τίτλος"
+   },
+   "state": {
+      "message": "Νομός"
+   },
+   "strong": {
+      "message": "Δυνατός"
+   },
+   "success_desc": {
+      "message": "Κάντε κλικ στο εικονίδιο της επέκτασης \u003Cspan class=\"succ-icon\">\u003C/span> και καρφιτσώστε το DualSafe Password Manager στη γραμμή εργαλείων. Στη συνέχεια, μπορείτε να κάνετε κλικ \u003Cspan class=\"succ-icon dpm\">\u003C/span> για να χρησιμοποιήσετε το DualSafe Password Manager ανά πάσα στιγμή."
+   },
+   "success_title": {
+      "message": "Συγχαρητήρια 🎉🎉🎉 \u003Cbr>Το DualSafe Password Manager είναι έτοιμο για χρήση!"
+   },
+   "suggestion": {
+      "message": "Πρόταση"
+   },
+   "suggestion_tips": {
+      "message": "Εδώ εμφανίζονται τα αποθηκευμένα δεδομένα σύνδεσης για τον τρέχοντα ανοιχτό ιστότοπο."
+   },
+   "symbols": {
+      "message": "Σύμβολα (%s)"
+   },
+   "systemLocks": {
+      "message": "Κλείδωμα συστήματος"
+   },
+   "tags": {
+      "message": "Ετικέτες"
+   },
+   "tenMinutes": {
+      "message": "10 λεπτά"
+   },
+   "thirtyDays": {
+      "message": "30 ημέρες"
+   },
+   "thirtyMinutes": {
+      "message": "30 λεπτά"
+   },
+   "title": {
+      "message": "Τίτλος"
+   },
+   "title_placeholder": {
+      "message": "Εισαγάγετε έναν τίτλο"
+   },
+   "tools": {
+      "message": "Εργαλεία"
+   },
+   "tools_Dark_Web_Monitor": {
+      "message": "Παρακολούθηση Dark Web"
+   },
+   "tools_Dark_Web_Monitor_Dec": {
+      "message": "Σας βοηθά να παρακολουθείτε διαρροές ευαίσθητων δεδομένων στο Dark Web"
+   },
+   "tools_Import_Export": {
+      "message": "Εισαγωγή και Εξαγωγή"
+   },
+   "tools_Import_Export_Dec": {
+      "message": "Εισαγάγετε δεδομένα από τα προγράμματα περιήγησής σας ή άλλα εργαλεία κωδικών πρόσβασης και εξάγετε τα αποθηκευμένα δεδομένα σας σε ένα αρχείο CSV με ένα μόνο κλικ"
+   },
+   "tools_Password_Health": {
+      "message": "Υγεία κωδικού"
+   },
+   "tools_Password_Health_Dec": {
+      "message": "Σας βοηθά να ελέγξετε ευάλωτους κωδικούς πρόσβασης, όπως αδύναμους, επαναχρησιμοποιούμενους ή παραβιασμένους"
+   },
+   "tools_Unlimited_Passwords": {
+      "message": "Απεριόριστοι κωδικοί"
+   },
+   "tools_Unlimited_Passwords_Only": {
+      "message": "(Μόνο 50 στο δωρεάν πρόγραμμα)"
+   },
+   "twoMinutes": {
+      "message": "2 λεπτά"
+   },
+   "type": {
+      "message": "Τύπος"
+   },
+   "unionpay": {
+      "message": "UnionPay"
+   },
+   "unknown": {
+      "message": "Άγνωστο"
+   },
+   "unlock": {
+      "message": "Ξεκλείδωμα"
+   },
+   "unlockAutoNow": {
+      "message": "Ξεκλείδωμα τώρα για αυτόματη συμπλήρωση των στοιχείων σύνδεσης, των προσωπικών στοιχείων ή των στοιχείων πληρωμής σας."
+   },
+   "unlockDPM": {
+      "message": "Ξεκλειδώστε το DualSafe Password Manager"
+   },
+   "unlockDPM_Desc": {
+      "message": "Ξεκλειδώστε τώρα για να αποθηκεύσετε τις συνδέσεις του \u003Ca class=\"btn-link btn-name\">\u003C/a> και να συμπληρώνονται αυτόματα στο μέλλον."
+   },
+   "unlockNow": {
+      "message": "Ξεκλειδώστε τώρα για αυτόματη συμπλήρωση συνδέσεων για αυτόν τον ιστότοπο."
+   },
+   "unlockSave": {
+      "message": "Ξεκλείδωμα & Αποθήκευση"
+   },
+   "unlock_now": {
+      "message": "Ξεκλείδωσε τώρα"
+   },
+   "until_sign_out": {
+      "message": "Μέχρι να αποσυνδεθώ"
+   },
+   "update": {
+      "message": "Ενημέρωση"
+   },
+   "updateFailed": {
+      "message": "Η ενημέρωση απέτυχε."
+   },
+   "updateLogins": {
+      "message": "Ενημέρωση συνδέσεων"
+   },
+   "updateSuccessfully": {
+      "message": "Ενημερώθηκε με επιτυχία."
+   },
+   "upgradeBtn": {
+      "message": "Αναβάθμιση"
+   },
+   "upgradeNowBtn": {
+      "message": "Αναβάθμιση τώρα"
+   },
+   "upper_case": {
+      "message": "Κεφαλαία (A-Z)"
+   },
+   "url": {
+      "message": "url"
+   },
+   "url_copied": {
+      "message": "Η ιστοσελίδα αντιγράφηκε"
+   },
+   "use": {
+      "message": "Χρήση"
+   },
+   "use_generator_password": {
+      "message": "Χρήση κωδικού"
+   },
+   "user_manual": {
+      "message": "Εγχειρίδιο χρήστη"
+   },
+   "username": {
+      "message": "Όνομα χρήστη"
+   },
+   "username_copied": {
+      "message": "Το όνομα χρήστη αντιγράφηκε"
+   },
+   "username_placeholder": {
+      "message": "Email / Όνομα χρήστη / Αριθμός τηλεφώνου"
+   },
+   "view": {
+      "message": "Προβολή"
+   },
+   "visa": {
+      "message": "Visa"
+   },
+   "visaelectron": {
+      "message": "Visa Electron"
+   },
+   "weak": {
+      "message": "Αδύναμος"
+   },
+   "web_password_sync": {
+      "message": "Σημείωση: Φροντίστε να ενημερώσετε τον κωδικό πρόσβασης για τον ιστότοπο"
+   },
+   "welcomeTo": {
+      "message": "Καλώς ήρθες στο"
+   },
+   "year": {
+      "message": "Έτος"
+   },
+   "yes": {
+      "message": "Ναι"
+   },
+   "zip": {
+      "message": "Τ.Κ."
+   },
+   "zipPostalCode": {
+      "message": "Τ.Κ."
+   }
+}

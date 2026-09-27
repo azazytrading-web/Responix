@@ -1,0 +1,1 @@
+html[data-bm-cid=mixboard] #gb,html[data-bm-cid=mixboard] div[data-testid=sitewide-banner]{display:none!important}html[data-bm-cid=mixboard] div:has(>div:first-child>h1.font-display.font-medium.text-black.leading-7:first-child){display:none!important}html[data-bm-cid=mixboard] h1{display:none!important}

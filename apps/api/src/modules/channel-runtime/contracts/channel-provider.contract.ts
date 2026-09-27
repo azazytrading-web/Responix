@@ -11,6 +11,7 @@ export interface ChannelProviderConnection {
   readonly configuration: Readonly<Record<string, unknown>>;
   readonly credentials: ChannelCredentialAccessor;
   readonly transport: ChannelTransport;
+  readonly createdById?: string;
 }
 
 export interface ChannelSendResult {
@@ -33,4 +34,8 @@ export interface ChannelProviderAdapter {
   send(connection: ChannelProviderConnection, payload: Readonly<Record<string, unknown>>, signal: AbortSignal): Promise<ChannelSendResult>;
   uploadMedia(connection: ChannelProviderConnection, input: { content: Buffer; mimeType: string; fileName?: string }, signal: AbortSignal): Promise<{ providerMediaId: string }>;
   downloadMedia(connection: ChannelProviderConnection, providerMediaId: string, signal: AbortSignal): Promise<{ content: Buffer; mimeType: string; checksum: string }>;
+  diagnostics?(connection: ChannelProviderConnection): Promise<Readonly<Record<string, unknown>>>;
+  reconnect?(connection: ChannelProviderConnection): Promise<Readonly<Record<string, unknown>>>;
+  disconnect?(connection: ChannelProviderConnection): Promise<Readonly<Record<string, unknown>>>;
+  newPairing?(connection: ChannelProviderConnection): Promise<Readonly<Record<string, unknown>>>;
 }

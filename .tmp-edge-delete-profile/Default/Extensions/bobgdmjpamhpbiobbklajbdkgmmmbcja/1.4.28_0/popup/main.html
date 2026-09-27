@@ -1,0 +1,1361 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>DualSafe Password Manager</title>
+	<link rel="stylesheet" href="../css/bootstrap.min.css">
+	<link rel="stylesheet" href="../css/toastr.min.css">
+	<link rel="stylesheet" href="../css/tooltipster.bundle.min.css">
+	<link rel="stylesheet" href="../css/jquery.contextMenu.min.css">
+	<link rel="stylesheet" href="../css/jquery-editable-select.min.css">
+	<link rel="stylesheet" href="../css/tagify.css">
+	<link rel="stylesheet" href="../css/passwordmanager.css">
+</head>
+
+<body id="ipsBody" style="background: #f4f5f8;">
+	<div id="ipsContainer" class="ips-default app-container">
+		<div class="app-head">
+			<div class="search-box">
+				<div class="icon-css search-icon"></div>
+				<input id="headerSearchInput" class="search-input search" type="text" spellcheck="false"
+					spellcheck="false" placeholder="Search" value="">
+				<button id="searchClose" type="button" class="search-close"></button>
+			</div>
+			<div class="head-right">
+				<button id="toolButton" class="icon-css tool-icon" type="button" data-bs-toggle="offcanvas"
+					data-bs-target="#offcanvasTool" aria-controls="offcanvasTool" title="Tools"></button>
+				<button id="optionsButton" class="icon-css head-user-icon avatar-name" type="button"
+					data-bs-toggle="offcanvas" data-bs-target="#offcanvasOptions"
+					aria-controls="offcanvasOptions"></button>
+			</div>
+		</div>
+
+		<div id="ipsContacts" class="contentWrapper">
+			<div class="listHeaderWrapper">
+				<div class="list-cont">
+					<button id="allitemButton" class="allitem dropdownTitle smallTitle dropdown"
+						data-bs-toggle="dropdown" aria-expanded="false" disabled>
+						<div class="allitem-icon">
+							<img src="./images/icon_home_all.svg" alt="">
+						</div>
+						<div class="allitem-desc">
+							<span class="allitemTitleText" data-properties="all_Item">All Items</span>&nbsp;<em
+								class="allitem-num hidden">()</em>
+						</div>
+						<i class="svg-css allitem-svg"></i>
+					</button>
+					<div id="options-tab" class="allitemListInner dropdown-menu" aria-labelledby="allitemButton">
+						<div class="options-tab-inner" style="min-width: 200px;">
+							<div class="type-main">
+								<div class="tab-title type-title show" data-anchor="type">
+									<i class="t-icon"></i>
+									<span class="t-text" data-properties="type">TYPE</span>
+								</div>
+								<div class="tab-container type-container show" data-anchor="type">
+									<div controls="allitem-panel" class="options-item allitem" data-type="allitem-panel"
+										data-num="0">
+										<div class="allitem-icon">
+											<img src="./images/icon_home_all.svg" alt="">
+										</div>
+										<div class="allitem-desc">
+											<span class="allitemTitleText" data-properties="all_Item">All Items</span>
+											<em class="allitem-num hidden">()</em>
+										</div>
+										<div class="allitem-hook">
+											<i class="hook-icon"></i>
+										</div>
+									</div>
+									<div id="suggestionAllItem" controls="suggestion-panel" data-type="suggestion-panel"
+										controls-button="Login" class="options-item suggestion">
+										<div class="allitem-icon">
+											<img src="./images/icon_home_suggestion.svg" alt="">
+										</div>
+										<div class="allitem-desc">
+											<span class="allitemTitleText"
+												data-properties="suggestion">Suggestion</span>
+											<em class="allitem-num hidden"></em>
+										</div>
+										<div class="allitem-hook">
+											<i class="hook-icon"></i>
+										</div>
+									</div>
+									<div id="favoritesAllItem" controls="favorites-panel" data-type="favorites-panel"
+										controls-button="Login" class="options-item favorites" style="display: none;">
+										<div class="allitem-icon">
+											<img src="./images/icon_home_favoties.svg" alt="">
+										</div>
+										<div class="allitem-desc">
+											<span class="allitemTitleText" data-properties="favoties">Favoties</span>
+											<em class="allitem-num hidden"></em>
+										</div>
+										<div class="allitem-hook">
+											<i class="hook-icon"></i>
+										</div>
+									</div>
+									<div controls="recycle-bin-panel" data-type="recycle-bin-panel"
+										class="options-item recycle">
+										<div class="allitem-icon">
+											<img src="./images/icon_home_trash.svg" alt="">
+										</div>
+										<div class="allitem-desc">
+											<span class="allitemTitleText" data-properties="recycle_Bin">Recycle
+												Bin</span>
+											<em class="allitem-num hidden"></em>
+										</div>
+										<div class="allitem-hook">
+											<i class="hook-icon"></i>
+										</div>
+									</div>
+									<div class="options-item item-line">
+										<div class="allitem-icon"></div>
+										<div class="allitem-desc"></div>
+									</div>
+									<div controls="login-panel" data-type="login-panel" controls-button="Login"
+										class="options-item login">
+										<div class="allitem-icon">
+											<img src="./images/icon_home_login.svg" alt="">
+										</div>
+										<div class="allitem-desc">
+											<span class="allitemTitleText" data-properties="logins">Logins</span>
+											<em class="allitem-num hidden"></em>
+										</div>
+										<div class="allitem-hook">
+											<i class="hook-icon"></i>
+										</div>
+									</div>
+									<div controls="security-notes-panel" data-type="security-notes-panel"
+										controls-button="Notes" class="options-item security">
+										<div class="allitem-icon">
+											<img src="./images/icon_home_securitynotes.svg" alt="">
+										</div>
+										<div class="allitem-desc">
+											<span class="allitemTitleText" data-properties="secureNotes">Secure
+												Notes</span>
+											<em class="allitem-num hidden"></em>
+										</div>
+										<div class="allitem-hook">
+											<i class="hook-icon"></i>
+										</div>
+									</div>
+									<div controls="payments-panel" data-type="payments-panel" controls-button="Payments"
+										class="options-item payments">
+										<div class="allitem-icon">
+											<img src="./images/icon_home_payments.svg" alt="">
+										</div>
+										<div class="allitem-desc">
+											<span class="allitemTitleText" data-properties="payment_Info">Payment
+												Info</span>
+											<em class="allitem-num hidden"></em>
+										</div>
+										<div class="allitem-hook">
+											<i class="hook-icon"></i>
+										</div>
+									</div>
+									<div controls="persionl-info-panel" data-type="persionl-info-panel"
+										controls-button="Personal Info" class="options-item persionl">
+										<div class="allitem-icon">
+											<img src="./images/icon_home_persionl_info.svg" alt="">
+										</div>
+										<div class="allitem-desc">
+											<span class="allitemTitleText" data-properties="personal_Info">Personal
+												Info</span>
+											<em class="allitem-num hidden"></em>
+										</div>
+										<div class="allitem-hook">
+											<i class="hook-icon"></i>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="tags-main">
+								<div class="tab-title tags-title" data-anchor="tags">
+									<i class="t-icon"></i>
+									<span class="t-text" data-properties="tags">Tags</span>
+								</div>
+								<div class="tab-container tags-container" data-anchor="tags"></div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div id="addListButton" controls="allitem-panel" controls-id="0" data-controls="allitem-panel">
+					<div id="addListButtonDropdown" class="dropdown">
+						<button class="button-css button-blue  button-add" type="button" id="addPasswordThumbnail"
+							data-bs-toggle="dropdown" aria-expanded="false" disabled>
+							<i class="svg-css svg-add"></i>
+							<span class="add-text" data-properties="add_items">Add Items</span>
+						</button>
+						<div class="dropdown-menu dropdown-menu-add" aria-labelledby="addPasswordThumbnail">
+							<button class="dropdown-item add-type" type="button" data-controls="login-panel"
+								controls="login-panel" controls-id="1" data-bs-toggle="offcanvas"
+								data-bs-target="#offcanvasAdd" aria-controls="offcanvasAdd">
+								<div class="allitem-icon">
+									<img src="./images/icon_home_login.svg" alt="">
+								</div>
+								<span class="allitemTitleText" data-properties="logins">Logins</span>
+							</button>
+							<button class="dropdown-item add-type" type="button" data-controls="security-notes-panel"
+								controls="security-notes-panel" controls-id="2" data-bs-toggle="offcanvas"
+								data-bs-target="#offcanvasAdd" aria-controls="offcanvasAdd">
+								<div class="allitem-icon">
+									<img src="./images/icon_home_securitynotes.svg" alt="">
+								</div>
+								<span class="allitemTitleText" data-properties="secureNotes">Secure Notes</span>
+							</button>
+							<button class="dropdown-item add-type" type="button" data-controls="payments-panel"
+								controls="payments-panel" controls-id="3" data-bs-toggle="offcanvas"
+								data-bs-target="#offcanvasAdd" aria-controls="offcanvasAdd">
+								<div class="allitem-icon">
+									<img src="./images/icon_home_payments.svg" alt="">
+								</div>
+								<span class="allitemTitleText" data-properties="payment_Info">Payment Info</span>
+							</button>
+							<button class="dropdown-item add-type" type="button" data-controls="persionl-info-panel"
+								controls="persionl-info-panel" controls-id="4" data-bs-toggle="offcanvas"
+								data-bs-target="#offcanvasAdd" aria-controls="offcanvasAdd">
+								<div class="allitem-icon">
+									<img src="./images/icon_home_persionl_info.svg" alt="">
+								</div>
+								<span class="allitemTitleText" data-properties="personal_Info">Personal Info</span>
+							</button>
+						</div>
+					</div>
+					<button id="addListThumbnail" class="button-css button-blue  button-add dropdown add-type hidden"
+						type="button" aria-controls="offcanvasAdd" disabled>
+						<span class="svg-css svg-add"></span>
+						<span class="add-text" data-properties="add_items">Add Items</span>
+					</button>
+					<button id="deleteAllData" class="button-css button-gray delall-btn" type="button"
+						style="display:none;" data-bs-toggle="modal" data-bs-target="#clearAllRecPopovers">
+						<i class="svg-delete"></i>
+						<span class="del-text" data-properties="delete_all">Delete All</span>
+					</button>
+				</div>
+			</div>
+			<div class="list-temporary hidden"></div>
+			<div class="listWrapper">
+				<div id="allitem-panel" class="listPanel fade hidden"></div>
+				<div id="suggestion-panel" class="listPanel fade hidden"></div>
+				<div id="favorites-panel" class="listPanel fade hidden"></div>
+				<div id="login-panel" class="listPanel fade hidden"></div>
+				<div id="security-notes-panel" class="listPanel fade hidden"></div>
+				<div id="payments-panel" class="listPanel fade hidden"></div>
+				<div id="persionl-info-panel" class="listPanel fade hidden"></div>
+				<div id="recycle-bin-panel" class="listPanel fade hidden"></div>
+				<div id="search-allitem-panel" class="listPanel fade hidden"></div>
+				<div id="search-recycle-panel" class="listPanel fade hidden"></div>
+				<div id="tags-panel" class="listPanel fade hidden"></div>
+				<div id="no-container" class="no-container">
+					<div class="no-container-inner">
+						<img src="./images/icon_search_empty.png" alt="">
+						<p class="no-tips" data-properties="noItemsAddRecycleItem"></p>
+					</div>
+				</div>
+				<div class="sortbox" style="top: 8px;">
+					<button id="sortListButton" type="button" class="action-button sort-button"
+						data-bs-toggle="dropdown" aria-expanded="false" title="Sort by" data-hint-properties="sort_by"
+						disabled>
+						<i class="sort-icon"></i>
+					</button>
+					<div class="sortmenu dropdown-menu" aria-labelledby="sortListButton">
+						<div class="sort-item" data-sort="Title">
+							<input spellcheck="false" autocomplete="off" class="sort-radio" name="title" type="radio"
+								value="Title" id="sortTitle">
+							<label class="sort-desc" for="sortTitle" data-properties="sort_title">Title</label>
+						</div>
+						<div class="sort-item" data-sort="CreateDate">
+							<input spellcheck="false" autocomplete="off" class="sort-radio" name="title" type="radio"
+								value="CreateDate" id="sortCreated">
+							<label class="sort-desc" for="sortCreated" data-properties="sort_date_created">Date
+								Created</label>
+						</div>
+						<div class="sort-item" data-sort="MidDate">
+							<input spellcheck="false" autocomplete="off" class="sort-radio" name="title" type="radio"
+								value="MidDate" id="sortModified">
+							<label class="sort-desc" for="sortModified" data-properties="sort_date_modified">Date
+								Modified</label>
+						</div>
+						<div class="sort-item-line"></div>
+						<div class="sort-item" data-sort="Newest">
+							<input spellcheck="false" autocomplete="off" class="sort-radio" name="sortdate" type="radio"
+								value="Newest" id="sortNewest">
+							<label class="sort-desc" for="sortNewest" data-properties="sort_newest_first">Newest
+								First</label>
+						</div>
+						<div class="sort-item" data-sort="Oldest">
+							<input spellcheck="false" autocomplete="off" class="sort-radio" name="sortdate" type="radio"
+								value="Oldest" id="sortOldest">
+							<label class="sort-desc" for="sortOldest" data-properties="sort_oldest_first">Oldest
+								First</label>
+						</div>
+						<div class="sort-item hidden" data-sort="AZ">
+							<input spellcheck="false" autocomplete="off" class="sort-radio" name="sortletter"
+								type="radio" value="AZ" id="sortAZ">
+							<label class="sort-desc" for="sortAZ" data-properties="sort_show_az">A to Z</label>
+						</div>
+						<div class="sort-item hidden" data-sort="ZA">
+							<input spellcheck="false" autocomplete="off" class="sort-radio" name="sortletter"
+								type="radio" value="ZA" id="sortZA">
+							<label class="sort-desc" for="sortZA" data-properties="sort_show_za">Z to A</label>
+						</div>
+						<div class="sort-item-line" data-sort="line"></div>
+						<div class="sort-item" data-sort="showFav">
+							<input spellcheck="false" autocomplete="off" class="sort-radio" name="favorites"
+								type="checkbox" value="Favorites" id="sortFavorites" checked>
+							<label class="sort-desc" for="sortFavorites" data-properties="sort_show_favorites">Show
+								Favorites</label>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div id="dpmLoading" class="dpm-loading" style="display: none;">
+		<img class="loading-image" src="../skin/icons/app_icon_64.png" width="64" height="64"
+			alt="DualSafe Password Manager">
+		<h2 class="load-title" data-properties="appName"></h2>
+		<div class="loading-content">
+			<img class="data-icon loading" src="./images/loading_black.png" width="32" height="32" alt="loading">
+			<p class="loading-desc" data-properties="loading"></p>
+		</div>
+	</div>
+
+	<div id="offcanvasAdd" class="offcanvas offcanvas-start offcanvas-add fade" tabindex="-1"
+		aria-labelledby="offcanvasAddLabel" data-bs-backdrop="false">
+		<div class="offcanvas-header ips-offcanvas-header listHeaderWrapper">
+			<div class="header-inner d-flex align-items-center">
+				<button id="addButtonReturnClose" type="button" class="btn-close text-reset button-return"
+					aria-label="Close" title="Back">
+					<i class="return-icon"></i>
+				</button>
+				<button id="addButtonReturnCanel" type="button" class="btn-close text-reset button-return hidden"
+					data-bs-toggle="modal" data-bs-target="#showModalPopovers" title="Back">
+					<i class="return-icon"></i>
+				</button>
+				<span class="operateAddText"></span>
+			</div>
+		</div>
+		<div class="offcanvas-body ips-offcanvas-body listWrapper"></div>
+		<div id="addToast" class="toast show ips-toast" role="alert" aria-live="assertive" aria-atomic="false">
+			<div class="toast-body">
+				<button id="addCancelToastShowButton" type="button"
+					class="button-css button-website button-cancel hidden" data-bs-toggle="modal"
+					data-bs-target="#showModalPopovers">
+					Cancel
+				</button>
+				<button id="addCancelToastCloseButton" type="button" class="button-css  button-website button-cancel">
+					Cancel
+				</button>
+				<button id="addSaveToastShowButton" type="button" class="button-css button-blue  button-save"
+					disabled>Save</button>
+			</div>
+		</div>
+	</div>
+
+	<div id="offcanvasEdit" class="offcanvaseditview offcanvas offcanvas-start offcanvas-edit fade" tabindex="-1"
+		aria-labelledby="offcanvasEditLabel" data-bs-backdrop="false" close-type="">
+		<div class="offcanvas-header ips-offcanvas-header listHeaderWrapper">
+			<div class="header-inner d-flex align-items-center">
+				<button type="button" class="btn-close text-reset button-return editButtonReturnClose"
+					aria-label="Close" title="Back">
+					<i class="return-icon"></i>
+				</button>
+				<button type="button" class="btn-close text-reset button-return hidden editButtonReturnCanel"
+					data-bs-toggle="modal" data-bs-target="#showEditModalPopovers" title="Back">
+					<i class="return-icon"></i>
+				</button>
+				<span class="operateEditingText">Edit info</span>
+			</div>
+		</div>
+		<div class="offcanvas-body ips-offcanvas-body listWrapper"></div>
+
+		<div class="toast  fade show ips-toast" role="alert" aria-live="assertive" aria-atomic="true">
+			<div class="toast-body">
+				<button type="button" class="button-css button-website button-cancel hidden editCancelToastShowButton"
+					data-bs-toggle="modal" data-bs-target="#showEditModalPopovers">
+					Cancel
+				</button>
+				<button type="button" class="button-css  button-website button-cancel editCancelToastCloseButton">
+					Cancel
+				</button>
+				<button type="button" class="button-css button-blue  button-save button-small editSaveToastShowButton"
+					disabled data-name="">Save</button>
+			</div>
+		</div>
+	</div>
+
+	<div id="offcanvasView" class="offcanvas offcanvas-start offcanvas-detail fade" tabindex="-1"
+		aria-labelledby="offcanvasViewLabel" data-bs-backdrop="false">
+		<div class="offcanvas-header ips-offcanvas-header listHeaderWrapper">
+			<div class="header-inner d-flex align-items-center">
+				<button type="button" class="btn-close text-reset button-return" aria-label="Close" title="Back">
+					<i class="return-icon"></i>
+				</button>
+				<span class="operateDetailsText">Details</span>
+			</div>
+			<div class="actionsWrapper">
+				<button type="button" class="action-button view-button offcanvasViewButton" title="Edit"
+					data-bs-toggle="offcanvas" data-bs-target="#offcanvasEdit" aria-controls="offcanvasEdit">
+					<i class="svg-css svg-hover svg-edit"></i>
+				</button>
+				<button type="button" class="action-button collect-button" title="Add to Favorites"
+					data-hint-properties="add_to_favorites" delete-type="View" controls-panel='view'>
+					<i class="svg-css svg-hover svg-collect"></i>
+				</button>
+				<button type="button" class="delete-button  remove-item-btn offcanvasEditButton view-more-btn"
+					title="Delete" data-bs-toggle="modal" data-bs-target="#editDeletePopovers" delete-type="View"
+					style="display: none;">
+					<i class="svg-css  svg-delete"></i>
+				</button>
+				<div class="view-more" style="display: none;">
+					<button type="button" id="viewMoreBtn" class="action-button view-more-button" title="More"
+						data-hint-properties="more" delete-type="View" data-bs-toggle="dropdown" aria-expanded="false">
+						<i class="svg-css svg-hover svg-more"></i>
+					</button>
+					<div class="dropdown-menu dropdown-menu-more" aria-labelledby="viewMoreBtn">
+						<button type="button" class="dropdown-item view-history-button" delete-type="View">
+							<i class="icon-css icon-history"></i>
+							<span class="view-text" data-properties="password_history_item">Password History</span>
+						</button>
+						<button type="button"
+							class="dropdown-item delete-button view-remove-item-btn remove-item-btn offcanvasEditButton"
+							data-bs-toggle="modal" data-bs-target="#editDeletePopovers" delete-type="View">
+							<i class="icon-css icon-remove"></i>
+							<span class="view-text" data-properties="deleted_this_item">Delete Item</span>
+						</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="offcanvas-body ips-offcanvas-body listWrapper"></div>
+	</div>
+
+	<div id="offcanvasViewRecycle" class="offcanvas offcanvas-start offcanvas-detail fade" tabindex="-1"
+		aria-labelledby="offcanvasViewRecycleLabel" data-bs-backdrop="false">
+		<div class="offcanvas-header ips-offcanvas-header listHeaderWrapper">
+			<div class="header-inner d-flex align-items-center">
+				<button type="button" class="btn-close text-reset button-return" aria-label="Close" title="Back">
+					<i class="return-icon"></i>
+				</button>
+				<span class="operateDetailsText">Details</span>
+			</div>
+			<div class="actionsWrapper">
+				<button type="button" class="action-button restore-button restore-item-btn viewRestoreButton"
+					title="Restore">
+					<i class="svg-css svg-recycle"></i>
+				</button>
+				<button type="button" class="action-button delete-button remove-item-btn offcanvasEditButton"
+					title="Delete" data-bs-toggle="modal" data-bs-target="#completeDeletePopovers">
+					<i class="svg-css  svg-delete"></i>
+				</button>
+			</div>
+		</div>
+		<div class="offcanvas-body ips-offcanvas-body listWrapper"></div>
+	</div>
+
+	<div id="offcanvasTool" class="offcanvas offcanvas-start" tabindex="-1" aria-labelledby="offcanvasToolLabel"
+		data-bs-backdrop="false">
+		<div class="offcanvas-header ips-offcanvas-header listHeaderWrapper justify-content-start">
+			<div class="header-inner d-flex align-items-center">
+				<button type="button" class="btn-close text-reset button-return" aria-label="Close" title="Back">
+					<i class="return-icon"></i>
+				</button>
+				<span id="operateToolText" class="operateToolText">Tools</span>
+			</div>
+		</div>
+		<div class="offcanvas-body ips-offcanvas-body listWrapper">
+			<div class="tool-list d-flex align-items-center password-generator" data-bs-toggle="offcanvas"
+				data-bs-target="#offcanvasPasswordGenerator" aria-controls="offcanvasPasswordGenerator"
+				data-controls="offcanvasTool" data-bs-backdrop="false" data-name="">
+				<div class="flex-shrink-0">
+					<img class="tool-image" src="./images/icon_tools_password_generator.svg" alt="">
+				</div>
+				<div class="flex-grow-1 ms-2">
+					<h3 class="tool-title">Password Generator</h3>
+					<p class="tool-desc">
+						Create strong and secure passwords with just 1-click
+					</p>
+				</div>
+			</div>
+			<div id="toolsDarkWebMonitor" class="tool-list d-flex align-items-center tools-open"
+				data-name="dark-leak-monitor">
+				<div class="flex-shrink-0">
+					<img class="tool-image" src="./images/icon_dark_leak_monitor.svg" alt="">
+				</div>
+				<div class="flex-grow-1 ms-2">
+					<h3 class="tool-title">Dark Web Monitor</h3>
+					<p class="tool-desc">
+						Help you monitor sensitive data leakages in Dark Web
+					</p>
+				</div>
+			</div>
+			<div id="toolsPasswordHealth" class="tool-list d-flex align-items-center tools-open"
+				data-name="password-health">
+				<div class="flex-shrink-0">
+					<img class="tool-image" src="./images/icon_password_health.svg" alt="">
+				</div>
+				<div class="flex-grow-1 ms-2">
+					<h3 class="tool-title">Password Health</h3>
+					<p class="tool-desc">
+						Help you check vulnerable passwords such as weak, reused or compromised ones
+					</p>
+				</div>
+			</div>
+			<div id="toolsImportExport" class="tool-list d-flex align-items-center" data-name="import-and-export">
+				<div class="flex-shrink-0">
+					<img class="tool-image" src="./images/icon_import_export.svg" alt="">
+				</div>
+				<div class="flex-grow-1 ms-2">
+					<h3 class="tool-title">Import and Export</h3>
+					<p class="tool-desc">
+						Import data from your browsers or other password tools with just 1-click & export your saved
+						data to a CSV file
+					</p>
+				</div>
+			</div>
+			<div id="toolsEmergencyContact" class="tool-list d-flex align-items-center tools-open"
+				data-name="emergency-contact">
+				<div class="flex-shrink-0">
+					<img class="tool-image" src="./images/icon_tool_emergency_contact.svg" alt="">
+				</div>
+				<div class="flex-grow-1 ms-2">
+					<h3 class="tool-title" data-properties="emergency_contact">Emergency Contact</h3>
+					<p class="tool-desc" data-properties="emergency_contact_Desc">
+						Import data from your browsers or other password tools & export your saved data to a CSV file
+						with just 1-click
+					</p>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div id="offcanvasPasswordGenerator" class="offcanvas offcanvas-start offcanvas-generator fade generator-container"
+		tabindex="-1" aria-labelledby="offcanvasPasswordGeneratorLabel" data-bs-backdrop="false">
+		<div class="offcanvas-header ips-offcanvas-header listHeaderWrapper">
+			<div class="header-inner d-flex align-items-center">
+				<button type="button" class="btn-close text-reset button-return generator-return"
+					aria-controls="offcanvasTool" title="Back">
+					<i class="return-icon"></i>
+				</button>
+				<button type="button" class="btn-close text-reset button-return hidden generator-close">
+					<i class="return-icon"></i>
+				</button>
+				<span id="operatePasswordGeneratorText" class="operatePasswordGeneratorText">Password
+					Generator</span>
+			</div>
+		</div>
+		<div class="offcanvas-body ips-offcanvas-body listWrapper">
+			<div id="defaultPasswordContainer" class="list-item from-inner">
+				<div class="pwd-result">
+					<div class="generated-wrapper"></div>
+				</div>
+				<div id="generateResultCopy" class="copy-hidden"></div>
+				<input id="defaultPassword" spellcheck="false" class="form-control all-input placeholder-css"
+					type="text" value='' data-canvas="defaultPwstrengthCanvas" data-copy="defaultPassword"
+					data-master="offcanvasMeter" data-cid="offcanvasPasswordGenerator">
+				<div class="strongMeter">
+					<meter class="meter hidden" id="offcanvasMeter" min="0" max="4" value="0" optimum="0"></meter>
+					<div class="progress">
+						<span class="score-segment"></span>
+						<span class="score-segment"></span>
+						<span class="score-segment"></span>
+						<span class="score-segment"></span>
+					</div>
+				</div>
+				<div class="pwstrength-inner d-flex justify-content-between  align-items-center">
+					<button class="button-css button-refresh" title="New password"
+						aria-refresh="offcanvasPasswordGenerator"></button>
+					<button id="generatePwd" class="button-css button-blue button-generate"
+						data-clipboard-target="#defaultPassword">
+						<p>
+							<span class="generate-copy">Copy</span> <span class="copy-type"
+								style="display: none;">Password</span>
+						</p>
+					</button>
+				</div>
+			</div>
+			<div class="generate-settings">
+				<div class="generate-setting pwd-length range__slider d-flex justify-content-between" data-min="8"
+					data-max="100">
+					<div class="length__title field-title" data-length='0'>Length</div>
+					<input id="pwdSlider" class="generate-input generate-range" spellcheck="false" type="range" min="8"
+						max="100" value="20" />
+					<input class="length__number" value="" type="text" min="8" max="100">
+				</div>
+				<div class="generate-setting form-check form-switch d-flex justify-content-between">
+					<label class="form-check-label generate-uppercase" data-properties="upper_case"></label>
+					<input class="form-check-input generate-input" spellcheck="false" type="checkbox" role="switch"
+						id="generateUppercase" checked="checked" name="generate">
+				</div>
+				<div class="generate-setting form-check form-switch d-flex justify-content-between lower-case">
+					<label class="form-check-label generate-lower" data-properties="lower_case">Lowercase (a-z)</label>
+					<input class="form-check-input generate-input" spellcheck="false" type="checkbox" role="switch"
+						id="generateLowercase" checked="checked" name="generate">
+				</div>
+				<div class="generate-setting form-check form-switch d-flex justify-content-between">
+					<label class="form-check-label generate-digits">Digits (0-9)</label>
+					<input class="form-check-input generate-input" spellcheck="false" type="checkbox" role="switch"
+						id="generateNumber" checked="checked" name="generate">
+				</div>
+				<div class="generate-setting form-check form-switch d-flex justify-content-between last">
+					<label class="form-check-label generate-symbols">Symbols (!@#$%^&*)</label>
+					<input class="form-check-input generate-input" spellcheck="false" type="checkbox" role="switch"
+						id="generateSymbol" checked="checked" name="generate">
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div id="passwordHistory" class="password-history" style="display: none;" data-type="0">
+		<div class="password-history-inner">
+			<div class="hist-header justify-content-between align-items-center">
+				<div class="header-content align-items-center">
+					<i class="svg-css  header-icon header-icon-hide"></i>
+					<h2 class="hist-title" data-properties="password_history_title">Password History</h2>
+					<i class="svg-css  header-icon header-icon-show"></i>
+				</div>
+				<div class="header-action align-items-start" style="display: none;">
+					<button class="hist-btn showhidePass on" type="button" title="Show password"
+						data-hint-properties="showPass">
+						<i class="hist-icon hist-show"></i>
+					</button>
+					<button id="clearPassHistory" type="button" class="action-button delete-button clearhist-btn"
+						title="Clear password" data-hint-properties="clear_password" data-bs-toggle="modal"
+						data-bs-target="#clearAllPassPopovers">
+						<i class="svg-css  svg-delete"></i>
+					</button>
+				</div>
+			</div>
+			<div class="hist-wrapper" style="display: none;">
+				<div class="hist-tips" style="display: none;">
+					<p class="tips" data-properties="password_history_tips">Here shows the recent saved 100 passwords.
+					</p>
+					<button class="hist-btn hist-close" type="button" title="Close" data-hint-properties="close"><i
+							class="hist-icon hist-close"></i></button>
+				</div>
+				<div class="hist-content"></div>
+			</div>
+		</div>
+	</div>
+	<div class="password-history-mask" style="z-index: -9999; opacity: 0;"></div>
+
+	<div id="modalPasswordGenerator" class="modal password-modal fade generator-container" tabindex="-1"
+		aria-labelledby="modalPasswordGenerator" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false"
+		tabindex="-1">
+		<div class="modal-dialog modal-dialog-centered">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title">Suggested Password</h5>
+					<div class="modalpwd-close" title="Close">
+						<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+							<i class="close-icon"></i>
+						</button>
+					</div>
+				</div>
+				<div class="modal-body">
+					<div id="modalPasswordContainer" class="list-item from-inner">
+						<div class="pwd-result">
+							<div class="generated-wrapper"></div>
+						</div>
+						<div id="modalResultCopy" class="copy-hidden"></div>
+						<input id="modalPassword" spellcheck="false"
+							class="form-control all-input placeholder-css hidden" type="password" value=''
+							data-canvas="modalPwstrengthCanvas" data-copy="modalResultCopy" data-master="modalMeter"
+							data-cid="modalPasswordGenerator">
+						<div class="strongMeter">
+							<meter class="meter hidden" id="modalMeter" min="0" max="4" value="0"></meter>
+							<div class="progress">
+								<span class="score-segment"></span>
+								<span class="score-segment"></span>
+								<span class="score-segment"></span>
+								<span class="score-segment"></span>
+							</div>
+						</div>
+						<div class="pwstrength-inner d-flex justify-content-between align-items-center">
+							<button class="button-css button-refresh" title="Refresh"
+								aria-refresh="modalPasswordGenerator"></button>
+							<button id="modalGeneratePwd" class="button-css button-blue button-generate">
+								<p>
+									<span class="generate-use">Use</span> <span class="copy-type"
+										style="display: none;">Password</span>
+								</p>
+							</button>
+						</div>
+					</div>
+					<div class="generate-settings">
+						<div class="generate-setting pwd-length range__slider d-flex justify-content-between"
+							data-min="8" data-max="100">
+							<div class="length__title field-title" data-length='20'>Length</div>
+							<input id="modalPwdSlider" class=" generate-input generate-range" spellcheck="false"
+								type="range" min="8" max="100" value="20" />
+							<input class="length__number" value="20" type="text" min="8" max="100">
+						</div>
+						<div class="generate-setting form-check form-switch d-flex justify-content-between">
+							<label class="form-check-label generate-input generate-uppercase"
+								data-properties="upper_case"></label>
+							<input class="form-check-input generate-input" spellcheck="false" type="checkbox"
+								role="switch" id="modalUppercase" checked="checked" name="generate">
+						</div>
+						<div class="generate-setting form-check form-switch d-flex justify-content-between">
+							<label class="form-check-label generate-input generate-lowercase"
+								data-properties="lower_case">Lowercase
+								(a-z)</label>
+							<input class="form-check-input generate-input" type="checkbox" role="switch"
+								id="modalLowercase" checked="checked" spellcheck="false" name="generate">
+						</div>
+						<div class="generate-setting form-check form-switch d-flex justify-content-between">
+							<label class="form-check-label generate-digits">Digits (0-9)</label>
+							<input class="form-check-input generate-input" spellcheck="false" type="checkbox"
+								role="switch" id="modalNumber" checked="checked" name="generate">
+						</div>
+						<div class="generate-setting form-check form-switch d-flex justify-content-between">
+							<label class="form-check-label generate-symbols">Symbols (!@#$%^&*)</label>
+							<input class="form-check-input generate-input" spellcheck="false" type="checkbox"
+								role="switch" id="modalSymbol" checked="checked" name="generate">
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div id="offcanvasOptions" class="offcanvas offcanvas-start offcanvas-options fade" tabindex="-1"
+		aria-labelledby="offcanvasOptionsLabel" data-bs-backdrop="false">
+		<div class="offcanvas-header ips-offcanvas-header listHeaderWrapper">
+			<div class="header-inner d-flex align-items-center">
+				<button type="button" class="btn-close text-reset button-return" aria-label="Close"
+					aria-controls="ipsContainer" title="Back">
+					<i class="return-icon"></i>
+				</button>
+				<span id="operateOptionsText" class="operateOptionsText">Options</span>
+			</div>
+		</div>
+		<div class="offcanvas-body ips-offcanvas-body listWrapper">
+			<div class="avatar-container options-container">
+				<div class="avatar-icon options-icon">
+					<span class="avatar-name"></span>
+					<i id="accountType" class="free-icon"></i>
+				</div>
+			</div>
+			<div id="options-title" class="options-title">
+				<div class="title-container">
+					<div class="title-name"></div>
+				</div>
+				<button id="emailVerfy" class="title-email notverify">Verify This Email</button>
+				<div id="expOptionDate" class="exptime hidden"><span class="expOptionText">Expiration date: </span><span
+						id="expOptionTime"></span></div>
+			</div>
+			<div class="options-button">
+				<button id="optionUpgrade" type="submit" class="button-css button-blue button-upgrade">
+					<span id="upgradeTxt" class="upgradeTxt">Upgrade</span>
+				</button>
+			</div>
+			<div class="options-list">
+				<p class="set-desc" data-properties="set_master_password_tips" style="display: none;">
+					For your password security, please set the master password
+				</p>
+				<div id="optionSetMasterPass" class="options-row" style="display: none;" data-name="setmasterpass">
+					<div class="row-icon setpass"></div>
+					<div class="row-label row-set d-flex align-items-center">
+						<span data-properties="set_master_password">Set Master Password</span>
+						<div class="set-tips">
+							<i class="set-icon"></i>
+						</div>
+					</div>
+					<button class="row-button" type="button"></button>
+				</div>
+				<div id="optionChangeMasterPass" class="options-row" style="display: none;"
+					data-name="changemasterpass">
+					<div class="row-icon changepass"></div>
+					<div class="row-label" data-properties="change_master_password">Change Master Password</div>
+					<button class="row-button" type="button"></button>
+				</div>
+				<div id="optionResetCode" class="options-row" style="display: none;" data-name="resetrcode">
+					<div class="row-icon resetpass"></div>
+					<div class="row-label" data-properties="reset_recovery_code">Reset Recovery Code</div>
+					<button class="row-button" type="button"></button>
+				</div>
+				<div id="lockButton" class="options-row">
+					<div class="row-icon lock"></div>
+					<div class="row-label" data-properties="lock">
+						Lock
+					</div>
+					<button class="row-button" type="button"></button>
+				</div>
+				<div id="logoutButton" class="options-row">
+					<div class="row-icon signout"></div>
+					<div class="row-label" data-properties="signOut">Sign out</div>
+					<button class="row-button" type="button"></button>
+				</div>
+				<div class="options-line"></div>
+				<div id="openSettings" class="options-row" data-bs-toggle="offcanvas"
+					data-bs-target="#offcanvasSettings" aria-controls="offcanvasSettings">
+					<div class="row-icon settings"></div>
+					<div class="row-label" data-properties="settings">Settings</div>
+					<button class="row-button" type="button"></button>
+				</div>
+				<div id="optionInstallDesktopApp" class="options-row">
+					<div class="row-icon install"></div>
+					<div class="row-label" data-properties="installDesktopApp">Install Desktop App</div>
+					<button class="row-button" type="button"></button>
+				</div>
+				<div id="optionFeedback" class="options-row">
+					<div class="row-icon fb"></div>
+					<div class="row-label" data-properties="feedback">Feedback</div>
+					<button class="row-button" type="button"></button>
+				</div>
+				<div id="optionUserManual" class="options-row">
+					<div class="row-icon user"></div>
+					<div class="row-label" data-properties="user_manual">User manual</div>
+					<button class="row-button" type="button"></button>
+				</div>
+				<div id="optionAbout" class="options-row" data-bs-toggle="offcanvas" data-bs-target="#offcanvasAbout"
+					aria-controls="offcanvasAbout">
+					<div class="row-icon about">
+					</div>
+					<div class="row-label" data-properties="about">About</div>
+					<button class="row-button" type="button"></button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div id="offcanvasSettings" class="offcanvas offcanvas-start offcanvas-settings fade" tabindex="-1"
+		aria-labelledby="offcanvasSettingsLabel" data-bs-backdrop="false">
+		<div class="offcanvas-header ips-offcanvas-header listHeaderWrapper">
+			<div class="header-inner d-flex align-items-center">
+				<button type="button" class="btn-close text-reset button-return" data-bs-toggle="offcanvas"
+					data-bs-target="#offcanvasOptions" aria-controls="offcanvasOptions" title="Back">
+					<i class="return-icon"></i>
+				</button>
+				<span id="openSettingsText" class="openSettingsText" data-properties="settings">Settings</span>
+			</div>
+		</div>
+		<div class="offcanvas-body ips-offcanvas-body listWrapper">
+			<h2 class="settings-title" data-properties="settings_General">General</h2>
+			<div class="settings-row hidden">
+				<div class="flex padded-text">Language</div>
+				<div class="settings-menu"></div>
+			</div>
+			<div class="generate-setting form-check form-switch d-flex justify-content-between">
+				<label class="form-check-label" data-properties="default_password_manager">Default Password
+					Manager</label>
+				<input class="form-check-input" spellcheck="false" type="checkbox" role="switch"
+					id="DefaultPasswordManager">
+			</div>
+			<div class="settings-note" data-properties="settings_General_Dec">
+				Set DualSafe Password Manager as the default password manager
+			</div>
+			<div class="settings-line"></div>
+			<h2 class="settings-title" data-properties="settings_Security_Options">Security Options</h2>
+			<div class="settings-row settings-none">
+				<div class="flex padded-text" data-properties="Checkbox_Keep_signed">Keep me signed in for</div>
+				<div id="settingKeepSign" class="settings-menu">
+					<select id="keepsign-dropdown" name="keepsign-dropdown" class="keep-sign">
+						<option value="-2" selected="selected" data-type="-2" data-minute="" data-properties="never">
+							Never</option>
+						<option value="7" data-type="7" data-minute="7" data-properties="sevenDays">7 days</option>
+						<option value="14" data-type="14" data-minute="14" data-properties="fourteenDays">14 days
+						</option>
+						<option value="30" data-type="30" data-minute="30" data-properties="thirtyDays">30 days</option>
+						<option value="60" data-type="60" data-minute="60" data-properties="sixtyDays">60 days</option>
+						<option value="90" data-type="90" data-minute="90" data-properties="ninetyDays">90 days</option>
+						<option value="-1" data-type="-1" data-minute="4" data-properties="until_sign_out">Until I sign
+							out</option>
+					</select>
+				</div>
+			</div>
+			<div class="settings-note keep-note" data-properties="Checkbox_Keep_signed_Hint">
+				You will be signed in automatically during the specified time period. Please make sure your computer
+				environment is
+				safe. When using a public computer, please do not check this option.
+			</div>
+			<div class="settings-row settings-none settings-one" data-type="autolock">
+				<div class="flex padded-text" data-properties="settings_Auto_Lock">Auto Lock</div>
+				<div id="settingAutolock" class="settings-menu">
+					<select id="autolock-dropdown" name="autolock-dropdown" class="autolock">
+						<option value="0" selected="selected" data-type="minute" data-minute="1"
+							data-properties="oneMinute">1
+							minute</option>
+						<option value="1" data-type="minute" data-minute="5" data-properties="fiveMinutes">5 minutes
+						</option>
+						<option value="2" data-type="minute" data-minute="10" data-properties="tenMinutes">10 minutes
+						</option>
+						<option value="3" data-type="minute" data-minute="30" data-properties="thirtyMinutes">30 minutes
+						</option>
+						<option value="4" data-type="hour" data-minute="1" data-properties="oneHour">1 hour</option>
+						<option value="5" data-type="hour" data-minute="4" data-properties="fourHours">4 hour</option>
+						<option value="6" data-type="browser_reboot" data-minute="" data-properties="browserReboot">
+							Browser reboot
+						</option>
+						<option value="7" data-type="sys_lock" data-minute="" data-properties="systemLocks">System Locks
+						</option>
+					</select>
+				</div>
+			</div>
+			<div class="settings-note" data-type="autolock" data-properties="settings_Auto_Lock_Dec">
+				Lock DualSafe Password Manager automatically at the specified frequency
+			</div>
+			<div class="settings-line"></div>
+			<h2 class="settings-title" data-properties="settings_Autofill_and_Autosave">Autofill and Autosave</h2>
+			<div class="generate-setting form-check form-switch d-flex justify-content-between  settings-one">
+				<label class="form-check-label" data-properties="settings_Show_Icon">Show Icon</label>
+				<input class="form-check-input" spellcheck="false" type="checkbox" role="switch" id="showIcon">
+			</div>
+			<div class="settings-note" data-properties="settings_Show_Icon_Dec">
+				Show the icon of DualSafe Password Manager in all password input boxes to save your logins with just
+				one-click
+			</div>
+			<div class="generate-setting form-check form-switch d-flex justify-content-between settings-one">
+				<label class="form-check-label" data-properties="offer_to_save_passwords">Offer to save
+					passwords</label>
+				<input class="form-check-input" spellcheck="false" type="checkbox" role="switch" id="autoSave">
+			</div>
+			<div class="settings-note" data-properties="offer_to_save_passwords_desc">
+				Prompt to save passwords when you log in or sign up
+			</div>
+			<div class="generate-setting form-check form-switch d-flex justify-content-between settings-one">
+				<label class="form-check-label" data-properties="auto_save_passwords">Auto save passwords</label>
+				<input class="form-check-input" spellcheck="false" type="checkbox" role="switch" id="newAutoSave">
+			</div>
+			<div class="settings-note" data-properties="auto_save_passwords_desc">
+				Automatically save my usernames and passwords for all websites
+			</div>
+			<div class="settings-note">
+				<button type="button" id="buttonExclude" class="button-css button-exclude"
+						data-bs-toggle="offcanvas" data-bs-target="#offcanvasExclude"
+					aria-controls="offcanvasExclude" data-properties="exclude_website">Exclude Website</button>
+			</div>
+			<div class="generate-setting form-check form-switch d-flex justify-content-between settings-one">
+				<label class="form-check-label" data-properties="settings_Auto_Fill_Password">Auto-fill Password</label>
+				<input class="form-check-input" spellcheck="false" type="checkbox" role="switch" id="autoFill">
+			</div>
+			<div class="settings-note" data-properties="settings_Auto_Fill_Password_Dec">
+				Automatically fill account and passwords when you are logging into your saved websites
+			</div>
+
+			<div class="generate-setting form-check form-switch d-flex justify-content-between settings-one">
+				<label class="form-check-label">
+					<span data-properties="settings_Fill_Personal_Infol">Fill Personal Info</span>
+					<span class="form-explain" style="display: none;"
+						data-properties="settings_Limited_time_free">(Limited-time free)</span>
+				</label>
+				<input class="form-check-input" spellcheck="false" type="checkbox" role="switch" id="fillPersonalnfo"
+					name="fillpersonalnfo">
+			</div>
+			<div class="settings-note" data-properties="settings_Fill_Personal_Infol_Desc">
+				Displays the DualSafe icon and fills in personal information such as email, address, and phone number
+				with one click
+			</div>
+
+			<div class="generate-setting form-check form-switch d-flex justify-content-between settings-one">
+				<label class="form-check-label">
+					<span data-properties="settings_Fill_Payments">Fill Payments</span>
+					<span class="form-explain" style="display: none;"
+						data-properties="settings_Limited_time_free">(Limited-time free)</span>
+				</label>
+				<input class="form-check-input" spellcheck="false" type="checkbox" role="switch" id="fillPayments"
+					name="fillpayments">
+			</div>
+			<div class="settings-note" data-properties="settings_Fill_Payments_Desc">
+				Display the DualSafe icon and fill in payment information such as cardholder, card number, expiration
+				date, CVV, etc.,
+				with one click
+			</div>
+
+
+			<div class="settings-line"></div>
+			<h2 class="settings-title" data-properties="Password_Generator">Password Generator</h2>
+			<div class="generate-setting form-check form-switch d-flex justify-content-between">
+				<label class="form-check-label" data-properties="Suggested_Password">Suggested Password</label>
+				<input class="form-check-input" spellcheck="false" type="checkbox" role="switch" id="ShowPasswordSug">
+			</div>
+			<div class="settings-note" data-properties="Suggested_Password_Dec">
+				Show suggested password for all password input boxes
+			</div>
+		</div>
+	</div>
+
+	<div id="offcanvasAbout" class="offcanvas offcanvas-start offcanvas-about fade" tabindex="-1"
+		aria-labelledby="offcanvasAboutLabel" data-bs-backdrop="false">
+		<div class="offcanvas-header about-header ips-offcanvas-header listHeaderWrapper">
+			<div class="header-inner d-flex align-items-center">
+				<button type="button" class="btn-close text-reset button-return" title="Back">
+					<i class="return-icon"></i>
+				</button>
+				<span id="aboutsText" class="aboutsText">About</span>
+			</div>
+		</div>
+		<div class="offcanvas-body  about-body ips-offcanvas-body listWrapper">
+			<div class="about-top">
+				<div class="logo-image"></div>
+				<h2 class="about-title">DualSafe Password Manager</h2>
+				<p class="about-ver"><span class="version-name">v</span><span id="dpVersion"></span></p>
+				<h3 class="about-subtitle">Acknowledgements</h3>
+			</div>
+			<div id="acknowledgments" class="about-desc" data-direction='up' data-pauseOnHover='true'
+				data-pauseOnCycle='true'>
+				<p>Arabic/العربية: MFM Dawdeh, Hassan Ahmed</p>
+				<p>Bulgarian/Български: Lyuben Panchev</p>
+				<p>Czech/Čeština: Jan Szotkowski</p>
+				<p>Simplified Chinese/简体中文: Liu</p>
+				<p>Traditional Chinese/正體中文: alan@tw</p>
+				<p>Danish/Dansk: Jørn Runge</p>
+				<p>Dutch/Nederlands: Ernie Wong</p>
+				<p>Finnish/Suomi: Veikko Muurikainen</p>
+				<p>Flemish/Vlaams: Chris Verberne</p>
+				<p>French/Français: Frédéric Dectot</p>
+				<p>Greek/Ελληνικά: Stathis Doukas</p>
+				<p>Hebrew/עברית: Eli Ben David</p>
+				<p>Hungarian/Hungarian: Laszlo Szabo</p>
+				<p>Indonesia/Indonesia: Purwo Adi Nugroho</p>
+				<p>Italian/Italiano: Claudio Birello</p>
+				<p>Japanese/日本語: Nagai Tsuneo</p>
+				<p>Korean/한국어: VenusGirl</p>
+				<p>Malay/Bahasa Malaysia: Markflynn</p>
+				<p>Norwegian/Norsk: Thor Stange</p>
+				<p>Polish/Polski: Fresta</p>
+				<p>Portuguese(PT-BR)/Português (Brasil): Igor Rückert</p>
+				<p>Portuguese(PT-PT)/Português (Portugal): Fernando Santos</p>
+				<p>Romanian/Română: Cosmin Barna</p>
+				<p>Russian/Русский: M.Salitska</p>
+				<p>Slovak/Slovenčina SVK: dedko58</p>
+				<p>Slovenian/Slovenščina: Marjan Mirai</p>
+				<p>Spanish/Español: Roberto Paiva</p>
+				<p>Swedish/Svenska: Annelie Pernheden</p>
+				<p>Thai/ไทย: greet_ngi</p>
+				<p>Turkish/Türkçe: Sinan Başar</p>
+				<p>Ukrainian/Українська: Vitaliy</p>
+			</div>
+			<div class="about-bottom">
+				<div class="about-copyright">© iTop Inc. All rights reserved.</div>
+				<div class="about-link">
+					<button id="openEula" class="support-button eula-button" type="button">EULA</button>
+					<span class="about-line"></span>
+					<button id="openPrivacy" class="support-button policy-button" type="button">Privacy Policy</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div id="offcanvasExclude" class="offcanvas offcanvas-start offcanvas-exclude fade" tabindex="-1"
+		aria-labelledby="offcanvasExcludeLabel" data-bs-backdrop="false">
+		<div class="offcanvas-header exclude-header ips-offcanvas-header listHeaderWrapper">
+			<div class="header-inner d-flex align-items-center">
+				<button type="button" class="btn-close text-reset button-return" title="Back" data-hint-properties="back"
+					data-bs-toggle="offcanvas" data-bs-target="#offcanvasSettings" aria-controls="offcanvasSettings">
+					<i class="return-icon"></i>
+				</button>
+				<span class="savePwdText" data-properties="exclude_website_list">Excluded website list</span>
+			</div>
+			<div class="actionsWrapper">
+				<button type="button" class="btn-close text-reset exclude-open" title="Add" data-hint-properties="Add"
+					data-bs-toggle="modal" data-bs-target="#ExcludeModal">
+					<svg class="exclude-svg" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
+						<g fill="none" stroke="#292d32" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5">
+							<path d="M16 24.196V7.805M24.195 16H7.804" />
+						</g>
+					</svg>
+				</button>
+			</div>
+		</div>
+		<div class="offcanvas-body  exclude-body ips-offcanvas-body listWrapper">
+			<div class="exclude__list"></div>
+			<!-- <div class="exclude-body-inner"></div> -->
+			<!-- <div id="exclude-panel" class="exclude__list" style="display: none;"></div> -->
+		</div>
+	</div>
+
+	<div class="modal fade ips-moda exclude-moda" id="ExcludeModal" tabindex="-1" aria-labelledby="ExcludeModalLabel"
+		aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1">
+		<div class="modal-dialog modal-dialog-centered">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" data-properties="add_exclude">Add websites to exclude</h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
+						data-hint-properties="close"></button>
+				</div>
+				<div class="modal-body">
+					<input class="form-control placeholder-css form-exclude" spellcheck="false" autocomplete="off"
+						maxlength="2000" type="text" placeholder="Enter website" value="" name="website">
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="button-css button-blue button-small exclude-add" disabled>Add</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="modal fade ips-modal" id="showModalPopovers" tabindex="-1" aria-labelledby="showModalLabel"
+		aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1">
+		<div class="modal-dialog modal-dialog-centered">
+			<div class="modal-content">
+				<div class="modal-header">
+					<div class="confirm-icon">
+						<div class="website-icon" style="background-image: url(./images/ico_window_issue.png)"></div>
+					</div>
+					<div class="confirm-info">
+						<div id="saveModalCenterTitle" class="modal-title">
+							Are you sure to discard the unsaved changes?
+						</div>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button id="cancelToastShowButton" type="button" class="button-css  button-gray button-small"
+						data-bs-dismiss="modal">
+						Cancel
+					</button>
+					<button id="saveToastShowButton" type="button"
+						class="button-css button-blue button-yes  button-small" data-bs-dismiss="modal">Yes</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="modal fade ips-modal" id="showEditModalPopovers" tabindex="-1" aria-labelledby="showModalLabel"
+		aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1">
+		<div class="modal-dialog modal-dialog-centered">
+			<div class="modal-content">
+				<div class="modal-header">
+					<div class="confirm-icon">
+						<div class="website-icon" style="background-image: url(./images/ico_window_issue.png)"></div>
+					</div>
+					<div class="confirm-info">
+						<div id="saveEditModalCenterTitle" class="modal-title">
+							Are you sure to discard the unsaved changes?
+						</div>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button id="cancelEditToastShowButton" type="button" class="button-css  button-gray button-small"
+						data-bs-dismiss="modal">
+						Cancel
+					</button>
+					<button id="saveEditToastShowButton" type="button"
+						class="button-css button-blue button-yes  button-small" data-bs-dismiss="modal">Yes</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="modal fade ips-modal" id="editDeletePopovers" tabindex="-1" aria-labelledby="editDeleteLabel"
+		aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1">
+		<div class="modal-dialog modal-dialog-centered">
+			<div class="modal-content">
+				<div class="modal-header">
+					<div class="confirm-info">
+						<div class="confirm-icon">
+							<div class="website-icon" style="background-image: url(./images/ico_window_issue.png)">
+							</div>
+						</div>
+						<div id="confirmModalCenterTitle" class="modal-title">
+							<span class="delete-desc">Are you sure to delete this item?</span> <span class="delete-type"
+								style="display: none;"></span>
+						</div>
+					</div>
+					<p class="modal-tips">
+						You can restore it from the Recycle Bin as long as it is not permanently deleted.
+					</p>
+				</div>
+				<div class="modal-footer">
+					<button id="cancelViewButton" type="button" class="button-css  button-gray button-small"
+						data-bs-dismiss="modal">
+						Cancel
+					</button>
+					<button id="deleteViewButton" type="button"
+						class="button-css button-blue  button-small button-delete remove-confirm-btn"
+						data-bs-dismiss="modal" aria-label="Close" controls-id="">Delete</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="modal fade ips-modal" id="restoreDeletePopovers" tabindex="-1" aria-labelledby="restoreDeleteLabel"
+		aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1">
+		<div class="modal-dialog modal-dialog-centered">
+			<div class="modal-content">
+				<div class="modal-header">
+					<div class="confirm-info">
+						<div class="confirm-icon">
+							<div class="website-icon"></div>
+						</div>
+						<div class="modal-title">
+							<span class="delete-desc">Are you sure to delete this item?</span> <span class="delete-type"
+								style="display: none;"></span>
+						</div>
+					</div>
+					<p class="modal-tips">
+						You can restore it from the Deleted Items as long as it is not permanently deleted.
+					</p>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="button-css  button-gray button-small" data-bs-dismiss="modal">
+						Cancel
+					</button>
+					<button type="button" class="button-css button-blue  button-small restore-confirm-btn"
+						data-bs-dismiss="modal" aria-label="Close" controls-id="">Restore</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="modal fade ips-modal" id="completeDeletePopovers" tabindex="-1" aria-labelledby="completeDeleteLabel"
+		aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1">
+		<div class="modal-dialog modal-dialog-centered">
+			<div class="modal-content">
+				<div class="modal-header">
+					<div class="confirm-info">
+						<div class="confirm-icon">
+							<div class="website-icon"></div>
+						</div>
+						<div id="confirmModalCenterTitle" class="modal-title">
+							<span class="sure-desc">Are you sure to delete this item from Recycle Bin?</span> <span
+								class="delete-type" style="display: none;"></span>
+						</div>
+					</div>
+					<p class="modal-tips sure-tips">
+						It cannot be restored any more once deleted.
+					</p>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="button-css  button-gray button-small" data-bs-dismiss="modal">
+						Cancel
+					</button>
+					<button type="button"
+						class="button-css button-blue  button-small button-delete  remove-completely-confirm"
+						data-bs-dismiss="modal" aria-label="Close" controls-id="">Delete</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="modal fade ips-modal" id="clearAllRecPopovers" tabindex="-1" aria-labelledby="clearAllRecLabel"
+		aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1">
+		<div class="modal-dialog modal-dialog-centered">
+			<div class="modal-content">
+				<div class="modal-header">
+					<div class="confirm-info">
+						<div class="confirm-icon">
+							<div class="website-icon"></div>
+						</div>
+						<div id="confirmModalCenterTitle" class="modal-title">
+							<span class="sure-desc" data-properties="clear_deleted_title">Are you sure to delete this
+								item from
+								Recycle Bin?</span> <span class="delete-type" style="display: none;"></span>
+						</div>
+					</div>
+					<p class="modal-tips sure-tips" data-properties="clear_deleted_desc">
+						It cannot be restored any more once deleted.
+					</p>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="button-css  button-gray button-small" data-bs-dismiss="modal"
+						data-properties="cancel">
+						Cancel
+					</button>
+					<button type="button"
+						class="button-css button-blue  button-small button-delete  clear-all-delete-btn"
+						data-bs-dismiss="modal" aria-label="Close" controls-id=""
+						data-properties="delete">Delete</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="modal fade ips-modal" id="clearAllPassPopovers" tabindex="-1"
+		aria-labelledby="clearAllPassPopoversLabel" aria-hidden="true" data-bs-backdrop="static"
+		data-bs-keyboard="false" tabindex="-1">
+		<div class="modal-dialog modal-dialog-centered">
+			<div class="modal-content">
+				<div class="modal-header">
+					<div class="confirm-info">
+						<div class="confirm-icon">
+							<div class="website-icon" style="background-image: url(./images/ico_window_issue.png)">
+							</div>
+						</div>
+						<div class="modal-title">
+							<span class="sure-desc" data-properties="clear_allpass_title">Are you sure you want to clear
+								all the
+								passwords?</span> <span class="delete-type" style="display: none;"></span>
+						</div>
+					</div>
+					<p class="modal-tips sure-tips" data-properties="clear_allpass_desc">
+						They cannot be restored once cleared.
+					</p>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="button-css  button-gray button-small clear-cancel-btn"
+						data-bs-dismiss="modal">
+						Cancel
+					</button>
+					<button type="button" class="button-css button-blue  button-small button-delete  clear-all-btn"
+						data-bs-dismiss="modal" aria-label="Close" data-properties="clear">
+						Clear
+					</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="modal fade ips-modal" id="purchasePopovers" tabindex="-1" aria-labelledby="failLabel" aria-hidden="true"
+		data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1">
+		<div class="modal-dialog modal-dialog-centered">
+			<div class="modal-content"></div>
+		</div>
+	</div>
+
+	<div class="svg-div" style="display:none;">
+		<svg version="1.1" xmlns="http://www.w3.org/2000/svg" style="display:none;">
+			<symbol id="ico_tab_tag" viewBox="0 0 25 25">
+				<g transform="translate(-2767.812 -2811.639)" stroke="">
+					<path
+						d="M2787.341 2828.223l-4.822 3.588a2.161 2.161 0 0 1-3.023-.443l-5.6-7.525a2.939 2.939 0 0 1-.537-2.259l.676-3.85a2.047 2.047 0 0 1 2.257-1.679l3.882.459a2.935 2.935 0 0 1 2.01 1.162l5.6 7.526a2.159 2.159 0 0 1-.443 3.021z"
+						stroke-width="1.5" />
+					<circle cx="1.8" cy="1.8" r="1.8" transform="translate(2776.863 2819.691)" stroke-width="1.76" />
+				</g>
+			</symbol>
+			<symbol id="ico_tag_small" viewBox="0 0 16 16">
+				<defs>
+					<clipPath id="a">
+						<path transform="translate(460 552)" stroke="#707070" d="M0 0h16v16H0z" />
+					</clipPath>
+				</defs>
+				<g transform="translate(-460 -552)" clip-path="url(#a)">
+					<path
+						d="M474.07 560.902l-4.759-6.4a2.494 2.494 0 0 0-1.708-.988l-3.3-.39a1.739 1.739 0 0 0-1.918 1.427l-.574 3.272a2.5 2.5 0 0 0 .455 1.92l4.761 6.4a1.836 1.836 0 0 0 2.569.376l4.1-3.05a1.835 1.835 0 0 0 .374-2.567zm-6.839-1.926a1.53 1.53 0 1 1 .314-2.141 1.529 1.529 0 0 1-.314 2.14z" />
+				</g>
+			</symbol>
+		</svg>
+	</div>
+
+	<div class="mainRightMenu" style="display: none;"></div>
+	<script src="../polyfill/polyfill-firefox.js"></script>
+	<script src="./js/jquery-3.6.0.min.js"></script>
+	<script src="./js/bootstrap.bundle.min.js"></script>
+	<script src="./js/tooltipster.bundle.min.js"></script>
+	<script src="../uri2color.js"></script>
+	<script src="./js/canvas.js"></script>
+
+	<script src="./js/vendor/jquery-selectBox.js"></script>
+	<script src="./js/vendor.js"></script>
+	<script src="./js/vendor/clipboard.js"></script>
+	<script src="./js/vendor/fuse.js"></script>
+	<script src="./js/vendor/jq-pause.js"></script>
+	<script src="./js/vendor/jq-easing.js"></script>
+	<script src="./js/vendor/jquery.marquee.js"></script>
+	<script src="./js/vendor/validator.js"></script>
+
+	<script src="./js/toastr.min.js"></script>
+	<script src="../tagify.js"></script>
+	<script src="./message.js"></script>
+	<script src="./js/storage.js"></script>
+	<script src="./js/common.js"></script>
+	<script src="./js/injectpopupcomm.js"></script>
+	<script src="../check-totp.js"></script>
+	<script src="./js/password-generator.js"></script>
+	<script src="./mainhtml.js"></script>
+	<script src="./customtags.js"></script>
+	<script src="./main.mix.js"></script>
+	<script src="./main.main.js"></script>
+	<script src="./main.js"></script>
+	<script src="./main.bottom.js"></script>
+</body>
+
+</html>

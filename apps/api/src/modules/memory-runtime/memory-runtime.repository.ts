@@ -2,7 +2,7 @@ import {
   BadRequestException, ConflictException, Injectable, NotFoundException
 } from "@nestjs/common";
 import {
-  MemoryRuntimeStatus, Prisma
+  MemoryRuntimeStatus, MemoryRuntimeType, Prisma
 } from "@prisma/client";
 import { createHash } from "node:crypto";
 import { PrismaService } from "../../database/prisma.service";
@@ -321,6 +321,61 @@ export class MemoryRuntimeRepository implements MemoryRuntimeStore {
       if (!value) throw new NotFoundException("Memory snapshot was not found");
       return value;
     });
+  }
+  async latestSnapshots(workspaceId: string, runtimeIds: string[]) {
+    if (!runtimeIds.length) return [];
+    const runtimes = await this.prisma.memoryRuntime.findMany({
+      where: { id: { in: runtimeIds }, workspaceId, status: { not: MemoryRuntimeStatus.ARCHIVED } },
+      select: { id: true, snapshots: {
+        orderBy: { revision: "desc" }, take: 1, select: { id: true }
+      } }
+    });
+    if (runtimes.length !== new Set(runtimeIds).size || runtimes.some((runtime) => !runtime.snapshots[0])) {
+      throw new NotFoundException("One or more memory runtimes have no resolvable snapshot");
+    }
+    const byId = new Map(runtimes.map((runtime) => [runtime.id, runtime.snapshots[0]!.id]));
+    return runtimeIds.map((id) => byId.get(id)!);
+  }
+  async ensureConversationRuntime(
+    workspaceId: string, actorId: string, channelConversationId: string, agentMemoryRuntimeId: string
+  ) {
+    const identifier = `conversation-memory-${channelConversationId}-${agentMemoryRuntimeId}`;
+    let runtime = await this.prisma.memoryRuntime.findFirst({
+      where: { workspaceId, identifier },
+      select: { id: true, status: true, stateVersion: true,
+        snapshots: { orderBy: { revision: "desc" }, take: 1, select: { id: true } } }
+    });
+    if (!runtime) {
+      try {
+        const created = await this.create(workspaceId, actorId, {
+          identifier, name: `Conversation memory ${channelConversationId}`,
+          type: MemoryRuntimeType.CONVERSATION,
+          scopeKey: `conversation:${channelConversationId}`,
+          content: {}, compatibilityVersion: "1.0",
+          metadata: { channelConversationId, agentMemoryRuntimeId }
+        });
+        const snapshot = await this.publish(workspaceId, actorId, created.id, created.stateVersion);
+        return { runtimeId: created.id, snapshotId: snapshot.id };
+      } catch (error) {
+        if (!(error instanceof Prisma.PrismaClientKnownRequestError) || error.code !== "P2002") throw error;
+        runtime = await this.prisma.memoryRuntime.findFirst({
+          where: { workspaceId, identifier },
+          select: { id: true, status: true, stateVersion: true,
+            snapshots: { orderBy: { revision: "desc" }, take: 1, select: { id: true } } }
+        });
+        if (!runtime) throw error;
+      }
+    }
+    if (runtime.status === MemoryRuntimeStatus.ARCHIVED) {
+      throw new BadRequestException("Archived conversation memory cannot be resolved");
+    }
+    if (runtime.status === MemoryRuntimeStatus.DRAFT) {
+      const snapshot = await this.publish(workspaceId, actorId, runtime.id, runtime.stateVersion);
+      return { runtimeId: runtime.id, snapshotId: snapshot.id };
+    }
+    const snapshot = runtime.snapshots[0];
+    if (!snapshot) throw new BadRequestException("Published conversation memory has no immutable snapshot");
+    return { runtimeId: runtime.id, snapshotId: snapshot.id };
   }
   diagnostics(workspaceId: string, id: string) {
     return this.requireRuntime(this.prisma, workspaceId, id).then((value) => value.diagnostics);

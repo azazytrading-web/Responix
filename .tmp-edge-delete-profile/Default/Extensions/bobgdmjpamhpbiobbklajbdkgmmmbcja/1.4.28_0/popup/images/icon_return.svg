@@ -1,0 +1,7 @@
+<svg id="icon_return" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
+  <g id="arrow-left" transform="translate(-2576.873 -2699.006)">
+    <rect width="32" height="32" rx="8" transform="translate(2576.873 2699.006)" fill="#fff" opacity="0"/>
+    <path id="Vector" d="M2590.443,2708.936l-6.07,6.07,6.07,6.07" fill="none" stroke="#292d32" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/>
+    <path id="Vector-2" d="M2601.373,2715.006h-16.83" fill="none" stroke="#292d32" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/>
+  </g>
+</svg>

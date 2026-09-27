@@ -1,0 +1,1464 @@
+{
+   "Checkbox_Keep_signed": {
+      "message": "サインインしたままにする"
+   },
+   "Checkbox_Keep_signed_Hint": {
+      "message": "指定した時間に自動的にサインインします。 コンピューター環境が安全であることを確認してください。 公共のコンピュータを使用する場合は、このオプションをチェックしないでください。"
+   },
+   "Delete_Exclude_website": {
+      "message": "この Web サイトを削除して除外する"
+   },
+   "Emergency_Desc": {
+      "message": "パスワードの紛失や盗難などの緊急事態が発生した場合に、アカウントに再び簡単かつ安全にアクセスできるようにします。"
+   },
+   "Emergency_Title": {
+      "message": " 事故の場合のb>緊急アクセス\u003C/b> "
+   },
+   "Enable_Now": {
+      "message": "  今すぐ有効にする"
+   },
+   "Enter_your_email": {
+      "message": "メールアドレスを入力"
+   },
+   "Exclude_website_new": {
+      "message": "このウェブサイトを除外する"
+   },
+   "Invalid_Recovery_Code_New": {
+      "message": "回復コードが無効です。 正しいものまたは最新のものを必ず入力してください。 または、\u003Ca class=\"btn-link contactUsLink\">お問い合わせ\u003C/a>ください。"
+   },
+   "Keep_Safe_Desc": {
+      "message": "Password Health を有効にして、パスワードのチェックを行い、弱いパスワード、古いパスワード、再利用されたパスワードを強化します。"
+   },
+   "Keep_Safe_Title": {
+      "message": "すべてのパスワードを\u003Cb>安全\u003C/b>に保つ "
+   },
+   "No_Worries_Desc": {
+      "message": "ダーク ウェブ モニタリングを有効にして、個人情報がデータ侵害を受けた場合に通知を受信できるようにします"
+   },
+   "No_Worries_Title": {
+      "message": "\u003Cb>いいえ\u003C/b> \u003Cb>データ侵害\u003C/b>の心配はありません"
+   },
+   "No_thanks": {
+      "message": "結構です"
+   },
+   "Password_Generator": {
+      "message": "パスワードジェネレータ"
+   },
+   "Password_Generator_Dec": {
+      "message": "ワンクリックで強力で安全なパスワードを作成"
+   },
+   "Suggested_Password": {
+      "message": "推奨パスワード"
+   },
+   "Suggested_Password_Dec": {
+      "message": "すべてのパスワード入力ボックスに推奨パスワードを表示する"
+   },
+   "Suggested_password_Case": {
+      "message": "推奨パスワード"
+   },
+   "TOTP_Tips": {
+      "message": "PCの現地時間が正しくないため、ワンタイムパスワードが無効になる可能性があります。"
+   },
+   "TOTP_placeholder": {
+      "message": "セキュリティキーまたはotpauth：//*のようなURLを入力します"
+   },
+   "Unlimited_Desc": {
+      "message": "たった 1 つのアカウントで、あらゆるデバイスやプラットフォームで安全なパスワードを簡単に管理、保存、作成できます。"
+   },
+   "Unlimited_Title": {
+      "message": "\u003Cb>無制限のデバイス\u003C/b>間でデータを同期"
+   },
+   "Website": {
+      "message": "Webサイト"
+   },
+   "about": {
+      "message": "製品情報"
+   },
+   "about_Acknowledgements": {
+      "message": "深謝"
+   },
+   "about_Copyright": {
+      "message": "©iTopInc.全著作権所有。"
+   },
+   "about_EULA": {
+      "message": "利用許諾契約"
+   },
+   "about_Privacy_Policy": {
+      "message": "プライバシーポリシー"
+   },
+   "about_Version": {
+      "message": "版"
+   },
+   "account_blocked_disabled": {
+      "message": "このアカウントはブロックされているか無効になっています。 サポートチームにお問い合わせください。"
+   },
+   "add": {
+      "message": "追加"
+   },
+   "addNew": {
+      "message": "今すぐ追加"
+   },
+   "addNewAccount": {
+      "message": "新しいアカウントを追加する"
+   },
+   "add_Login": {
+      "message": "ログインを追加"
+   },
+   "add_Logins": {
+      "message": "ログインを追加"
+   },
+   "add_Notes": {
+      "message": "ノートを追加"
+   },
+   "add_Payment_Info": {
+      "message": "支払い情報を追加"
+   },
+   "add_Payment_Info_Case": {
+      "message": "支払い情報を追加"
+   },
+   "add_Personal_Info": {
+      "message": "個人情報を追加する"
+   },
+   "add_Personal_Info_Case": {
+      "message": "個人情報を追加する"
+   },
+   "add_exclude": {
+      "message": "除外する Web サイトを追加する"
+   },
+   "add_items": {
+      "message": "アイテムを追加"
+   },
+   "add_new_website": {
+      "message": "新しいウェブサイトを追加する"
+   },
+   "add_secure_note": {
+      "message": "安全なノートを追加する"
+   },
+   "add_tag": {
+      "message": "タグを追加"
+   },
+   "add_to_favorites": {
+      "message": "お気に入りに追加"
+   },
+   "add_to_favorites_succ": {
+      "message": "お気に入りに追加した"
+   },
+   "add_to_onetime_pwd": {
+      "message": "ワンタイムパスワードに追加"
+   },
+   "add_totp": {
+      "message": "ワンタイムパスワードを追加しますか?"
+   },
+   "add_website": {
+      "message": "Web サイトを追加する"
+   },
+   "add_website_placeholder": {
+      "message": "ウェブサイトを入力"
+   },
+   "address": {
+      "message": "住所"
+   },
+   "address_copied": {
+      "message": "住所をコピーした"
+   },
+   "advancedOptions": {
+      "message": "高度なオプション"
+   },
+   "all_Item": {
+      "message": "全てのアイテム"
+   },
+   "alreadyAccount": {
+      "message": "* すでにiTopアカウントをお持ちの場合は、直接サインインしてください。"
+   },
+   "already_saved": {
+      "message": "既に保存した"
+   },
+   "americanexpress": {
+      "message": "アメリカンエキスプレス"
+   },
+   "appName": {
+      "message": "DualSafe Password Manager"
+   },
+   "auth_bottom_desc": {
+      "message": "承認が完了すると、DualSafeパスワードマネージャーできます。"
+   },
+   "auth_desc": {
+      "message": "新しく開いたブラウザ タブで、DualSafeパスワードマネージャーのログインを許可してください"
+   },
+   "auth_subtitle": {
+      "message": "承認待ち…"
+   },
+   "auth_title": {
+      "message": "承認"
+   },
+   "autoFillFailed": {
+      "message": "ログイン入力フィールドが見つかりませんでした。 ログイン情報を手動でコピーして貼り付けてみてください。"
+   },
+   "auto_save_confirm_desc": {
+      "message": "今後、すべての Web サイトのユーザー名とパスワードを自動的に保存する"
+   },
+   "auto_save_passwords": {
+      "message": "パスワードの自動保存"
+   },
+   "auto_save_passwords_desc": {
+      "message": "すべての Web サイトのユーザー名とパスワードを自動的に保存する"
+   },
+   "auto_saved_successfully": {
+      "message": "自動保存に成功しました"
+   },
+   "average": {
+      "message": "平均"
+   },
+   "back": {
+      "message": "戻る"
+   },
+   "bannerExpiredPurchase": {
+      "message": "プレミアムが\u003Cb>期限切れになりました。\u003C/b>"
+   },
+   "bannerFreePurchase": {
+      "message": "フルプレミアムアクセスを楽しむためにアップグレード"
+   },
+   "bannerPremiumPurchase": {
+      "message": "プレミアムに%s \u003Cspan class=\"day-words\">日\u003C/span>が残っています。"
+   },
+   "birthday": {
+      "message": "誕生日"
+   },
+   "birthday_copied": {
+      "message": "誕生日をコピーした"
+   },
+   "browserReboot": {
+      "message": "ブラウザの再起動"
+   },
+   "browser_extension": {
+      "message": "ブラウザ拡張機能"
+   },
+   "cancel": {
+      "message": "キャンセル"
+   },
+   "capitalize": {
+      "message": "大文字（A-Z）"
+   },
+   "cardNumber": {
+      "message": "カード番号"
+   },
+   "cardType": {
+      "message": "カードの種類"
+   },
+   "cardType_placeholder": {
+      "message": "カードの種類を入力または選択する"
+   },
+   "card_number_copied": {
+      "message": "カード番号をコピーした"
+   },
+   "card_type_copied": {
+      "message": "カードタイプをコピーした"
+   },
+   "cardholderName": {
+      "message": "クレジットカード会員名"
+   },
+   "cardholder_name_copied": {
+      "message": "カード所有者名をコピーした"
+   },
+   "cardother": {
+      "message": "その他"
+   },
+   "carteblanche": {
+      "message": "カルテブランシュ"
+   },
+   "change_desc": {
+      "message": "マスターパスワードを変更しています..."
+   },
+   "change_master_password": {
+      "message": "マスターパスワードの変更"
+   },
+   "change_now": {
+      "message": "今すぐ変更"
+   },
+   "change_title": {
+      "message": "マスターパスワードの変更"
+   },
+   "cityTown": {
+      "message": "市/町"
+   },
+   "clear": {
+      "message": "クリアー"
+   },
+   "clear_allpass_desc": {
+      "message": "一度クリアすると元に戻すことはできません。"
+   },
+   "clear_allpass_title": {
+      "message": "すべてのパスワードを消去してもよろしいですか?"
+   },
+   "clear_deleted_desc": {
+      "message": "一度削除すると元に戻すことはできません。"
+   },
+   "clear_deleted_title": {
+      "message": "削除済みアイテムからすべてのアイテムを削除してもよろしいですか?"
+   },
+   "clear_password": {
+      "message": "パスワードをクリア"
+   },
+   "cleared_successfully": {
+      "message": "正常にクリアされました。"
+   },
+   "close": {
+      "message": "閉じる"
+   },
+   "code_desc": {
+      "message": "回復コードをリセットするには、マスター パスワードを入力してください"
+   },
+   "code_pairing_desc": {
+      "message": "PC アプリのポップアップからコードを確認し、[接続] ボタンをクリックして、自動サインインとロック解除を承認します。"
+   },
+   "code_pairing_title": {
+      "message": "接続コード"
+   },
+   "code_title": {
+      "message": "回復コードをリセット"
+   },
+   "comma": {
+      "message": ":"
+   },
+   "comprehensive_pwd_Desc": {
+      "message": "包括的なパスワード ヘルス チェック"
+   },
+   "confirmMasterNewPass": {
+      "message": "新しいマスターパスワードを確認する"
+   },
+   "confirmMasterPass": {
+      "message": "マスターパスワードを確認してください"
+   },
+   "continue": {
+      "message": "継続"
+   },
+   "continue_sign_in": {
+      "message": "サインインを続ける"
+   },
+   "copied": {
+      "message": "コピーした"
+   },
+   "copy": {
+      "message": "コピー"
+   },
+   "copy_generator_password": {
+      "message": "パスワードをコピー"
+   },
+   "copy_notes": {
+      "message": "メモをコピーする"
+   },
+   "copy_one_time_Password": {
+      "message": "ワンタイムパスワードをコピーする"
+   },
+   "copy_password": {
+      "message": "パスワード"
+   },
+   "copy_username": {
+      "message": "ユーザー名をコピー"
+   },
+   "countryRegion": {
+      "message": "国または地域"
+   },
+   "countryRegion_placeholder": {
+      "message": "国または地域を選択してください"
+   },
+   "createNewAccount": {
+      "message": "アカウントを作成する"
+   },
+   "create_new_account": {
+      "message": "アカウントを作成する"
+   },
+   "createdAt": {
+      "message": "で作成"
+   },
+   "currentMasterPass": {
+      "message": "現在のマスターパスワード"
+   },
+   "day": {
+      "message": "日"
+   },
+   "days": {
+      "message": "日"
+   },
+   "days_case": {
+      "message": "日"
+   },
+   "default_password_manager": {
+      "message": "デフォルトのパスワード マネージャー"
+   },
+   "delete": {
+      "message": "削除"
+   },
+   "delete_all": {
+      "message": "すべて削除"
+   },
+   "delete_at": {
+      "message": "で削除"
+   },
+   "delete_item": {
+      "message": "このアイテムをごみ箱に削除してもよろしいですか？"
+   },
+   "delete_item_Recycle_Bin": {
+      "message": "このアイテムをごみ箱から削除してもよろしいですか？"
+   },
+   "delete_item_Recycle_Bin_Dec": {
+      "message": "一度削除すると元に戻せません。"
+   },
+   "delete_item_dec": {
+      "message": "完全に削除されない限り、ごみ箱から復元できます。"
+   },
+   "deletedSuccessfully": {
+      "message": "正常に削除されました。"
+   },
+   "deleted_this_item": {
+      "message": "このアイテムを削除"
+   },
+   "desktop": {
+      "message": "デスクトップ"
+   },
+   "desktop_app": {
+      "message": "デスクトップ アプリ"
+   },
+   "details": {
+      "message": "詳細"
+   },
+   "device_limit_desc": {
+      "message": "3 台のデバイスでサインインできる上限に達しました。 今すぐアップグレードして、無制限のデバイス アクセスと以下のすべての特典をお楽しみください:"
+   },
+   "device_limit_tips": {
+      "message": "* このデバイスからログアウトします:"
+   },
+   "device_limit_title": {
+      "message": "デバイスの制限に達しました!"
+   },
+   "dinersclub": {
+      "message": "ダイナースクラブ"
+   },
+   "dir": {
+      "message": "ltr"
+   },
+   "discard": {
+      "message": "はい"
+   },
+   "discard_change": {
+      "message": "保存されていない変更を破棄してもよろしいですか？"
+   },
+   "discover": {
+      "message": "ディスカバー"
+   },
+   "downloadApp": {
+      "message": "アプリをダウンロードする"
+   },
+   "edit": {
+      "message": "編集"
+   },
+   "editInfo": {
+      "message": "情報を編集"
+   },
+   "emailAddress": {
+      "message": "メールアドレス"
+   },
+   "emailOrPassIncorrect": {
+      "message": "メールアドレスまたはパスワードが正しくありません。"
+   },
+   "emailVerfy": {
+      "message": "このメールを確認する"
+   },
+   "email_address_copied": {
+      "message": "Eメールアドレスをコピーした"
+   },
+   "emergency_contact": {
+      "message": "緊急アクセス"
+   },
+   "emergency_contact_Desc": {
+      "message": "データにアクセスできなくなった場合、緊急アクセスを許可した人は、データのエクスポートまたはマスター パスワードの変更を要求できます。"
+   },
+   "enterMasterNewPass": {
+      "message": "新しいマスターパスワードを入力してください"
+   },
+   "enterMasterPass": {
+      "message": "マスターパスワードを入力してください"
+   },
+   "enterRecoveryCass": {
+      "message": "回復コードを入力してください"
+   },
+   "enterYourPass": {
+      "message": "パスワードを入力してください"
+   },
+   "enter_email_desc": {
+      "message": "リカバリーコードを受け取るには、メールアドレスを入力してください!"
+   },
+   "enter_email_tips": {
+      "message": "メールアドレスが無効です。確認して再入力してください。"
+   },
+   "enter_your_email_address": {
+      "message": "Eメールアドレス"
+   },
+   "exclude_website": {
+      "message": "ウェブサイトを除外"
+   },
+   "exclude_website_list": {
+      "message": "除外された Web サイトのリスト"
+   },
+   "exit": {
+      "message": "終了する"
+   },
+   "expOptionDate": {
+      "message": "有効期限"
+   },
+   "expiration_date_copied": {
+      "message": "有効期限をコピーした"
+   },
+   "expired": {
+      "message": "期限切れ"
+   },
+   "extDesc": {
+      "message": "DualSafeパスワードマネージャー拡張機能を使用すると、パスワードを1か所で安全に管理し、いつでもパスワードを自動保存、自動入力、およびアクセスできます。"
+   },
+   "extName": {
+      "description": "DualSafe Password Manager & Digital Vault",
+      "message": "DualSafe Password Manager - デジタル保管所"
+   },
+   "extension": {
+      "message": "拡張子"
+   },
+   "failedToDelete": {
+      "message": "削除に失敗しました。"
+   },
+   "failedToOpenLoading_DPM": {
+      "message": "デスクトップ版の読み込み"
+   },
+   "failedToOpenLoading_Dark_Web_Monitor_Dec": {
+      "message": "Dark Web Monitorは、デスクトップ版でのみ使用できます。 デスクトップ版を実行するには、確認ポップアップで[開く]をクリックしてください。 または、下の%sボタンをクリックして、ポップアップを再度開きます。"
+   },
+   "failedToOpenLoading_Emergency_Contact_Dec": {
+      "message": "Emergency Contactは、デスクトップ版でのみ使用できます。 デスクトップ版を実行するには、確認ポップアップで[開く]をクリックしてください。 または、下の%sボタンをクリックして、ポップアップを再度開きます。"
+   },
+   "failedToOpenLoading_Import_Export_Dec": {
+      "message": "インポートとエクスポートは、デスクトップ版でのみ使用できます。 デスクトップ版を実行するには、確認ポップアップで[開く]をクリックしてください。 または、下の%sボタンをクリックして、ポップアップを再度開きます。"
+   },
+   "failedToOpenLoading_Password_Health_Dec": {
+      "message": "Password Healthは、デスクトップ版でのみ使用できます。 デスクトップ版を実行するには、確認ポップアップで[開く]をクリックしてください。 または、下の%sボタンをクリックして、ポップアップを再度開きます。"
+   },
+   "failedToOpen_DPM": {
+      "message": "デスクトップ版を開くのに失敗しました"
+   },
+   "failedToOpen_Dark_Web_Monitor_Dec": {
+      "message": "Dark Web Monitorは、デスクトップ版でのみ使用できます。 %dボタンをクリックして、デスクトップ版をダウンロードしてインストールします。 または、%sボタンをクリックして再度開きます。"
+   },
+   "failedToOpen_Emergency_Contact_Dec": {
+      "message": "Emergency Contactは、デスクトップ版でのみ使用できます。 %dボタンをクリックして、デスクトップ版をダウンロードしてインストールします。 または、%sボタンをクリックして再度開きます。"
+   },
+   "failedToOpen_Import_Export_Dec": {
+      "message": "インポートとエクスポートは、デスクトップ版でのみ使用できます。 %dボタンをクリックして、デスクトップ版をダウンロードしてインストールします。 または、%sボタンをクリックして再度開きます。"
+   },
+   "failedToOpen_Password_Health_Dec": {
+      "message": "Password Healthは、デスクトップ版でのみ使用できます。 %dボタンをクリックして、デスクトップ版をダウンロードしてインストールします。 または、%sボタンをクリックして再度開きます。"
+   },
+   "failedToRestore": {
+      "message": "復元に失敗しました。"
+   },
+   "failed_send_desc": {
+      "message": "リカバリ コード メールの送信に失敗しました。 もう一度やり直してください。"
+   },
+   "failed_send_title": {
+      "message": "送信に失敗した"
+   },
+   "favoties": {
+      "message": "お気に入り"
+   },
+   "feedback": {
+      "message": "フィードバック"
+   },
+   "fill": {
+      "message": "埋める"
+   },
+   "firstName": {
+      "message": "名前"
+   },
+   "fiveMinutes": {
+      "message": "５分"
+   },
+   "forgotYourPass": {
+      "message": "パスワードをお忘れですか？"
+   },
+   "fourHours": {
+      "message": "４時間"
+   },
+   "fourteenDays": {
+      "message": "14日"
+   },
+   "free": {
+      "message": "無料"
+   },
+   "gender": {
+      "message": "性別"
+   },
+   "genderFemale": {
+      "message": "女"
+   },
+   "genderMale": {
+      "message": "男"
+   },
+   "genderNone": {
+      "message": "なし"
+   },
+   "genderOther": {
+      "message": "その他"
+   },
+   "gender_copied": {
+      "message": "性別をコピーした"
+   },
+   "goPremiumBtn": {
+      "message": "プレミアムへ"
+   },
+   "go_back_to_signin": {
+      "message": "サインインに戻る"
+   },
+   "hideCode": {
+      "message": "セキュリティコードを隠す"
+   },
+   "hidePass": {
+      "message": "パスワードを隠す"
+   },
+   "ignore_website": {
+      "message": "このウェブサイトを無視する"
+   },
+   "installDesktopApp": {
+      "message": "デスクトップアプリをインストールする"
+   },
+   "invalid_email": {
+      "message": "無効な電子メールアドレス。 確認したメールアドレスを入力してください。"
+   },
+   "invalid_master_pass": {
+      "message": "マスターパスワードが無効です!"
+   },
+   "invalid_master_tips": {
+      "message": "無効なマスター パスワードです。 確認してからもう一度お試しください。"
+   },
+   "invalid_recovery_code": {
+      "message": "回復コードが無効です。 確認してからもう一度お試しください。"
+   },
+   "invalid_secret_key": {
+      "message": "セキュリティキーが無効です！"
+   },
+   "item_remove_from_favorites": {
+      "message": "お気に入りから削除"
+   },
+   "jcb": {
+      "message": "JCB"
+   },
+   "lang": {
+      "message": "jp"
+   },
+   "lastModifiedAt": {
+      "message": "で変更"
+   },
+   "lastName": {
+      "message": "苗字"
+   },
+   "lastPasswordChangedAt": {
+      "message": "でパスワード変更"
+   },
+   "learn_more": {
+      "message": "もっと詳しく知る"
+   },
+   "length": {
+      "message": "長さ"
+   },
+   "loading": {
+      "message": "読み込み中..."
+   },
+   "loading_data_error": {
+      "message": "読み込みに失敗しました。 ネットワーク接続を確認してください。"
+   },
+   "lock": {
+      "message": "ロック"
+   },
+   "lock_comfirm_btn": {
+      "message": "手動でロック解除"
+   },
+   "login_comfirm_btn": {
+      "message": "手動でサインインする"
+   },
+   "login_comfirm_desc": {
+      "message": "アカウントをクリックして、デスクトップ アプリからの自動サインインとロック解除を承認します。"
+   },
+   "login_feature_auto": {
+      "message": "\u003Cb>自動\u003C/b> - 自動同期により無制限のデバイスからアクセス"
+   },
+   "login_feature_easy": {
+      "message": " \u003Cb>簡単\u003C/b> - クリックするだけでパスワードを自動保存および自動入力"
+   },
+   "login_feature_safe": {
+      "message": "\u003Cb>安全\u003C/b> - クラス最高の暗号化でデータを保存"
+   },
+   "login_feature_secure": {
+      "message": "\u003Cb>安全\u003C/b> - 強力で一意のパスワードを生成します"
+   },
+   "login_feature_unlimited": {
+      "message": "\u003Cb>無制限\u003C/b> - 無制限のパスワード、支払いなどを保存します"
+   },
+   "login_left_title": {
+      "message": "デジタル ライフに不可欠なパスワードを安全かつシンプルに無料で管理できます。"
+   },
+   "login_waiting_title": {
+      "message": "デスクトップ アプリからの承認を待っています…"
+   },
+   "logins": {
+      "message": "ログイン"
+   },
+   "lower_case": {
+      "message": "小文字 (a - z)"
+   },
+   "maestro": {
+      "message": "マエストロ"
+   },
+   "mastercard": {
+      "message": "マスターカード"
+   },
+   "masterpassIncorrect": {
+      "message": "無効なマスター パスワードです。"
+   },
+   "match_change_pass": {
+      "message": "パスワードが要件を満たしておりません。"
+   },
+   "match_master_pass": {
+      "message": "パスワードが一致しません。"
+   },
+   "middleName": {
+      "message": "ミドルネーム"
+   },
+   "month": {
+      "message": "月"
+   },
+   "more": {
+      "message": "さらに"
+   },
+   "name": {
+      "message": "名前"
+   },
+   "name_copied": {
+      "message": "名前をコピーした"
+   },
+   "networkError": {
+      "message": "ネットワーク接続エラー。"
+   },
+   "never": {
+      "message": "一度もない"
+   },
+   "newUser": {
+      "message": "新しいユーザー？"
+   },
+   "new_password": {
+      "message": "新しいパスワード"
+   },
+   "new_tag": {
+      "message": "新しいタグ"
+   },
+   "new_tag_number": {
+      "message": "新しいタグ"
+   },
+   "ninetyDays": {
+      "message": "90日"
+   },
+   "noItemsAddAllItem": {
+      "message": "アイテムは追加されません。"
+   },
+   "noItemsAddLoginItem": {
+      "message": "ログインは追加されません。"
+   },
+   "noItemsAddNotesItem": {
+      "message": "セキュアノートは付加されません。"
+   },
+   "noItemsAddPayItem": {
+      "message": "支払い情報は追加されません。"
+   },
+   "noItemsAddPersonalItem": {
+      "message": "個人情報は追加されません。"
+   },
+   "noItemsAddRecycleItem": {
+      "message": "ここにアイテムはありません。"
+   },
+   "noItemsFound": {
+      "message": "アイテムが見つかりません。"
+   },
+   "noResult": {
+      "message": "検索結果はありません！"
+   },
+   "noSaved": {
+      "message": "このサイトのログインは保存されていません。"
+   },
+   "noSavedPrss": {
+      "message": "保存されたパスワードはありません！"
+   },
+   "no_excluded_websites": {
+      "message": "除外されたウェブサイトはありません。"
+   },
+   "no_password_history": {
+      "message": "パスワードの履歴はありません。"
+   },
+   "no_valid_secret_key_found": {
+      "message": "有効な秘密鍵が見つかりません!"
+   },
+   "notNow": {
+      "message": "今じゃない"
+   },
+   "not_have_code": {
+      "message": "回復コードをお持ちではありませんか?"
+   },
+   "notes": {
+      "message": "ノート"
+   },
+   "notes_characters_tips": {
+      "message": "残りの%s文字"
+   },
+   "notes_copied": {
+      "message": "メモをコピーしました"
+   },
+   "notes_placeholder": {
+      "message": "このアイテムに関するメモを入力してください（最大制限：%s文字）"
+   },
+   "numWords": {
+      "message": "桁数（0～9）"
+   },
+   "offer_to_save_passwords": {
+      "message": "パスワードの保存を申し出る"
+   },
+   "offer_to_save_passwords_desc": {
+      "message": " ログインまたはサインアップ時にパスワードを保存するように求める"
+   },
+   "ok": {
+      "message": "OK"
+   },
+   "okIgotIt": {
+      "message": "はい. わかった"
+   },
+   "oneHour": {
+      "message": "1時間"
+   },
+   "oneMinute": {
+      "message": "1分"
+   },
+   "one_time_Password": {
+      "message": "ワンタイムパスワード"
+   },
+   "one_time_pass_copied": {
+      "message": "ワンタイムパスワードをコピーした"
+   },
+   "only": {
+      "message": "唯一"
+   },
+   "open": {
+      "message": "開く"
+   },
+   "options": {
+      "message": "オプション"
+   },
+   "passIncorrect": {
+      "message": "パスワードが不正です。"
+   },
+   "password": {
+      "message": "パスワード"
+   },
+   "password_copied": {
+      "message": "パスワードをコピーした"
+   },
+   "password_history_item": {
+      "message": "パスワード履歴"
+   },
+   "password_history_tips": {
+      "message": "最近の %s パスワードを表示します。"
+   },
+   "password_history_title": {
+      "message": "パスワード履歴"
+   },
+   "password_same": {
+      "message": "新しいマスター パスワードは古いパスワードと同じにすることはできません。"
+   },
+   "password_tip_note": {
+      "message": "\u003Cb>注:\u003C/b> 現在の iTop パスワードは使用しないでください。"
+   },
+   "password_tip_one": {
+      "message": "8 文字以上。 16 文字以上を推奨します。"
+   },
+   "password_tip_three": {
+      "message": "少なくとも 1 つのシンボル。"
+   },
+   "password_tip_two": {
+      "message": "少なくとも 1 つの数字。"
+   },
+   "payment_Info": {
+      "message": "支払い情報"
+   },
+   "personal_Info": {
+      "message": "個人情報"
+   },
+   "phoneNumber": {
+      "message": "電話番号"
+   },
+   "phone_number_copied": {
+      "message": "電話番号をコピーした"
+   },
+   "premiumExpiredPurchase": {
+      "message": "プレミアムの\u003Cb class='text-red'>が期限切れ！\u003C/b>"
+   },
+   "premiumExpiredPurchaseAlert": {
+      "message": "高度な機能は利用できなくなりました。 アップグレードしてプレミアムアクセスを継続し、パスワードを簡単に安全に保ちます。"
+   },
+   "premiumExpiringSoonPurchase": {
+      "message": "プレミアムの残りは\u003Cb class=\"text-yellow\">%s日\u003C/b>のみです。"
+   },
+   "premiumExpiringSoonPurchaseAlert": {
+      "message": "Stay Premiumにアップグレードすると、以下のような先進的な機能を利用できます。"
+   },
+   "premiumFreePurchase": {
+      "message": "パスワードを管理するためのより簡単で安全な方法"
+   },
+   "premiumFreePurchaseAlert": {
+      "message": "今すぐPremium版を開始し、次の高度な機能を維持してください。"
+   },
+   "premiumFreePurchaseAlert_New": {
+      "message": "今すぐプレミアムを開始し、次の高度な機能を維持します。"
+   },
+   "premiumFreePurchase_New": {
+      "message": "より簡単で安全な方法\u003Cbr> パスワードを管理する"
+   },
+   "premiumPurchase": {
+      "message": "プレミアムの30日間を手に入れた！"
+   },
+   "premiumPurchaseAlert": {
+      "message": "これからは、以下のような先進機能をお楽しみください。"
+   },
+   "premiun": {
+      "message": "プレミアム"
+   },
+   "purchase_Dark_Web_Monitor": {
+      "message": "ダークウェブの監視と通知"
+   },
+   "purchase_Password_Health": {
+      "message": "パスワード健全性のチェック"
+   },
+   "purchase_Password_Health_Check": {
+      "message": "パスワードの整合性チェック"
+   },
+   "purchase_Unlimited_Devices": {
+      "message": "無制限のデバイス間の同期"
+   },
+   "questionMark": {
+      "message": "?"
+   },
+   "recovery_code_copied": {
+      "message": "回復コードをコピーしました"
+   },
+   "recycle_Bin": {
+      "message": "ゴミ箱"
+   },
+   "refresh": {
+      "message": "更新"
+   },
+   "rememberMeOnThisDevice": {
+      "message": "このデバイスで私を覚えておいてください"
+   },
+   "remindExpirationDate": {
+      "message": "有効期限の2ヶ月前に通知してください"
+   },
+   "remind_me_after_days": {
+      "message": "7日後に通知する"
+   },
+   "remind_me_tomorrow": {
+      "message": "明日通知する"
+   },
+   "remind_password": {
+      "message": "90日後にパスワード変更を通知します"
+   },
+   "remove": {
+      "message": "削除"
+   },
+   "remove_from_favorites": {
+      "message": "お気に入りから削除"
+   },
+   "remove_from_favorites_succ": {
+      "message": "お気に入りから削除した"
+   },
+   "resend": {
+      "message": "再送"
+   },
+   "reset": {
+      "message": "リセット"
+   },
+   "reset_code_desc": {
+      "message": "マスターパスワードをリセットするには、リカバリーコードを入力してください。 回復コードは PDF ファイルとして保存されました。"
+   },
+   "reset_code_title": {
+      "message": "回復コードを入力してください"
+   },
+   "reset_desc": {
+      "message": "パスワードをリセットするには、確認済みのメールアドレスを入力してください。"
+   },
+   "reset_email_place": {
+      "message": "マスターパスワードをリセットするには、リカバリーコードを入力してください。 回復コードは PDF ファイルとして保存されました。"
+   },
+   "reset_master_title": {
+      "message": "マスターパスワードのリセット"
+   },
+   "reset_recovery_code": {
+      "message": "回復コードをリセット"
+   },
+   "reset_success_desc": {
+      "message": "マスター パスワードがリセットされました。 新しいマスターパスワードでサインインしてください。"
+   },
+   "reset_success_title": {
+      "message": "成功！"
+   },
+   "reset_title": {
+      "message": "パスワードのリセット"
+   },
+   "restore": {
+      "message": "復元"
+   },
+   "restoreSuccessfully": {
+      "message": "正常に復元されました。"
+   },
+   "retry": {
+      "message": "リトライ"
+   },
+   "save": {
+      "message": "保存"
+   },
+   "saveIn_DPM": {
+      "message": "DualSafeパスワードマネージャーに保存"
+   },
+   "save_as_pdf": {
+      "message": "PDFとして保存"
+   },
+   "save_code_desc_login": {
+      "message": "リカバリ コードを PDF で保存してください。"
+   },
+   "save_code_desc_one": {
+      "message": "回復コードを PDF として保存し、安全に保管するために印刷してください。"
+   },
+   "save_code_desc_options": {
+      "message": "以前のリカバリ コードは今後無効になります。 新しいリカバリ コードを PDF で保存し、印刷して安全に保管してください。"
+   },
+   "save_code_desc_two": {
+      "message": "マスター パスワードを忘れた場合に、DualSafe パスワード マネージャーへのアクセスを取り戻すことができます。"
+   },
+   "save_code_new_title": {
+      "message": "新しい回復コードを保存"
+   },
+   "save_code_tips": {
+      "message": "\u003Cb>重要:\u003C/b> マスター パスワードを忘れた場合、DualSafe パスワード マネージャーに再びアクセスするには、回復コードが唯一の方法です。"
+   },
+   "save_code_title": {
+      "message": "回復コードを保存"
+   },
+   "save_totp": {
+      "message": "ワンタイムパスワードを保存しますか? "
+   },
+   "savedFailedData": {
+      "message": "サーバーから最新のデータが同期されました。"
+   },
+   "savedFailedSynced": {
+      "message": "保存に失敗しました！ サーバーから最新のデータが同期されました。"
+   },
+   "savedSuccessfully": {
+      "message": "正常に保存。"
+   },
+   "scan_web_page_QRCode": {
+      "message": "WebページのQRコードをスキャン"
+   },
+   "search": {
+      "message": "検索"
+   },
+   "secure": {
+      "message": "安全な"
+   },
+   "secureNotes": {
+      "message": "セキュアノート"
+   },
+   "secure_notes_placeholder": {
+      "message": "ここに重要なメモを入力してください（最大制限：%s文字）"
+   },
+   "securityCode": {
+      "message": "セキュリティコード"
+   },
+   "security_code_copied": {
+      "message": "セキュリティコードをコピーした"
+   },
+   "send": {
+      "message": "送信"
+   },
+   "send_email_hint": {
+      "message": "あなたのメールアドレスに送信"
+   },
+   "sending_desc": {
+      "message": "あなたのメールアドレスにリカバリーコードを送信中。"
+   },
+   "sending_title": {
+      "message": "送信中"
+   },
+   "sent_succ_desc": {
+      "message": "リカバリ コードが電子メール アドレス %s に送信されました。 受信トレイにない場合は、迷惑メールを確認してください。 または、\u003Cbutton class=\"resndbtn\">再送信\u003C/button>できます。"
+   },
+   "sent_succ_title": {
+      "message": "正常に送信されました!"
+   },
+   "set_master_password": {
+      "message": "マスターパスワードの設定"
+   },
+   "set_master_password_tips": {
+      "message": "アカウントの安全のために、DualSafe パスワード マネージャーのマスター パスワードを設定することをお勧めします。"
+   },
+   "set_master_tips": {
+      "message": "\u003Cb>重要:\u003C/b> マスター パスワードは、DualSafe パスワード マネージャーにアクセスするための唯一の有効なパスワードです。"
+   },
+   "set_master_title": {
+      "message": "マスターパスワードの設定"
+   },
+   "set_success_desc": {
+      "message": "マスターパスワードが設定され、回復コードが正常に保存されました。 マスターパスワードでサインインしてください。"
+   },
+   "settings": {
+      "message": "設定"
+   },
+   "settings_Auto_Fill": {
+      "message": "自動入力"
+   },
+   "settings_Auto_Fill_Dec": {
+      "message": "保存されたログイン情報、支払い情報などを自動的に入力します。"
+   },
+   "settings_Auto_Fill_Password": {
+      "message": "自動入力パスワード"
+   },
+   "settings_Auto_Fill_Password_Dec": {
+      "message": "保存した Web サイトにログインするときに、アカウントとパスワードを自動的に入力します。"
+   },
+   "settings_Auto_Lock": {
+      "message": "オートロック"
+   },
+   "settings_Auto_Lock_Dec": {
+      "message": "指定した頻度でDualSafeパスワードマネージャーを自動的にロックする"
+   },
+   "settings_Auto_Save": {
+      "message": "自動保存"
+   },
+   "settings_Auto_Save_Dec": {
+      "message": "入力したユーザー名とパスワードを自動的に保存します"
+   },
+   "settings_Autofill_and_Autosave": {
+      "message": "自動入力と自動保存"
+   },
+   "settings_Clear_Clipboard": {
+      "message": "クリップボードをクリアします"
+   },
+   "settings_Clear_Clipboard_Dec": {
+      "message": "パスワードをコピーした後、指定した時間に自動的にクリップボードをクリアします"
+   },
+   "settings_Fill_Payments": {
+      "message": "お支払い情報の入力"
+   },
+   "settings_Fill_Payments_Desc": {
+      "message": "ワンクリックで、カード番号、カード名義人、有効期限などの保存済みの支払い情報を入力するのに役立ちます"
+   },
+   "settings_Fill_Personal_Infol": {
+      "message": "個人情報の入力"
+   },
+   "settings_Fill_Personal_Infol_Desc": {
+      "message": "ワンクリックで、電子メール、電話番号、住所などの保存済みの個人情報を入力するのに役立ちます"
+   },
+   "settings_General": {
+      "message": "一般"
+   },
+   "settings_General_Dec": {
+      "message": "DualSafeパスワードマネージャーをデフォルトのパスワードマネージャーとして設定する"
+   },
+   "settings_Limited_time_free": {
+      "message": "(期間限定オファー)"
+   },
+   "settings_Security_Options": {
+      "message": "セキュリティオプション"
+   },
+   "settings_Show_Icon": {
+      "message": "アイコンを表示"
+   },
+   "settings_Show_Icon_Dec": {
+      "message": "すべてのパスワード入力ボックスにDualSafeパスワードマネージャーのアイコンを表示して、ワンクリックでログインを保存します"
+   },
+   "sevenDays": {
+      "message": "7日"
+   },
+   "showCode": {
+      "message": "セキュリティコードを表示する"
+   },
+   "showPass": {
+      "message": "パスワードを表示"
+   },
+   "signIn": {
+      "message": "サインイン"
+   },
+   "signInAutoNow": {
+      "message": "今すぐサインインして、ログイン情報、個人情報、または支払い情報を自動入力します。"
+   },
+   "signInLocked": {
+      "message": "アカウントがロックされました。 5分後に再試行してください。"
+   },
+   "signInNow": {
+      "message": "今すぐサインインして、このサイトのログインを自動入力します。"
+   },
+   "signInSave": {
+      "message": "サインインして保存"
+   },
+   "signInTimeout": {
+      "message": "サインインタイムアウト！ ネットワークを確認して、もう一度お試しください。"
+   },
+   "signIn_DPM": {
+      "message": "DualSafeパスワードマネージャーにサインインする"
+   },
+   "signIn_Desc": {
+      "message": "今すぐサインインして、 \u003Ca class=\"btn-link btn-name\">\u003C/a>のログインを保存し、将来的に自動入力してください。"
+   },
+   "signOut": {
+      "message": "サインアウト"
+   },
+   "sign_in_again_desc": {
+      "message": "以前に Google / Facebook でサインインしたため、まだパスワードを設定していません。 [OK] をクリックすると、Google / Facebook でサインインできます。"
+   },
+   "sign_in_now": {
+      "message": "今すぐサインイン"
+   },
+   "sign_in_with": {
+      "message": "またはサインイン"
+   },
+   "sign_in_with_app": {
+      "message": "デスクトップ アプリでサインイン"
+   },
+   "sign_in_with_facebook": {
+      "message": "Facebookでサインイン"
+   },
+   "sign_in_with_google": {
+      "message": "Google でサインイン"
+   },
+   "sixtyDays": {
+      "message": "60日"
+   },
+   "skip_for_now": {
+      "message": "今のところスキップ"
+   },
+   "sort_by": {
+      "message": "並び替え"
+   },
+   "sort_date_created": {
+      "message": "作成日"
+   },
+   "sort_date_modified": {
+      "message": "変更日"
+   },
+   "sort_newest_first": {
+      "message": "新しい順"
+   },
+   "sort_oldest_first": {
+      "message": " 古い順"
+   },
+   "sort_show_az": {
+      "message": "A-Z"
+   },
+   "sort_show_favorites": {
+      "message": "お気に入りを表示"
+   },
+   "sort_show_title_az": {
+      "message": "タイトル: A to Z"
+   },
+   "sort_show_title_za": {
+      "message": "タイトル: Z to A"
+   },
+   "sort_show_za": {
+      "message": "Z-A"
+   },
+   "sort_title": {
+      "message": "タイトル"
+   },
+   "state": {
+      "message": "州"
+   },
+   "strong": {
+      "message": "強力"
+   },
+   "success_desc": {
+      "message": "拡張アイコン \u003Cspan class=\"succ-icon\">\u003C/span> をクリックし、DualSafeパスワードマネージャーをツールバーに固定します。 \u003Cspan class=\"succ-icon dpm\">\u003C/span> をクリックすると、DualSafe パスワード マネージャーをいつでも使用できます。"
+   },
+   "success_title": {
+      "message": "おめでとう🎉🎉🎉 \u003Cbr>DualSafe パスワード マネージャーの準備が整いました!"
+   },
+   "suggestion": {
+      "message": "提案"
+   },
+   "suggestion_tips": {
+      "message": "ここでは、現在開いている Web サイトの保存されたログイン データを示します。"
+   },
+   "symbols": {
+      "message": "記号(%s)"
+   },
+   "systemLocks": {
+      "message": "システムロック"
+   },
+   "tags": {
+      "message": "タグ"
+   },
+   "tenMinutes": {
+      "message": "1０分"
+   },
+   "thirtyDays": {
+      "message": "30日"
+   },
+   "thirtyMinutes": {
+      "message": "３０分"
+   },
+   "title": {
+      "message": "タイトル"
+   },
+   "title_placeholder": {
+      "message": "タイトルを入力してください"
+   },
+   "token_invalid_desc": {
+      "message": "セッションの有効期限が切れました。 もう一度サインインしてください。"
+   },
+   "tools": {
+      "message": "ツール"
+   },
+   "tools_Dark_Web_Monitor": {
+      "message": "ダークウェブモニター"
+   },
+   "tools_Dark_Web_Monitor_Dec": {
+      "message": "無制限のパスワード"
+   },
+   "tools_Import_Export": {
+      "message": "インポートとエクスポート"
+   },
+   "tools_Import_Export_Dec": {
+      "message": "ブラウザまたはその他のパスワードツールからデータをインポートし、保存したデータをワンクリックでCSVファイルにエクスポートします"
+   },
+   "tools_Password_Health": {
+      "message": "パスワードの健全性"
+   },
+   "tools_Password_Health_Dec": {
+      "message": "脆弱なパスワード、再利用されたパスワード、侵害されたパスワードなどの脆弱なパスワードを確認するのに役立ちます"
+   },
+   "tools_Unlimited_Passwords": {
+      "message": "無制限のパスワード"
+   },
+   "tools_Unlimited_Passwords_Only": {
+      "message": "（無料プランでは50のみ）"
+   },
+   "twoMinutes": {
+      "message": "２分"
+   },
+   "type": {
+      "message": "タイプ "
+   },
+   "unionpay": {
+      "message": "銀聯"
+   },
+   "unknown": {
+      "message": "不明"
+   },
+   "unlock": {
+      "message": "ロックを解除する"
+   },
+   "unlockAutoNow": {
+      "message": "今すぐロックを解除して、ログイン、個人情報、または支払い情報を自動入力してください。"
+   },
+   "unlockDPM": {
+      "message": "DualSafeパスワードマネージャーのロックを解除する"
+   },
+   "unlockDPM_Desc": {
+      "message": "今すぐロックを解除して、\u003Ca class=\"btn-link btn-name\">\u003C/a>のログインを保存し、将来的に自動入力してください。"
+   },
+   "unlockNow": {
+      "message": "今すぐロックを解除して、このサイトのログインを自動入力します。"
+   },
+   "unlockSave": {
+      "message": "ロック解除と保存"
+   },
+   "unlock_now": {
+      "message": "今すぐアンロック"
+   },
+   "until_sign_out": {
+      "message": "サインアウトするまで"
+   },
+   "update": {
+      "message": "更新"
+   },
+   "updateFailed": {
+      "message": "更新失敗。"
+   },
+   "updateLogins": {
+      "message": "ログインの更新"
+   },
+   "updateSuccessfully": {
+      "message": "更新成功。"
+   },
+   "upgradeBtn": {
+      "message": "アップグレード"
+   },
+   "upgradeNowBtn": {
+      "message": "今すぐアップグレード"
+   },
+   "upper_case": {
+      "message": "大文字 (A -Z)"
+   },
+   "url": {
+      "message": "url"
+   },
+   "url_copied": {
+      "message": "ウェブサイトをコピーした"
+   },
+   "use": {
+      "message": "使用"
+   },
+   "use_generator_password": {
+      "message": "パスワードを使用する"
+   },
+   "user_manual": {
+      "message": "ユーザーマニュアル"
+   },
+   "username": {
+      "message": "ユーザー名"
+   },
+   "username_copied": {
+      "message": "ユーザー名をコピーした"
+   },
+   "username_placeholder": {
+      "message": "メール/ユーザー名/電話番号"
+   },
+   "view": {
+      "message": "表示"
+   },
+   "visa": {
+      "message": "ビザ"
+   },
+   "visaelectron": {
+      "message": "ビザエレクトロン"
+   },
+   "weak": {
+      "message": "脆弱"
+   },
+   "web_password_sync": {
+      "message": "注: Web サイトのパスワードを必ず更新してください。"
+   },
+   "welcomeTo": {
+      "message": "ようこそ"
+   },
+   "year": {
+      "message": "年"
+   },
+   "yes": {
+      "message": "はい"
+   },
+   "zip": {
+      "message": "ZIP"
+   },
+   "zipPostalCode": {
+      "message": "ZIP/郵便番号"
+   }
+}

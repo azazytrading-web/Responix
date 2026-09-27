@@ -49,7 +49,7 @@ const input = (overrides: Partial<PromptCompilerInput> = {}): PromptCompilerInpu
   execution: { requestId: "request" },
   conversation: { id: "conversation" },
   sourceChecksum: "checksum",
-  maxPromptSizeBytes: 100000,
+  maxPromptSizeBytes: 500000,
   ...overrides
 });
 
@@ -277,5 +277,24 @@ describe("PromptCompilerEngine", () => {
     const second = engine.compile(input({ maxPromptSizeBytes: 10 }));
     expect(first.diagnostics.map(({ code }) => code)).toContain("PROMPT_SIZE_EXCEEDED");
     expect(first.hash).toBe(second.hash);
+  });
+
+  it("accepts a compiled prompt larger than 100KB under the 500KB default limit", () => {
+    const result = engine.compile(input({
+      sections: { systemPrompt: "System", userPrompt: "x".repeat(60_000) },
+      maxPromptSizeBytes: 500_000
+    }));
+    expect(result.sizeBytes).toBeGreaterThan(100_000);
+    expect(result.sizeBytes).toBeLessThan(500_000);
+    expect(result.diagnostics.map(({ code }) => code)).not.toContain("PROMPT_SIZE_EXCEEDED");
+  });
+
+  it("rejects a compiled prompt larger than the 500KB limit", () => {
+    const result = engine.compile(input({
+      sections: { systemPrompt: "System", userPrompt: "x".repeat(260_000) },
+      maxPromptSizeBytes: 500_000
+    }));
+    expect(result.sizeBytes).toBeGreaterThan(500_000);
+    expect(result.diagnostics.map(({ code }) => code)).toContain("PROMPT_SIZE_EXCEEDED");
   });
 });

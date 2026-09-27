@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
+  <g id="ico_home_notes" transform="translate(-761 -428)">
+    <g id="document" transform="translate(748 444)">
+      <rect id="矩形_1510" data-name="矩形 1510" width="16" height="16" transform="translate(13 -16)" fill="#fff" opacity="0"/>
+      <path id="Vector" d="M4.07,11.628H7.558c2.907,0,4.07-1.163,4.07-4.07V4.07c0-2.907-1.163-4.07-4.07-4.07H4.07C1.163,0,0,1.163,0,4.07V7.558C0,10.465,1.163,11.628,4.07,11.628Z" transform="translate(15.186 -13.814)" fill="none" stroke="#4d5670" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/>
+      <path id="Vector-2" data-name="Vector" d="M4.36,0H0" transform="translate(18.82 -9.744)" fill="none" stroke="#4d5670" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/>
+      <path id="Vector-3" data-name="Vector" d="M4.36,0H0" transform="translate(18.82 -6.256)" fill="none" stroke="#4d5670" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/>
+    </g>
+  </g>
+</svg>

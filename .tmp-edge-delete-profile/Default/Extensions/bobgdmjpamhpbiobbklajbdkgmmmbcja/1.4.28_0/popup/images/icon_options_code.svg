@@ -1,0 +1,10 @@
+<svg id="icon_options_code" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+  <g id="keyboard">
+    <path id="Vector" d="M2377.7,2600.8h8.125a10.893,10.893,0,0,1,1.5.082c2.375.262,3.015,1.381,3.015,4.433v5.416c0,3.052-.64,4.171-3.015,4.433a10.855,10.855,0,0,1-1.5.082H2377.7a10.892,10.892,0,0,1-1.5-.082c-2.373-.262-3.014-1.381-3.014-4.433v-5.416c0-3.052.641-4.171,3.014-4.433A10.93,10.93,0,0,1,2377.7,2600.8Z" transform="translate(-2369.758 -2596.019)" fill="none" stroke="#292d32" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/>
+    <path id="Vector-2" d="M2383.113,2606.213h3.159" transform="translate(-2369.758 -2596.019)" fill="none" stroke="#292d32" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/>
+    <path id="Vector-3" d="M2377.244,2611.179h9.028" transform="translate(-2369.758 -2596.019)" fill="none" stroke="#292d32" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/>
+    <path id="Vector-4" d="M2380.038,2606.213h0" transform="translate(-2369.758 -2596.019)" fill="none" stroke="#292d32" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+    <path id="Vector-5" d="M2377.33,2606.213h0" transform="translate(-2369.758 -2596.019)" fill="none" stroke="#292d32" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+    <path id="Vector-6" d="M2369.758,2596.019h24v24h-24Z" transform="translate(-2369.758 -2596.019)" fill="none"/>
+  </g>
+</svg>

@@ -4,7 +4,7 @@ describe("MemoryRuntimeService", () => {
   const repository = {
     create: jest.fn(), update: jest.fn(), publish: jest.fn(), rollback: jest.fn(),
     archive: jest.fn(), commitWrite: jest.fn(), commitWrites: jest.fn(),
-    get: jest.fn(), getSnapshot: jest.fn(),
+    get: jest.fn(), getSnapshot: jest.fn(), latestSnapshots: jest.fn(), ensureConversationRuntime: jest.fn(),
     list: jest.fn(), listSnapshots: jest.fn(), compare: jest.fn(), diagnostics: jest.fn(),
     metrics: jest.fn(), history: jest.fn()
   };
@@ -21,6 +21,19 @@ describe("MemoryRuntimeService", () => {
     expect(store.loadResolved).toHaveBeenCalledWith(
       "workspace", "actor", ["11111111-1111-4111-8111-111111111111"],
       "1.0", "request", "run"
+    );
+  });
+  it("delegates runtime-scoped latest snapshot resolution", async () => {
+    repository.latestSnapshots.mockResolvedValue(["snapshot"]);
+    await expect(service.latestSnapshots("workspace", ["runtime"])).resolves.toEqual(["snapshot"]);
+    expect(repository.latestSnapshots).toHaveBeenCalledWith("workspace", ["runtime"]);
+  });
+  it("delegates conversation-scoped memory runtime reuse", async () => {
+    repository.ensureConversationRuntime.mockResolvedValue({ runtimeId: "runtime", snapshotId: "snapshot" });
+    await expect(service.ensureConversationRuntime("workspace", "actor", "conversation", "agent-memory"))
+      .resolves.toEqual({ runtimeId: "runtime", snapshotId: "snapshot" });
+    expect(repository.ensureConversationRuntime).toHaveBeenCalledWith(
+      "workspace", "actor", "conversation", "agent-memory"
     );
   });
   it("delegates transactional writes, comparison, metrics and diagnostics", async () => {

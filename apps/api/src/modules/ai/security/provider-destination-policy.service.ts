@@ -72,7 +72,7 @@ export class ProviderDestinationPolicy {
     if (this.isLocalHostname(hostname)) this.reject("Provider hostname is local or reserved");
 
     const allowedHosts = this.config.getOrThrow<string[]>("ai.network.allowedHosts");
-    if (!allowedHosts.includes(hostname)) this.reject("Provider hostname is not allowlisted");
+    if (!this.isHostAllowlisted(hostname, allowedHosts)) this.reject("Provider hostname is not allowlisted");
 
     const port = url.port ? Number.parseInt(url.port, 10) : 443;
     const allowedPorts = this.config.getOrThrow<number[]>("ai.network.allowedPorts");
@@ -197,6 +197,18 @@ export class ProviderDestinationPolicy {
       hostname.endsWith(".svc.cluster.local") ||
       !hostname.includes(".")
     );
+  }
+
+  private isHostAllowlisted(hostname: string, allowedHosts: string[]): boolean {
+    const normalizedHostname = hostname.toLowerCase().replace(/\.$/, "");
+    return allowedHosts.some((allowedHost) => {
+      const normalized = allowedHost.toLowerCase().replace(/\.$/, "");
+      if (normalized === normalizedHostname) return true;
+      if (normalized.startsWith("*.") && (normalizedHostname === normalized.slice(2) || normalizedHostname.endsWith(`.${normalized.slice(2)}`))) {
+        return true;
+      }
+      return false;
+    });
   }
 
   private normalizeHostname(hostname: string): string {

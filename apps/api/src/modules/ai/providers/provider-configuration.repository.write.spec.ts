@@ -1,0 +1,16 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+import { ConflictException } from "@nestjs/common";
+import { ProviderConfigurationRepository } from "./provider-configuration.repository";
+
+describe("ProviderConfigurationRepository writes",()=>{
+ const current={id:"cfg",enabled:true,settings:{old:true},updatedAt:new Date("2026-01-01T00:00:00Z"),deletedAt:null};
+ const tx={aiProvider:{findFirst:jest.fn()},aiProviderConfiguration:{findUnique:jest.fn(),upsert:jest.fn()},aiProviderCredential:{upsert:jest.fn()},auditLog:{create:jest.fn()}};
+ const prisma={$transaction:jest.fn((operation:(client:typeof tx)=>unknown)=>operation(tx)),aiProvider:{findUnique:jest.fn()}};
+ const crypto={encrypt:jest.fn().mockReturnValue("encrypted"),fingerprint:jest.fn().mockReturnValue("fingerprint")};
+ const repository=new ProviderConfigurationRepository(prisma as never,crypto as never);
+ beforeEach(()=>{jest.clearAllMocks();tx.aiProvider.findFirst.mockResolvedValue({id:"p1",providerName:"OpenAI"});tx.aiProviderConfiguration.findUnique.mockResolvedValue(current);tx.aiProviderConfiguration.upsert.mockResolvedValue({...current,settings:{region:"us"}});tx.aiProviderCredential.upsert.mockResolvedValue({});tx.auditLog.create.mockResolvedValue({});prisma.aiProvider.findUnique.mockResolvedValue({id:"p1",providerName:"OpenAI",configurations:[{enabled:true,settings:{region:"us"},updatedAt:current.updatedAt}],credentials:[{id:"c1"}],healthRecords:[]})});
+ it("atomically encrypts credential replacement and audits no secret",async()=>{const result=await repository.configure({workspaceId:"w1",actorId:"u1",providerId:"p1",enabled:true,settings:{region:"us"},credential:{name:"default",secret:"plain-secret"},expectedUpdatedAt:current.updatedAt});expect(crypto.encrypt).toHaveBeenCalledWith("plain-secret");expect(tx.aiProviderCredential.upsert).toHaveBeenCalledWith(expect.objectContaining({where:{workspaceId_providerId_name:{workspaceId:"w1",providerId:"p1",name:"default"}},update:expect.objectContaining({encryptedSecret:"encrypted"})}));expect(JSON.stringify(tx.auditLog.create.mock.calls)).not.toContain("plain-secret");expect(result).toMatchObject({credentialConfigured:true});expect(prisma.$transaction).toHaveBeenCalledTimes(1)});
+ it("preserves the credential when omitted",async()=>{await repository.configure({workspaceId:"w1",actorId:"u1",providerId:"p1",enabled:false,settings:{}});expect(tx.aiProviderCredential.upsert).not.toHaveBeenCalled();expect(crypto.encrypt).not.toHaveBeenCalled()});
+ it("enforces optimistic concurrency",async()=>{await expect(repository.configure({workspaceId:"w1",actorId:"u1",providerId:"p1",enabled:true,settings:{},expectedUpdatedAt:new Date("2025-01-01T00:00:00Z")})).rejects.toBeInstanceOf(ConflictException);expect(tx.aiProviderConfiguration.upsert).not.toHaveBeenCalled()});
+ it("reads configuration, credential, and health within the workspace",async()=>{await repository.getSafe("w1","p1");expect(prisma.aiProvider.findUnique).toHaveBeenCalledWith(expect.objectContaining({select:expect.objectContaining({configurations:expect.objectContaining({where:{workspaceId:"w1",deletedAt:null}}),credentials:expect.objectContaining({where:{workspaceId:"w1",status:"ACTIVE",deletedAt:null}}),healthRecords:expect.objectContaining({where:{workspaceId:"w1"}})})}))});
+});

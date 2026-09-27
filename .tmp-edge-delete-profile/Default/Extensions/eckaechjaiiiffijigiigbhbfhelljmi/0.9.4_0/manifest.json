@@ -1,0 +1,22 @@
+{
+   "background": {
+      "persistent": true,
+      "scripts": [ "flame-monkey.js" ]
+   },
+   "content_scripts": [ {
+      "css": [ "naptha.css" ],
+      "js": [ "naptha-wick.js" ],
+      "matches": [ "\u003Call_urls>" ]
+   } ],
+   "description": "Highlight, copy, edit, and translate text from any image on the web.",
+   "icons": {
+      "128": "icon.png"
+   },
+   "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAtbhVgOzmFPaJRQN3wez7FDwRq1AaWlEL4citJymKQKLwE/4uyLoSso90rk+/vBvUaHdSe+Q+ZwCPddu/bpng8phT6mvHC5qGMqUPm/RC0SWeIbrBTn33Eqi2sgrjiZ30tGKk52rzF8dnjOTlEdkOGcQhkn44nYeSzlnQKuo9EIDO3bgEMK7TKNkaTBmBKd8R4ndHVRD4/lWbAVxY+M3LIL6jpN4VzcT/JiuVzUg1tCYn6ctXhwGqv3e+oDuRZo6kQXoIeSNWg2aq7v2XI8eUH92wr1IS8sFzcWBlxRPRNYVsIvC08qxLjksYJRiEjH8ljRYKd+vTnB1SiSAHNAQblQIDAQAB",
+   "manifest_version": 2,
+   "name": "Project Naptha",
+   "permissions": [ "clipboardWrite", "clipboardRead", "storage", "contextMenus", "tts", "\u003Call_urls>" ],
+   "short_name": "Naptha",
+   "update_url": "https://edge.microsoft.com/extensionwebstorebase/v1/crx",
+   "version": "0.9.4"
+}

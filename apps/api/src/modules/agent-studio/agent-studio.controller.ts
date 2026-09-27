@@ -13,11 +13,16 @@ import type { TenantRequest } from "../tenant/tenant-context.service";
 import { AgentStudioService } from "./agent-studio.service";
 import {
   AgentListQueryDto,
+  BindRetrievalRuntimeDto,
   CloneAgentDto,
   CreateAgentDto,
   PublishAgentDto,
   RollbackAgentDto,
+  SwitchChannelAgentDto,
   UpdateAgentDraftDto
+  , UpdateOperationalPersonalityDto
+  , UpdateConversationHistoryDto
+  , UpdateAutomaticExecutionDto
 } from "./dto/agent-studio.dto";
 
 @ApiTags("Agent Studio")
@@ -77,6 +82,50 @@ export class AgentStudioController {
   ) {
     const context = request.tenantContext!;
     return this.service.updateDraft(context.workspace.id, context.user.id, agentId, dto);
+  }
+
+  @Put(":agentId/operational-personality")
+  @Version("1")
+  @Permissions("agent.studio.write")
+  @ApiOperation({ summary: "Update live operational personality controls without changing the Agent definition" })
+  updateOperationalPersonality(
+    @Req() request: TenantRequest,
+    @Param("agentId") agentId: string,
+    @Body() dto: UpdateOperationalPersonalityDto
+  ) {
+    const context = request.tenantContext!;
+    return this.service.updateOperationalPersonality(context.workspace.id, context.user.id, agentId, dto);
+  }
+
+  @Put(":agentId/conversation-history")
+  @Version("1")
+  @Permissions("agent.studio.write")
+  @ApiOperation({
+    summary:
+      "Update the Agent's conversation-history working-context control without changing the Agent definition"
+  })
+  updateConversationHistory(
+    @Req() request: TenantRequest,
+    @Param("agentId") agentId: string,
+    @Body() dto: UpdateConversationHistoryDto
+  ) {
+    const context = request.tenantContext!;
+    return this.service.updateOperationalConversationHistory(
+      context.workspace.id,
+      context.user.id,
+      agentId,
+      dto
+    );
+  }
+
+  @Put(":agentId/automatic-execution")
+  @Version("1")
+  @Permissions("agent.studio.write")
+  @ApiOperation({ summary: "Pause or resume automatic execution for one Agent" })
+  updateAutomaticExecution(@Req() request: TenantRequest, @Param("agentId") agentId: string,
+    @Body() dto: UpdateAutomaticExecutionDto) {
+    const context = request.tenantContext!;
+    return this.service.updateOperationalAutomaticExecution(context.workspace.id, context.user.id, agentId, dto);
   }
 
   @Post(":agentId/publish")
@@ -145,5 +194,48 @@ export class AgentStudioController {
   delete(@Req() request: TenantRequest, @Param("agentId") agentId: string) {
     const context = request.tenantContext!;
     return this.service.delete(context.workspace.id, context.user.id, agentId);
+  }
+
+  @Post(":agentId/channels/:connectionId/switch")
+  @Version("1")
+  @Permissions("agent.studio.write")
+  @ApiOperation({ summary: "Bind a published, runtime-ready agent to a channel connection" })
+  switch(
+    @Req() request: TenantRequest,
+    @Param("agentId") agentId: string,
+    @Param("connectionId") connectionId: string,
+    @Body() dto: SwitchChannelAgentDto
+  ) {
+    const context = request.tenantContext!;
+    return this.service.switchChannelAgent(
+      context.workspace.id,
+      context.user.id,
+      agentId,
+      connectionId,
+      dto.expectedStateVersion
+    );
+  }
+
+  @Post(":agentId/retrieval-runtime")
+  @Version("1")
+  @Permissions("agent.studio.write")
+  @ApiBadRequestResponse({ description: "Bound RetrievalRuntime is missing or not published" })
+  @ApiOperation({ summary: "Bind a published RetrievalRuntime to an agent" })
+  bindRetrievalRuntime(
+    @Req() request: TenantRequest,
+    @Param("agentId") agentId: string,
+    @Body() dto: BindRetrievalRuntimeDto
+  ) {
+    const context = request.tenantContext!;
+    return this.service.bindRetrievalRuntime(context.workspace.id, context.user.id, agentId, dto);
+  }
+
+  @Delete(":agentId/retrieval-runtime")
+  @Version("1")
+  @Permissions("agent.studio.write")
+  @ApiOperation({ summary: "Unbind the RetrievalRuntime from an agent" })
+  unbindRetrievalRuntime(@Req() request: TenantRequest, @Param("agentId") agentId: string) {
+    const context = request.tenantContext!;
+    return this.service.unbindRetrievalRuntime(context.workspace.id, context.user.id, agentId);
   }
 }

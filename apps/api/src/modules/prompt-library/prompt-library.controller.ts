@@ -219,6 +219,16 @@ export class PromptLibraryController {
     return this.service.restore(context.workspace.id, context.user.id, id);
   }
 
+  @Delete(":id")
+  @Version("1")
+  @Permissions("prompt.library.delete")
+  @ApiConflictResponse({ description: "Only unreferenced draft prompts can be deleted" })
+  @ApiOperation({ summary: "Delete an unreferenced prompt draft" })
+  delete(@Req() request: TenantRequest, @Param("id") id: string) {
+    const context = request.tenantContext!;
+    return this.service.delete(context.workspace.id, context.user.id, id);
+  }
+
   @Put(":id/favorite")
   @Version("1")
   @Permissions("prompt.library.write")

@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Donation Successful</title>
+    <link rel="stylesheet" href="./css/donate.css" />
+    <style>
+        .center-page {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            text-align: center;
+        }
+
+        .btn {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #6772e5;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        .btn:hover {
+            background-color: #5469d4;
+        }
+    </style>
+</head>
+<body>
+<div class="center-page">
+    <h2>Thank You!</h2>
+    <p>Your donation was successful. 🙏</p>
+    <p>We truly appreciate your support for this extension.</p>
+    <button class="btn" id="closeBtn">Close</button>
+    <p id="manual-msg" style="display:none; font-size: 14px; margin-top: 10px; color: #666;">
+        You can now close this tab manually.
+    </p>
+    <script type="module" src="close-handler.js"></script>
+</div>
+</body>
+</html>

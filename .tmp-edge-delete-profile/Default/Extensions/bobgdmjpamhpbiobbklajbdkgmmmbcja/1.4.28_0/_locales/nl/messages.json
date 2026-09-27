@@ -1,0 +1,1446 @@
+{
+   "Checkbox_Keep_signed": {
+      "message": "Hou mij ingelogd voor"
+   },
+   "Checkbox_Keep_signed_Hint": {
+      "message": "U blijft automatisch aangemeld gedurende de aangegeven periode. Zorg ervoor dat de computer beveiligd is. Deze optie NIET aanvinken bij een vrij toegankelijke computer."
+   },
+   "Delete_Exclude_website": {
+      "message": "Deze website wissen en uitsluiten"
+   },
+   "Emergency_Desc": {
+      "message": "Maak het gemakkelijk en veilig om weer toegang te krijgen tot uw account in geval van nood zoals bij zoekgeraakte of gestolen wachtwoorden."
+   },
+   "Emergency_Title": {
+      "message": "\u003Cb>Noodtoegang\u003C/b> in geval van nood"
+   },
+   "Enable_Now": {
+      "message": "Nu inschakelen"
+   },
+   "Enter_your_email": {
+      "message": "Voer uw emailadres in"
+   },
+   "Exclude_website_new": {
+      "message": "Deze website uitsluiten"
+   },
+   "Invalid_Recovery_Code_New": {
+      "message": "Ongeldige Herstelcode. Voer de juiste code of de nieuwste in. Of \u003Ca class=\"btn-link contactUsLink\">neem contact op met ons.\u003C/a>"
+   },
+   "Keep_Safe_Desc": {
+      "message": "Schakel Wachtwoordconditie in voor een controle en versterking van uw zwakke, oude, en hergebruikte weachtwoorden."
+   },
+   "Keep_Safe_Title": {
+      "message": "Hou alle wachtwoorden \u003Cb>veilig\u003C/b>"
+   },
+   "No_Worries_Desc": {
+      "message": "Schakel Dark web controle in om meldingen te krijgen als uw persoonlijke data zijn gehackt."
+   },
+   "No_Worries_Title": {
+      "message": "\u003Cb>Geen\u003C/b> zorgen over \u003Cb>gehackte data\u003C/b>"
+   },
+   "No_thanks": {
+      "message": "Nee, bedankt"
+   },
+   "Password_Generator": {
+      "message": "Wachtwoordgenerator"
+   },
+   "Password_Generator_Dec": {
+      "message": "Maak sterke en veilige wachtwoorden aan met slechts 1 klik"
+   },
+   "Suggested_Password": {
+      "message": "Voorgesteld wachtwoord"
+   },
+   "Suggested_Password_Dec": {
+      "message": "Toon voorgesteld wachtwoord in alle invoervelden"
+   },
+   "Suggested_password_Case": {
+      "message": "Voorgesteld wachtwoord"
+   },
+   "TOTP_Tips": {
+      "message": "De lokale tijd op uw PC klopt niet, dit kan de oorzaak zijn dat het eenmalig wachtwoord ongeldig wordt."
+   },
+   "TOTP_placeholder": {
+      "message": "Voer de geheime sleutelcode of URL in, bijv. otpauth://*"
+   },
+   "Unlimited_Desc": {
+      "message": "Eenvoudig beheren, opslaan, en aanmaken van wachtwoorden op welk apparaat of welk platform dan ook met slechts 1 account."
+   },
+   "Unlimited_Title": {
+      "message": "Synchroniseer data tussen \u003Cb>onbeperkt aantal apparaten\u003C/b>"
+   },
+   "Website": {
+      "message": "Website"
+   },
+   "about": {
+      "message": "Over"
+   },
+   "about_Acknowledgements": {
+      "message": "Dankbetuiging"
+   },
+   "about_Copyright": {
+      "message": "iTop® Inc. Alle rechten voorbehouden."
+   },
+   "about_EULA": {
+      "message": "GEBRUIKERSVOORWAARDEN"
+   },
+   "about_Privacy_Policy": {
+      "message": "Privacybeleid"
+   },
+   "about_Version": {
+      "message": "Versie"
+   },
+   "add": {
+      "message": "Toevoegen"
+   },
+   "addNew": {
+      "message": "Nieuwe"
+   },
+   "addNewAccount": {
+      "message": "Nieuw account"
+   },
+   "add_Login": {
+      "message": "Inlogcode toevoegen"
+   },
+   "add_Logins": {
+      "message": "Inlogcodes toevoegen"
+   },
+   "add_Notes": {
+      "message": "Notities toevoegen"
+   },
+   "add_Payment_Info": {
+      "message": "Voeg betaalinfo toe"
+   },
+   "add_Payment_Info_Case": {
+      "message": "Voeg betaalinfo toe"
+   },
+   "add_Personal_Info": {
+      "message": "Voeg persoonlijke info toe"
+   },
+   "add_Personal_Info_Case": {
+      "message": "Voeg persoonlijke info toe"
+   },
+   "add_exclude": {
+      "message": "Voeg websites toe om uit te sluiteen"
+   },
+   "add_items": {
+      "message": "Objecten toevoegen"
+   },
+   "add_new_website": {
+      "message": "Voeg een nieuwe website toe"
+   },
+   "add_secure_note": {
+      "message": "Voeg een veilige notitie toe"
+   },
+   "add_tag": {
+      "message": "Voeg label toe"
+   },
+   "add_to_favorites": {
+      "message": "Opslaan in Favorieten"
+   },
+   "add_to_favorites_succ": {
+      "message": "Toegevoegd aan Favorieten"
+   },
+   "add_to_onetime_pwd": {
+      "message": "Voeg toe aan Eenmalig wachtwoord."
+   },
+   "add_totp": {
+      "message": "Eenmalig wachtwoord toevoegen?"
+   },
+   "add_website": {
+      "message": "Voeg website toe"
+   },
+   "add_website_placeholder": {
+      "message": "Open website"
+   },
+   "address": {
+      "message": "Adres"
+   },
+   "address_copied": {
+      "message": "Adres gekopieerd"
+   },
+   "advancedOptions": {
+      "message": "Geavanceerde opties"
+   },
+   "all_Item": {
+      "message": "Alle objecten"
+   },
+   "alreadyAccount": {
+      "message": "* Al in bezit van een iTop account? Dan meteen aanmelden."
+   },
+   "already_saved": {
+      "message": "Ik heb al opgeslagen"
+   },
+   "americanexpress": {
+      "message": "American Express"
+   },
+   "appName": {
+      "message": "DualSafe Password Manager"
+   },
+   "auth_bottom_desc": {
+      "message": "Aanmelden via DualSafe wachtwoordbeheer is mogelijk na het geven van toestemming."
+   },
+   "auth_desc": {
+      "message": "Geef toestemming voor het aanmelden bij DualSafe Wachtwoordbeheer in de nieuw geopende tab van de browser."
+   },
+   "auth_subtitle": {
+      "message": "Aan het wachten voor toestemming…"
+   },
+   "auth_title": {
+      "message": "Toestemming"
+   },
+   "autoFillFailed": {
+      "message": "Geen invoergegevens gevonden om in te loggen. Probeer om inloggegevens handmatig te kopieren en te plakken."
+   },
+   "auto_save_confirm_desc": {
+      "message": "Voortaan automatisch mijn gebruikersnamen en wachtwoorden opslaan voor alle websites."
+   },
+   "auto_save_passwords": {
+      "message": "Wachtwoorden automatich opslaan"
+   },
+   "auto_save_passwords_desc": {
+      "message": "Mijn gebruikersnamen en wachtwoorden automatisch opslaan voor alle websites"
+   },
+   "auto_saved_successfully": {
+      "message": "Automatisch opslaan gelukt"
+   },
+   "average": {
+      "message": "Gemiddeld"
+   },
+   "back": {
+      "message": "Terug"
+   },
+   "bannerExpiredPurchase": {
+      "message": "Oeps! Uw Premium® versie is \u003Cb>vervallen.\u003C/b>"
+   },
+   "bannerFreePurchase": {
+      "message": "Opwaarderen om te profiteren van een volledige Premium-toegang"
+   },
+   "bannerPremiumPurchase": {
+      "message": "U hebt  %s \u003Cklasse span=\"dagnamen\">dagen\u003C/span> over in Premium®."
+   },
+   "birthday": {
+      "message": "Geboortedatum"
+   },
+   "birthday_copied": {
+      "message": "Geboortedatum gekopieerd"
+   },
+   "browserReboot": {
+      "message": "Browser herstart"
+   },
+   "browser_extension": {
+      "message": "Browserextensie"
+   },
+   "cancel": {
+      "message": "Annuleren"
+   },
+   "capitalize": {
+      "message": "Hoofdletters (A-Z)"
+   },
+   "cardNumber": {
+      "message": "Kaartnummer"
+   },
+   "cardType": {
+      "message": "Kaarttype"
+   },
+   "cardType_placeholder": {
+      "message": "Voer in of selecteer het kaarttype"
+   },
+   "card_number_copied": {
+      "message": "Kaartnummer gekopieerd"
+   },
+   "card_type_copied": {
+      "message": "Kaarttype kaart gekopieerd"
+   },
+   "cardholderName": {
+      "message": "Naam kaarthouder"
+   },
+   "cardholder_name_copied": {
+      "message": "Naam kaarthouder gekopieerd"
+   },
+   "cardother": {
+      "message": "Ander"
+   },
+   "carteblanche": {
+      "message": "Carte Blanche"
+   },
+   "change_desc": {
+      "message": "U wijzigt nu uw hoofdwachtwoord..."
+   },
+   "change_master_password": {
+      "message": "Verander hoofdwachtwoord"
+   },
+   "change_now": {
+      "message": "Nu wijzigen"
+   },
+   "change_title": {
+      "message": "Wijzig hoofdwachtwoord"
+   },
+   "cityTown": {
+      "message": "Woonplaats"
+   },
+   "clear": {
+      "message": "Verwijderen"
+   },
+   "clear_allpass_desc": {
+      "message": "Na het verwijderen kunnen zij niet teruggezet worden."
+   },
+   "clear_allpass_title": {
+      "message": "Echt alle wachtwoorden verwijderen?"
+   },
+   "clear_deleted_desc": {
+      "message": "Na het verwijderen kunnen zij niet meer teruggehaald worden."
+   },
+   "clear_deleted_title": {
+      "message": "Echt alle objecten verwijderen uit Verwijderde objecten?"
+   },
+   "clear_password": {
+      "message": "Verwijder wachtwoord"
+   },
+   "cleared_successfully": {
+      "message": "Verwijderen gelukt."
+   },
+   "close": {
+      "message": "Sluiten"
+   },
+   "code_desc": {
+      "message": "Hoofdwachtwoord invoeren om de herstelcode opnieuw in te stellen"
+   },
+   "code_pairing_desc": {
+      "message": "Bevestig de code door te klikken op de knop Bevestigen om toestemming te geven voor Auto inloggen en deblokkeren."
+   },
+   "code_pairing_title": {
+      "message": "Verbindingscode"
+   },
+   "code_title": {
+      "message": "Herstelcode opnieuw instellen"
+   },
+   "comma": {
+      "message": ":"
+   },
+   "comprehensive_pwd_Desc": {
+      "message": "Uitgebreide controle van de conditie van wachtwoorden."
+   },
+   "confirmMasterNewPass": {
+      "message": "Bevestig het nieuwe hoofdwachtwoord"
+   },
+   "confirmMasterPass": {
+      "message": "Hoofdwachtwoord bevestigen"
+   },
+   "continue": {
+      "message": "Doorgaan"
+   },
+   "continue_sign_in": {
+      "message": "Doorgaan met aanmelden"
+   },
+   "copied": {
+      "message": "gekopieerd"
+   },
+   "copy": {
+      "message": "Kopieren"
+   },
+   "copy_generator_password": {
+      "message": "Kopieer wachtwoord"
+   },
+   "copy_notes": {
+      "message": "Kopieer berichten"
+   },
+   "copy_one_time_Password": {
+      "message": "Kopieer eenmalig wachtwoord"
+   },
+   "copy_password": {
+      "message": "wachtwoord"
+   },
+   "copy_username": {
+      "message": "Kopieer gebruikersnaam"
+   },
+   "countryRegion": {
+      "message": "Land"
+   },
+   "countryRegion_placeholder": {
+      "message": "Selecteer land"
+   },
+   "createNewAccount": {
+      "message": "Maak een account aan"
+   },
+   "create_new_account": {
+      "message": "Nieuw account aanmaken"
+   },
+   "createdAt": {
+      "message": "Aangemaakt op"
+   },
+   "currentMasterPass": {
+      "message": "Huidig hoofdwachtwoord"
+   },
+   "day": {
+      "message": "Dag"
+   },
+   "days": {
+      "message": "Dagen"
+   },
+   "days_case": {
+      "message": "dagen"
+   },
+   "default_password_manager": {
+      "message": "Standaard Wachtwoordbeheer"
+   },
+   "delete": {
+      "message": "Wissen"
+   },
+   "delete_all": {
+      "message": "Alles wissen"
+   },
+   "delete_at": {
+      "message": "Gewist op"
+   },
+   "delete_item": {
+      "message": "Weet u zeker dat u dit object in de Prullenbak wilt doen?"
+   },
+   "delete_item_Recycle_Bin": {
+      "message": "Weet u zeker dat u dit object uit de Prullenbak wilt verwijderen?"
+   },
+   "delete_item_Recycle_Bin_Dec": {
+      "message": "Eenmaal gewist kan het niet teruggezet worden"
+   },
+   "delete_item_dec": {
+      "message": "U kunt altijd terugzetten uit de Prullenbak zolang het nog niet permanent gewist is."
+   },
+   "deletedSuccessfully": {
+      "message": "Wissen gelukt."
+   },
+   "deleted_this_item": {
+      "message": "Dit object verwijderen"
+   },
+   "desktop": {
+      "message": "Bureaublad"
+   },
+   "desktop_app": {
+      "message": "PC App"
+   },
+   "details": {
+      "message": "Bijz.heden"
+   },
+   "device_limit_desc": {
+      "message": "Het inloggen op een maximum van 3 apparaten is bereikt. Nu opwaarderen voor toegang tot een ongelimiteerd aantal apparaten en alle onderstaande voordelen:"
+   },
+   "device_limit_tips": {
+      "message": "* U wordt uitgelogd op dit apparaat:"
+   },
+   "device_limit_title": {
+      "message": "Maximum aantal apparaten bereikt!"
+   },
+   "dinersclub": {
+      "message": "Diners Club"
+   },
+   "dir": {
+      "message": "ltr"
+   },
+   "discard": {
+      "message": "Ja"
+   },
+   "discard_change": {
+      "message": "Weet u zeker dat u de niet-opgeslagen wijzigingen wilt wegdoen?"
+   },
+   "discover": {
+      "message": "Ontdek"
+   },
+   "downloadApp": {
+      "message": "Downloaden"
+   },
+   "edit": {
+      "message": "Wijzig"
+   },
+   "editInfo": {
+      "message": "Wijzig info"
+   },
+   "emailAddress": {
+      "message": "E-mailadres"
+   },
+   "emailOrPassIncorrect": {
+      "message": "Foutief e-mailadres of wachtwoord."
+   },
+   "emailVerfy": {
+      "message": "Controleer dit e-mail"
+   },
+   "email_address_copied": {
+      "message": "E-mailadres gekopieerd"
+   },
+   "emergency_contact": {
+      "message": "Noodtoegang"
+   },
+   "emergency_contact_Desc": {
+      "message": "Bij verlies van uw gegevens, kan degene die u noodtoegang hebt verleend, een zoek indienen om uw gegevens te exporteren of uw Hoofdwachtwoord te wijzigen ."
+   },
+   "enterMasterNewPass": {
+      "message": "Nieuw hoofdwachtwoord invoeren"
+   },
+   "enterMasterPass": {
+      "message": "Hoofdwachtwoord invoeren"
+   },
+   "enterRecoveryCass": {
+      "message": "Herstelcode invoeren"
+   },
+   "enterYourPass": {
+      "message": "Voer uw wachtwoord in"
+   },
+   "enter_email_desc": {
+      "message": "Voer uw emailadres in om de herstelcode te ontvangen!"
+   },
+   "enter_email_tips": {
+      "message": "Ongeldig emailadres. Controleer en voer opnieuw in!"
+   },
+   "exclude_website": {
+      "message": "Website uitsluiten"
+   },
+   "exclude_website_list": {
+      "message": "Lijst uitgeloten websites"
+   },
+   "expOptionDate": {
+      "message": "Vervaldatum"
+   },
+   "expiration_date_copied": {
+      "message": "Vervaldatum gekopieerd"
+   },
+   "expired": {
+      "message": "VERVALLEN"
+   },
+   "extDesc": {
+      "message": "Met DualSafe Password Manager Extensie kunt u veilig wachtwoorden op een plek beheren: Auto Opslaan, Auto Invullen & Openen."
+   },
+   "extName": {
+      "description": "DualSafe Wachtwoordbeheer & Digitale kluis",
+      "message": "DualSafe password Manager & Digitale kluis"
+   },
+   "extension": {
+      "message": "Extensie"
+   },
+   "failedToDelete": {
+      "message": "Wissen mislukt."
+   },
+   "failedToOpenLoading_DPM": {
+      "message": "De desktopversie aan het laden"
+   },
+   "failedToOpenLoading_Dark_Web_Monitor_Dec": {
+      "message": "Dark Web Controle is alleen beschikbaar in de desktopversie. Klik op \"Open\" in de bevestigingspopup om de desktopversie te starten. Of klik op de onderstaande %s knop om de popup te heropenen."
+   },
+   "failedToOpenLoading_Emergency_Contact_Dec": {
+      "message": "Emergency Contact is alleen beschikbaar in de desktopversie. Klik op \"Open\" in de bevestigingspopup om de desktopversie te starten. Of klik op de onderstaande %s knop om de popup te heropenen."
+   },
+   "failedToOpenLoading_Import_Export_Dec": {
+      "message": "Importeren en Exporteren is alleen beschikbaar in de desktopversie. Klik op \"Open\" in de bevestigingspopup om de desktopversie te starten. Of klik op de onderstaande %s knop om de popup te heropenen."
+   },
+   "failedToOpenLoading_Password_Health_Dec": {
+      "message": "Wachtwoordsterkte is alleen beschikbaar in de desktopversie. Klik op \"Open\" in de bevestigingspopup om de desktopversie te starten. Of klik op de onderstaande %s knop om de popup te heropenen."
+   },
+   "failedToOpen_DPM": {
+      "message": "Openen van de desktopversie is mislukt"
+   },
+   "failedToOpen_Dark_Web_Monitor_Dec": {
+      "message": "Dark Web Controle is alleen beschikbaar in de desktopversie. Klik op de %d knop om de destopversie te downloaden en te installeren. Of klik op de %s knop om opnieuw te openen."
+   },
+   "failedToOpen_Emergency_Contact_Dec": {
+      "message": "Emergency Contact is alleen beschikbaar in de desktopversie. Klik op de %d knop om de destopversie te downloaden en te installeren. Of klik op de %s knop om opnieuw te openen."
+   },
+   "failedToOpen_Import_Export_Dec": {
+      "message": "Importeren en Exporteren is alleen beschikbaar in de desktopversie. Klik op de %d knop om de destopversie te downloaden en te installeren. Of klik op de %s knop om opnieuw te openen."
+   },
+   "failedToOpen_Password_Health_Dec": {
+      "message": "Wachtwoordsterkte is alleen beschikbaar in de desktopversie. Klik op de %d knop om de destopversie te downloaden en te installeren. Of klik op de %s knop om opnieuw te openen."
+   },
+   "failedToRestore": {
+      "message": "Terugzetten mislukt."
+   },
+   "failed_send_desc": {
+      "message": "Het verzenden van de mail met de herstelcode is mislukt. Probeer opnieuw."
+   },
+   "failed_send_title": {
+      "message": "Zenden mislukt."
+   },
+   "favoties": {
+      "message": "Favorieten"
+   },
+   "feedback": {
+      "message": "Contact"
+   },
+   "fill": {
+      "message": "Invullen"
+   },
+   "firstName": {
+      "message": "Voornaam"
+   },
+   "fiveMinutes": {
+      "message": "5 minuten"
+   },
+   "forgotYourPass": {
+      "message": "Wachtwoord vergeten?"
+   },
+   "fourHours": {
+      "message": "4 uur"
+   },
+   "fourteenDays": {
+      "message": "14 dagen"
+   },
+   "free": {
+      "message": "GRATIS"
+   },
+   "gender": {
+      "message": "Geslacht"
+   },
+   "genderFemale": {
+      "message": "Vrouw"
+   },
+   "genderMale": {
+      "message": "Man"
+   },
+   "genderNone": {
+      "message": "Geen"
+   },
+   "genderOther": {
+      "message": "Anders"
+   },
+   "gender_copied": {
+      "message": "Geslacht gekopieerd"
+   },
+   "goPremiumBtn": {
+      "message": "Ga voor Premium®"
+   },
+   "go_back_to_signin": {
+      "message": "Ga terug naar Aanmelden"
+   },
+   "hideCode": {
+      "message": "Verberg veiligheidscode"
+   },
+   "hidePass": {
+      "message": "Verberg wachtwoord"
+   },
+   "ignore_website": {
+      "message": "Deze website negeren"
+   },
+   "installDesktopApp": {
+      "message": "Installeer Bureaublad App"
+   },
+   "invalid_email": {
+      "message": "Ongeldig e-mailadres. Opgegeven e-mailadres invoeren."
+   },
+   "invalid_master_pass": {
+      "message": "Ongeldig hoofdwachtwoord!"
+   },
+   "invalid_master_tips": {
+      "message": "Ongeldig hoofdwachtwoord. Controleren en opnieuw proberen."
+   },
+   "invalid_recovery_code": {
+      "message": "Ongeldige herstelcode. Controleer en probeer opnieuw."
+   },
+   "invalid_secret_key": {
+      "message": "Ongeldige geheime sleutel!"
+   },
+   "item_remove_from_favorites": {
+      "message": "Verwijder uit Favorieten"
+   },
+   "jcb": {
+      "message": "JCB"
+   },
+   "lang": {
+      "message": "nl"
+   },
+   "lastModifiedAt": {
+      "message": "Gewijzigd op"
+   },
+   "lastName": {
+      "message": "Achternaam"
+   },
+   "lastPasswordChangedAt": {
+      "message": "Wachtwoord gewijzigd op"
+   },
+   "learn_more": {
+      "message": "Meer"
+   },
+   "length": {
+      "message": "Lengte"
+   },
+   "loading": {
+      "message": "Aan het laden ..."
+   },
+   "loading_data_error": {
+      "message": "Laden is mislukt. Controleer de netwerkverbinding."
+   },
+   "lock": {
+      "message": "Blokkeren"
+   },
+   "lock_comfirm_btn": {
+      "message": "Handmatig deblokkeren"
+   },
+   "login_comfirm_btn": {
+      "message": "Handmatig aanmelden"
+   },
+   "login_comfirm_desc": {
+      "message": "Klik op uw account om\u003Cbr> toestemming te geven tot auto aanmelden en deblokkeren via de app op de PC."
+   },
+   "login_feature_auto": {
+      "message": "\u003Cb>Automatisch\u003C/b> - Toegang tot een onbeperkt aantal apparaten door middel van automatische synchronisatie."
+   },
+   "login_feature_easy": {
+      "message": "\u003Cb>Gemakkelijk\u003C/b> - Automatisch wachtwoorden opslaan en invullen door eenvoudig te klikken"
+   },
+   "login_feature_safe": {
+      "message": "\u003Cb>Veilig\u003C/b> - Store your data with best-in-class encryption"
+   },
+   "login_feature_secure": {
+      "message": "\u003Cb>Zeker\u003C/b> - Gernereer sterke en unieke wachtwoorden."
+   },
+   "login_feature_unlimited": {
+      "message": "\u003Cb>Onbeperkt\u003C/b> - Onbeperkt wachtwoorden, betalingen enz. Opslaan."
+   },
+   "login_left_title": {
+      "message": "Een veilige, eenvoudige maar gratis manier om wachtwoorden te beheren. Belangrijk voor uw digitale leven."
+   },
+   "login_waiting_title": {
+      "message": "Aan het wachten voor toestemming via de app op de PC…"
+   },
+   "logins": {
+      "message": "Logincodes"
+   },
+   "lower_case": {
+      "message": "Kleine letters (a-z)"
+   },
+   "maestro": {
+      "message": "Maestro"
+   },
+   "mastercard": {
+      "message": "Mastercard"
+   },
+   "masterpassIncorrect": {
+      "message": "Ongeldig hoofdwachtwoord."
+   },
+   "match_change_pass": {
+      "message": "Wachtwoord voldoet niet aan de eisen."
+   },
+   "match_master_pass": {
+      "message": "Wachtwoorden kloppen niet."
+   },
+   "middleName": {
+      "message": "Middelnaam"
+   },
+   "month": {
+      "message": "Maand"
+   },
+   "more": {
+      "message": "Meer"
+   },
+   "name": {
+      "message": "Naam"
+   },
+   "name_copied": {
+      "message": "Naam gekopieerd"
+   },
+   "networkError": {
+      "message": "Foutief netwerkverbinding."
+   },
+   "never": {
+      "message": "Nooit"
+   },
+   "newUser": {
+      "message": "Nieuwe gebruiker?"
+   },
+   "new_password": {
+      "message": "Nieuw wachtwoord"
+   },
+   "new_tag": {
+      "message": "Nieuw label"
+   },
+   "new_tag_number": {
+      "message": "Nieuw label"
+   },
+   "ninetyDays": {
+      "message": "90 dagen"
+   },
+   "noItemsAddAllItem": {
+      "message": "Niets toegevoegd."
+   },
+   "noItemsAddLoginItem": {
+      "message": "Geen inlogcodes toegevoegd."
+   },
+   "noItemsAddNotesItem": {
+      "message": "Geen beveiligde berichten toegevoegd."
+   },
+   "noItemsAddPayItem": {
+      "message": "Geen betaalinfo toegevoegd."
+   },
+   "noItemsAddPersonalItem": {
+      "message": "Geen persoonlijke info toegevoegd."
+   },
+   "noItemsAddRecycleItem": {
+      "message": "Geen objecten in Prullenbak."
+   },
+   "noItemsFound": {
+      "message": "Niets gevonden."
+   },
+   "noResult": {
+      "message": "Niets gevonden!"
+   },
+   "noSaved": {
+      "message": "Geen inlogcodes opgeslagen voor deze site."
+   },
+   "noSavedPrss": {
+      "message": "Geen opgeslagen wachtwoord!"
+   },
+   "no_excluded_websites": {
+      "message": "Geen uitgesloten websites."
+   },
+   "no_password_history": {
+      "message": "Geen wachtwoordhistorie."
+   },
+   "no_valid_secret_key_found": {
+      "message": "Geen geldige geheime code gevonden!"
+   },
+   "notNow": {
+      "message": "Niet nu"
+   },
+   "not_have_code": {
+      "message": "Geen herstelcode bekend?"
+   },
+   "notes": {
+      "message": "Berichten"
+   },
+   "notes_characters_tips": {
+      "message": "%s karakters over"
+   },
+   "notes_copied": {
+      "message": "Notities gekopieerd"
+   },
+   "notes_placeholder": {
+      "message": "Voer notities in voor dit object (Maximaal: %s karakters)"
+   },
+   "numWords": {
+      "message": "Cijfers (0-9)"
+   },
+   "offer_to_save_passwords": {
+      "message": "Bied aan wachtwoorden op te slaan"
+   },
+   "offer_to_save_passwords_desc": {
+      "message": "Vraag om wachtwoorden op te slaan bij inloggen of aanmelden"
+   },
+   "ok": {
+      "message": "OK"
+   },
+   "okIgotIt": {
+      "message": "OK. Ik snap het."
+   },
+   "oneHour": {
+      "message": "1 uur"
+   },
+   "oneMinute": {
+      "message": "1 minuut"
+   },
+   "one_time_Password": {
+      "message": "Eenmalig wachtwoord"
+   },
+   "one_time_pass_copied": {
+      "message": "Eenmalig wachtwoord gekopieerd"
+   },
+   "only": {
+      "message": "Slechts"
+   },
+   "open": {
+      "message": "Open"
+   },
+   "options": {
+      "message": "Opties"
+   },
+   "passIncorrect": {
+      "message": "Foutief wachtwoord."
+   },
+   "password": {
+      "message": "Wachtwoord"
+   },
+   "password_copied": {
+      "message": "Wachtwoord gekopieerd"
+   },
+   "password_history_item": {
+      "message": "Wachtwoordhistorie"
+   },
+   "password_history_tips": {
+      "message": "Dit zijn de nieuwste %s wachtwoorden."
+   },
+   "password_history_title": {
+      "message": "Wachtwoordhistorie"
+   },
+   "password_tip_one": {
+      "message": "Tenminste 8 karakters. Liever meer dan 16 karakters."
+   },
+   "password_tip_three": {
+      "message": "Tenminste 1 symbool."
+   },
+   "password_tip_two": {
+      "message": "Tenminste 1 cijfer."
+   },
+   "payment_Info": {
+      "message": "Betaalinfo"
+   },
+   "personal_Info": {
+      "message": "Persoonlijke info"
+   },
+   "phoneNumber": {
+      "message": "Telefoon"
+   },
+   "phone_number_copied": {
+      "message": "Telefoonnummer gekopieerd"
+   },
+   "premiumExpiredPurchase": {
+      "message": "Uw Premium® versie heeft \u003Cklasse b='rode tekst'>Vervallen!\u003C/b>"
+   },
+   "premiumExpiredPurchaseAlert": {
+      "message": "De geavanceerde functies zijn niet meer beschikbaar. Opwaarderen om Premium® toegang te houden, en uw wachtwoorden veilig te houden."
+   },
+   "premiumExpiringSoonPurchase": {
+      "message": "Slechts \u003Cklasse b=\"gele tekst\">%s dagen\u003C/b> van Premium® over!"
+   },
+   "premiumExpiringSoonPurchaseAlert": {
+      "message": "Waardeer op om te blijven op Premium® toegang tot de volgende geavanceerde functies:"
+   },
+   "premiumFreePurchase": {
+      "message": "Een gemakkelijke, veilige manier om uw wachtwoorden te beheren"
+   },
+   "premiumFreePurchaseAlert": {
+      "message": "Start Premium® vandaag en behoud deze geavanceerde functies:"
+   },
+   "premiumFreePurchaseAlert_New": {
+      "message": "Start Premium vandaag en houd deze geavanceerde functies:"
+   },
+   "premiumFreePurchase_New": {
+      "message": "Een gemakkelijk, veilige manier om \u003Cbr> Wachtwoorden te beheren"
+   },
+   "premiumPurchase": {
+      "message": "U hebt een Premium® voor 30 dagen!"
+   },
+   "premiumPurchaseAlert": {
+      "message": "Profiteer nu van de volgende geavanceerde functies:"
+   },
+   "premiun": {
+      "message": "PREMIUM®"
+   },
+   "purchase_Dark_Web_Monitor": {
+      "message": "Toezicht op Dark Web & Alarmen"
+   },
+   "purchase_Password_Health": {
+      "message": "Wachtwoordsterkte"
+   },
+   "purchase_Password_Health_Check": {
+      "message": "Controle Wachtwoordsterkte"
+   },
+   "purchase_Unlimited_Devices": {
+      "message": "Synchroniseren tussen onbeperkt aantal apparaten"
+   },
+   "questionMark": {
+      "message": "?"
+   },
+   "recovery_code_copied": {
+      "message": "Herstelcode gekopieerd"
+   },
+   "recycle_Bin": {
+      "message": "Prullenbak"
+   },
+   "refresh": {
+      "message": "Vernieuwen"
+   },
+   "rememberMeOnThisDevice": {
+      "message": "Onthou mij op dit apparaat"
+   },
+   "remindExpirationDate": {
+      "message": "Herinner mij 2 maanden voor de vervaldatum"
+   },
+   "remind_me_after_days": {
+      "message": "Herinner mij over 7 dagen weer"
+   },
+   "remind_me_tomorrow": {
+      "message": "Herinner mij morgen weer"
+   },
+   "remind_password": {
+      "message": "Herinner mij om wachtwoord te wijzigen na 90 dagen"
+   },
+   "remove": {
+      "message": "Verwijder"
+   },
+   "remove_from_favorites": {
+      "message": "Verwijder uit Favorieten"
+   },
+   "remove_from_favorites_succ": {
+      "message": "Verwijderd uit Favorieten"
+   },
+   "resend": {
+      "message": "Opnieuw zenden"
+   },
+   "reset": {
+      "message": "Opnieuw instellen"
+   },
+   "reset_code_desc": {
+      "message": "Voer de herstelcode in om het hoofdwachtwoord opnieuw in te stellen. De herstelcode is opgeslagen als PDF-bestand."
+   },
+   "reset_code_title": {
+      "message": "Herstelcode invoeren"
+   },
+   "reset_desc": {
+      "message": "E-mailadres invoeren"
+   },
+   "reset_email_place": {
+      "message": "E-mailadres invoeren"
+   },
+   "reset_master_title": {
+      "message": "Hoofdwachtwoord opnieuw instellen"
+   },
+   "reset_recovery_code": {
+      "message": "Herstelcode opnieuw instellen"
+   },
+   "reset_success_desc": {
+      "message": "Het hoofdwachtwoord is opnieuw ingesteld. Aanmelden met het nieuwe hoofdwachtwoord."
+   },
+   "reset_success_title": {
+      "message": "Gelukt!"
+   },
+   "reset_title": {
+      "message": "Wachtwoord opnieuw instellen"
+   },
+   "restore": {
+      "message": "Terugzetten"
+   },
+   "restoreSuccessfully": {
+      "message": "Terugzetten gelukt."
+   },
+   "retry": {
+      "message": "Opnieuw"
+   },
+   "save": {
+      "message": "Opslaan"
+   },
+   "saveIn_DPM": {
+      "message": "Opslaan in DualSafe Password Manager®"
+   },
+   "save_as_pdf": {
+      "message": "Opslaan als PDF"
+   },
+   "save_code_desc_login": {
+      "message": "Sla uw herstelcode op als PDF-bestand."
+   },
+   "save_code_desc_one": {
+      "message": "De herstelcode als PDF opslaan en afdrukken om het veilig te stellen."
+   },
+   "save_code_desc_options": {
+      "message": "Uw voorgaande herstelcode is vanaf nu ongeldig. Sla uw nieuwe herstelcode op als PDF-bestand en druk het af om veilig te bewaren."
+   },
+   "save_code_desc_two": {
+      "message": "Het is dan mogelijk om weer toegang te krijgen tot DualSafe Wachtwoordbeheer als u uw hoofdwachtwoord mocht vergeten."
+   },
+   "save_code_new_title": {
+      "message": "Nieuwe herstelcode opslaan"
+   },
+   "save_code_tips": {
+      "message": "\u003Cb>Belangrijk:\u003C/b> De herstelcode is de enige manier om weer toegang te krijgen tot DualSafe Wachtwoordbeheer als u uw hoofdwachtwoord mocht vergeten."
+   },
+   "save_code_title": {
+      "message": "Herstelcode opslaan"
+   },
+   "save_totp": {
+      "message": "Eenmalig wachtwoord opslaan? "
+   },
+   "savedFailedData": {
+      "message": "De nieuwste data zijn gesynchroniseerd vanaf de server."
+   },
+   "savedFailedSynced": {
+      "message": "Opslaan mislukt! De nieuwste data zijn gesynchroniseerd vanaf de server."
+   },
+   "savedSuccessfully": {
+      "message": "Opslaan gelukt."
+   },
+   "scan_web_page_QRCode": {
+      "message": "Scan de QR code van de webpagina"
+   },
+   "search": {
+      "message": "Zoek"
+   },
+   "secure": {
+      "message": "Veilig"
+   },
+   "secureNotes": {
+      "message": "Beveilig berichten"
+   },
+   "secure_notes_placeholder": {
+      "message": "Hier belangrijke notities invoeren (Maximaal: %s karakters)"
+   },
+   "securityCode": {
+      "message": "Beveiligingscode"
+   },
+   "security_code_copied": {
+      "message": "Veiligheidscode gekopieerd"
+   },
+   "send": {
+      "message": "Verzenden"
+   },
+   "send_email_hint": {
+      "message": "Email verzenden"
+   },
+   "sending_desc": {
+      "message": "Herstelcode aan het verzenden naar uw emailadres."
+   },
+   "sending_title": {
+      "message": "Aan het zenden"
+   },
+   "sent_succ_desc": {
+      "message": "De herstelcode is verzonden naar het emailadres %s. Als deze niet in de Inbox zit, controleer dan bij Spam. U kunt ook drukken op \u003Cbutton class=\"resndbtn\">opnieuw zenden\u003C/knop>."
+   },
+   "sent_succ_title": {
+      "message": "Zenden gelukt!"
+   },
+   "set_master_password": {
+      "message": "Stel hoofdwachtwoord in"
+   },
+   "set_master_password_tips": {
+      "message": "Stel een hoofdwachtwoord in voor DualSafe wachtwoordbeheer voor de beveiliging van uw account."
+   },
+   "set_master_tips": {
+      "message": "\u003Cb>Belangrijk:\u003C/b> Het hoofdwachtwoord is het enige geldige wachtwoord om toegang te verschaffen tot DualSafe Wachtwoordbeheer."
+   },
+   "set_master_title": {
+      "message": "Hoofdwachtwoord instellen"
+   },
+   "set_success_desc": {
+      "message": "Het hoofdwachtwoord is opnieuw ingesteld en de herstelcode is opgeslagen. Meld aan met het hoofdwachtwoord."
+   },
+   "settings": {
+      "message": "Instellingen"
+   },
+   "settings_Auto_Fill": {
+      "message": "Auto invullen"
+   },
+   "settings_Auto_Fill_Dec": {
+      "message": "Automatisch opgeslagen inlogcodes, betaalinfo, enz. invullen."
+   },
+   "settings_Auto_Fill_Password": {
+      "message": "Automatisch invullen van wachtwoorden"
+   },
+   "settings_Auto_Fill_Password_Dec": {
+      "message": "Automatisch invullen van accounts en wachtwoorden bij het inloggen op opgeslagen websites."
+   },
+   "settings_Auto_Lock": {
+      "message": "Auto Blokkeren"
+   },
+   "settings_Auto_Lock_Dec": {
+      "message": "Blokkeer DualSafe Password Manager® automatisch na een aantal keren proberen"
+   },
+   "settings_Auto_Save": {
+      "message": "Auto opslaan"
+   },
+   "settings_Auto_Save_Dec": {
+      "message": "Automatisch de ingevulde gebruikersnamen en wachtwoorden opslaan"
+   },
+   "settings_Autofill_and_Autosave": {
+      "message": "Auto invullen en Auto opslaan"
+   },
+   "settings_Clear_Clipboard": {
+      "message": "Wis klembord"
+   },
+   "settings_Clear_Clipboard_Dec": {
+      "message": "Automatisch klembord wissen op een vastgestelde tijd na het kopieren van een wachtwoord"
+   },
+   "settings_Fill_Payments": {
+      "message": "Betaalgegevens invullen"
+   },
+   "settings_Fill_Payments_Desc": {
+      "message": "Hulp bij invullen van betaalgegevens zoals creditcardnummer, kaarthouder en vervaldatum met slechts 1 klik "
+   },
+   "settings_Fill_Personal_Infol": {
+      "message": "Persoonlijke gegevens invullen"
+   },
+   "settings_Fill_Personal_Infol_Desc": {
+      "message": "Hulp bij invullen van persoonlijke gegevens zoals email, telefoonnummer en adressen met slechts 1 klik"
+   },
+   "settings_General": {
+      "message": "Algemeen"
+   },
+   "settings_General_Dec": {
+      "message": "Stel DualSafe Wachtwoordbeheer® in als standaard"
+   },
+   "settings_Limited_time_free": {
+      "message": "(Tijdelijke aanbieding)"
+   },
+   "settings_Security_Options": {
+      "message": "Veiligheidsopties"
+   },
+   "settings_Show_Icon": {
+      "message": "Toon pictogram"
+   },
+   "settings_Show_Icon_Dec": {
+      "message": "Toon het pictogram van DualSafe Password Manager® in alle invoervelden van het wachtwoord om u inlogcodes op te slaan met 1 klik"
+   },
+   "sevenDays": {
+      "message": "7 dagen"
+   },
+   "showCode": {
+      "message": "Toon veiligheidscode"
+   },
+   "showPass": {
+      "message": "Toon wachtwoord"
+   },
+   "signIn": {
+      "message": "Inlogggen"
+   },
+   "signInAutoNow": {
+      "message": "Nu aanmelden voor het automatisch invullen van inlogggevens, persoonlijke gegevens of betaalgegevens."
+   },
+   "signInLocked": {
+      "message": "Uw account is geblokkeerd. Probeer opnieuw na 5 minuten."
+   },
+   "signInNow": {
+      "message": "Nu inloggen om de inlogcodes voor deze site automatisch in te vullen."
+   },
+   "signInSave": {
+      "message": "Inloggen en Opslaan"
+   },
+   "signInTimeout": {
+      "message": "Verbroken inlog! Controleer uw netwerk en probeer opnieuw!"
+   },
+   "signIn_DPM": {
+      "message": "Log in bij DualSafe Wachtwoordbeheer®"
+   },
+   "signIn_Desc": {
+      "message": "Nu inloggen om de inlogcodes op te slaan van \u003Cklasse a=\"btn-link btn-naam\">\u003C/a> en hen voortaan automatisch in te vullen."
+   },
+   "signOut": {
+      "message": "Uitloggen"
+   },
+   "sign_in_again_desc": {
+      "message": "U hebt nog geen wachtwoord ingesteld want u hebt eerder aangemeld via Google/Facebook. U kunt op OK klikken om aan te melden via Google/Facebook."
+   },
+   "sign_in_now": {
+      "message": "Nu aanmelden"
+   },
+   "sign_in_with": {
+      "message": "Of aanmelden met"
+   },
+   "sign_in_with_app": {
+      "message": "Aanmelden met app op PC"
+   },
+   "sign_in_with_facebook": {
+      "message": "Aanmelden met Facebook"
+   },
+   "sign_in_with_google": {
+      "message": "Aanmelden met Google"
+   },
+   "sixtyDays": {
+      "message": "60 dagen"
+   },
+   "skip_for_now": {
+      "message": "Nu overslaan"
+   },
+   "sort_by": {
+      "message": "Sorteer op"
+   },
+   "sort_date_created": {
+      "message": "Nieuwe datum"
+   },
+   "sort_date_modified": {
+      "message": "Gewijzigde datum"
+   },
+   "sort_newest_first": {
+      "message": "Nieuwste eerst"
+   },
+   "sort_oldest_first": {
+      "message": "Oudste eerst"
+   },
+   "sort_show_az": {
+      "message": "A-Z"
+   },
+   "sort_show_favorites": {
+      "message": "Toon Favorieten"
+   },
+   "sort_show_title_az": {
+      "message": "Titel: A tot Z"
+   },
+   "sort_show_title_za": {
+      "message": "Titlel Z tot A"
+   },
+   "sort_show_za": {
+      "message": "Z-A"
+   },
+   "sort_title": {
+      "message": "Titel"
+   },
+   "state": {
+      "message": "Provincie"
+   },
+   "strong": {
+      "message": "Sterk"
+   },
+   "success_desc": {
+      "message": "Klik op de extensiepictogram \u003Cspan class=\"succ-icon\">\u003C/span> en zet DualSafe Wachtwoordbeheer vast op de werkbalk. Daarna is het mogelijk om naar believen te klikken op \u003Cspan class=\"succ-icon dpm\">\u003C/span> om DualSafe Wachtwoordbeheer te gebruiken."
+   },
+   "success_title": {
+      "message": "Proficiat 🎉🎉🎉 \u003Cbr>DualSafe wachtwoordbeheer is klaar voor gebruik!"
+   },
+   "suggestion": {
+      "message": "Voorstel"
+   },
+   "suggestion_tips": {
+      "message": "Dit zijn de opgeslagen inloggegevens van de huidige website."
+   },
+   "symbols": {
+      "message": "Symbolen (%s)"
+   },
+   "systemLocks": {
+      "message": "Systeemslot"
+   },
+   "tags": {
+      "message": "Labels"
+   },
+   "tenMinutes": {
+      "message": "10 minuten"
+   },
+   "thirtyDays": {
+      "message": "30 dagen"
+   },
+   "thirtyMinutes": {
+      "message": "30 minuten"
+   },
+   "title": {
+      "message": "Titel"
+   },
+   "title_placeholder": {
+      "message": "Titel invoeren"
+   },
+   "tools": {
+      "message": "Gereedschappen"
+   },
+   "tools_Dark_Web_Monitor": {
+      "message": "Dark Web Controle"
+   },
+   "tools_Dark_Web_Monitor_Dec": {
+      "message": "Hulp bij het in de gaten houden van gevoelige datalekken in Dark Web"
+   },
+   "tools_Import_Export": {
+      "message": "Import en Export"
+   },
+   "tools_Import_Export_Dec": {
+      "message": "Importeer data vanaf uw browsers of andere wachtwoordbeheerders & exporteer uw opgeslagen data naar een csv-bestand via 1 klik"
+   },
+   "tools_Password_Health": {
+      "message": "Wachtwoordsterkte"
+   },
+   "tools_Password_Health_Dec": {
+      "message": "Hulp bij het controleren van kwetsbare wachtwoorden zoals zwak, meermalen gebruikt, of eerder gehackt"
+   },
+   "tools_Unlimited_Passwords": {
+      "message": "Ongelimiteerd aantal wachtwoorden"
+   },
+   "tools_Unlimited_Passwords_Only": {
+      "message": "(Slechts 50 bij de gratis versie)"
+   },
+   "twoMinutes": {
+      "message": "2 minuten"
+   },
+   "type": {
+      "message": "Soort"
+   },
+   "unionpay": {
+      "message": "UnionPay"
+   },
+   "unknown": {
+      "message": "Onbekend"
+   },
+   "unlock": {
+      "message": "Deblokkeren"
+   },
+   "unlockAutoNow": {
+      "message": "Nu deblokkeren voor het automatisch invullen van inloggevens, persoonlijke info en betaalgegevens."
+   },
+   "unlockDPM": {
+      "message": "Ontsluit DualSafe Wachtwoordbeheer®"
+   },
+   "unlockDPM_Desc": {
+      "message": "Ontsluit nu om de inlogcodes op te slaan van \u003Cklasse a=\"btn-link btn-naam\">\u003C/a> en hen voortaan automatisch in te vullen."
+   },
+   "unlockNow": {
+      "message": "Ontsluit nu om de inlogcodes voor deze site automatisch in te vullen."
+   },
+   "unlockSave": {
+      "message": "Ontsluiten en Opslaan"
+   },
+   "unlock_now": {
+      "message": "Nu deblokkeren"
+   },
+   "until_sign_out": {
+      "message": "Totdat ik uitlog"
+   },
+   "update": {
+      "message": "Updaten"
+   },
+   "updateFailed": {
+      "message": "Updaten mislukt."
+   },
+   "updateLogins": {
+      "message": "Update inlogcodes"
+   },
+   "updateSuccessfully": {
+      "message": "Updaten gelukt."
+   },
+   "upgradeBtn": {
+      "message": "Opwaarderen"
+   },
+   "upgradeNowBtn": {
+      "message": "Nu opwaarderen"
+   },
+   "upper_case": {
+      "message": "Hoofdletters (A-Z)"
+   },
+   "url": {
+      "message": "URL"
+   },
+   "url_copied": {
+      "message": "Website gekopieerd"
+   },
+   "use": {
+      "message": "Gebruik"
+   },
+   "use_generator_password": {
+      "message": "Gebruik wachtwoord"
+   },
+   "user_manual": {
+      "message": "Handleiding"
+   },
+   "username": {
+      "message": "Gebruikersnaam"
+   },
+   "username_copied": {
+      "message": "Gebruikersnaam gekopieerd"
+   },
+   "username_placeholder": {
+      "message": "E-mail/Gebruikersnaam/Telefoonnummer"
+   },
+   "view": {
+      "message": "Bekijken"
+   },
+   "visa": {
+      "message": "Visa"
+   },
+   "visaelectron": {
+      "message": "Visa Electron"
+   },
+   "weak": {
+      "message": "Zwak"
+   },
+   "web_password_sync": {
+      "message": "Let op: Het wachtwoord voor deze website wijzigen!!"
+   },
+   "welcomeTo": {
+      "message": "Welkom bij"
+   },
+   "year": {
+      "message": "Jaar"
+   },
+   "yes": {
+      "message": "Ja"
+   },
+   "zip": {
+      "message": "ZIP"
+   },
+   "zipPostalCode": {
+      "message": "Postcode"
+   }
+}

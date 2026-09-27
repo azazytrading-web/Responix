@@ -24,6 +24,7 @@ import {
 
 type JsonRecord = Record<string, unknown>;
 const json = (value: unknown): Prisma.InputJsonValue => value as Prisma.InputJsonValue;
+const DEFAULT_MAX_PROMPT_SIZE_BYTES = 500_000;
 
 class PromptCompilerSourceError extends Error {
   constructor(readonly diagnostics: CompilerDiagnostic[]) {
@@ -468,7 +469,7 @@ export class PromptCompilerRepository {
         : {},
       conversation: conversation ? { id: conversation.id } : {},
       sourceChecksum: this.hash(checksumSource),
-      maxPromptSizeBytes: dto.maxPromptSizeBytes ?? 100000,
+      maxPromptSizeBytes: dto.maxPromptSizeBytes ?? DEFAULT_MAX_PROMPT_SIZE_BYTES,
       sourceDiagnostics
     };
   }
@@ -642,8 +643,11 @@ export class PromptCompilerRepository {
   }
 
   private throwCompilation(result: PromptCompilerResult): never {
+    const firstError = result.diagnostics.find(({ severity }) => severity === "ERROR");
     throw new BadRequestException({
-      message: "Prompt compilation failed validation",
+      message: firstError
+        ? `${firstError.code} at ${firstError.path}: ${firstError.message}`
+        : "Prompt compilation failed validation",
       diagnostics: result.diagnostics
     });
   }

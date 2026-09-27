@@ -1,0 +1,1497 @@
+{
+   "Checkbox_Keep_signed": {
+      "message": "Mantenha-me conectado "
+   },
+   "Checkbox_Keep_signed_Hint": {
+      "message": "Você será conectado automaticamente durante o período de tempo especificado. Verifique se o ambiente do seu computador é seguro. Ao usar um computador público, não marque esta opção."
+   },
+   "Delete_Exclude_website": {
+      "message": " Apagar & Excluir este site "
+   },
+   "Emergency_Desc": {
+      "message": " Torne fácil e seguro acessar sua conta novamente em caso de emergência, como senhas perdidas ou roubadas."
+   },
+   "Emergency_Title": {
+      "message": "\u003Cb> Acesso de emergência\u003C/b> em caso de acidente"
+   },
+   "Enable_Now": {
+      "message": "Ativar Agora"
+   },
+   "Enter_your_email": {
+      "message": " Enter your email"
+   },
+   "Exclude_website_new": {
+      "message": "Excluir este site"
+   },
+   "Invalid_Recovery_Code_New": {
+      "message": " Código de recuperação inválido. Certifique-se de inserir o correto ou o mais recente. Ou \u003Ca class=\"btn-link contactUsLink\">contacte-nos.\u003C/a>"
+   },
+   "Keep_Safe_Desc": {
+      "message": " Ative o Password Health para fazer uma verificação de senha e fortalecer suas senhas fracas, antigas e reutilizadas."
+   },
+   "Keep_Safe_Title": {
+      "message": " Mantenha todas as senhas \u003Cb>seguras\u003C/b>"
+   },
+   "M_Apr": {
+      "message": "Abril"
+   },
+   "M_Aug": {
+      "message": "Agosto"
+   },
+   "M_Dec": {
+      "message": "Dezembro"
+   },
+   "M_Feb": {
+      "message": "Fevereiro"
+   },
+   "M_Jan": {
+      "message": "Janeiro"
+   },
+   "M_Jul": {
+      "message": "Julho"
+   },
+   "M_Jun": {
+      "message": "Junho"
+   },
+   "M_Mar": {
+      "message": "Março"
+   },
+   "M_May": {
+      "message": "Maio"
+   },
+   "M_Nov": {
+      "message": "Novembro"
+   },
+   "M_Oct": {
+      "message": "Outubro"
+   },
+   "M_Sep": {
+      "message": "Setembro"
+   },
+   "No_Worries_Desc": {
+      "message": " Ative o Dark Web Monitoring para receber notificações se suas informações pessoais sofrerem uma violação de dados."
+   },
+   "No_Worries_Title": {
+      "message": "\u003Cb>Não\u003C/b> Preocupa-se com \u003Cb>violações de dados\u003C/b>"
+   },
+   "No_thanks": {
+      "message": "Não, obrigado"
+   },
+   "Password_Generator": {
+      "message": "Gerador de Senhas"
+   },
+   "Password_Generator_Dec": {
+      "message": "Crie senhas fortes e seguras com apenas 1 clique"
+   },
+   "Suggested_Password": {
+      "message": "Senha Sugerida"
+   },
+   "Suggested_Password_Dec": {
+      "message": "Mostrar senha sugerida para todas as caixas de entrada de senha"
+   },
+   "Suggested_password_Case": {
+      "message": "Senha Sugerida"
+   },
+   "TOTP_Tips": {
+      "message": "A hora local do seu PC está incorrecta, o que pode tornar a senha única inválida."
+   },
+   "TOTP_placeholder": {
+      "message": "Digite a chave secreta ou URL como caminho://*"
+   },
+   "Unlimited_Desc": {
+      "message": " Gerencie, armazene e crie facilmente senhas seguras em qualquer dispositivo ou plataforma, com apenas uma conta."
+   },
+   "Unlimited_Title": {
+      "message": "Sincronize dados em \u003Cb>dispositivos ilimitados\u003C/b>"
+   },
+   "Website": {
+      "message": "Website"
+   },
+   "about": {
+      "message": "Acerca"
+   },
+   "about_Acknowledgements": {
+      "message": "Agradecimentos"
+   },
+   "about_Copyright": {
+      "message": "© iTop Inc. Todos os direitos reservados."
+   },
+   "about_EULA": {
+      "message": "EULA"
+   },
+   "about_Privacy_Policy": {
+      "message": "Política de Privacidade"
+   },
+   "about_Version": {
+      "message": "Versão"
+   },
+   "account_blocked_disabled": {
+      "message": "Esta conta foi bloqueada ou desativada. Entre em contato com a equipa de suporte para obter ajuda."
+   },
+   "add": {
+      "message": "Adicionar"
+   },
+   "addNew": {
+      "message": "Adicionar Novo"
+   },
+   "addNewAccount": {
+      "message": "Adicionar uma nova conta"
+   },
+   "add_Login": {
+      "message": "Adicionar login"
+   },
+   "add_Logins": {
+      "message": "Adicionar Logins"
+   },
+   "add_Notes": {
+      "message": "Adicionar Notas"
+   },
+   "add_Payment_Info": {
+      "message": "Adicionar informações de Pagamento"
+   },
+   "add_Payment_Info_Case": {
+      "message": "Adicionar informação de pagamento"
+   },
+   "add_Personal_Info": {
+      "message": "Adicionar Informações Pessoais"
+   },
+   "add_Personal_Info_Case": {
+      "message": "Adicionar Informações Pessoais"
+   },
+   "add_exclude": {
+      "message": "Adicionar sites para excluir "
+   },
+   "add_items": {
+      "message": "Adicionar Itens"
+   },
+   "add_new_website": {
+      "message": "Adicionar um novo website"
+   },
+   "add_secure_note": {
+      "message": "Adicionar uma nota segura"
+   },
+   "add_tag": {
+      "message": "Adicionar etiqueta"
+   },
+   "add_to_favorites": {
+      "message": "Adicionar aos Favoritos"
+   },
+   "add_to_favorites_succ": {
+      "message": "Adicionado aos Favoritos"
+   },
+   "add_to_onetime_pwd": {
+      "message": "Adicionar senha de uso único"
+   },
+   "add_totp": {
+      "message": "Adicionar senha de uso único?"
+   },
+   "add_website": {
+      "message": "Adicionar site "
+   },
+   "add_website_placeholder": {
+      "message": "Digite o website"
+   },
+   "address": {
+      "message": "Endereço"
+   },
+   "address_copied": {
+      "message": "Endereço copiado"
+   },
+   "advancedOptions": {
+      "message": "Opções Avançadas"
+   },
+   "all_Item": {
+      "message": "Todos os Itens"
+   },
+   "alreadyAccount": {
+      "message": "* Se você já possui uma conta iTop, faça login diretamente."
+   },
+   "already_saved": {
+      "message": "Eu já salvei"
+   },
+   "americanexpress": {
+      "message": "American Express"
+   },
+   "appName": {
+      "message": "DualSafe Password Manager"
+   },
+   "auth_bottom_desc": {
+      "message": "Depois de concluir a autorização, você pode entrar no DualSafe Password Manager."
+   },
+   "auth_desc": {
+      "message": "Autorize o login do DualSafe Password Manager na guia do navegador recém-aberta."
+   },
+   "auth_subtitle": {
+      "message": "Á espera de autorização…"
+   },
+   "auth_title": {
+      "message": "Autorização"
+   },
+   "autoFillFailed": {
+      "message": "Falha ao encontrar os campos de entrada de login. Tente copiar e colar as informações de login manualmente."
+   },
+   "auto_save_confirm_desc": {
+      "message": "No futuro salvar automaticamente para todos os sites os meus nomes de utilizador e senhas."
+   },
+   "auto_save_passwords": {
+      "message": " Salvar senhas automaticamente"
+   },
+   "auto_save_passwords_desc": {
+      "message": "Salvar automaticamente para todos os sites os meus nomes de utilizador e senhas"
+   },
+   "auto_saved_successfully": {
+      "message": "Guardado automaticamente com successo"
+   },
+   "average": {
+      "message": "Média"
+   },
+   "back": {
+      "message": "Voltar"
+   },
+   "bannerExpiredPurchase": {
+      "message": "Oops! O seu Premium \u003Cb>expirou.\u003C/b>"
+   },
+   "bannerFreePurchase": {
+      "message": "Atualizar para desfrutar de acesso Premium completo"
+   },
+   "bannerPremiumPurchase": {
+      "message": "Você tem  %s \u003Cspan class=\"day-words\">dias\u003C/span> restantes na versão Premium."
+   },
+   "birthday": {
+      "message": "Data de Nascimento"
+   },
+   "birthday_copied": {
+      "message": "Data de Nascimento copiada"
+   },
+   "browserReboot": {
+      "message": "Reiniciar o Navegador"
+   },
+   "browser_extension": {
+      "message": "Extensão do navegador"
+   },
+   "cancel": {
+      "message": "Cancelar"
+   },
+   "capitalize": {
+      "message": "Maísculas (A-Z)"
+   },
+   "cardNumber": {
+      "message": "Número do Cartão"
+   },
+   "cardType": {
+      "message": "Tipo de Cartão"
+   },
+   "cardType_placeholder": {
+      "message": "Digite ou selecione o tipo de cartão"
+   },
+   "card_number_copied": {
+      "message": "Número do Cartão copiado"
+   },
+   "card_type_copied": {
+      "message": "Tipo de Cartão copiado"
+   },
+   "cardholderName": {
+      "message": "Nome do Titular"
+   },
+   "cardholder_name_copied": {
+      "message": "Nome do Cartão copiado"
+   },
+   "cardother": {
+      "message": "Outro"
+   },
+   "carteblanche": {
+      "message": "Carte Blanche"
+   },
+   "change_desc": {
+      "message": "Você está a alterar a sua senha mestra..."
+   },
+   "change_master_password": {
+      "message": "Alterar senha mestra"
+   },
+   "change_now": {
+      "message": "Mude agora"
+   },
+   "change_title": {
+      "message": "Alterar senha mestra"
+   },
+   "cityTown": {
+      "message": "Cidade"
+   },
+   "clear": {
+      "message": "Limpar"
+   },
+   "clear_allpass_desc": {
+      "message": "Eles não podem ser recuperados uma vez limpos."
+   },
+   "clear_allpass_title": {
+      "message": "Tem a certeza que deseja limpar todas as senhas?"
+   },
+   "clear_deleted_desc": {
+      "message": "Eles não podem ser recuperados uma vez excluídos."
+   },
+   "clear_deleted_title": {
+      "message": "Tem a certeza que quer excluir todos os itens de Itens Excluídos?"
+   },
+   "clear_password": {
+      "message": "Limpar senha"
+   },
+   "cleared_successfully": {
+      "message": "Limpo com sucesso."
+   },
+   "close": {
+      "message": "Fechar"
+   },
+   "code_desc": {
+      "message": "Digite a sua senha mestra para redefinir o seu código de recuperação"
+   },
+   "code_pairing_desc": {
+      "message": "Confirme o código na janela flutuante do aplicativo para PC e clique no botão Ligar para autorizar o login e o desbloqueio automático."
+   },
+   "code_pairing_title": {
+      "message": "Código de ligação"
+   },
+   "code_title": {
+      "message": "Redefinir código de recuperação"
+   },
+   "comma": {
+      "message": ":"
+   },
+   "comprehensive_pwd_Desc": {
+      "message": "Verificação de integridade de senha abrangente "
+   },
+   "confirmMasterNewPass": {
+      "message": "Confirme a nova senha mestra"
+   },
+   "confirmMasterPass": {
+      "message": "Confirme a sua senha mestra"
+   },
+   "continue": {
+      "message": "Continuar"
+   },
+   "continue_sign_in": {
+      "message": "Continuar Login"
+   },
+   "copied": {
+      "message": "copiado"
+   },
+   "copy": {
+      "message": "Copiar"
+   },
+   "copy_generator_password": {
+      "message": "Copiar senha"
+   },
+   "copy_notes": {
+      "message": "Copiar Notas"
+   },
+   "copy_one_time_Password": {
+      "message": "Copiar Senha Única"
+   },
+   "copy_password": {
+      "message": "senha"
+   },
+   "copy_username": {
+      "message": "Copiar Utilizador"
+   },
+   "countryRegion": {
+      "message": "País ou Região"
+   },
+   "countryRegion_placeholder": {
+      "message": "Selecione o seu País ou Região"
+   },
+   "createNewAccount": {
+      "message": "Criar uma Conta"
+   },
+   "create_new_account": {
+      "message": "Crie a sua conta aqui"
+   },
+   "createdAt": {
+      "message": "Criado por"
+   },
+   "currentMasterPass": {
+      "message": "Senha mestre atual"
+   },
+   "day": {
+      "message": "Dia"
+   },
+   "days": {
+      "message": "Dias"
+   },
+   "days_case": {
+      "message": "dias"
+   },
+   "default_password_manager": {
+      "message": "Default Password Manager"
+   },
+   "delete": {
+      "message": "Apagar"
+   },
+   "delete_all": {
+      "message": "Apagar Tudo"
+   },
+   "delete_at": {
+      "message": "Apagado em"
+   },
+   "delete_item": {
+      "message": "Está seguro que pretende apagar este item da Lixeira?"
+   },
+   "delete_item_Recycle_Bin": {
+      "message": "Está seguro que pretende apagar este item da Lixeira?"
+   },
+   "delete_item_Recycle_Bin_Dec": {
+      "message": "Este não poderá ser recuperado uma vez apagado."
+   },
+   "delete_item_dec": {
+      "message": "Você pode recuperá-lo da Lixeia se este não foi apagado de forma permanente."
+   },
+   "deletedSuccessfully": {
+      "message": "Apagado com sucesso."
+   },
+   "deleted_this_item": {
+      "message": "Apagar este item"
+   },
+   "desktop": {
+      "message": "Área de Trabalho"
+   },
+   "desktop_app": {
+      "message": "Applicação para Área de Trabalho"
+   },
+   "details": {
+      "message": "Detalhes"
+   },
+   "device_limit_desc": {
+      "message": "Você atingiu o limite máximo para fazer login em 3 dispositivos. Atualize agora para aproveitar o acesso ilimitado ao dispositivo e todas as vantagens abaixo:"
+   },
+   "device_limit_tips": {
+      "message": "* Você será desconectado deste dispositivo:"
+   },
+   "device_limit_title": {
+      "message": "Limite de Dispositivos atingido!"
+   },
+   "dinersclub": {
+      "message": "Diners Club"
+   },
+   "dir": {
+      "message": "ltr"
+   },
+   "discard": {
+      "message": "Ignorar"
+   },
+   "discard_change": {
+      "message": "Está seguro que pretende ignorar as alterações não guardadas?"
+   },
+   "discover": {
+      "message": "Discover"
+   },
+   "downloadApp": {
+      "message": "Descarregar App"
+   },
+   "edit": {
+      "message": "Editar"
+   },
+   "editInfo": {
+      "message": "Editar info"
+   },
+   "emailAddress": {
+      "message": "Endereço de Email"
+   },
+   "emailOrPassIncorrect": {
+      "message": "Endereço de email ou senha incorrecta."
+   },
+   "emailVerfy": {
+      "message": "Verificar este Email"
+   },
+   "email_address_copied": {
+      "message": "Endereço de Email copiado"
+   },
+   "emergency_contact": {
+      "message": "Acesso de emergência "
+   },
+   "emergency_contact_Desc": {
+      "message": "Quando você perde o acesso aos seus dados, a pessoa a quem você concede acesso de emergência pode solicitar a exportação de seus dados ou alterar a sua senha mestra."
+   },
+   "enterMasterNewPass": {
+      "message": "Digite a nova senha mestra"
+   },
+   "enterMasterPass": {
+      "message": "Digite a sua senha mestra"
+   },
+   "enterRecoveryCass": {
+      "message": "Digite o código de recuperação"
+   },
+   "enterYourPass": {
+      "message": "Digite a sua senha"
+   },
+   "enter_email_desc": {
+      "message": " Digite seu endereço de e-mail para receber o código de recuperação!"
+   },
+   "enter_email_tips": {
+      "message": " Endereço de e-mail inválido. Verifique e digite novamente!"
+   },
+   "enter_your_email_address": {
+      "message": "Endereço de email"
+   },
+   "exclude_website": {
+      "message": " Excluir site"
+   },
+   "exclude_website_list": {
+      "message": "Lista de sites excluídos "
+   },
+   "expOptionDate": {
+      "message": "Data de Expiração"
+   },
+   "expiration_date_copied": {
+      "message": "Data de Expiração copiado"
+   },
+   "expired": {
+      "message": "EXPIRADO"
+   },
+   "extDesc": {
+      "message": "A extensão DualSafe Password Manager permite que gerencie senhas para auto-salvar, auto-preencher e acessá-las seguramente."
+   },
+   "extName": {
+      "description": "DualSafe Password Manager & Carteira Digital",
+      "message": "DualSafe Password Manager & Carteira Digital"
+   },
+   "extension": {
+      "message": "Extensão"
+   },
+   "failedToDelete": {
+      "message": "Falha ao apagar."
+   },
+   "failedToOpenLoading_DPM": {
+      "message": "A carregar a versão desktop"
+   },
+   "failedToOpenLoading_Dark_Web_Monitor_Dec": {
+      "message": "O Dark Web Monitor está disponível apenas na versão para desktop. Clique em \"Abrir\" no pop-up de confirmação para executar a versão para desktop. Ou clique no botão %s abaixo para reabrir o pop-up."
+   },
+   "failedToOpenLoading_Emergency_Contact_Dec": {
+      "message": "Emergency Contact está disponível apenas na versão para desktop. Clique em \"Abrir\" no pop-up de confirmação para executar a versão para desktop. Ou clique no botão %s abaixo para reabrir o pop-up."
+   },
+   "failedToOpenLoading_Import_Export_Dec": {
+      "message": "Importar e Exportar está disponível apenas na versão desktop. Clique em \"Abrir\" no pop-up de confirmação para executar a versão para desktop. Ou clique no botão %s abaixo para reabrir o pop-up."
+   },
+   "failedToOpenLoading_Password_Health_Dec": {
+      "message": "A integridade da senha está disponível apenas na versão para desktop. Clique em \"Abrir\" no pop-up de confirmação para executar a versão para desktop. Ou clique no botão %s abaixo para reabrir o pop-up."
+   },
+   "failedToOpen_DPM": {
+      "message": "Falha ao abrir a versão para desktop"
+   },
+   "failedToOpen_Dark_Web_Monitor_Dec": {
+      "message": "O Dark Web Monitor está disponível apenas na versão para desktop. Clique no botão %d para descarregar e instalar a versão para desktop. Ou clique no botão %s para abrir novamente."
+   },
+   "failedToOpen_Emergency_Contact_Dec": {
+      "message": "Emergency Contact está disponível apenas na versão para desktop. Clique no botão %d para descarregar e instalar a versão para desktop. Ou clique no botão %s para abrir novamente."
+   },
+   "failedToOpen_Import_Export_Dec": {
+      "message": "Importar e Exportar está disponível apenas na versão desktop. Clique no botão %d para descarregar e instalar a versão para desktop. Ou clique no botão %s para abrir novamente."
+   },
+   "failedToOpen_Password_Health_Dec": {
+      "message": "A integridade da senha está disponível apenas na versão para desktop. Clique no botão %d para baixar e instalar a versão para desktop. Ou clique no botão %s para abrir novamente."
+   },
+   "failedToRestore": {
+      "message": "Falha ao recuperar."
+   },
+   "failed_send_desc": {
+      "message": "Falha ao enviar o e-mail do código de recuperação. Por favor, tente novamente."
+   },
+   "failed_send_title": {
+      "message": "Falha ao enviar."
+   },
+   "favoties": {
+      "message": "Favoritos"
+   },
+   "feedback": {
+      "message": "Comentários"
+   },
+   "fill": {
+      "message": "Preencher"
+   },
+   "firstName": {
+      "message": "Primeiro Nome"
+   },
+   "fiveMinutes": {
+      "message": "5 minutos"
+   },
+   "forgotYourPass": {
+      "message": "Esqueceu a sua senha?"
+   },
+   "fourHours": {
+      "message": "4 horas"
+   },
+   "fourteenDays": {
+      "message": "14 dias"
+   },
+   "free": {
+      "message": "GRÁTIS"
+   },
+   "gender": {
+      "message": "Género"
+   },
+   "genderFemale": {
+      "message": "Feminino"
+   },
+   "genderMale": {
+      "message": "Masculino"
+   },
+   "genderNone": {
+      "message": "Nada"
+   },
+   "genderOther": {
+      "message": "Outro"
+   },
+   "gender_copied": {
+      "message": "Género copiado"
+   },
+   "goPremiumBtn": {
+      "message": "Ir para Premium"
+   },
+   "go_back_to_signin": {
+      "message": "Voltar para Entrar"
+   },
+   "hideCode": {
+      "message": "Ocultar código de segurança"
+   },
+   "hidePass": {
+      "message": "Esconder senha"
+   },
+   "ignore_website": {
+      "message": "Ignorar este site "
+   },
+   "installDesktopApp": {
+      "message": "Instalar a App Desktop"
+   },
+   "invalid_email": {
+      "message": "Endereço de email invalido. Digite o endereço de e-mail que você verificou."
+   },
+   "invalid_master_pass": {
+      "message": "Senha mestre inválida!"
+   },
+   "invalid_master_tips": {
+      "message": "Senha mestre inválida. Por favor verifique e tente novamente."
+   },
+   "invalid_recovery_code": {
+      "message": "Código de recuperação inválido. Por favor verifique e tente novamente."
+   },
+   "invalid_secret_key": {
+      "message": "Chave secreta inválida!"
+   },
+   "item_remove_from_favorites": {
+      "message": "Remover dos Favoritos"
+   },
+   "jcb": {
+      "message": "JCB"
+   },
+   "lang": {
+      "message": "pt-pt"
+   },
+   "lastModifiedAt": {
+      "message": "Modificado por"
+   },
+   "lastName": {
+      "message": "Apelido"
+   },
+   "lastPasswordChangedAt": {
+      "message": "Senha alterada em"
+   },
+   "learn_more": {
+      "message": "Saber mais"
+   },
+   "length": {
+      "message": "Comprimento"
+   },
+   "loading": {
+      "message": "A carregar ..."
+   },
+   "loading_data_error": {
+      "message": "Falha ao carregar. Verifique sua ligação de rede."
+   },
+   "lock": {
+      "message": "Bloquear"
+   },
+   "lock_comfirm_btn": {
+      "message": "Desbloquear manualmente"
+   },
+   "login_comfirm_btn": {
+      "message": "Fazer login manualmente"
+   },
+   "login_comfirm_desc": {
+      "message": "Clique na sua conta para\u003Cbr> autorizar o login automático e desbloquear a partir do aplicativo da área de trabalho."
+   },
+   "login_feature_auto": {
+      "message": "\u003Cb>Auto\u003C/b> - Acesso em dispositivos ilimitados com sincronização automática"
+   },
+   "login_feature_easy": {
+      "message": "\u003CFácil\u003C/b> - Salvamento automático e preenchimento automático de senhas apenas com um clique"
+   },
+   "login_feature_safe": {
+      "message": "\u003Cb>Seguro\u003C/b> - Armazene os seus dados com a melhor criptografia existente"
+   },
+   "login_feature_secure": {
+      "message": "\u003Cb>Seguro\u003C/b> - Crie senhas fortes e exclusivas"
+   },
+   "login_feature_unlimited": {
+      "message": "\u003Cb>Ilimitado\u003C/b> - Salve senhas ilimitadas, pagamentos, etc."
+   },
+   "login_left_title": {
+      "message": "Essencial para sua vida digital, uma maneira segura, simples, mas gratuita de gerenciar senhas."
+   },
+   "login_waiting_title": {
+      "message": "Aguardando autorização do aplicativo da área de trabalho…"
+   },
+   "logins": {
+      "message": "Logins"
+   },
+   "lower_case": {
+      "message": "Minúsculas (a-z)"
+   },
+   "maestro": {
+      "message": "Maestro"
+   },
+   "mastercard": {
+      "message": "Mastercard"
+   },
+   "masterpassIncorrect": {
+      "message": "Senha mestre inválida."
+   },
+   "match_change_pass": {
+      "message": "A senha não atende aos requisitos."
+   },
+   "match_master_pass": {
+      "message": "As senhas não coincidem."
+   },
+   "middleName": {
+      "message": "Nome do Meio"
+   },
+   "month": {
+      "message": "Mês"
+   },
+   "more": {
+      "message": "Mais"
+   },
+   "name": {
+      "message": "Nome"
+   },
+   "name_copied": {
+      "message": "Nome copiado"
+   },
+   "networkError": {
+      "message": "Erro de ligação de rede."
+   },
+   "never": {
+      "message": "Nunca"
+   },
+   "newUser": {
+      "message": "Novo utilizador?"
+   },
+   "new_password": {
+      "message": "Nova Senha"
+   },
+   "new_tag": {
+      "message": "Nova etiqueta"
+   },
+   "new_tag_number": {
+      "message": "Nova etiqueta"
+   },
+   "ninetyDays": {
+      "message": "90 dias"
+   },
+   "noItemsAddAllItem": {
+      "message": "Não foram adicionados itens."
+   },
+   "noItemsAddLoginItem": {
+      "message": "Não foram adicionados logins."
+   },
+   "noItemsAddNotesItem": {
+      "message": "Não foram adicionadas notas seguras."
+   },
+   "noItemsAddPayItem": {
+      "message": "Não foi adicionada informação de pagamentos."
+   },
+   "noItemsAddPersonalItem": {
+      "message": "Não foram adicionadas informações pessoais."
+   },
+   "noItemsAddRecycleItem": {
+      "message": "Sem itens aqui."
+   },
+   "noItemsFound": {
+      "message": "Não foram encontrados itens."
+   },
+   "noResult": {
+      "message": "Nenhum Resultado!"
+   },
+   "noSaved": {
+      "message": "Nenhum login salvo para este site."
+   },
+   "noSavedPrss": {
+      "message": "Nenhuma senha salva!"
+   },
+   "no_excluded_websites": {
+      "message": "Nenhum site excluído."
+   },
+   "no_password_history": {
+      "message": "Sem histórico de senha."
+   },
+   "no_valid_secret_key_found": {
+      "message": "Nenhuma chave secreta válida encontrada!"
+   },
+   "notNow": {
+      "message": "Não agora"
+   },
+   "not_have_code": {
+      "message": "Não tem um código de recuperação?"
+   },
+   "notes": {
+      "message": "Notas"
+   },
+   "notes_characters_tips": {
+      "message": "%s caractéres restantes"
+   },
+   "notes_copied": {
+      "message": "Notas copiadas"
+   },
+   "notes_placeholder": {
+      "message": "Insira algumas notas para este item (limite máximo: %s caracteres)"
+   },
+   "numWords": {
+      "message": "Digitos (0-9)"
+   },
+   "offer_to_save_passwords": {
+      "message": "Ofereça-se para salvar senhas"
+   },
+   "offer_to_save_passwords_desc": {
+      "message": "Solicitar para salvar senhas ao fazer login ou se inscrever"
+   },
+   "ok": {
+      "message": "OK"
+   },
+   "okIgotIt": {
+      "message": "OK. Entendi."
+   },
+   "oneHour": {
+      "message": "1 hora"
+   },
+   "oneMinute": {
+      "message": "1 minuto"
+   },
+   "one_time_Password": {
+      "message": "Senha Única"
+   },
+   "one_time_pass_copied": {
+      "message": "Senha única copiada"
+   },
+   "only": {
+      "message": "Somente"
+   },
+   "open": {
+      "message": "Abrir"
+   },
+   "options": {
+      "message": "Opções"
+   },
+   "passIncorrect": {
+      "message": "Senha incorrecta."
+   },
+   "password": {
+      "message": "Senha"
+   },
+   "password_copied": {
+      "message": "Senha copiada"
+   },
+   "password_history_item": {
+      "message": "Histórico de Senhas"
+   },
+   "password_history_tips": {
+      "message": "Aqui mostra as senhas recentes de %s."
+   },
+   "password_history_title": {
+      "message": "Histórico de Senhas"
+   },
+   "password_same": {
+      "message": "A nova senha mestra não pode ser a mesma que a antiga."
+   },
+   "password_tip_note": {
+      "message": "\u003Cb>Observação:\u003C/b> Não use a sua senha atual do iTop."
+   },
+   "password_tip_one": {
+      "message": "Pelo menos 8 caracteres. Mais de 16 caracteres são recomendados."
+   },
+   "password_tip_three": {
+      "message": "Pelo menos um símbolo."
+   },
+   "password_tip_two": {
+      "message": "Pelo menos um numero."
+   },
+   "payment_Info": {
+      "message": "Informações de Pagamentos"
+   },
+   "personal_Info": {
+      "message": "Informações Pessoais"
+   },
+   "phoneNumber": {
+      "message": "Número de Telefone"
+   },
+   "phone_number_copied": {
+      "message": "Número de telefone copiado"
+   },
+   "premiumExpiredPurchase": {
+      "message": "O seu Premium \u003Cb class='text-red'>Expirou!\u003C/b>"
+   },
+   "premiumExpiredPurchaseAlert": {
+      "message": "Os recursos avançados estão agora indisponíveis. Atualize para continuar com o acesso Premium e mantenha facilmente as suas senhas seguras."
+   },
+   "premiumExpiringSoonPurchase": {
+      "message": "Somente \u003Cb class=\"text-yellow\">%s Dias\u003C/b> restantes da versão Premium!"
+   },
+   "premiumExpiringSoonPurchaseAlert": {
+      "message": "Atualize para ficar com acesso Premium aos seguintes recursos avançados:"
+   },
+   "premiumFreePurchase": {
+      "message": "Uma maneira mais fácil e segura de gerir as suas senhas"
+   },
+   "premiumFreePurchaseAlert": {
+      "message": "Inicie o Premium hoje e mantenha estes recursos avançados:"
+   },
+   "premiumFreePurchaseAlert_New": {
+      "message": "Iniciar o Premium hoje e manter estes recursos avançados:"
+   },
+   "premiumFreePurchase_New": {
+      "message": "Uma Maneira Mais Fácil e Segura de\u003Cbr> Gerencie Suas Senhas"
+   },
+   "premiumPurchase": {
+      "message": "Você tem 30 dias de Premium!"
+   },
+   "premiumPurchaseAlert": {
+      "message": "Agora, por favor, aproveite os seguintes recursos avançados:"
+   },
+   "premiun": {
+      "message": "PREMIUM"
+   },
+   "purchase_Dark_Web_Monitor": {
+      "message": "Monitoramento e Alertas da Dark Web"
+   },
+   "purchase_Password_Health": {
+      "message": "Verificar integridade da Senha"
+   },
+   "purchase_Password_Health_Check": {
+      "message": "Verificação de Integridade da Senha"
+   },
+   "purchase_Unlimited_Devices": {
+      "message": "Sincronizar entre Dispositivos Ilimitados"
+   },
+   "questionMark": {
+      "message": "?"
+   },
+   "recovery_code_copied": {
+      "message": "Código de recuperação copiado"
+   },
+   "recycle_Bin": {
+      "message": "Lixeira"
+   },
+   "refresh": {
+      "message": "Refrescar"
+   },
+   "rememberMeOnThisDevice": {
+      "message": "Recordar-me neste dispositivo"
+   },
+   "remindExpirationDate": {
+      "message": "Lembre-me 2 meses antes de expirar"
+   },
+   "remind_me_after_days": {
+      "message": "Lembre-me após 7 dias"
+   },
+   "remind_me_tomorrow": {
+      "message": "Lembre-me amanhã"
+   },
+   "remind_password": {
+      "message": "Lembre-me de alterar a senha após 90 dias"
+   },
+   "remove": {
+      "message": "Remover"
+   },
+   "remove_from_favorites": {
+      "message": "Remover dos Favoritos"
+   },
+   "remove_from_favorites_succ": {
+      "message": "Removido dos Favoritos"
+   },
+   "resend": {
+      "message": "Reenviar"
+   },
+   "reset": {
+      "message": "Redefinir"
+   },
+   "reset_code_desc": {
+      "message": "Digite o seu código de recuperação para redefinir sua senha mestra. O seu código de recuperação foi salvo como um arquivo PDF."
+   },
+   "reset_code_title": {
+      "message": "Digite o código de recuperação"
+   },
+   "reset_desc": {
+      "message": "Digite o seu endereço de e-mail validado para redefinir a senha"
+   },
+   "reset_email_place": {
+      "message": "Digite o seu endereço de e-mail validado"
+   },
+   "reset_master_title": {
+      "message": "Redefinir senha mestra"
+   },
+   "reset_recovery_code": {
+      "message": "Redefinir código de recuperação"
+   },
+   "reset_success_desc": {
+      "message": "A sua senha mestra foi redefinida. Faça login com a nova senha mestra."
+   },
+   "reset_success_title": {
+      "message": "Sucesso!"
+   },
+   "reset_title": {
+      "message": "Redefinir senha"
+   },
+   "restore": {
+      "message": "Recuperar"
+   },
+   "restoreSuccessfully": {
+      "message": "Recuperado com sucesso."
+   },
+   "retry": {
+      "message": "Repetir"
+   },
+   "save": {
+      "message": "Salvar"
+   },
+   "saveIn_DPM": {
+      "message": "Salvaguardar em DualSafe Password Manager"
+   },
+   "save_as_pdf": {
+      "message": "Salvar como PDF"
+   },
+   "save_code_desc_login": {
+      "message": "Salve o seu código de recuperação como PDF."
+   },
+   "save_code_desc_one": {
+      "message": "Salve o seu código de recuperação como PDF e imprima-o para mantê-lo seguro."
+   },
+   "save_code_desc_options": {
+      "message": "O seu código de recuperação anterior é inválido a partir de agora. Salve o seu novo código de recuperação como PDF e imprima-o para o manter seguro."
+   },
+   "save_code_desc_two": {
+      "message": "Ele permite que você recupere o acesso ao seu DualSafe Password Manager caso tenha esquecido a sua senha mestra."
+   },
+   "save_code_new_title": {
+      "message": "Salve o seu novo código de recuperação"
+   },
+   "save_code_tips": {
+      "message": "\u003Cb>Importante:\u003C/b> O código de recuperação é a única maneira de ajudá-lo a acessar  novamente o DualSafe Password Manager se você esquecer a sua senha mestra."
+   },
+   "save_code_title": {
+      "message": "Salvar código de recuperação"
+   },
+   "save_totp": {
+      "message": "Salvar senha de uso único? "
+   },
+   "savedFailedData": {
+      "message": "Os dados mais recentes foram sincronizados a partir do servidor."
+   },
+   "savedFailedSynced": {
+      "message": "A Salvaguarda falhou! Os dados mais recentes foram sincronizados a partir do servidor."
+   },
+   "savedSuccessfully": {
+      "message": "Salvo com sucesso."
+   },
+   "scan_web_page_QRCode": {
+      "message": "Digitalize o código QR da página da web"
+   },
+   "search": {
+      "message": "Pesquisar"
+   },
+   "secure": {
+      "message": "Segura"
+   },
+   "secureNotes": {
+      "message": "Notas Seguras"
+   },
+   "secure_notes_placeholder": {
+      "message": "Insira as suas notas importantes aqui (Limite máximo: %s caracteres)"
+   },
+   "securityCode": {
+      "message": "Código de Segurança"
+   },
+   "security_code_copied": {
+      "message": "Código de Segurança copiado"
+   },
+   "send": {
+      "message": "Enviar"
+   },
+   "send_email_hint": {
+      "message": "Enviar para o seu email"
+   },
+   "sending_desc": {
+      "message": "A enviar Código de Recuperação para o seu endereço de e-mail."
+   },
+   "sending_title": {
+      "message": "A enviar"
+   },
+   "sent_succ_desc": {
+      "message": "O seu código de recuperação foi enviado para o endereço de e-mail %s. Se não estiver na sua caixa de entrada, verifique o Spam. Ou você pode \u003Cbutton class=\"resndbtn\">reenviar\u003C/button>."
+   },
+   "sent_succ_title": {
+      "message": "Enviado com sucesso!"
+   },
+   "set_master_password": {
+      "message": "Definir senha mestra"
+   },
+   "set_master_password_tips": {
+      "message": "Para a segurança da sua conta, sugere-se definir uma senha mestra para o DualSafe Password Manager."
+   },
+   "set_master_tips": {
+      "message": "\u003Cb>Importante:\u003C/b> A senha mestra será a única senha válida para acessar o seu DualSafe Password Manager."
+   },
+   "set_master_title": {
+      "message": "Definir a senha mestra"
+   },
+   "set_success_desc": {
+      "message": "A senha mestra foi definida e o código de recuperação foi salvo com sucesso. Faça login com a sua senha mestra."
+   },
+   "settings": {
+      "message": "Configurações"
+   },
+   "settings_Auto_Fill": {
+      "message": "Preenchimento Automático"
+   },
+   "settings_Auto_Fill_Dec": {
+      "message": "Preenche automaticamente os logins guardados, informações de pagamento, etc."
+   },
+   "settings_Auto_Fill_Password": {
+      "message": "Senha de preenchimento automático "
+   },
+   "settings_Auto_Fill_Password_Dec": {
+      "message": "Preencha automaticamente contas e senhas ao fazer login nos sites guardados."
+   },
+   "settings_Auto_Lock": {
+      "message": "Auto-Bloqueio"
+   },
+   "settings_Auto_Lock_Dec": {
+      "message": "Bloqueie o DualSafe Password Manager automaticamente com determinada frequência"
+   },
+   "settings_Auto_Save": {
+      "message": "Salvaguarda Automática"
+   },
+   "settings_Auto_Save_Dec": {
+      "message": "Guarda automaticamente os utilizadores e senhas entrados"
+   },
+   "settings_Autofill_and_Autosave": {
+      "message": "Preenchimento e Salvaguarda Automáticos"
+   },
+   "settings_Clear_Clipboard": {
+      "message": "Limpar Área de Transferência"
+   },
+   "settings_Clear_Clipboard_Dec": {
+      "message": "Limpar a Área de Transferência a determinado intervalo de tempo depois de copiar a senha"
+   },
+   "settings_Fill_Payments": {
+      "message": "Preencha as informações de pagamentos "
+   },
+   "settings_Fill_Payments_Desc": {
+      "message": "Ajuda-o a preencher apenas um clique as suas informações de pagamento salvas, como número do cartão, titular do cartão e data de validade "
+   },
+   "settings_Fill_Personal_Infol": {
+      "message": "Preencha as informações pessoais "
+   },
+   "settings_Fill_Personal_Infol_Desc": {
+      "message": "Ajuda-o a preencher apenas com um clique as suas informações pessoais salvas como e-mail, número de telefone e endereço"
+   },
+   "settings_General": {
+      "message": "Geral"
+   },
+   "settings_General_Dec": {
+      "message": "Ative o DualSafe Password Manager como o gestor de senhas por defeito"
+   },
+   "settings_Limited_time_free": {
+      "message": "(Oferta por tempo limitado)"
+   },
+   "settings_Security_Options": {
+      "message": "Opções de Segurança"
+   },
+   "settings_Show_Icon": {
+      "message": "Mostrar Ícone"
+   },
+   "settings_Show_Icon_Dec": {
+      "message": "Mostre o ícone do DualSafe Password Manager em todas as caixas de entrada de senha para salvar com apenas um clique os seus logins"
+   },
+   "sevenDays": {
+      "message": "7 dias"
+   },
+   "showCode": {
+      "message": "Mostrar código de segurança"
+   },
+   "showPass": {
+      "message": "Mostrar senha"
+   },
+   "signIn": {
+      "message": "Entrar"
+   },
+   "signInAutoNow": {
+      "message": "Faça login agora para preencher automaticamente os seus logins, informações pessoais ou informações de pagamento."
+   },
+   "signInLocked": {
+      "message": "A sua conta foi bloqueada. Tente novamente em 5 minutos."
+   },
+   "signInNow": {
+      "message": "Faça login agora para preencher automaticamente os logins deste site."
+   },
+   "signInSave": {
+      "message": "Fazer login e Salvar"
+   },
+   "signInTimeout": {
+      "message": "Tempo limite de Entrada excedido! Verifique a sua rede e tente novamente!"
+   },
+   "signIn_DPM": {
+      "message": "Entrar no DualSafe Password Manager"
+   },
+   "signIn_Desc": {
+      "message": "Faça login agora para salvar os logins de \u003Ca class=\"btn-link btn-name\">\u003C/a> e preenchê-los automaticamente por si no futuro."
+   },
+   "signOut": {
+      "message": "Desligar"
+   },
+   "sign_in_again_desc": {
+      "message": "Você ainda não definiu uma senha, pois anteriormente fez login com o Google/Facebook. Você pode clicar em OK para entrar com Google / Facebook."
+   },
+   "sign_in_now": {
+      "message": "Faça seu login agora mesmo"
+   },
+   "sign_in_with": {
+      "message": "Ou faça login com"
+   },
+   "sign_in_with_app": {
+      "message": "Faça login com o Applicativo da área de trabalho"
+   },
+   "sign_in_with_facebook": {
+      "message": "Faça login com o Facebook"
+   },
+   "sign_in_with_google": {
+      "message": "Faça login com o Google"
+   },
+   "sixtyDays": {
+      "message": "60 dias"
+   },
+   "skip_for_now": {
+      "message": "Ignorar por agora"
+   },
+   "sort_by": {
+      "message": "Ordenado por"
+   },
+   "sort_date_created": {
+      "message": "Criado em"
+   },
+   "sort_date_modified": {
+      "message": "Modificado em"
+   },
+   "sort_newest_first": {
+      "message": "Os mais recentes primeiro"
+   },
+   "sort_oldest_first": {
+      "message": "Os mais antigos primeiro"
+   },
+   "sort_show_az": {
+      "message": "A-Z"
+   },
+   "sort_show_favorites": {
+      "message": "Mostrar Favoritos"
+   },
+   "sort_show_title_az": {
+      "message": "Título: A para Z"
+   },
+   "sort_show_title_za": {
+      "message": "Título: Z para A"
+   },
+   "sort_show_za": {
+      "message": "Z-A"
+   },
+   "sort_title": {
+      "message": "Título"
+   },
+   "state": {
+      "message": "Região"
+   },
+   "strong": {
+      "message": "Forte"
+   },
+   "success_desc": {
+      "message": "Clique no ícone da extensão \u003Cspan class=\"succ-icon\">\u003C/span> e fixe o DualSafe Password Manager na barra de ferramentas. Então você pode clicar \u003Cspan class=\"succ-icon dpm\">\u003C/span> para usar o DualSafe Password Manager a qualquer momento."
+   },
+   "success_title": {
+      "message": "Parabéns 🎉🎉🎉 \u003Cbr>DualSafe Password Manager está pronto!"
+   },
+   "suggestion": {
+      "message": "Sugestão"
+   },
+   "suggestion_tips": {
+      "message": "Aqui mostra os dados de login salvos para o site atualmente aberto."
+   },
+   "symbols": {
+      "message": "Simbolos (%s)"
+   },
+   "systemLocks": {
+      "message": "Bloquear o Sistema"
+   },
+   "tags": {
+      "message": "Etiquetas"
+   },
+   "tenMinutes": {
+      "message": "10 minutos"
+   },
+   "thirtyDays": {
+      "message": "30 dias"
+   },
+   "thirtyMinutes": {
+      "message": "30 minutos"
+   },
+   "title": {
+      "message": "Título"
+   },
+   "title_placeholder": {
+      "message": "Por favor escreva um título"
+   },
+   "token_invalid_desc": {
+      "message": "A sua sessão expirou. Faça login novamente."
+   },
+   "tools": {
+      "message": "Ferramentas"
+   },
+   "tools_Dark_Web_Monitor": {
+      "message": "Dark Web Monitor"
+   },
+   "tools_Dark_Web_Monitor_Dec": {
+      "message": "Ajuda-o a monitorizar a divulgação de dados confidenciais na Dark Web"
+   },
+   "tools_Import_Export": {
+      "message": "Importar e Exportar"
+   },
+   "tools_Import_Export_Dec": {
+      "message": "Importe dados de seus navegadores ou outras ferramentas de senha e exporte com apenas 1 clique os seus dados salvos para um arquivo CSV"
+   },
+   "tools_Password_Health": {
+      "message": "Integridade das Senhas"
+   },
+   "tools_Password_Health_Dec": {
+      "message": "Ajuda-o a verificar senhas vulneráveis, como fracas, reutilizadas ou comprometidas"
+   },
+   "tools_Unlimited_Passwords": {
+      "message": "Senhas Ilimitadas"
+   },
+   "tools_Unlimited_Passwords_Only": {
+      "message": "(Apenas 50 no Plano Grátis)"
+   },
+   "twoMinutes": {
+      "message": "2 minutos"
+   },
+   "type": {
+      "message": "Tipo"
+   },
+   "unionpay": {
+      "message": "UnionPay"
+   },
+   "unknown": {
+      "message": "Desconhecido"
+   },
+   "unlock": {
+      "message": "Desbloquear"
+   },
+   "unlockAutoNow": {
+      "message": "Desbloqueie agora para preencher automaticamente os seus logins, informações pessoais ou informações de pagamento."
+   },
+   "unlockDPM": {
+      "message": "Desbloquear o DualSafe Password Manager"
+   },
+   "unlockDPM_Desc": {
+      "message": "Desbloqueie agora para salvar os logins de \u003Ca class=\"btn-link btn-name\">\u003C/a> e preenchê-los automaticamente por si no futuro."
+   },
+   "unlockNow": {
+      "message": "Desbloqueie agora para preencher automaticamente os logins deste site."
+   },
+   "unlockSave": {
+      "message": "Desbloquear e Salvar"
+   },
+   "unlock_now": {
+      "message": "Desbloquear agora"
+   },
+   "until_sign_out": {
+      "message": "Até eu sair "
+   },
+   "update": {
+      "message": "Atualizar"
+   },
+   "updateFailed": {
+      "message": "Falha na atualização."
+   },
+   "updateLogins": {
+      "message": "Atualizar logins"
+   },
+   "updateSuccessfully": {
+      "message": "Atualizado com sucesso."
+   },
+   "upgradeBtn": {
+      "message": "Atualizar"
+   },
+   "upgradeNowBtn": {
+      "message": "Atualizar Agora"
+   },
+   "upper_case": {
+      "message": "Maiúsculas (A-Z)"
+   },
+   "url": {
+      "message": "url"
+   },
+   "url_copied": {
+      "message": "Website copiado"
+   },
+   "use": {
+      "message": "Usar"
+   },
+   "use_generator_password": {
+      "message": "Utilizar senha"
+   },
+   "user_manual": {
+      "message": "Manual do utilizador"
+   },
+   "username": {
+      "message": "Utilizador"
+   },
+   "username_copied": {
+      "message": "Utilizador copiado"
+   },
+   "username_placeholder": {
+      "message": "Email / Utilizador / Número de Telefone"
+   },
+   "view": {
+      "message": "Ver"
+   },
+   "visa": {
+      "message": "Visa"
+   },
+   "visaelectron": {
+      "message": "Visa Electron"
+   },
+   "weak": {
+      "message": "Fraca"
+   },
+   "web_password_sync": {
+      "message": "Observação: certifique-se de atualizar a senha do site"
+   },
+   "welcomeTo": {
+      "message": "Benvindo ao"
+   },
+   "year": {
+      "message": "Ano"
+   },
+   "yes": {
+      "message": "Sim"
+   },
+   "zip": {
+      "message": "CP"
+   },
+   "zipPostalCode": {
+      "message": "Código Postal"
+   }
+}

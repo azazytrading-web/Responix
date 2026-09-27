@@ -1,0 +1,5 @@
+2026/08/14-16:43:50.066 1550 Creating DB G:\Trading\Responix_Git\.tmp-edge-delete-profile\Default\EdgeCoupons/coupons_data.db since it was missing.
+2026/08/14-16:43:50.186 1550 Reusing MANIFEST G:\Trading\Responix_Git\.tmp-edge-delete-profile\Default\EdgeCoupons/coupons_data.db/MANIFEST-000001
+2026/08/14-16:44:21.405 2388 Level-0 table #5: started
+2026/08/14-16:44:21.983 2388 Level-0 table #5: 683284 bytes OK
+2026/08/14-16:44:22.127 2388 Delete type=0 #3

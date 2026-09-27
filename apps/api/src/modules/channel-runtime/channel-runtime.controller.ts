@@ -5,8 +5,8 @@ import { Permissions, Public } from "../auth/auth.guard";
 import type { TenantRequest } from "../tenant/tenant-context.service";
 import { ChannelRuntimeService } from "./channel-runtime.service";
 import { ChannelListQueryDto, ChannelMessageListQueryDto, CreateChannelConnectionDto, CreateChannelDto, SendChannelMessageDto,
-  TransitionChannelMessageDto, UploadChannelAttachmentDto, WebhookVerificationDto } from "./dto/channel-runtime.dto";
-import { CreateChannelBatchDto, CreateProviderConnectionDto, RotateChannelCredentialDto, TransitionChannelConnectionDto, UpdateChannelConfigurationDto } from "./dto/channel-runtime.dto";
+  SetConversationExecutionDto, TransitionChannelMessageDto, UploadChannelAttachmentDto, WebhookVerificationDto } from "./dto/channel-runtime.dto";
+import { CreateChannelBatchDto, CreateProviderConnectionDto, RotateChannelCredentialDto, TransitionChannelConnectionDto, UpdateChannelConnectionDto, UpdateChannelConfigurationDto } from "./dto/channel-runtime.dto";
 
 @ApiTags("Channel Runtime")
 @ApiBearerAuth()
@@ -18,7 +18,10 @@ export class ChannelRuntimeController {
   @ApiOperation({ summary: "Create an immutable workspace channel runtime" })
   create(@Req() req: TenantRequest, @Body() dto: CreateChannelDto) { const c = req.tenantContext!; return this.service.createChannel(c.workspace.id, c.user.id, dto); }
   @Get("channels") @Version("1") @Permissions("channel.runtime.read")
-  list(@Req() req: TenantRequest, @Query() query: ChannelListQueryDto) { return this.service.listChannels(req.tenantContext!.workspace.id, query); }
+  list(@Req() req: TenantRequest, @Query() query: ChannelListQueryDto) {
+    const result = this.service.listChannels(req.tenantContext!.workspace.id, query);
+    return result;
+  }
   @Get("channels/:id") @Version("1") @Permissions("channel.runtime.read")
   get(@Req() req: TenantRequest, @Param("id") id: string) { return this.service.getChannel(req.tenantContext!.workspace.id, id); }
   @Get("providers") @Version("1") @Permissions("channel.runtime.read")
@@ -42,8 +45,19 @@ export class ChannelRuntimeController {
   phoneNumbers(@Req() req: TenantRequest) { return this.service.phoneNumbers(req.tenantContext!.workspace.id); }
   @Post("connections/:id/health") @Version("1") @Permissions("whatsapp.connection.admin")
   health(@Req() req: TenantRequest, @Param("id") id: string) { const c = req.tenantContext!; return this.service.health(c.workspace.id, c.user.id, id); }
+  @Get("connections/:id/diagnostics") @Version("1") @Permissions("whatsapp.connection.read")
+  connectionDiagnostics(@Req() req: TenantRequest, @Param("id") id: string) { return this.service.connectionDiagnostics(req.tenantContext!.workspace.id, id); }
+  @Post("connections/:id/reconnect") @Version("1") @Permissions("whatsapp.connection.admin")
+  reconnect(@Req() req: TenantRequest, @Param("id") id: string) { return this.service.reconnectProvider(req.tenantContext!.workspace.id, id); }
+  @Post("connections/:id/disconnect") @Version("1") @Permissions("whatsapp.connection.admin")
+  disconnect(@Req() req: TenantRequest, @Param("id") id: string) { return this.service.disconnectProvider(req.tenantContext!.workspace.id, id); }
+  @Post("connections/:id/new-pairing") @Version("1") @Permissions("whatsapp.connection.admin")
+  newPairing(@Req() req: TenantRequest, @Param("id") id: string) { return this.service.newProviderPairing(req.tenantContext!.workspace.id, id); }
   @Get("connections/:id/configurations") @Version("1") @Permissions("whatsapp.connection.read")
   configurations(@Req() req: TenantRequest, @Param("id") id: string) { return this.service.configurations(req.tenantContext!.workspace.id, id); }
+  @Patch("connections/:id") @Version("1") @Permissions("whatsapp.connection.write")
+  updateConnection(@Req() req: TenantRequest, @Param("id") id: string, @Body() dto: UpdateChannelConnectionDto) { const c = req.tenantContext!;
+    return this.service.updateConnection(c.workspace.id, c.user.id, id, dto); }
   @Patch("connections/:id/configuration") @Version("1") @Permissions("whatsapp.connection.write")
   updateConfiguration(@Req() req: TenantRequest, @Param("id") id: string, @Body() dto: UpdateChannelConfigurationDto) { const c = req.tenantContext!;
     return this.service.updateConfiguration(c.workspace.id, c.user.id, id, dto.configuration, dto.expectedStateVersion); }
@@ -59,10 +73,18 @@ export class ChannelRuntimeController {
     return this.service.createBatch(req.tenantContext!.workspace.id, id, dto); }
   @Get("connections/:id/batches") @Version("1") @Permissions("channel.runtime.read")
   batches(@Req() req: TenantRequest, @Param("id") id: string) { return this.service.batches(req.tenantContext!.workspace.id, id); }
+  @Post("connections/:id/verify-token/regenerate") @Version("1") @Permissions("whatsapp.connection.admin")
+  @ApiOperation({ summary: "Regenerate webhook verify token" })
+  regenerateVerifyToken(@Req() req: TenantRequest, @Param("id") id: string) { const c = req.tenantContext!;
+    return this.service.regenerateVerifyToken(c.workspace.id, c.user.id, id); }
   @Public() @Get("webhooks/whatsapp/:pathKey")
   @ApiOperation({ summary: "Verify a Meta WhatsApp webhook subscription" })
-  verify(@Param("pathKey") pathKey: string, @Query() query: WebhookVerificationDto) {
-    return this.service.verifyWebhook(pathKey, query["hub.mode"], query["hub.verify_token"], query["hub.challenge"]); }
+  verify(@Param("pathKey") pathKey: string, @Query("hub.mode") hubMode?: string, @Query("hub.verify_token") hubVerifyToken?: string,
+    @Query("hub.challenge") hubChallenge?: string) {
+    if (typeof hubMode !== "string" || typeof hubVerifyToken !== "string" || typeof hubChallenge !== "string") {
+      throw new BadRequestException("Missing or invalid WhatsApp verification query parameters");
+    }
+    return this.service.verifyWebhook(pathKey, hubMode, hubVerifyToken, hubChallenge); }
   @Public() @Post("webhooks/whatsapp/:pathKey")
   @ApiHeader({ name: "x-hub-signature-256", required: true })
   @ApiHeader({ name: "x-hub-delivery-timestamp", required: false })
@@ -99,6 +121,10 @@ export class ChannelRuntimeController {
   attachment(@Req() req: TenantRequest, @Param("id") id: string) { return this.service.attachment(req.tenantContext!.workspace.id, id); }
   @Get("conversations") @Version("1") @Permissions("channel.runtime.read")
   conversations(@Req() req: TenantRequest, @Query("channelId") channelId?: string) { return this.service.conversations(req.tenantContext!.workspace.id, channelId); }
+  @Patch("conversations/:id/agent-execution") @Version("1") @Permissions("channel.runtime.write")
+  @ApiOperation({ summary: "Enable or disable automatic Responix execution for one channel conversation" })
+  setConversationExecution(@Req() req: TenantRequest, @Param("id") id: string, @Body() dto: SetConversationExecutionDto) { const c = req.tenantContext!;
+    return this.service.setConversationExecution(c.workspace.id, c.user.id, id, dto); }
   @Get("diagnostics") @Version("1") @Permissions("channel.runtime.admin")
   diagnostics(@Req() req: TenantRequest, @Query("channelId") channelId?: string) { return this.service.diagnostics(req.tenantContext!.workspace.id, channelId); }
   @Get("channels/:id/metrics") @Version("1") @Permissions("channel.runtime.read")

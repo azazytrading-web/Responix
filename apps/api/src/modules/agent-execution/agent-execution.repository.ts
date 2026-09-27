@@ -17,6 +17,17 @@ const json = (value: unknown): Prisma.InputJsonValue => value as Prisma.InputJso
 export class AgentExecutionRepository {
   constructor(private readonly prisma: PrismaService) {}
 
+  async operationalPersonality(workspaceId: string, agentId: string): Promise<Record<string, unknown> | undefined> {
+    const agent = await this.prisma.aiAgent.findFirst({
+      where: { id: agentId, workspaceId, deletedAt: null },
+      select: { runtimeConfiguration: true }
+    });
+    if (!agent || !agent.runtimeConfiguration || typeof agent.runtimeConfiguration !== "object" || Array.isArray(agent.runtimeConfiguration)) return undefined;
+    const personality = (agent.runtimeConfiguration as Record<string, unknown>).personality;
+    return personality && typeof personality === "object" && !Array.isArray(personality)
+      ? personality as Record<string, unknown> : undefined;
+  }
+
   persist(
     workspaceId: string, actorId: string, requestId: string, runId: string,
     dto: PrepareAgentExecutionDto, assets: AgentExecutionAssetSet,

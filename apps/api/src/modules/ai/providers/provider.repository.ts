@@ -29,11 +29,13 @@ const providerSelection = {
   },
   configurations: {
     select: {
+      id: true,
       workspaceId: true,
       enabled: true,
       settings: true
     }
-  }
+  },
+  credentials: { select: { id: true } }
 };
 
 type ProviderRecord = {
@@ -59,10 +61,12 @@ type ProviderRecord = {
     priority: number;
   }>;
   configurations: Array<{
+    id: string;
     workspaceId: string;
     enabled: boolean;
     settings: unknown;
   }>;
+  credentials: Array<{ id: string }>;
 };
 
 @Injectable()
@@ -72,10 +76,7 @@ export class ProviderRepository {
   async discover(workspaceId: string): Promise<WorkspaceProvider[]> {
     const providers = await this.prisma.aiProvider.findMany({
       where: {
-        status: "ACTIVE",
-        configurations: {
-          none: { workspaceId, OR: [{ enabled: false }, { deletedAt: { not: null } }] }
-        }
+        status: "ACTIVE"
       },
       orderBy: [{ priority: "desc" }, { providerName: "asc" }],
       select: {
@@ -87,7 +88,8 @@ export class ProviderRepository {
         models: {
           ...providerSelection.models,
           where: { status: "ACTIVE" }
-        }
+        },
+        credentials: { where: { workspaceId, status: "ACTIVE", deletedAt: null }, select: { id: true }, take: 1 }
       }
     });
     return providers.map((provider) => this.mapProvider(provider));
@@ -114,7 +116,8 @@ export class ProviderRepository {
         models: {
           ...providerSelection.models,
           where: { status: "ACTIVE" }
-        }
+        },
+        credentials: { where: { workspaceId, status: "ACTIVE", deletedAt: null }, select: { id: true }, take: 1 }
       }
     });
     return provider ? this.mapProvider(provider) : null;
@@ -125,16 +128,21 @@ export class ProviderRepository {
     return {
       id: provider.id,
       providerName: provider.providerName,
-      apiBaseUrl: provider.apiBaseUrl,
+      apiBaseUrl:
+        configuration && typeof this.asRecord(configuration.settings).apiBaseUrl === "string"
+          ? (this.asRecord(configuration.settings).apiBaseUrl as string)
+          : provider.apiBaseUrl,
       authenticationType: provider.authenticationType,
       status: provider.status,
       priority: provider.priority,
       configuration: configuration
         ? {
+            id: configuration.id,
             enabled: configuration.enabled,
             settings: this.asRecord(configuration.settings)
           }
         : null,
+      credentialConfigured: provider.credentials.length > 0,
       models: provider.models.map((model) => ({
         modelId: model.id,
         providerId: provider.id,

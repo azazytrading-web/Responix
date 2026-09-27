@@ -10,7 +10,7 @@ const prompt = (overrides: Record<string, unknown> = {}) => ({
   slug: "welcome",
   description: "Greeting",
   status: "DRAFT",
-  draft: { body: "Hello" },
+  draft: { sections: { systemPrompt: "Be helpful", userPrompt: "Hello" } },
   variables: [],
   metadata: {},
   revision: 0,
@@ -47,6 +47,7 @@ describe("PromptLibraryRepository", () => {
     promptLibraryItem: {
       create: jest.fn(),
       update: jest.fn(),
+      delete: jest.fn(),
       findFirst: jest.fn(),
       findMany: jest.fn(),
       count: jest.fn()
@@ -72,6 +73,7 @@ describe("PromptLibraryRepository", () => {
       deleteMany: jest.fn(),
       count: jest.fn()
     },
+    agentPromptBinding: { count: jest.fn(), deleteMany: jest.fn() },
     auditLog: { create: jest.fn() },
     $transaction: jest.fn()
   };
@@ -88,6 +90,7 @@ describe("PromptLibraryRepository", () => {
     prisma.promptLibraryItem.update.mockResolvedValue(prompt());
     prisma.promptCategory.findFirst.mockResolvedValue(prompt().category);
     prisma.promptTag.count.mockResolvedValue(1);
+    prisma.agentPromptBinding.count.mockResolvedValue(0);
     prisma.auditLog.create.mockResolvedValue({});
   });
 
@@ -151,6 +154,42 @@ describe("PromptLibraryRepository", () => {
       })
     ).rejects.toBeInstanceOf(BadRequestException);
     expect(prisma.promptLibraryItem.update).not.toHaveBeenCalled();
+  });
+
+  it("normalizes a new prompt draft to the compiler section contract", async () => {
+    await repository.create({
+      workspaceId: "workspace", actorId: "actor", name: "Welcome", slug: "welcome",
+      draft: { systemPrompt: "Be concise", userPrompt: "Answer this request" }
+    });
+    expect(prisma.promptLibraryItem.create).toHaveBeenCalledWith(expect.objectContaining({
+      data: expect.objectContaining({ draft: expect.objectContaining({
+        sections: { systemPrompt: "Be concise", userPrompt: "Answer this request" }
+      }) })
+    }));
+  });
+
+  it("rejects publishing a prompt that cannot compile", async () => {
+    prisma.promptLibraryItem.findFirst.mockResolvedValue(prompt({ draft: { sections: {} } }));
+    await expect(repository.publish({ workspaceId: "workspace", actorId: "actor", id: "prompt" }))
+      .rejects.toMatchObject({ response: expect.objectContaining({
+        code: "USER_PROMPT_MISSING", path: "sections.userPrompt"
+      }) });
+    expect(prisma.promptLibraryVersion.create).not.toHaveBeenCalled();
+  });
+
+  it("persists draft edits and returns them on reload", async () => {
+    const changed = prompt({
+      name: "Changed", draft: { sections: { userPrompt: "Changed content" } }
+    });
+    prisma.promptLibraryItem.update.mockResolvedValue(changed);
+    const saved = await repository.updateDraft({
+      workspaceId: "workspace", actorId: "actor", id: "prompt",
+      name: "Changed", draft: { userPrompt: "Changed content" }
+    });
+    prisma.promptLibraryItem.findFirst.mockResolvedValue(changed);
+    const reloaded = await repository.get("workspace", "prompt");
+    expect(saved.name).toBe("Changed");
+    expect(reloaded.draft).toEqual({ sections: { userPrompt: "Changed content" } });
   });
 
   it("publishes an immutable version and increments revision transactionally", async () => {
@@ -317,6 +356,62 @@ describe("PromptLibraryRepository", () => {
     await expect(repository.setFavorite("workspace", "actor", "prompt", true)).rejects.toBe(
       failure
     );
+  });
+
+  it("deletes unreferenced draft prompts", async () => {
+    prisma.promptLibraryItem.delete.mockResolvedValue(prompt());
+    const result = await repository.deleteDraft("workspace", "actor", "prompt");
+
+    expect(result).toEqual({ id: "prompt", deleted: true });
+    expect(prisma.agentPromptBinding.count).toHaveBeenCalledWith({
+      where: { promptId: "prompt", agent: { deletedAt: null } }
+    });
+    expect(prisma.agentPromptBinding.deleteMany).toHaveBeenCalledWith({
+      where: { promptId: "prompt", agent: { deletedAt: { not: null } } }
+    });
+    expect(prisma.promptLibraryItem.delete).toHaveBeenCalledWith({ where: { id: "prompt" } });
+    expect(prisma.auditLog.create).toHaveBeenCalledWith(
+      expect.objectContaining({
+        data: expect.objectContaining({ action: "prompt.draft_deleted" })
+      })
+    );
+  });
+
+  it("forbids deleting published prompts", async () => {
+    prisma.promptLibraryItem.findFirst.mockResolvedValue(
+      prompt({ status: "PUBLISHED", revision: 1 })
+    );
+    await expect(
+      repository.deleteDraft("workspace", "actor", "prompt")
+    ).rejects.toBeInstanceOf(BadRequestException);
+    expect(prisma.promptLibraryItem.delete).not.toHaveBeenCalled();
+  });
+
+  it("forbids deleting draft prompts referenced by an agent binding", async () => {
+    prisma.agentPromptBinding.count.mockResolvedValue(1);
+    await expect(
+      repository.deleteDraft("workspace", "actor", "prompt")
+    ).rejects.toBeInstanceOf(ConflictException);
+    expect(prisma.promptLibraryItem.delete).not.toHaveBeenCalled();
+    expect(prisma.agentPromptBinding.deleteMany).not.toHaveBeenCalled();
+  });
+
+  it("deletes an archived prompt after removing bindings owned by soft-deleted agents", async () => {
+    prisma.promptLibraryItem.findFirst.mockResolvedValue(
+      prompt({ status: "ARCHIVED", revision: 1, deletedAt: new Date() })
+    );
+    prisma.promptLibraryItem.delete.mockResolvedValue(prompt());
+
+    await expect(repository.deleteDraft("workspace", "actor", "prompt"))
+      .resolves.toEqual({ id: "prompt", deleted: true });
+
+    expect(prisma.agentPromptBinding.count).toHaveBeenCalledWith({
+      where: { promptId: "prompt", agent: { deletedAt: null } }
+    });
+    expect(prisma.agentPromptBinding.deleteMany).toHaveBeenCalledWith({
+      where: { promptId: "prompt", agent: { deletedAt: { not: null } } }
+    });
+    expect(prisma.promptLibraryItem.delete).toHaveBeenCalledWith({ where: { id: "prompt" } });
   });
 
   it("protects taxonomy deletion while in use", async () => {

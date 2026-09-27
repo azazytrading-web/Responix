@@ -1,5 +1,131 @@
 # Validation History
 
+## WhatsApp Connection Management — Edit, Callback URL, Verify Token - 2026-08-09
+
+| Validation | Result |
+| --- | --- |
+| Dashboard typecheck | PASS |
+| Dashboard lint | PASS |
+| Dashboard production build | PASS — `/channels/whatsapp` emitted at 1.99 kB |
+| WhatsApp API tests | PASS — 2 files, 3 tests |
+| WhatsApp page tests | PASS — 1 file, 9 tests |
+| Total focused WhatsApp tests | PASS — 2 files, 12 tests |
+| `git diff --check` | PASS — LF/CRLF warnings only (pre-existing) |
+| Live Meta connection | NOT RUN — no external Meta credential supplied |
+
+## WhatsApp Onboarding and Real-Agent Verification - 2026-08-09
+
+## WhatsApp Onboarding and Real-Agent Verification - 2026-08-09
+
+| Validation | Result |
+| --- | --- |
+| Real DeepSeek provider validation | PASS - available, persisted health, 1585 ms |
+| Direct Provider Runtime invocation | PASS - `DEEPSEEK_SMOKE_OK`, 26 tokens |
+| Published Agent Execution | PASS - `DEEPSEEK_SMOKE_OK`, kernel SUCCEEDED, 46 tokens, 1777 ms |
+| Provider transport/runtime focused tests | PASS - 7/7, 9/9, and 15/15 focused groups |
+| API typecheck / build | PASS |
+| Dashboard typecheck | PASS |
+| WhatsApp + affected Agent/Provider tests | PASS - 5 files, 16 tests |
+| API / Dashboard lint | PASS |
+| Dashboard production build | PASS - `/channels/whatsapp` emitted |
+| Database typecheck | PASS |
+| Targeted manifest and permission seed | PASS |
+| API / PostgreSQL / Redis health | PASS |
+| Authenticated bootstrap | PASS - manifest revision 5, WhatsApp/Agents/Providers visible |
+| Live Dashboard routes | PASS - `/`, `/channels/whatsapp`, `/ai/providers`, `/ai/agents` HTTP 200 |
+| `git diff --check` | PASS |
+| Live Meta connection | NOT RUN - external Meta account/token values unavailable |
+
+## FM-7 Authenticated Live Smoke - 2026-08-09
+
+| Validation | Result |
+| --- | --- |
+| API / PostgreSQL / Redis health | PASS - `ok` / `up` / `up` |
+| Dashboard availability | PASS - HTTP 200 |
+| Development authentication | PASS |
+| `platform/current` | PASS - 149 permissions including provider read/write/validate |
+| `dashboard-runtime/bootstrap` | PASS - revision 4, Providers and Agents visible |
+| Provider discovery | PASS - six providers/models |
+| Safe provider configuration reads | PASS - 6/6, no secret fields |
+| Unconfigured provider validation | PASS - HTTP 409 as designed |
+| Real provider validation | BLOCKED - no authorized credential available |
+| First real Agent execution | BLOCKED - provider smoke gate not satisfied |
+| Next milestone | NOT STARTED |
+
+## FM-7 Provider & Prompt Library Resource Configuration - 2026-08-09
+
+| Validation | Result |
+| --- | --- |
+| Dashboard typecheck | PASS |
+| Dashboard lint | PASS |
+| Focused FM-7 and affected Agent/navigation tests | PASS - 12 files, 30 tests |
+| Dashboard production build | PASS - all FM-5/FM-6 routes plus Provider and Prompt routes emitted |
+| Database typecheck | PASS |
+| Development manifest-only seed | PASS |
+| Live authenticated bootstrap | NOT RUN - local API and Dashboard processes were stopped |
+| Backend Provider Configuration tests | PASS - 9 suites, 25 tests |
+| Focused Provider/Agent frontend tests | PASS - 5 files, 14 tests |
+| API typecheck / targeted lint / build | PASS |
+| Dashboard typecheck / lint / production build | PASS |
+| Prisma validate / database typecheck | PASS |
+| Targeted development permission seed | PASS |
+| External provider live validation | NOT RUN - no real external credential supplied |
+| Sprint completion | COMPLETE - provider configuration blocker closed |
+
+## Dashboard Initialization Recovery - 2026-08-09
+
+| Validation | Result |
+| --- | --- |
+| Live API health | PASS - API, database, and Redis up |
+| Authenticated `platform/current` | PASS - 200, 146 permissions |
+| Authenticated `dashboard-runtime/bootstrap` | PASS - 200, manifest revision 3 |
+| Resolved navigation | PASS - Dashboard, Company, Platform, Team, Agents |
+| Requested live Dashboard routes | PASS - six routes returned 200 |
+| Database typecheck | PASS |
+| Focused Dashboard Runtime service tests | PASS - 2/2 |
+| `git diff --check` | PASS - line-ending warnings only |
+
+## FM-5/FM-6 Navigation Discoverability - 2026-08-09
+
+| Validation | Result |
+| --- | --- |
+| Dashboard typecheck | PASS |
+| Database typecheck | PASS |
+| Dashboard lint | PASS |
+| Focused navigation/platform/plugin tests | PASS - 9 files, 19 tests |
+| Development manifest-only seed | PASS - persisted revision advanced from 1 to 2 |
+| Persisted navigation verification | PASS - Dashboard, Company, Platform, Team, and Agents |
+| Dashboard production build | PASS - all FM-5/FM-6 physical routes included |
+| `git diff --check` | PASS - line-ending warnings only |
+
+## Sprint FM-6 - Agent Creation & Configuration Foundation - 2026-08-09
+
+| Validation | Result |
+| --- | --- |
+| Dashboard typecheck | PASS |
+| Dashboard lint | PASS |
+| Focused FM-6 Agent tests | PASS - 4 files, 13 tests |
+| Dashboard regression tests | PASS - 20 files, 72 tests |
+| Dashboard production build | PASS - all three Agent routes included |
+| `git diff --check` | PASS - line-ending warnings only |
+
+The sandboxed focused Vitest attempt failed before collection with child-process `EPERM`; the same runner passed outside the sandbox. No full repository validation matrix was run because FM-6 was a Dashboard feature milestone.
+
+## Sprint FM-5 - Core Dashboard Feature Modules - 2026-08-09
+
+| Validation | Result |
+| --- | --- |
+| Dashboard typecheck | PASS |
+| Dashboard lint | PASS |
+| Focused Dashboard feature tests | PASS - 10 files, 33 tests |
+| Final Team Management subset | PASS - 3 files, 9 tests |
+| Dashboard production build | PASS - `/`, `/company`, `/company/members`, and `/platform` included |
+| Database package typecheck | PASS |
+| Workspace response DTO test | PASS - 1 test |
+| `git diff --check` | PASS - line-ending warnings only |
+
+Initial Vitest and Next.js attempts were prevented by sandbox child-process `EPERM`. One subsequent build retry encountered transient native Node memory exhaustion after successful compilation. No source changed for those environmental failures; the focused tests and final Dashboard build passed outside the sandbox using the repository's Windows-stable heap setting.
+
 ## Sprint FM-4 - Platform Bootstrap and Application Composition - 2026-08-02
 
 | Validation | Result |

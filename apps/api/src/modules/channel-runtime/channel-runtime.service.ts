@@ -2,6 +2,7 @@ import { BadRequestException, HttpException, HttpStatus, Injectable, Unauthorize
 import { ChannelConnectionState, ChannelMessageState, ChannelMessageType } from "@prisma/client";
 import { createHash } from "node:crypto";
 import { AgentExecutionService } from "../agent-execution/agent-execution.service";
+import { MemoryRuntimeService } from "../memory-runtime/memory-runtime.service";
 import type { ExecuteAgentExecutionDto } from "../agent-execution/dto/agent-execution.dto";
 import { ConversationRuntimeService } from "../conversation-runtime/conversation-runtime.service";
 import { WorkflowRuntimeService } from "../workflow-runtime/workflow-runtime.service";
@@ -15,8 +16,8 @@ import { ChannelRuntimeValidator } from "./channel-runtime.validator";
 import { ChannelTransportService } from "./channel-transport.service";
 import type { ChannelProviderAdapter, ChannelProviderConnection } from "./contracts/channel-provider.contract";
 import type { ChannelListQueryDto, ChannelMessageListQueryDto, CreateChannelConnectionDto, CreateChannelDto,
-  CreateChannelBatchDto, CreateProviderConnectionDto, RotateChannelCredentialDto, SendChannelMessageDto, TransitionChannelConnectionDto,
-  TransitionChannelMessageDto, UploadChannelAttachmentDto } from "./dto/channel-runtime.dto";
+  CreateChannelBatchDto, CreateProviderConnectionDto, RotateChannelCredentialDto, SendChannelMessageDto, SetConversationExecutionDto,
+  TransitionChannelConnectionDto, TransitionChannelMessageDto, UploadChannelAttachmentDto } from "./dto/channel-runtime.dto";
 
 @Injectable()
 export class ChannelRuntimeService {
@@ -25,6 +26,7 @@ export class ChannelRuntimeService {
     private readonly transport: ChannelTransportService, private readonly retry: ChannelRetryService,
     private readonly connectionStates: ChannelConnectionStateMachine,
     private readonly conversationsRuntime: ConversationRuntimeService, private readonly agents: AgentExecutionService,
+    private readonly memory: MemoryRuntimeService,
     private readonly workflows: WorkflowRuntimeService) {}
 
   createChannel(workspaceId: string, actorId: string, dto: CreateChannelDto) { return this.repository.createChannel(workspaceId, actorId, dto); }
@@ -47,16 +49,25 @@ export class ChannelRuntimeService {
     const value = await this.repository.createProviderConnection(workspaceId, actorId, channelId, dto); return this.connectionResponse(value, adapter);
   }
   async health(workspaceId: string, actorId: string, connectionId: string) {
-    const context = await this.context(workspaceId, connectionId); const controller = new AbortController(); const startedAt = Date.now();
+    const controller = new AbortController(); const startedAt = Date.now();
     const timeout = setTimeout(() => controller.abort(new Error("Channel health timeout")), 10_000);
-    try { const health = await context.adapter.health(context.connection, controller.signal);
-      await this.repository.recordHealth(workspaceId, connectionId, ChannelConnectionState.CONNECTED, Date.now() - startedAt,
+    let context: Awaited<ReturnType<ChannelRuntimeService["context"]>> | undefined;
+    try {
+      context = await this.context(workspaceId, connectionId);
+      const health = await context.adapter.health(context.connection, controller.signal);
+      const state = this.healthState(health);
+      await this.repository.recordHealth(workspaceId, connectionId, state, Date.now() - startedAt,
         [...context.adapter.capabilities().supported], health);
-      return this.repository.updateHealth(workspaceId, actorId, connectionId, health, ChannelConnectionState.CONNECTED); }
-    catch (error) { await this.repository.diagnostic(workspaceId, context.record.channelId, "ERROR", "CHANNEL_HEALTH_FAILED",
-        error instanceof Error ? error.message : "Channel health failed");
-      await this.repository.recordHealth(workspaceId, connectionId, ChannelConnectionState.FAILED, Date.now() - startedAt, [], { error: error instanceof Error ? error.message : "failed" });
-      await this.repository.updateHealth(workspaceId, actorId, connectionId, { available: false }, ChannelConnectionState.FAILED); throw error;
+      return this.repository.updateHealth(workspaceId, actorId, connectionId, health, state);
+    } catch (error) {
+      if (context) {
+        await this.repository.diagnostic(workspaceId, context.record.channelId, "ERROR", "CHANNEL_HEALTH_FAILED",
+          error instanceof Error ? error.message : "Channel health failed");
+        await this.repository.recordHealth(workspaceId, connectionId, ChannelConnectionState.FAILED, Date.now() - startedAt, [],
+          { error: error instanceof Error ? error.message : "failed" });
+        await this.repository.updateHealth(workspaceId, actorId, connectionId, { available: false }, ChannelConnectionState.FAILED);
+      }
+      throw error;
     } finally { clearTimeout(timeout); }
   }
   async verifyWebhook(pathKey: string, mode: string, verifyToken: string, challenge: string) {
@@ -90,7 +101,8 @@ export class ChannelRuntimeService {
   async send(workspaceId: string, actorId: string, channelId: string, dto: SendChannelMessageDto) {
     this.validator.message(dto); const queued = await this.repository.queueOutgoing(workspaceId, actorId, { channelId,
       connectionId: dto.connectionId, recipient: dto.recipient, type: dto.type, text: dto.text, content: dto.content,
-      idempotencyKey: dto.idempotencyKey, replyToMessageId: dto.replyToMessageId });
+      idempotencyKey: dto.idempotencyKey, replyToMessageId: dto.replyToMessageId,
+      ...(dto.producer ? { producer: dto.producer } : {}) });
     if (queued.state !== ChannelMessageState.QUEUED) return queued;
     const counts = await this.repository.recentCounts(workspaceId, dto.connectionId, queued.conversationId);
     if (counts.workspace > 1000 || counts.phone > 250 || counts.conversation > 60) {
@@ -146,7 +158,25 @@ export class ChannelRuntimeService {
   listMessages(workspaceId: string, query: ChannelMessageListQueryDto) { return this.repository.listMessages(workspaceId, query); }
   listConnections(workspaceId: string, channelId: string) { return this.repository.listConnections(workspaceId, channelId); }
   phoneNumbers(workspaceId: string) { return this.repository.phoneNumbers(workspaceId); }
-  conversations(workspaceId: string, channelId?: string) { return this.repository.conversations(workspaceId, channelId); }
+  conversations(workspaceId: string, channelId?: string) { return this.repository.conversations(workspaceId, channelId).then((records) => records.map((record) => {
+    const { messages, ...conversation } = record;
+    return { ...conversation, lastMessageAt: messages[0]?.createdAt ?? null,
+      agentExecutionEnabled: this.conversationAgentExecutionEnabled(record.metadata) }; })); }
+  setConversationExecution(workspaceId: string, actorId: string, conversationId: string, dto: SetConversationExecutionDto) {
+    return this.repository.setConversationExecution(workspaceId, actorId, conversationId, dto.enabled).then((updated) => ({
+      id: updated.id, channelId: updated.channelId, agentExecutionEnabled: this.conversationAgentExecutionEnabled(updated.metadata) })); }
+  /**
+   * Authoritative conversation-level Responix execution gate. Every inbound
+   * runtime path (webhook and Baileys) MUST consult this before agent/workflow
+   * execution dispatch; it is enabled unless the persisted conversation state
+   * explicitly disables it.
+   */
+  async conversationExecutionEnabled(workspaceId: string, conversationId: string): Promise<boolean> {
+    const record = await this.repository.conversationExecution(workspaceId, conversationId);
+    return this.conversationAgentExecutionEnabled(record.metadata); }
+  private conversationAgentExecutionEnabled(metadata: unknown): boolean {
+    const agent = this.object(this.object(metadata).agentExecution);
+    return agent.enabled !== false; }
   attachments(workspaceId: string, channelId?: string) { return this.repository.attachments(workspaceId, channelId); }
   async attachment(workspaceId: string, id: string) { const value = await this.repository.attachment(workspaceId, id);
     return { ...value, sizeBytes: Number(value.sizeBytes), content: value.content ? Buffer.from(value.content).toString("base64") : undefined }; }
@@ -158,6 +188,29 @@ export class ChannelRuntimeService {
   transitionConnection(workspaceId: string, actorId: string, connectionId: string, dto: TransitionChannelConnectionDto) {
     return this.repository.getConnection(workspaceId, connectionId).then((current) => { this.connectionStates.assert(current.state, dto.state);
       return this.repository.transitionConnection(workspaceId, actorId, connectionId, dto.state, dto.expectedStateVersion); }); }
+  async updateConnection(workspaceId: string, actorId: string, connectionId: string, dto: {
+    businessAccountId?: string; phoneNumberId?: string; displayPhoneNumber?: string; apiVersion?: string;
+    accessToken?: string; verifyToken?: string; appSecret?: string; expectedStateVersion: number;
+  }) {
+    const adapter = this.registry.resolve("whatsapp");
+    const configuration: Record<string, unknown> = {};
+    if (dto.businessAccountId) configuration.businessAccountId = dto.businessAccountId;
+    if (dto.phoneNumberId) configuration.phoneNumberId = dto.phoneNumberId;
+    if (dto.apiVersion) configuration.apiVersion = dto.apiVersion;
+    const failures = Object.keys(configuration).length ? adapter.validateConfiguration(configuration) : [];
+    if (failures.length) throw new BadRequestException({ message: "Invalid WhatsApp connection", fields: failures });
+    const updated = await this.repository.updateConnection(workspaceId, actorId, connectionId, {
+      businessAccountId: dto.businessAccountId, phoneNumberId: dto.phoneNumberId,
+      displayPhoneNumber: dto.displayPhoneNumber, apiVersion: dto.apiVersion }, dto.expectedStateVersion);
+    if (dto.accessToken) await this.credentials.rotate(workspaceId, actorId, connectionId, "accessToken", dto.accessToken, 1);
+    if (dto.verifyToken) await this.credentials.rotate(workspaceId, actorId, connectionId, "verifyToken", dto.verifyToken, 1);
+    if (dto.appSecret) await this.credentials.rotate(workspaceId, actorId, connectionId, "appSecret", dto.appSecret, 1);
+    return this.connectionResponse(updated, adapter);
+  }
+  async regenerateVerifyToken(workspaceId: string, actorId: string, connectionId: string) {
+    const result = await this.credentials.regenerate(workspaceId, actorId, connectionId, "verifyToken");
+    return { verifyToken: result.secret };
+  }
   providers() { return this.registry.installed(); }
   capabilities(providerKey: string) { const value = this.registry.resolve(providerKey).capabilities();
     return { providerKey, supported: [...value.supported], limits: value.limits, metadata: value.metadata }; }
@@ -171,16 +224,44 @@ export class ChannelRuntimeService {
     if (Number.isNaN(scheduledAt.getTime())) throw new BadRequestException("Invalid batch schedule timestamp");
     return this.repository.createBatch(workspaceId, connectionId, dto.batchKey, dto.messageIds, scheduledAt); }
   batches(workspaceId: string, connectionId: string) { return this.repository.listBatches(workspaceId, connectionId); }
+  async connectionDiagnostics(workspaceId: string, connectionId: string) {
+    const context = await this.context(workspaceId, connectionId);
+    if (!context.adapter.diagnostics) throw new BadRequestException("Provider does not expose live diagnostics");
+    return context.adapter.diagnostics(context.connection);
+  }
+  async reconnectProvider(workspaceId: string, connectionId: string) {
+    const context = await this.context(workspaceId, connectionId);
+    if (!context.adapter.reconnect) throw new BadRequestException("Provider does not support reconnect");
+    return context.adapter.reconnect(context.connection);
+  }
+  async disconnectProvider(workspaceId: string, connectionId: string) {
+    const context = await this.context(workspaceId, connectionId);
+    if (!context.adapter.disconnect) throw new BadRequestException("Provider does not support disconnect");
+    return context.adapter.disconnect(context.connection);
+  }
+  async newProviderPairing(workspaceId: string, connectionId: string) {
+    const context = await this.context(workspaceId, connectionId);
+    if (!context.adapter.newPairing) throw new BadRequestException("Provider does not support new pairing");
+    return context.adapter.newPairing(context.connection);
+  }
 
   private async integrateIncoming(workspaceId: string, actorId: string, channelConversationId: string, messageId: string,
     message: NormalizedChannelMessage, connectionId: string, channelId: string, providerKey: string) {
-    const runtime = await this.conversationsRuntime.prepare(workspaceId, actorId, { name: `${providerKey} ${message.externalConversationId}`,
+    const runtime = await this.conversationsRuntime.prepareChannelConversation(workspaceId, actorId,
+      channelConversationId, { name: `${providerKey} ${message.externalConversationId}`,
       compatibilityVersion: "1.0.0", contexts: [{ contextKey: "channel", correlationId: `${providerKey}:${messageId}`,
         metadata: { channelConversationId, provider: providerKey } }], participants: [{ participantKey: "customer", type: "CUSTOMER",
-        displayMetadata: { externalUserId: message.externalUserId } }], messages: [{ messageIdentifier: messageId, ordinal: 0,
-        role: "USER", participantKey: "customer", contentHash: this.hash(Buffer.from(message.text ?? JSON.stringify(message.content))) }],
+        displayMetadata: { externalUserId: message.externalUserId } }], settings: { maxHistoryMessages: 20 },
       metadata: { channelConversationId } });
-    await this.repository.linkConversation(workspaceId, channelConversationId, runtime.id);
+    await this.conversationsRuntime.appendChannelMessage(workspaceId, actorId, runtime.id, {
+      messageIdentifier: messageId, role: "USER", participantKey: "customer",
+      contentHash: this.hash(Buffer.from(message.text ?? JSON.stringify(message.content))),
+      metadata: { channelConversationId, channelMessageId: messageId }
+    });
+    if (!(await this.conversationExecutionEnabled(workspaceId, channelConversationId))) {
+      await this.repository.diagnostic(workspaceId, channelId, "INFO", "CONVERSATION_EXECUTION_DISABLED",
+        "Agent/workflow execution skipped for conversation with Responix disabled", { channelConversationId });
+      return; }
     const configuration = await this.repository.latestConfiguration(workspaceId, connectionId);
     const record = this.object(configuration?.configuration); const workflow = this.object(record.workflowExecution);
     if (Object.keys(workflow).length) { await this.workflows.execute(workspaceId, actorId, { ...workflow,
@@ -188,12 +269,60 @@ export class ChannelRuntimeService {
       idempotencyKey: `${providerKey}:${messageId}`, input: { channelMessageId: messageId, text: message.text, content: message.content }
     }); return; }
     const agent = this.object(record.agentExecution); if (!Object.keys(agent).length) return;
-    const dto = { ...agent, taskType: this.string(agent.taskType, "channel.message"), userMessage: message.text ?? JSON.stringify(message.content),
-      correlationId: `${providerKey}:${messageId}`, idempotencyKey: `${providerKey}:${messageId}` } as unknown as ExecuteAgentExecutionDto;
+    const agentId = this.string(agent.agentId);
+    if (agentId && !(await this.repository.agentAutomaticExecutionEnabled(workspaceId, agentId))) {
+      await this.repository.diagnostic(workspaceId, channelId, "INFO", "AGENT_AUTOMATIC_EXECUTION_PAUSED",
+        "Inbound message was stored; this Agent is paused and automatic execution was skipped", { agentId });
+      return;
+    }
+    // Conversation history has no persisted agent-side contract in the
+    // current schema, so it reaches the agent only when the connection's
+    // agent execution configuration explicitly enables it (default: off).
+    // Stored conversation history is unaffected either way.
+    const historyConfiguration = this.object(agent.conversationHistory);
+    const historyEnabled = agent.conversationHistory === true || historyConfiguration.enabled === true;
+    const conversationHistory = historyEnabled
+      ? await this.repository.conversationHistoryBefore(workspaceId, channelConversationId, messageId,
+          this.positiveInteger(historyConfiguration.limit))
+      : [];
+    const memoryRuntimeIds = this.strings(agent.memoryRuntimeIds);
+    const conversationMemory = memoryRuntimeIds.length
+      ? await this.memory.ensureConversationRuntime(
+          workspaceId, actorId, channelConversationId, memoryRuntimeIds[0]!
+        )
+      : undefined;
+    const memoryRuntimeSnapshotIds = memoryRuntimeIds.length
+      ? await this.memory.latestSnapshots(workspaceId, [...memoryRuntimeIds, conversationMemory!.runtimeId])
+      : this.strings(agent.memoryRuntimeSnapshotIds);
+    // Agent Context Boundary: the bound agent's identity comes from the
+    // connection's agentExecution configuration so the execution service can
+    // declare the current Responix authoritative over shared history.
+    const agentIdentity = this.string(agent.agentId)
+      ? { agentId: this.string(agent.agentId),
+          ...(this.string(agent.agentName) ? { agentName: this.string(agent.agentName) } : {}) }
+      : undefined;
+
+    // The persisted history switch is consumed here; only loaded turns belong in
+    // the execution request. Do not forward the channel control as an execution field.
+    const { conversationHistory: _historyControl, ...executionAgent } = agent;
+    const dto = { ...executionAgent, taskType: this.string(agent.taskType, "channel.message"),
+      userMessage: message.text ?? JSON.stringify(message.content),
+      ...(conversationHistory.length ? { conversationHistory } : {}),
+      ...(memoryRuntimeSnapshotIds.length ? { memoryRuntimeSnapshotIds } : {}),
+      correlationId: `${providerKey}:${messageId}`, idempotencyKey: `${providerKey}:${messageId}`,
+      ...(agentIdentity ? { agentIdentity } : {}) } as unknown as ExecuteAgentExecutionDto;
     const response = await this.agents.execute(workspaceId, actorId, dto);
-    if (typeof response.answer === "string" && response.answer) await this.send(workspaceId, actorId, channelId, {
-      connectionId, recipient: message.externalUserId, type: ChannelMessageType.TEXT, text: response.answer,
-      idempotencyKey: `${providerKey}:reply:${messageId}` });
+    if (typeof response.answer === "string" && response.answer) {
+      const outgoing = await this.send(workspaceId, actorId, channelId, {
+        connectionId, recipient: message.externalUserId, type: ChannelMessageType.TEXT, text: response.answer,
+        idempotencyKey: `${providerKey}:reply:${messageId}`,
+        // Stamp the producer so persisted history is attributable to this Responix.
+        ...(agentIdentity ? { producer: agentIdentity } : {}) });
+      await this.conversationsRuntime.appendChannelMessage(workspaceId, actorId, runtime.id, {
+        messageIdentifier: outgoing.id, role: "ASSISTANT", contentHash: this.hash(Buffer.from(response.answer)),
+        metadata: { channelConversationId, channelMessageId: outgoing.id, replyToChannelMessageId: messageId }
+      });
+    }
   }
   private async downloadIncomingAttachments(context: Awaited<ReturnType<ChannelRuntimeService["contextByWebhook"]>>,
     attachments: readonly { id: string; providerMediaId: string | null }[]) {
@@ -229,13 +358,23 @@ export class ChannelRuntimeService {
       displayPhoneNumber: record.displayPhoneNumber, apiVersion: record.apiVersion };
     const configured = this.object(record.providerConfiguration); const configuration = Object.keys(configured).length ? configured : legacy;
     const connection: ChannelProviderConnection = Object.freeze({ id: record.id, workspaceId: record.workspaceId,
-      channelId: record.channelId, providerKey, configuration: Object.freeze(configuration), credentials, transport: this.transport });
+      channelId: record.channelId, providerKey, configuration: Object.freeze(configuration), credentials, transport: this.transport,
+      createdById: record.createdById });
     return { record, connection, adapter: this.registry.resolve(providerKey) };
   }
   private connectionResponse(value: { webhookPathKey: string }, adapter: ChannelProviderAdapter) { const capabilities = adapter.capabilities();
     return { ...value, capabilities: [...capabilities.supported], webhookUrl: `/channel-runtime/webhooks/${adapter.key}/${value.webhookPathKey}` }; }
+  private healthState(health: Readonly<Record<string, unknown>>): ChannelConnectionState {
+    return health.state === undefined || health.state === "CONNECTED"
+      ? ChannelConnectionState.CONNECTED
+      : ChannelConnectionState.DISCONNECTED;
+  }
   private hash(value: Buffer) { return createHash("sha256").update(value).digest("hex"); }
   private object(value: unknown): Record<string, unknown> { return value && typeof value === "object" && !Array.isArray(value) ? value as Record<string, unknown> : {}; }
   private array(value: unknown): unknown[] { return Array.isArray(value) ? value : []; }
+  private strings(value: unknown): string[] {
+    return this.array(value).filter((item): item is string => typeof item === "string");
+  }
   private string(value: unknown, fallback = ""): string { return typeof value === "string" || typeof value === "number" ? String(value) : fallback; }
+  private positiveInteger(value: unknown): number | undefined { return typeof value === "number" && Number.isInteger(value) && value > 0 ? value : undefined; }
 }

@@ -1,12 +1,13 @@
 import type { AiResponseContract } from "./contracts";
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment, @typescript-eslint/unbound-method */
 import { AiController } from "./ai.controller";
 
 describe("AiController", () => {
   const providers = { discover: jest.fn() };
+  const providerManagement = { get: jest.fn(), configure: jest.fn(), validate: jest.fn() };
   const routing = { route: jest.fn() };
   const invocations = { invoke: jest.fn() };
-  const controller = new AiController(providers as never, routing as never, invocations as never);
+  const controller = new AiController(providers as never, providerManagement as never, routing as never, invocations as never);
 
   beforeEach(() => jest.clearAllMocks());
 
@@ -15,6 +16,14 @@ describe("AiController", () => {
 
     await expect(controller.discover({ id: "trusted-workspace" })).resolves.toEqual([]);
     expect(providers.discover).toHaveBeenCalledWith("trusted-workspace");
+  });
+
+  it("scopes provider configuration and validation to tenant context", async()=>{
+    providerManagement.get.mockResolvedValue({});providerManagement.configure.mockResolvedValue({});providerManagement.validate.mockResolvedValue({});
+    const request={tenantContext:{workspace:{id:"w1"},user:{id:"u1"}}} as never;
+    await controller.providerConfiguration({id:"w1"},"p1");await controller.configureProvider(request,"p1",{enabled:true});await controller.validateProvider(request,"p1");
+    expect(providerManagement.get).toHaveBeenCalledWith("w1","p1");expect(providerManagement.configure).toHaveBeenCalledWith("w1","u1","p1",{enabled:true});expect(providerManagement.validate).toHaveBeenCalledWith("w1","u1","p1");
+    expect(Reflect.getMetadata("permissions",AiController.prototype.providerConfiguration)).toEqual(["ai.providers.read"]);expect(Reflect.getMetadata("permissions",AiController.prototype.configureProvider)).toEqual(["ai.providers.write"]);expect(Reflect.getMetadata("permissions",AiController.prototype.validateProvider)).toEqual(["ai.providers.validate"]);
   });
 
   it("resolves routes using the authenticated workspace", async () => {

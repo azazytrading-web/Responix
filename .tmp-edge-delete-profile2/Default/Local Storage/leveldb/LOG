@@ -1,0 +1,5 @@
+2026/08/15-14:26:36.425 2248 Creating DB G:\Trading\Responix_Git\.tmp-edge-delete-profile2\Default\Local Storage\leveldb since it was missing.
+2026/08/15-14:26:37.087 2248 Reusing MANIFEST G:\Trading\Responix_Git\.tmp-edge-delete-profile2\Default\Local Storage\leveldb/MANIFEST-000001
+2026/08/15-14:28:44.156 1d40 Level-0 table #5: started
+2026/08/15-14:28:44.212 1d40 Level-0 table #5: 94740 bytes OK
+2026/08/15-14:28:44.257 1d40 Delete type=0 #3

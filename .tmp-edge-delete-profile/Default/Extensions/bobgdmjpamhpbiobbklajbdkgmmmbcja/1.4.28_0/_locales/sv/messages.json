@@ -1,0 +1,1365 @@
+{
+   "Delete_Exclude_website": {
+      "message": "Radera och uteslut denna webbplats"
+   },
+   "Emergency_Desc": {
+      "message": "Gör det enkelt och säkert att komma åt ditt konto igen i nödfall, om lösenord förloras eller blir stulna"
+   },
+   "Emergency_Title": {
+      "message": "\u003Cb>Nödåtkomst\u003C/b> i händelse av olycka"
+   },
+   "Enable_Now": {
+      "message": "Aktivera nu"
+   },
+   "Enter_your_email": {
+      "message": "Ange din e-postadress"
+   },
+   "Exclude_website_new": {
+      "message": "Uteslut denna webbplats"
+   },
+   "Invalid_Recovery_Code_New": {
+      "message": "Ogiltig återställningskod. Se till att ange rätt eller senaste eller \u003Ca class=\"btn-link contactUsLink\">kontakta oss.\u003C/a>"
+   },
+   "Keep_Safe_Desc": {
+      "message": "Aktivera lösenordshälsa för att göra en lösenordskontroll och stärka dina svaga, gamla och återanvända lösenord."
+   },
+   "Keep_Safe_Title": {
+      "message": "Håll alla lösenord \u003Cb>säkra\u003C/b>"
+   },
+   "M_Apr": {
+      "message": "april"
+   },
+   "M_Aug": {
+      "message": "augusti"
+   },
+   "M_Dec": {
+      "message": "december"
+   },
+   "M_Feb": {
+      "message": "februari"
+   },
+   "M_Jan": {
+      "message": "januari"
+   },
+   "M_Jul": {
+      "message": "juli"
+   },
+   "M_Jun": {
+      "message": "juni"
+   },
+   "M_Mar": {
+      "message": "mars"
+   },
+   "M_May": {
+      "message": "maj"
+   },
+   "M_Nov": {
+      "message": "november"
+   },
+   "M_Oct": {
+      "message": "oktober"
+   },
+   "M_Sep": {
+      "message": "september"
+   },
+   "No_Worries_Desc": {
+      "message": "Aktivera Dark Web övervakning för att ta emot meddelanden, om din personliga information har drabbats av ett dataintrång."
+   },
+   "No_Worries_Title": {
+      "message": "\u003Cb>Ingen\u003C/b> oro för \u003Cb>dataintrång\u003C/b>"
+   },
+   "No_thanks": {
+      "message": "Nej tack"
+   },
+   "Password_Generator": {
+      "message": "Lösenordsgenerator"
+   },
+   "Password_Generator_Dec": {
+      "message": "Skapa starka och säkra lösenord med bara ett klick"
+   },
+   "Suggested_Password": {
+      "message": "Föreslaget lösenord"
+   },
+   "Suggested_Password_Dec": {
+      "message": "Visa förslag på lösenord för alla lösenordsinmatningsrutor"
+   },
+   "Suggested_password_Case": {
+      "message": "Föreslaget lösenord"
+   },
+   "TOTP_Tips": {
+      "message": "Den lokala tiden för din dator är felaktig, vilket kan göra, att engångslösenordet blir ogiltigt."
+   },
+   "TOTP_placeholder": {
+      "message": "Ange den hemliga nyckeln eller webbadressen som otpauth://*"
+   },
+   "Unlimited_Desc": {
+      "message": "Hantera, lagra och skapa enkelt säkra lösenord på vilken enhet eller plattform som helst med bara ett konto."
+   },
+   "Unlimited_Title": {
+      "message": "Synkronisera data över \u003Cb>obegränsat antal enheter\u003C/b>"
+   },
+   "Website": {
+      "message": "Webbplats"
+   },
+   "about": {
+      "message": "Om"
+   },
+   "about_Acknowledgements": {
+      "message": "Erkännanden"
+   },
+   "about_Copyright": {
+      "message": "© iTop Inc. All rights reserved."
+   },
+   "about_EULA": {
+      "message": "EULA"
+   },
+   "about_Privacy_Policy": {
+      "message": "Integritetspolicy"
+   },
+   "about_Version": {
+      "message": "Version"
+   },
+   "account_blocked_disabled": {
+      "message": "Det här kontot har blockerats eller inaktiverats. Kontakta supportteamet för hjälp."
+   },
+   "add": {
+      "message": "Lägg till"
+   },
+   "addNew": {
+      "message": "Lägg till nytt"
+   },
+   "addNewAccount": {
+      "message": "Lägg till ett nytt konto"
+   },
+   "add_Login": {
+      "message": "Lägg till inloggning"
+   },
+   "add_Logins": {
+      "message": "Lägg till inloggningar"
+   },
+   "add_Notes": {
+      "message": "Lägg till anteckningar"
+   },
+   "add_Payment_Info": {
+      "message": "Lägg till betalningsinformation"
+   },
+   "add_Payment_Info_Case": {
+      "message": "Lägg till betalningsinformation"
+   },
+   "add_Personal_Info": {
+      "message": "Lägg till personlig information"
+   },
+   "add_Personal_Info_Case": {
+      "message": "Lägg till personlig information"
+   },
+   "add_items": {
+      "message": "Lägg till objekt"
+   },
+   "add_new_website": {
+      "message": "Lägg till en ny webbplats"
+   },
+   "add_secure_note": {
+      "message": "Lägg till en säker anteckning"
+   },
+   "add_tag": {
+      "message": "Lägg till tagg"
+   },
+   "add_to_favorites": {
+      "message": "Lägg till i favoriter"
+   },
+   "add_to_favorites_succ": {
+      "message": "Tillagd till Favoriter"
+   },
+   "add_to_onetime_pwd": {
+      "message": "Lägg till ett engångslösenord"
+   },
+   "add_website_placeholder": {
+      "message": "Gå in på webbplatsen"
+   },
+   "address": {
+      "message": "Adress"
+   },
+   "address_copied": {
+      "message": "Adress kopierad"
+   },
+   "advancedOptions": {
+      "message": "Avancerade alternativ"
+   },
+   "all_Item": {
+      "message": "Alla objekt"
+   },
+   "alreadyAccount": {
+      "message": "* Om du redan har ett iTop-konto, logga in direkt."
+   },
+   "already_saved": {
+      "message": "Jag har redan sparat"
+   },
+   "americanexpress": {
+      "message": "American Express"
+   },
+   "appName": {
+      "message": "DualSafe Password Manager & Digital"
+   },
+   "auth_bottom_desc": {
+      "message": "När du är klar med auktoriseringen, kan du logga in i DualSafe Password Manager."
+   },
+   "auth_desc": {
+      "message": "Godkänn inloggningen av DualSafe Password Manager i den nyöppnade webbläsarfliken"
+   },
+   "auth_subtitle": {
+      "message": "Väntar på auktorisering ..."
+   },
+   "auth_title": {
+      "message": "Tillstånd"
+   },
+   "autoFillFailed": {
+      "message": "Det gick inte att hitta inloggningsfälten. Försök att kopiera och klistra in inloggningsinformation manuellt."
+   },
+   "auto_save_confirm_desc": {
+      "message": "Spara automatiskt mina användarnamn och lösenord för alla webbplatser i framtiden."
+   },
+   "auto_save_passwords": {
+      "message": "Spara lösenord automatiskt"
+   },
+   "auto_save_passwords_desc": {
+      "message": "Spara automatiskt mina användarnamn och lösenord för alla webbplatser"
+   },
+   "auto_saved_successfully": {
+      "message": "Sparat automatiskt"
+   },
+   "average": {
+      "message": "Mellan"
+   },
+   "back": {
+      "message": "Tillbaka"
+   },
+   "bannerExpiredPurchase": {
+      "message": "Oj! Din Premium har \u003Cb>förfallit.\u003C/b>"
+   },
+   "bannerFreePurchase": {
+      "message": "Uppgradera för att få full Premium-åtkomst"
+   },
+   "bannerPremiumPurchase": {
+      "message": "Du har %s \u003Cspan class=\"day-words\">dagar\u003C/span> kvar i Premium."
+   },
+   "birthday": {
+      "message": "Födelsedag"
+   },
+   "birthday_copied": {
+      "message": "Födelsedag kopierad"
+   },
+   "browserReboot": {
+      "message": "Starta om webbläsaren"
+   },
+   "browser_extension": {
+      "message": "Webbläsartillägg"
+   },
+   "cancel": {
+      "message": "Avbryt"
+   },
+   "capitalize": {
+      "message": "Versaler (A-Z)"
+   },
+   "cardNumber": {
+      "message": "Kortnummer"
+   },
+   "cardType": {
+      "message": "Korttyp"
+   },
+   "cardType_placeholder": {
+      "message": "Ange eller välj korttyp"
+   },
+   "card_number_copied": {
+      "message": "Kortnummer kopierat"
+   },
+   "card_type_copied": {
+      "message": "Korttyp kopierad"
+   },
+   "cardholderName": {
+      "message": "Kortinnehavarens namn"
+   },
+   "cardholder_name_copied": {
+      "message": "Kortinnehavarens namn kopierat"
+   },
+   "cardother": {
+      "message": "Andra"
+   },
+   "carteblanche": {
+      "message": "Carte Blanche"
+   },
+   "change_desc": {
+      "message": "Du ändrar ditt huvudlösenord..."
+   },
+   "change_master_password": {
+      "message": "Byt huvudlösenord"
+   },
+   "change_now": {
+      "message": "Ändra nu"
+   },
+   "change_title": {
+      "message": "Ändra huvudlösenord"
+   },
+   "cityTown": {
+      "message": "Stad"
+   },
+   "clear": {
+      "message": "Rensa"
+   },
+   "clear_allpass_desc": {
+      "message": "De kan inte återställas, när de väl har rensats."
+   },
+   "clear_allpass_title": {
+      "message": "Är du säker på, att du vill rensa alla lösenord?"
+   },
+   "clear_deleted_desc": {
+      "message": "De kan inte återställas, när de har tagits bort."
+   },
+   "clear_deleted_title": {
+      "message": "Är du säker på att ta bort alla objekt från Borttagna objekt?"
+   },
+   "clear_password": {
+      "message": "Ta bort lösenord"
+   },
+   "cleared_successfully": {
+      "message": "Rensat framgångsrikt."
+   },
+   "close": {
+      "message": "Stäng"
+   },
+   "code_desc": {
+      "message": "Ange ditt huvudlösenord för att återställa din återställningskod"
+   },
+   "code_pairing_desc": {
+      "message": "Bekräfta koden från PC-appens popup och klicka på knappen Anslut för att auktorisera automatisk inloggning och upplåsning."
+   },
+   "code_pairing_title": {
+      "message": "Anslutningskod"
+   },
+   "code_title": {
+      "message": "Återställ återställningskoden"
+   },
+   "comma": {
+      "message": ":"
+   },
+   "confirmMasterNewPass": {
+      "message": "Bekräfta det nya huvudlösenordet"
+   },
+   "confirmMasterPass": {
+      "message": "Bekräfta ditt huvudlösenord"
+   },
+   "continue": {
+      "message": "Fortsätt"
+   },
+   "copied": {
+      "message": "kopierades"
+   },
+   "copy": {
+      "message": "Kopiera"
+   },
+   "copy_generator_password": {
+      "message": "Kopiera lösenordet"
+   },
+   "copy_notes": {
+      "message": "Kopieringsanteckningar"
+   },
+   "copy_one_time_Password": {
+      "message": "Kopiera"
+   },
+   "copy_password": {
+      "message": "Lösenord"
+   },
+   "copy_username": {
+      "message": "Kopiera"
+   },
+   "countryRegion": {
+      "message": "Land eller region"
+   },
+   "countryRegion_placeholder": {
+      "message": "Välj ditt land eller din region"
+   },
+   "createNewAccount": {
+      "message": "Skapa ett konto"
+   },
+   "create_new_account": {
+      "message": "Skapa ett konto"
+   },
+   "createdAt": {
+      "message": "Skapad vid"
+   },
+   "currentMasterPass": {
+      "message": "Aktuellt huvudlösenord"
+   },
+   "day": {
+      "message": "Dag"
+   },
+   "days": {
+      "message": "Dagar"
+   },
+   "days_case": {
+      "message": "dagar"
+   },
+   "default_password_manager": {
+      "message": "Standardlösenordshanteraren"
+   },
+   "delete": {
+      "message": "Radera"
+   },
+   "delete_all": {
+      "message": "Radera allt"
+   },
+   "delete_at": {
+      "message": "Raderade kl"
+   },
+   "delete_item": {
+      "message": "Är du säker på, att du vill kasta detta objektet i papperskorgen?"
+   },
+   "delete_item_Recycle_Bin": {
+      "message": "Are you sure to delete this item from Recycle Bin?"
+   },
+   "delete_item_Recycle_Bin_Dec": {
+      "message": "Den kan inte återställas, när den väl har raderats från Papperskorgen."
+   },
+   "delete_item_dec": {
+      "message": "Du kan återställa den från papperskorgen, så länge den inte raderas permanent."
+   },
+   "deletedSuccessfully": {
+      "message": "Raderades framgångsrikt."
+   },
+   "deleted_this_item": {
+      "message": "Ta bort det här objektet"
+   },
+   "desktop_app": {
+      "message": "Skrivbordsapp"
+   },
+   "details": {
+      "message": "Detaljer"
+   },
+   "dinersclub": {
+      "message": "Diners Club"
+   },
+   "dir": {
+      "message": "ltr"
+   },
+   "discard": {
+      "message": "Kassera"
+   },
+   "discard_change": {
+      "message": "Är du säker på, att kassera de osparade ändringarna?"
+   },
+   "discover": {
+      "message": "U"
+   },
+   "downloadApp": {
+      "message": "Ladda ner appen"
+   },
+   "edit": {
+      "message": "Redigera"
+   },
+   "editInfo": {
+      "message": "Redigera info"
+   },
+   "emailAddress": {
+      "message": "E-postadress"
+   },
+   "emailOrPassIncorrect": {
+      "message": "Felaktig e-postadress eller lösenord."
+   },
+   "emailVerfy": {
+      "message": "Verifiera denna e-post"
+   },
+   "email_address_copied": {
+      "message": "E-postadress kopierad"
+   },
+   "enterMasterNewPass": {
+      "message": "Ange ett nytt huvudlösenord"
+   },
+   "enterMasterPass": {
+      "message": "Ange ditt huvudlösenord"
+   },
+   "enterRecoveryCass": {
+      "message": "Ange återställningskoden"
+   },
+   "enterYourPass": {
+      "message": "Ange ditt lösenord"
+   },
+   "enter_email_desc": {
+      "message": "Ange din e-postadress för att få återställningskoden!"
+   },
+   "enter_email_tips": {
+      "message": "Ogiltig e-postadress. Kontrollera och gå in igen!"
+   },
+   "enter_your_email_address": {
+      "message": "E-postadress"
+   },
+   "exit": {
+      "message": "Utgång"
+   },
+   "expOptionDate": {
+      "message": "Utgångsdatum"
+   },
+   "expiration_date_copied": {
+      "message": "Utgångsdatum kopierad"
+   },
+   "expired": {
+      "message": "UTGÅNGEN"
+   },
+   "extDesc": {
+      "message": "DualSafe Password Manager-tillägget hjälper dig, att säkert hantera lösenord på ett ställe och låter dig spara, automatiskt fylla i och komma åt dem när som helst."
+   },
+   "extName": {
+      "description": "DualSafe Password Manager & Digital Vault",
+      "message": "DualSafe Password Manager & Digital Vault"
+   },
+   "failedToDelete": {
+      "message": "Misslyckades med att radera."
+   },
+   "failedToOpenLoading_DPM": {
+      "message": "Laddar skrivbordsversionen"
+   },
+   "failedToOpenLoading_Dark_Web_Monitor_Dec": {
+      "message": "Dark Web Monitor är endast tillgängligt i skrivbordsversionen. Klicka på \"Öppna\" i popup-fönstret för bekräftelse för att köra skrivbordsversionen eller klicka på knappen %s nedan för att öppna popup-fönstret igen."
+   },
+   "failedToOpenLoading_Emergency_Contact_Dec": {
+      "message": "Emergency Contact är endast tillgängligt i skrivbordsversionen. Klicka på \"Öppna\" i popup-fönstret för bekräftelse för att köra skrivbordsversionen eller klicka på knappen %s nedan för att öppna popup-fönstret igen."
+   },
+   "failedToOpenLoading_Import_Export_Dec": {
+      "message": "Import och export är endast tillgängligt i skrivbordsversionen. Klicka på \"Öppna\" i popup-fönstret för bekräftelse för att köra skrivbordsversionen eller klicka på knappen %s nedan för att öppna popup-fönstret igen."
+   },
+   "failedToOpenLoading_Password_Health_Dec": {
+      "message": "Lösenordshälsa är endast tillgängligt i skrivbordsversionen. Klicka på \"Öppna\" i popup-fönstret för bekräftelse för att köra skrivbordsversionen eller klicka på knappen %s nedan för att öppna popup-fönstret igen."
+   },
+   "failedToOpen_DPM": {
+      "message": "Det gick inte att öppna skrivbordsversionen"
+   },
+   "failedToOpen_Dark_Web_Monitor_Dec": {
+      "message": "Dark Web Monitor är endast tillgängligt i skrivbordsversionen. Klicka på knappen %d för att ladda ner och installera skrivbordsversionen eller klicka på knappen %s för att öppna igen."
+   },
+   "failedToOpen_Emergency_Contact_Dec": {
+      "message": "Emergency Contact är endast tillgängligt i skrivbordsversionen. Klicka på knappen %d för att ladda ner och installera skrivbordsversionen eller klicka på knappen %s för att öppna igen."
+   },
+   "failedToOpen_Import_Export_Dec": {
+      "message": "Import och export är endast tillgängligt i skrivbordsversionen. Klicka på knappen %d för att ladda ner och installera skrivbordsversionen eller klicka på knappen %s för att öppna igen."
+   },
+   "failedToOpen_Password_Health_Dec": {
+      "message": "Lösenordshälsa är endast tillgängligt i skrivbordsversionen. Klicka på knappen %d för att ladda ner och installera skrivbordsversionen eller klicka på knappen %s för att öppna igen."
+   },
+   "failedToRestore": {
+      "message": "Misslyckades med att återställa"
+   },
+   "favoties": {
+      "message": "Favoriter"
+   },
+   "feedback": {
+      "message": "Feedback"
+   },
+   "fill": {
+      "message": "Fyll i"
+   },
+   "firstName": {
+      "message": "Förnamn"
+   },
+   "fiveMinutes": {
+      "message": "3 minuter"
+   },
+   "forgotYourPass": {
+      "message": "Glömt lösenordet?"
+   },
+   "fourHours": {
+      "message": "4 timmar"
+   },
+   "free": {
+      "message": "GRATIS"
+   },
+   "gender": {
+      "message": "Kön"
+   },
+   "genderFemale": {
+      "message": "Kvinna"
+   },
+   "genderMale": {
+      "message": "Man"
+   },
+   "genderNone": {
+      "message": "Inget"
+   },
+   "genderOther": {
+      "message": "Andra"
+   },
+   "gender_copied": {
+      "message": "Kön kopierat"
+   },
+   "goPremiumBtn": {
+      "message": "Använd Premium"
+   },
+   "go_back_to_signin": {
+      "message": "Gå tillbaka till Logga in"
+   },
+   "hideCode": {
+      "message": "Dölj säkerhetskoden"
+   },
+   "hidePass": {
+      "message": "Göm lösenord"
+   },
+   "installDesktopApp": {
+      "message": "Installera skrivbordsappen"
+   },
+   "invalid_email": {
+      "message": "Ogiltig e-postadress. Ange e-postadressen du verifierade."
+   },
+   "invalid_master_pass": {
+      "message": "Ogiltigt huvudlösenord!"
+   },
+   "invalid_master_tips": {
+      "message": "Ogiltigt huvudlösenord. Kontrollera och försök igen."
+   },
+   "invalid_recovery_code": {
+      "message": "Ogiltig återställningskod. Kontrollera och försök igen."
+   },
+   "invalid_secret_key": {
+      "message": "Ogiltig hemlig nyckel!"
+   },
+   "item_remove_from_favorites": {
+      "message": "Ta bort från Favoriter"
+   },
+   "jcb": {
+      "message": "JCB"
+   },
+   "lang": {
+      "message": "sv"
+   },
+   "lastModifiedAt": {
+      "message": "Ändrad vid"
+   },
+   "lastName": {
+      "message": "Efternamn"
+   },
+   "lastPasswordChangedAt": {
+      "message": "Lösenordet ändrats vid"
+   },
+   "learn_more": {
+      "message": "Läs mer"
+   },
+   "length": {
+      "message": "Längd"
+   },
+   "loading": {
+      "message": "Laddar ..."
+   },
+   "loading_data_error": {
+      "message": "Misslyckades att ladda. Kontrollera din nätverksanslutning."
+   },
+   "lock": {
+      "message": "Lås"
+   },
+   "lock_comfirm_btn": {
+      "message": "Lås upp manuellt"
+   },
+   "login_comfirm_desc": {
+      "message": "Klicka på ditt konto för att auktorisera automatisk inloggning och upplåsning från skrivbordsappen."
+   },
+   "login_feature_auto": {
+      "message": "\u003Cb>Automatiskt\u003C/b> - Åtkomst över obegränsade enheter med automatisk synkronisering"
+   },
+   "login_feature_easy": {
+      "message": "\u003Cb>Lätt\u003C/b> - Spara automatiskt och fyll i lösenord automatiskt med enkla klick"
+   },
+   "login_feature_safe": {
+      "message": "\u003Cb>Säkert\u003C/b> - Lagra dina data med klassens bästa kryptering"
+   },
+   "login_feature_secure": {
+      "message": "\u003Cb>Tryggt\u003C/b> - Skapa starka, unika lösenord"
+   },
+   "login_feature_unlimited": {
+      "message": "\u003Cb>Obegränsat\u003C/b> – Spara obegränsat med lösenord, betalningar o.s.v."
+   },
+   "login_left_title": {
+      "message": "Ett säkert, enkelt men gratis sätt att hantera lösenord, vilket är viktigt för ditt digitala liv."
+   },
+   "login_waiting_title": {
+      "message": "Väntar på auktorisering från skrivbordsappen ..."
+   },
+   "logins": {
+      "message": "Inloggningar"
+   },
+   "lower_case": {
+      "message": "Små bokstäver (a-z)"
+   },
+   "maestro": {
+      "message": "Maestro"
+   },
+   "mastercard": {
+      "message": "Mastercard"
+   },
+   "masterpassIncorrect": {
+      "message": "Ogiltigt huvudlösenord."
+   },
+   "match_change_pass": {
+      "message": "Lösenordet uppfyller inte kraven."
+   },
+   "match_master_pass": {
+      "message": "Lösenorden stämmer inte överens."
+   },
+   "middleName": {
+      "message": "Mellannamn"
+   },
+   "month": {
+      "message": "Månad"
+   },
+   "more": {
+      "message": "Mer"
+   },
+   "name": {
+      "message": "Namn"
+   },
+   "name_copied": {
+      "message": "Namn kopierat"
+   },
+   "networkError": {
+      "message": "Nätverksanslutningsfel."
+   },
+   "never": {
+      "message": "Aldrig"
+   },
+   "newUser": {
+      "message": "Ny användare?"
+   },
+   "new_password": {
+      "message": "Nytt lösenord"
+   },
+   "new_tag": {
+      "message": "Ny tagg"
+   },
+   "new_tag_number": {
+      "message": "Ny tagg"
+   },
+   "noItemsAddAllItem": {
+      "message": "Inga objekt har lagts till."
+   },
+   "noItemsAddLoginItem": {
+      "message": "Inga inloggningar har lagts till."
+   },
+   "noItemsAddNotesItem": {
+      "message": "Inga säkra anteckningar har lagts till."
+   },
+   "noItemsAddPayItem": {
+      "message": "Ingen betalningsinformation har lagts till."
+   },
+   "noItemsAddPersonalItem": {
+      "message": "Ingen personlig information har lagts till."
+   },
+   "noItemsAddRecycleItem": {
+      "message": "Inga objekt här."
+   },
+   "noItemsFound": {
+      "message": "Inga objekt hittades."
+   },
+   "noResult": {
+      "message": "Inget resultat!"
+   },
+   "noSaved": {
+      "message": "Inga inloggningar sparade för denna webbplats."
+   },
+   "noSavedPrss": {
+      "message": "Inga sparade lösenord!"
+   },
+   "no_password_history": {
+      "message": "Ingen lösenordshistorik."
+   },
+   "no_valid_secret_key_found": {
+      "message": "Ingen giltig hemlig nyckel hittades!"
+   },
+   "notNow": {
+      "message": "Inte nu"
+   },
+   "not_have_code": {
+      "message": "Har du ingen återställningskod?"
+   },
+   "notes": {
+      "message": "Anteckningar"
+   },
+   "notes_characters_tips": {
+      "message": "%s tecken kvar"
+   },
+   "notes_copied": {
+      "message": "Anteckningar kopierade"
+   },
+   "notes_placeholder": {
+      "message": "Ange några anteckningar för detta objekt (Maxgräns: %s tecken)"
+   },
+   "numWords": {
+      "message": "Siffror (0-9)"
+   },
+   "offer_to_save_passwords": {
+      "message": "Erbjuder att spara lösenord"
+   },
+   "offer_to_save_passwords_desc": {
+      "message": "Frågar om du vill spara lösenord, när du loggar in eller registrerar dig"
+   },
+   "ok": {
+      "message": "OK"
+   },
+   "okIgotIt": {
+      "message": "OK, jag förstår."
+   },
+   "oneHour": {
+      "message": "1 timme"
+   },
+   "oneMinute": {
+      "message": "1 minut"
+   },
+   "one_time_Password": {
+      "message": "Engångslösenord"
+   },
+   "one_time_pass_copied": {
+      "message": "Engångslösenord kopierat"
+   },
+   "only": {
+      "message": "Bara"
+   },
+   "open": {
+      "message": "Öppna"
+   },
+   "options": {
+      "message": "Alternativ"
+   },
+   "passIncorrect": {
+      "message": "Felaktigt lösenord."
+   },
+   "password": {
+      "message": "Lösenord"
+   },
+   "password_copied": {
+      "message": "Lösenord kopierat"
+   },
+   "password_history_item": {
+      "message": "Lösenordshistorik"
+   },
+   "password_history_tips": {
+      "message": "Här visas de senaste %s lösenorden."
+   },
+   "password_history_title": {
+      "message": "Lösenordshistorik"
+   },
+   "password_same": {
+      "message": "Nytt huvudlösenord kan inte vara detsamma som det gamla."
+   },
+   "password_tip_note": {
+      "message": "\u003Cb>OBS!\u003C/b> Använd inte ditt nuvarande iTop-lösenord."
+   },
+   "password_tip_one": {
+      "message": "Minst 8 tecken. Mer än 16 tecken rekommenderas."
+   },
+   "password_tip_three": {
+      "message": "Minst en symbol."
+   },
+   "password_tip_two": {
+      "message": "Åtminstone ett nummer."
+   },
+   "payment_Info": {
+      "message": "Betalningsinformation"
+   },
+   "personal_Info": {
+      "message": "Personlig information"
+   },
+   "phoneNumber": {
+      "message": "Telefonnummer"
+   },
+   "phone_number_copied": {
+      "message": "Telefonummer kopierat"
+   },
+   "premiumExpiredPurchase": {
+      "message": "Din Premium har \u003Cb class='text-red'>förfallit!\u003C/b>"
+   },
+   "premiumExpiredPurchaseAlert": {
+      "message": "De avancerade funktionerna är nu inte tillgängliga. Uppgradera för att fortsätta med Premium-åtkomst och skydda dina lösenord enkelt."
+   },
+   "premiumExpiringSoonPurchase": {
+      "message": "Bara \u003Cb class=\"text-yellow\">%s dagar\u003C/b> kvar av Premium!"
+   },
+   "premiumExpiringSoonPurchaseAlert": {
+      "message": "Uppgradera för att behålla Premium-åtkomst till följande avancerade funktioner:"
+   },
+   "premiumFreePurchase": {
+      "message": "Ett enklare och säkrare sätt, att hantera dina lösenord"
+   },
+   "premiumFreePurchaseAlert": {
+      "message": "Starta Premium idag och behåll de avancerade funktionerna:"
+   },
+   "premiumFreePurchaseAlert_New": {
+      "message": "Starta Premium idag och behåll dessa avancerade funktioner:"
+   },
+   "premiumFreePurchase_New": {
+      "message": "Ett enklare och säkrare sätt att hantera dina lösenord"
+   },
+   "premiumPurchase": {
+      "message": "Du har Premium i 30 dagar!"
+   },
+   "premiumPurchaseAlert": {
+      "message": "Nu kan du använda följande avancerade funktioner:"
+   },
+   "premiun": {
+      "message": "PREMIUM"
+   },
+   "purchase_Dark_Web_Monitor": {
+      "message": "Övervakning av Dark Web & varningar"
+   },
+   "purchase_Password_Health": {
+      "message": "Lösenordshälsokontroll"
+   },
+   "purchase_Password_Health_Check": {
+      "message": "Lösenordshälsokontroll"
+   },
+   "purchase_Unlimited_Devices": {
+      "message": "Synkronisera över obegränsat antal enheter"
+   },
+   "questionMark": {
+      "message": "?"
+   },
+   "recovery_code_copied": {
+      "message": "Återställningskoden har kopierats"
+   },
+   "recycle_Bin": {
+      "message": "Papperskorg"
+   },
+   "refresh": {
+      "message": "Uppdatera"
+   },
+   "rememberMeOnThisDevice": {
+      "message": "Kom ihåg mig på den här enheten"
+   },
+   "remindExpirationDate": {
+      "message": "Påminn mig två månader innan utgångsdatumet"
+   },
+   "remind_me_after_days": {
+      "message": "Påminn mig efter 7 dagar"
+   },
+   "remind_me_tomorrow": {
+      "message": "Påminn mig imorgon"
+   },
+   "remind_password": {
+      "message": "Påminn mig, om att ändra lösenordet efter 90 dagar"
+   },
+   "remove": {
+      "message": "Tag bort"
+   },
+   "remove_from_favorites": {
+      "message": "Ta bort från Favoriter"
+   },
+   "remove_from_favorites_succ": {
+      "message": "Borttagen från Favoriter"
+   },
+   "reset": {
+      "message": "Återställ"
+   },
+   "reset_code_desc": {
+      "message": "Ange din återställningskod för att återställa ditt huvudlösenord. Din återställningskod sparades som en PDF-fil."
+   },
+   "reset_code_title": {
+      "message": "Ange återställningskoden"
+   },
+   "reset_desc": {
+      "message": "Ange din verifierade e-postadress, för att återställa lösenordet."
+   },
+   "reset_email_place": {
+      "message": "Ange din verifierade e-postadress"
+   },
+   "reset_master_title": {
+      "message": "Återställ huvudlösenordet"
+   },
+   "reset_recovery_code": {
+      "message": "Återställ återställningskoden"
+   },
+   "reset_success_desc": {
+      "message": "Ditt huvudlösenord har återställts. Logga in med det nya huvudlösenordet."
+   },
+   "reset_success_title": {
+      "message": "Succé!"
+   },
+   "reset_title": {
+      "message": "Återställ lösenordet"
+   },
+   "restore": {
+      "message": "Återställ"
+   },
+   "restoreSuccessfully": {
+      "message": "Återställdes framgångsrikt."
+   },
+   "retry": {
+      "message": "Försök igen"
+   },
+   "save": {
+      "message": "Spara"
+   },
+   "saveIn_DPM": {
+      "message": "Spara i DualSafe lösenordshanterare"
+   },
+   "save_as_pdf": {
+      "message": "Spara som PDF"
+   },
+   "save_code_desc_login": {
+      "message": "Spara din återställningskod som PDF."
+   },
+   "save_code_desc_one": {
+      "message": "Spara din återställningskod som PDF och skriv ut den för att skydda den."
+   },
+   "save_code_desc_options": {
+      "message": "Din tidigare återställningskod är ogiltig från och med nu. Spara din nya återställningskod som PDF och skriv ut den för att skydda den."
+   },
+   "save_code_desc_two": {
+      "message": "Den låter dig återfå åtkomst till din DualSafe Password Manager, om du har glömt ditt huvudlösenord."
+   },
+   "save_code_new_title": {
+      "message": "Spara din nya återställningskod"
+   },
+   "save_code_tips": {
+      "message": "\u003Cb>Viktigt:\u003C/b> Återställningskoden är det enda sättet att hjälpa dig komma åt DualSafe Password Manager igen, om du glömmer ditt huvudlösenord."
+   },
+   "save_code_title": {
+      "message": "Spara återställningskoden"
+   },
+   "savedFailedData": {
+      "message": "Den senaste datan har synkroniserats från servern"
+   },
+   "savedFailedSynced": {
+      "message": "Det gick inte att spara! Den senaste datan har synkroniserats från servern"
+   },
+   "savedSuccessfully": {
+      "message": "Sparad!"
+   },
+   "scan_web_page_QRCode": {
+      "message": "Skanna webbsidans QR-kod"
+   },
+   "search": {
+      "message": "Sök"
+   },
+   "secure": {
+      "message": "Säkert"
+   },
+   "secureNotes": {
+      "message": "Säkra anteckningar"
+   },
+   "secure_notes_placeholder": {
+      "message": "Ange dina viktiga anteckningar här (Maxgräns: %s tecken)"
+   },
+   "securityCode": {
+      "message": "Kortnummer"
+   },
+   "security_code_copied": {
+      "message": "Säkerhetskoden kopierad"
+   },
+   "send": {
+      "message": "Skicka"
+   },
+   "set_master_password": {
+      "message": "Set master password"
+   },
+   "set_master_password_tips": {
+      "message": "För din kontosäkerhet föreslås, att du ställer in ett huvudlösenord för DualSafe Password Manager."
+   },
+   "set_master_tips": {
+      "message": "\u003Cb>Viktigt:\u003C/b> Huvudlösenordet är det enda giltiga lösenordet för att komma åt din DualSafe Password Manager."
+   },
+   "set_master_title": {
+      "message": "Ställ in huvudlösenordet"
+   },
+   "set_success_desc": {
+      "message": "Huvudlösenordet har ställts in och återställningskoden har sparats. Logga in med ditt huvudlösenord."
+   },
+   "settings": {
+      "message": "Inställningar"
+   },
+   "settings_Auto_Fill": {
+      "message": "Autofyll"
+   },
+   "settings_Auto_Fill_Dec": {
+      "message": "Fyll automatiskt i sparade inloggningar, betalningsinformation, etc."
+   },
+   "settings_Auto_Lock": {
+      "message": "Autolås"
+   },
+   "settings_Auto_Lock_Dec": {
+      "message": "Lås DualSafe lösenordshanterare automatiskt vid angiven frekvens"
+   },
+   "settings_Auto_Save": {
+      "message": "Spara automatiskt"
+   },
+   "settings_Auto_Save_Dec": {
+      "message": "Spara de ifyllda användarnamnen och lösenorden automatiskt"
+   },
+   "settings_Autofill_and_Autosave": {
+      "message": "Autofyll och spara automatiskt"
+   },
+   "settings_Clear_Clipboard": {
+      "message": "Rensa urklipp"
+   },
+   "settings_Clear_Clipboard_Dec": {
+      "message": "Rensa automatiskt urklipp vid den angivna tiden, efter att du kopierat ett lösenord"
+   },
+   "settings_General": {
+      "message": "Allmänt"
+   },
+   "settings_General_Dec": {
+      "message": "Ställ in DualSafe lösenordshanterare som standardlösenordshanterare"
+   },
+   "settings_Security_Options": {
+      "message": "Säkerhetsalternativ"
+   },
+   "settings_Show_Icon": {
+      "message": "Visa ikon"
+   },
+   "settings_Show_Icon_Dec": {
+      "message": "Visa ikonen för DualSafe lösenordshanterare i alla rutor, för inmatning av lösenord, för att spara dina inloggningar med bara ett klick"
+   },
+   "showCode": {
+      "message": "Visa säkerhetskod"
+   },
+   "showPass": {
+      "message": "Visa lösenord"
+   },
+   "signIn": {
+      "message": "Logga in"
+   },
+   "signInLocked": {
+      "message": "Ditt konto har låsts. Försök igen om 5 minuter."
+   },
+   "signInNow": {
+      "message": "Logga in nu för att automatiskt fylla i inloggningar för denna webbplats."
+   },
+   "signInSave": {
+      "message": "Logga in och spara"
+   },
+   "signInTimeout": {
+      "message": "Timeout för inloggning! Kontrollera ditt nätverk och försök igen!"
+   },
+   "signIn_DPM": {
+      "message": "Logga in i DualSafe lösenordshanterare"
+   },
+   "signIn_Desc": {
+      "message": "Logga in nu för att spara inloggningarna för \u003Ca class=\"btn-link btn-name\">\u003C/a> och fylla i dem automatiskt åt dig i framtiden."
+   },
+   "signOut": {
+      "message": "Logga ut"
+   },
+   "sign_in_now": {
+      "message": "Logga in nu"
+   },
+   "sign_in_with": {
+      "message": "Eller logga in med"
+   },
+   "sign_in_with_app": {
+      "message": "Logga in med skrivbordsappen"
+   },
+   "sign_in_with_facebook": {
+      "message": "Logga in med Facebook"
+   },
+   "sign_in_with_google": {
+      "message": "Logga in med Google"
+   },
+   "skip_for_now": {
+      "message": "Hoppa över nu"
+   },
+   "sort_by": {
+      "message": "Sortera efter"
+   },
+   "sort_date_created": {
+      "message": "Skapat datum"
+   },
+   "sort_date_modified": {
+      "message": "Datum ändrat"
+   },
+   "sort_newest_first": {
+      "message": "Nyaste först"
+   },
+   "sort_oldest_first": {
+      "message": "Äldst först"
+   },
+   "sort_show_az": {
+      "message": "A-Z"
+   },
+   "sort_show_favorites": {
+      "message": "Visa favoriter"
+   },
+   "sort_show_title_az": {
+      "message": "Titel: A till Z"
+   },
+   "sort_show_title_za": {
+      "message": "Titel: Z till A"
+   },
+   "sort_show_za": {
+      "message": "Z-A"
+   },
+   "sort_title": {
+      "message": "Titel"
+   },
+   "state": {
+      "message": "Stat"
+   },
+   "strong": {
+      "message": "Starkt"
+   },
+   "success_desc": {
+      "message": "Klicka på tilläggsikonen \u003Cspan class=\"succ-icon\">\u003C/span> och fäst DualSafe Password Manager på Aktivitetsfältet. Sedan kan du klicka på \u003Cspan class=\"succ-icon dpm\">\u003C/span> för att använda DualSafe Password Manager när som helst."
+   },
+   "success_title": {
+      "message": "Grattis 🎉🎉🎉 \u003Cbr>DualSafe Password Manager är redo att börja!"
+   },
+   "suggestion": {
+      "message": "Förslag"
+   },
+   "suggestion_tips": {
+      "message": "Här visas sparade inloggningsdata för den för närvarande öppna webbplatsen."
+   },
+   "symbols": {
+      "message": "Symboler (%s)"
+   },
+   "systemLocks": {
+      "message": "Systemlås"
+   },
+   "tags": {
+      "message": "Taggar"
+   },
+   "tenMinutes": {
+      "message": "10 minuter"
+   },
+   "thirtyMinutes": {
+      "message": "30 minuter"
+   },
+   "title": {
+      "message": "Titel"
+   },
+   "title_placeholder": {
+      "message": "Lägg till en titel"
+   },
+   "token_invalid_desc": {
+      "message": "Din sessionstid har gått ut. Logga in igen."
+   },
+   "tools": {
+      "message": "Verktyg"
+   },
+   "tools_Dark_Web_Monitor": {
+      "message": "Dark Web Monitor"
+   },
+   "tools_Dark_Web_Monitor_Dec": {
+      "message": "Hjälper dig att övervaka känsliga dataläckor i Dark Web"
+   },
+   "tools_Import_Export": {
+      "message": "Import och export"
+   },
+   "tools_Import_Export_Dec": {
+      "message": "Importera data från dina webbläsare eller andra lösenordsverktyg och exportera dina sparade data till en CSV-fil med bara ett klick"
+   },
+   "tools_Password_Health": {
+      "message": "Lösenordshälsa"
+   },
+   "tools_Password_Health_Dec": {
+      "message": "Hjälper dig att kontrollera sårbara lösenord, såsom svaga, återanvända eller komprometterade"
+   },
+   "tools_Unlimited_Passwords": {
+      "message": "Obegränsade lösenord"
+   },
+   "tools_Unlimited_Passwords_Only": {
+      "message": "(Bara 50 på gratisversionen)"
+   },
+   "twoMinutes": {
+      "message": "2 minuter"
+   },
+   "type": {
+      "message": "Typ"
+   },
+   "unionpay": {
+      "message": "UnionPay"
+   },
+   "unlock": {
+      "message": "Lås upp"
+   },
+   "unlockDPM": {
+      "message": "Lås upp DualSafe lösenordshanterare"
+   },
+   "unlockDPM_Desc": {
+      "message": "Lås upp nu för att spara inloggningarna för \u003Ca class=\"btn-link btn-name\">\u003C/a> och fyll i dem automatiskt för dig i framtiden."
+   },
+   "unlockNow": {
+      "message": "Lås upp nu för att automatiskt fylla i inloggningar för denna webbplats."
+   },
+   "unlockSave": {
+      "message": "Lås upp och spara"
+   },
+   "unlock_now": {
+      "message": "Lås upp nu"
+   },
+   "update": {
+      "message": "Uppdatera"
+   },
+   "updateFailed": {
+      "message": "Uppdateringen misslyckades"
+   },
+   "updateLogins": {
+      "message": "Uppdatera inloggningar"
+   },
+   "updateSuccessfully": {
+      "message": "Uppdaterat!"
+   },
+   "upgradeBtn": {
+      "message": "Uppgradera"
+   },
+   "upgradeNowBtn": {
+      "message": "Uppgradera nu"
+   },
+   "upper_case": {
+      "message": "Versaler (A–Z)"
+   },
+   "url": {
+      "message": "url"
+   },
+   "url_copied": {
+      "message": "Webbplats kopierad"
+   },
+   "use": {
+      "message": "Använd"
+   },
+   "use_generator_password": {
+      "message": "Kopiera"
+   },
+   "user_manual": {
+      "message": "Användarmanual"
+   },
+   "username": {
+      "message": "Användarnamn"
+   },
+   "username_copied": {
+      "message": "Användarnamn kopierat"
+   },
+   "username_placeholder": {
+      "message": "E-post/användarnamn/telefonnummer"
+   },
+   "view": {
+      "message": "Vy"
+   },
+   "visa": {
+      "message": "Visa"
+   },
+   "visaelectron": {
+      "message": "Visa Electron"
+   },
+   "weak": {
+      "message": "Svagt"
+   },
+   "web_password_sync": {
+      "message": "OBS: Se till att uppdatera lösenordet för webbplatsen"
+   },
+   "welcomeTo": {
+      "message": "Välkommen till"
+   },
+   "year": {
+      "message": "År"
+   },
+   "yes": {
+      "message": "Ja"
+   },
+   "zip": {
+      "message": "Postnummer"
+   },
+   "zipPostalCode": {
+      "message": "Postnummer"
+   }
+}

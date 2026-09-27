@@ -11,7 +11,7 @@ describe("ProviderConfigurationRepository", () => {
     });
     const repository = new ProviderConfigurationRepository({
       aiProviderConfiguration: { findFirst }
-    } as never);
+    } as never, { encrypt: jest.fn(), fingerprint: jest.fn() } as never);
 
     await expect(repository.find("workspace-id", "provider-id")).resolves.toEqual({
       id: "configuration-id",

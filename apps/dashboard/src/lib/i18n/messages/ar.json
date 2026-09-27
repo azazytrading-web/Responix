@@ -98,6 +98,11 @@
     "dark": "داكن",
     "system": "النظام"
   },
+  "language": {
+    "switch": "تغيير اللغة",
+    "arabic": "العربية",
+    "english": "English"
+  },
   "workspace": {
     "switch": "تبديل مساحة العمل",
     "current": "مساحة العمل الحالية",
@@ -122,6 +127,23 @@
     "admin": "مسؤول",
     "agent": "وكيل",
     "viewer": "مشاهد"
+  },
+  "personality": {
+    "title": "لوحة شخصية Responix",
+    "description": "القيم الأساسية هي المرجع. تتحكم المقابض فقط في مدى إظهار كل سلوك محدد.",
+    "warmth": "الود",
+    "enthusiasm": "الحماس",
+    "formality": "الرسمية",
+    "intensity": "شدة {name}",
+    "base": "الأساس",
+    "active": "النشط: {value}% / {base}%",
+    "soul": "روح RESPONIX",
+    "save": "حفظ الشخصية",
+    "saving": "جارٍ الحفظ…",
+    "high": "شخصية معبرة ومتفاعلة بوضوح.",
+    "balanced": "متوازنة وواضحة وقريبة.",
+    "reserved": "هادئة ومدروسة بعناية.",
+    "responseLengthUnavailable": "شدة طول الاستجابة غير متاحة: يخزن هذا الوكيل حدًا أقصى فقط لرموز الإخراج، ولا يخزن نطاقًا أدنى وأقصى."
   },
   "commandPalette": {
     "title": "لوحة الأوامر",

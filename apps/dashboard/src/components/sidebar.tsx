@@ -40,6 +40,57 @@ export function Sidebar({ mobileOpen, onMobileClose }: SidebarProps) {
     return groups;
   }, [navItems]);
 
+  const childrenByParent = useMemo(() => {
+    const children = new Map<string, typeof navItems>();
+    for (const item of navItems) {
+      if (!item.parentId) continue;
+      const current = children.get(item.parentId) ?? [];
+      current.push(item);
+      children.set(item.parentId, current);
+    }
+    return children;
+  }, [navItems]);
+
+  const renderItem = (item: (typeof navItems)[number], nested = false) => {
+    const Icon = resolveIcon(item.icon?.name);
+    const children = childrenByParent.get(item.id) ?? [];
+    const content = (
+      <>
+        {Icon && <Icon className="h-4 w-4 shrink-0" />}
+        {!collapsed && <span className="truncate">{item.label}</span>}
+      </>
+    );
+    const className = cn(
+      "flex items-center gap-2 rounded-md px-2 py-1.5 text-sm font-medium transition-colors",
+      nested && "ml-3 text-xs",
+      item.active
+        ? "bg-primary/10 text-primary"
+        : "text-muted-foreground hover:bg-accent hover:text-accent-foreground"
+    );
+    return (
+      <li key={item.id}>
+        {item.route ? (
+          <Link
+            href={item.route}
+            onClick={onMobileClose}
+            className={className}
+            title={collapsed ? item.label : undefined}
+            aria-current={item.active ? "page" : undefined}
+          >
+            {content}
+          </Link>
+        ) : (
+          <div className={className} title={collapsed ? item.label : undefined}>{content}</div>
+        )}
+        {children.length > 0 && !collapsed && (
+          <ul className="mt-0.5 space-y-0.5">
+            {children.map((child) => renderItem(child, true))}
+          </ul>
+        )}
+      </li>
+    );
+  };
+
   const sidebarContent = (
     <>
       {/* Brand */}
@@ -79,27 +130,7 @@ export function Sidebar({ mobileOpen, onMobileClose }: SidebarProps) {
               </p>
             )}
             <ul className="space-y-0.5">
-              {items.map((item) => {
-                const Icon = resolveIcon(item.icon?.name);
-                return (
-                  <li key={item.id}>
-                    <Link
-                      href={item.route ?? "#"}
-                      onClick={onMobileClose}
-                      className={cn(
-                        "flex items-center gap-2 rounded-md px-2 py-1.5 text-sm font-medium transition-colors",
-                        item.active
-                          ? "bg-primary/10 text-primary"
-                          : "text-muted-foreground hover:bg-accent hover:text-accent-foreground"
-                      )}
-                      title={collapsed ? item.label : undefined}
-                    >
-                      {Icon && <Icon className="h-4 w-4 shrink-0" />}
-                      {!collapsed && <span className="truncate">{item.label}</span>}
-                    </Link>
-                  </li>
-                );
-              })}
+              {items.map((item) => renderItem(item))}
             </ul>
           </div>
         ))}

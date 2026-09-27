@@ -1,5 +1,39 @@
 # Project Version
 
+## Engineering State Update — WhatsApp Connection Management - 2026-08-09
+
+Sprint WhatsApp Connection Management (Edit, Callback URL, Verify Token) is complete and validated in the working tree. The private unreleased version remains `0.4.0`.
+
+Backend additions: `GET /connections/:id`, `PATCH /connections/:id`, `POST /connections/:id/verify-token/regenerate` with proper RBAC (`whatsapp.connection.read`/`write`/`admin`).
+
+Frontend additions: `EditConnectionForm`, `WebhookCallback` with copy-to-clipboard, `VerifyTokenDisplay` with one-time secure display, and updated `whatsapp-api.ts` with `getWhatsAppConnection`, `updateWhatsAppConnection`, `regenerateVerifyToken`.
+
+Validation: Dashboard typecheck, lint, production build, 12 focused tests, and `git diff --check` all pass.
+
+## Engineering State Update - WhatsApp Onboarding - 2026-08-09
+
+## Engineering State Update - WhatsApp Onboarding - 2026-08-09
+
+The private unreleased version remains `0.4.0`. The first Channel frontend milestone is implemented and validated at `/channels/whatsapp`, consuming the existing Channel Runtime without changing the release state. FM-7 is now live-verified with a real DeepSeek provider and Agent execution.
+
+## Live Verification Status - FM-7 - 2026-08-09
+
+FM-7 remains code-complete at private unreleased version `0.4.0`. Local runtime, authentication, bootstrap, permissions, provider discovery, and safe configuration reads are live-verified. External provider validation and Agent execution are blocked only by the absence of an authorized development credential; no release status changed.
+
+## Engineering State Update - Sprint FM-7 - 2026-08-09
+
+Sprint FM-7 is complete and validated in the working tree. Provider/model discovery, encrypted workspace configuration, write-only credential rotation, enablement, safe health validation, and Prompt Library resource management are integrated through real APIs. Routes are `/ai/providers`, `/ai/prompts`, `/ai/prompts/new`, and `/ai/prompts/[promptId]`. The project remains private and unreleased at `0.4.0`.
+
+## Engineering State Update - Sprint FM-6 - 2026-08-09
+
+Sprint FM-6 (Agent Creation & Configuration Foundation) is complete and validated in the working tree. The Dashboard provides real workspace-scoped Agent Studio list, create, edit, and publish flows at `/ai/agents`, `/ai/agents/new`, and `/ai/agents/[agentId]`, consuming authoritative provider/model and Prompt Library contracts. The project remains private and unreleased at `0.4.0`; no release, tag, or publication is authorized.
+
+FM-6 intentionally does not fabricate memory, retrieval, tool, or workflow resource bindings because the Agent Studio write DTO exposes capability flags but no resource IDs. Provider credentials and Prompt Library resource management remain outside Agent configuration. The next frontend milestone is provider and prompt resource configuration; do not revisit FM-1 through FM-6 without a demonstrated defect.
+
+## Engineering State Update - Sprint FM-5 - 2026-08-09
+
+Sprint FM-5 (Core Dashboard Feature Modules) is complete and validated in the working tree. Dashboard Home, Workspace Management, Platform Control, and Team Management are implemented with real backend-authoritative data and permission boundaries. The project remains private and unreleased at `0.4.0`; this milestone does not authorize a release, tag, or publication. Agent configuration is the next frontend milestone and has not started.
+
 ## Engineering State Update - Sprint FM-4 - 2026-08-02
 
 Sprint FM-4 (Platform Bootstrap and Application Composition) is complete and fully validated in the working tree. The project remains private and unreleased at `0.4.0`; this milestone does not authorize a release, tag, or publication. FM-5 is not started.

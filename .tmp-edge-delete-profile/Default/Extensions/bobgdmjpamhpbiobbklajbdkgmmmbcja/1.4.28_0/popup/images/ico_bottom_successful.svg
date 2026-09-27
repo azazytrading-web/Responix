@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+  <g id="ico_bottom_successful" transform="translate(-44 -579)">
+    <rect width="24" height="24" transform="translate(44 579)" fill="#fff" opacity="0"/>
+    <rect width="16" height="14" transform="translate(48 584)" fill="#08c145"/>
+    <path d="M107.328,111.368l-2.121-2.121a1.5,1.5,0,0,0-2.119,2.121l2.121,2.121,1.061,1.061a1.5,1.5,0,0,0,2.121,0l6.361-6.361a1.5,1.5,0,0,0-2.121-2.121Zm1.569,10.824a12,12,0,1,1,12-12A12,12,0,0,1,108.9,122.192Z" transform="translate(-52.895 480.8)" fill="#fff"/>
+  </g>
+</svg>

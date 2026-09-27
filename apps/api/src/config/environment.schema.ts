@@ -59,7 +59,7 @@ const environmentSchema = z.object({
   AI_RUNTIME_RECOVERY_INTERVAL_MS: z.coerce.number().int().positive().default(30000),
   AI_RUNTIME_RECOVERY_BATCH_SIZE: z.coerce.number().int().positive().default(100),
   AI_PROVIDER_ALLOWED_HOSTS: z.string().min(1).default(
-    "api.openai.com,api.anthropic.com,generativelanguage.googleapis.com,openrouter.ai,api.deepseek.com"
+    "api.openai.com,api.anthropic.com,generativelanguage.googleapis.com,openrouter.ai,api.deepseek.com,graph.facebook.com,lookaside.fbsbx.com,*.fbcdn.net"
   ),
   AI_PROVIDER_ALLOWED_PORTS: z
     .string()

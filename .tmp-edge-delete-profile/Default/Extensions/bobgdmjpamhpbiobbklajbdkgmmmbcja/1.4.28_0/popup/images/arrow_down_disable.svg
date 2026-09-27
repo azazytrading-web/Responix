@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 12 12">
+  <g id="arrow-down_disable" transform="translate(-2 -2)">
+    <rect  width="12" height="12" transform="translate(2 2)" fill="#fff" opacity="0"/>
+    <path id="Vector" d="M8.8,0,5.18,3.624a1.1,1.1,0,0,1-1.556,0L0,0" transform="translate(3.601 6.302)" fill="none" stroke="#b2b6c2" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/>
+  </g>
+</svg>

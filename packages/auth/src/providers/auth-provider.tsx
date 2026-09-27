@@ -147,6 +147,43 @@ export function AuthProvider({ children, onSessionBoundary }: AuthProviderProps)
       const session = await silentRefreshManager.refresh();
       await applySession(session, display?.workspaces ?? []);
     } catch (error) {
+      // In local development, attempt an automatic dev-login so developers
+      // don't have to enter credentials manually. This path is strictly
+      // gated to non-production and localhost hosts. Credentials are taken
+      // from environment variables when available, falling back to the
+      // local development account (for convenience only).
+      try {
+        if (process.env.NODE_ENV === "development" && typeof window !== "undefined") {
+          const host = window.location.hostname || "";
+          if (host === "localhost" || host === "127.0.0.1") {
+            const devEmail = process.env.NEXT_PUBLIC_DEV_AUTOLOGIN_EMAIL ?? "admin@responix.local";
+            const devPassword = process.env.NEXT_PUBLIC_DEV_AUTOLOGIN_PASSWORD ?? "ResponixDev2026!";
+            // Attempt login via auth API; this will set the HttpOnly refresh cookie
+            // and return an AuthSession which we can apply to the client state.
+            // If this fails, fall back to normal failure handling below.
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-assignment
+            const result = await authApi.login(devEmail, devPassword);
+            // If workspace selection is required, try to complete by selecting
+            // the first available workspace (common in seeded dev accounts).
+            if ("requiresWorkspaceSelection" in result) {
+              const choice = result.workspaces?.[0]?.id;
+              if (choice) {
+                // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+                const session = await authApi.selectWorkspace(result.selectionToken, choice);
+                await applySession(session, result.workspaces ?? []);
+                return;
+              }
+            } else {
+              // result is an AuthSession
+              // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+              await applySession(result as any, display?.workspaces ?? []);
+              return;
+            }
+          }
+        }
+      } catch (loginError) {
+        // ignore and fall through to normal failure handling
+      }
       await handleFailure(error);
     }
   }, [applySession, handleFailure, setState]);

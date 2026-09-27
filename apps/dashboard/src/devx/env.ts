@@ -6,6 +6,7 @@
 
 export interface EnvironmentConfig {
   apiUrl: string;
+  webhookBaseUrl: string;
   wsUrl?: string;
   appVersion: string;
   nodeEnv: string;
@@ -14,8 +15,10 @@ export interface EnvironmentConfig {
 const REQUIRED: Array<keyof EnvironmentConfig> = ["apiUrl", "appVersion"];
 
 export function validateEnvironment(): EnvironmentConfig {
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001";
   const config: EnvironmentConfig = {
-    apiUrl: process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001",
+    apiUrl,
+    webhookBaseUrl: process.env.NEXT_PUBLIC_WEBHOOK_BASE_URL ?? apiUrl,
     wsUrl: process.env.NEXT_PUBLIC_WS_URL,
     appVersion: process.env.NEXT_PUBLIC_APP_VERSION ?? "0.0.0",
     nodeEnv: process.env.NODE_ENV ?? "development",
@@ -28,6 +31,10 @@ export function validateEnvironment(): EnvironmentConfig {
   }
 
   return config;
+}
+
+export function isLocalUrl(url: string): boolean {
+  return /\b(localhost|127\.0\.0\.1|::1)\b/.test(url);
 }
 
 export const env = validateEnvironment();

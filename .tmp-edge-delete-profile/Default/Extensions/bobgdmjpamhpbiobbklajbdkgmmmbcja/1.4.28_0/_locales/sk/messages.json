@@ -1,0 +1,1449 @@
+{
+   "Checkbox_Keep_signed": {
+      "message": "Neodhlasovať ma"
+   },
+   "Checkbox_Keep_signed_Hint": {
+      "message": "Počas zadaného časového obdobia budete prihlásení automaticky. Uistite sa, že prostredie vášho počítača je bezpečné. Ak používate verejný počítač, túto možnosť nezačiarkujte."
+   },
+   "Delete_Exclude_website": {
+      "message": " Odstrániť & vylúčiť túto webovú stránku"
+   },
+   "Emergency_Desc": {
+      "message": "Jednoducho a bezpečne získate opätovný prístup k svojmu účtu v prípade núdze, ako je napríklad stráta, krádež hesiel apod."
+   },
+   "Emergency_Title": {
+      "message": "\u003Cb>Prístup v núdzi\u003C/b> pre prípad nehody"
+   },
+   "Enable_Now": {
+      "message": "Povoliť"
+   },
+   "Enter_your_email": {
+      "message": " Zadajte svoj e-mail"
+   },
+   "Exclude_website_new": {
+      "message": " Vylúčiť túto webovú stránku"
+   },
+   "Invalid_Recovery_Code_New": {
+      "message": " Neplatný obnovovací kód. Nezabudnite zadať správne alebo najnovší. Alebo pomocou \u003Ca class=\"btn-link contactUsLink\">nás kontaktujte\u003C/a>."
+   },
+   "Keep_Safe_Desc": {
+      "message": "Povoľte Zdravotný stav hesiel (Password Health), aby ste mohli skontrolovať a prípadne posilniť či upraviť svoje slabé, staré a opakovane používané heslá."
+   },
+   "Keep_Safe_Title": {
+      "message": "Zachovanie všetkých hesiel \u003Cb>v bezpečí\u003C/b>"
+   },
+   "No_Worries_Desc": {
+      "message": "Ak vaše osobné údaje boli narušené či odhalené, povoľte monitorovanie temného webu na prijímanie upozornení."
+   },
+   "No_Worries_Title": {
+      "message": "\u003Cb>Žiadne\u003C/b> obavy z \u003Cb>ohrozenia údajov\u003C/b>"
+   },
+   "No_thanks": {
+      "message": " Nie, ďakujem"
+   },
+   "Password_Generator": {
+      "message": "Password Generator"
+   },
+   "Password_Generator_Dec": {
+      "message": "Vytvára-generuje silné a bezpečné heslá iba jediným kliknutím"
+   },
+   "Suggested_Password": {
+      "message": "Navrhované heslo"
+   },
+   "Suggested_Password_Dec": {
+      "message": "Zobrazí návrh hesla pre všetky políčka na zadanie hesla"
+   },
+   "Suggested_password_Case": {
+      "message": "Navrhované heslo"
+   },
+   "TOTP_Tips": {
+      "message": "Miestny čas vášho počítača nie je správne nastavený, čo môže spôsobiť stratu platnosti jednorázového hesla."
+   },
+   "TOTP_placeholder": {
+      "message": "Zadajte tajný kľúč alebo URL adresu, pre overenie://*"
+   },
+   "Unlimited_Desc": {
+      "message": "Jednoducho spravuje, ukladá a vytvára bezpečné heslá v akomkoľvek zariadení alebo inej platforme pomocou jediného účtu."
+   },
+   "Unlimited_Title": {
+      "message": "Synchronizovanie údajov v \u003Cb>neobmedzenom množstve zariadení\u003C/b>"
+   },
+   "Website": {
+      "message": "Web stránka"
+   },
+   "about": {
+      "message": "O aplikácii"
+   },
+   "about_Acknowledgements": {
+      "message": "Poďakovanie patrí"
+   },
+   "about_Copyright": {
+      "message": "© iTop Inc. Všetky práva vyhradené."
+   },
+   "about_EULA": {
+      "message": "EULA"
+   },
+   "about_Privacy_Policy": {
+      "message": "Zásady o ochrane súkromia"
+   },
+   "about_Version": {
+      "message": "Verzia"
+   },
+   "add": {
+      "message": " Pridať "
+   },
+   "addNew": {
+      "message": "Pridať nové"
+   },
+   "addNewAccount": {
+      "message": "Pridať nový účet"
+   },
+   "add_Login": {
+      "message": "Pridať prihlásenie"
+   },
+   "add_Logins": {
+      "message": "Pridať prihlásenia"
+   },
+   "add_Notes": {
+      "message": "Pridať poznámku"
+   },
+   "add_Payment_Info": {
+      "message": "Pridať platobné údaje"
+   },
+   "add_Payment_Info_Case": {
+      "message": "Pridanie platobných údajov"
+   },
+   "add_Personal_Info": {
+      "message": "Pridať osobné údaje"
+   },
+   "add_Personal_Info_Case": {
+      "message": "Pridanie osobných údajov"
+   },
+   "add_exclude": {
+      "message": "Pridáte webovú stránku medzi vylúčené"
+   },
+   "add_items": {
+      "message": "Pridať položky"
+   },
+   "add_new_website": {
+      "message": "Pridať novú web stránku"
+   },
+   "add_secure_note": {
+      "message": "Pridať bezpečnostnú poznámku"
+   },
+   "add_tag": {
+      "message": " Pridať tag"
+   },
+   "add_to_favorites": {
+      "message": "Pridať k obľúbeným"
+   },
+   "add_to_favorites_succ": {
+      "message": "Pridané medzi obľúbené"
+   },
+   "add_to_onetime_pwd": {
+      "message": "Pridať do jednorázového hesla"
+   },
+   "add_totp": {
+      "message": "Chcete pridať jednorazové heslo?"
+   },
+   "add_website": {
+      "message": "Pridať web stránku"
+   },
+   "add_website_placeholder": {
+      "message": " Zadajte webovú stránku"
+   },
+   "address": {
+      "message": "Adresa"
+   },
+   "address_copied": {
+      "message": "Adresa bola skopírovaná"
+   },
+   "advancedOptions": {
+      "message": "Pokročilé nastavenia"
+   },
+   "all_Item": {
+      "message": "Všetky položky"
+   },
+   "alreadyAccount": {
+      "message": "* Ak už máte účet iTop, priamo sa prihláste prosím."
+   },
+   "already_saved": {
+      "message": "Už mám uložené"
+   },
+   "americanexpress": {
+      "message": "American Express"
+   },
+   "appName": {
+      "message": "DualSafe Password Manager"
+   },
+   "auth_bottom_desc": {
+      "message": "Po dokončení autorizácie je možné sa prihlásiť cez DualSafe Password Manager."
+   },
+   "auth_desc": {
+      "message": "Prosím, autorizujte prihlásenie do DualSafe Password Manager v novo otvorenej karte prehliadača."
+   },
+   "auth_subtitle": {
+      "message": "Čaká sa na autorizáciu…"
+   },
+   "auth_title": {
+      "message": "Autorizácia"
+   },
+   "autoFillFailed": {
+      "message": "Nepodarilo sa nájsť vstupné políčka pre prihlásenie. Skúste skopírovať a vložiť prihlasovacie údaje ručne."
+   },
+   "auto_save_confirm_desc": {
+      "message": "Automaticky ukladať moje budúce používateľské mená a heslá pre všetky webové stránky."
+   },
+   "auto_save_passwords": {
+      "message": "Automatické uloženie hesiel"
+   },
+   "auto_save_passwords_desc": {
+      "message": "Automaticky ukladať moje používateľské mená a heslá pre všetky webové stránky"
+   },
+   "auto_saved_successfully": {
+      "message": "Automatické uloženie bolo úspešné"
+   },
+   "average": {
+      "message": "Priemerné"
+   },
+   "back": {
+      "message": "Späť"
+   },
+   "bannerExpiredPurchase": {
+      "message": "Ach jaj! Platnosť vášho Premium účtu \u003Cb>vypršala.\u003C/b>"
+   },
+   "bannerFreePurchase": {
+      "message": "Inovujte a užite si plný Prémiový prístup"
+   },
+   "bannerPremiumPurchase": {
+      "message": "Zostáva vám %s \u003Cspan class=\"day-words\">dni\u003C/span> do vypšania Premium účtu."
+   },
+   "birthday": {
+      "message": "Narodeniny"
+   },
+   "birthday_copied": {
+      "message": "Dátum narodenia bol skopírovaný"
+   },
+   "browserReboot": {
+      "message": "Reštart prehliadača"
+   },
+   "browser_extension": {
+      "message": "Rozšírenie prehliadača"
+   },
+   "cancel": {
+      "message": "Zrušiť"
+   },
+   "capitalize": {
+      "message": "Veľké písmená (A-Z)"
+   },
+   "cardNumber": {
+      "message": "Číslo karty"
+   },
+   "cardType": {
+      "message": "Typ karty"
+   },
+   "cardType_placeholder": {
+      "message": "Zadajte alebo vyberte typ karty"
+   },
+   "card_number_copied": {
+      "message": "Číslo karty bolo skopírované"
+   },
+   "card_type_copied": {
+      "message": "Typ karty bol skopírovaný"
+   },
+   "cardholderName": {
+      "message": "Meno držiteľa karty"
+   },
+   "cardholder_name_copied": {
+      "message": "Meno držiteľa karty bolo skopírované"
+   },
+   "cardother": {
+      "message": "Iné"
+   },
+   "carteblanche": {
+      "message": "Carte Blanche"
+   },
+   "change_desc": {
+      "message": "Meníme vaše hlavné heslo..."
+   },
+   "change_master_password": {
+      "message": "Zmeniť hlavné heslo"
+   },
+   "change_now": {
+      "message": "Zmeniť hneď"
+   },
+   "change_title": {
+      "message": "Zmeniť hlavné heslo"
+   },
+   "cityTown": {
+      "message": "Mesto/Obec"
+   },
+   "clear": {
+      "message": "Vymazať"
+   },
+   "clear_allpass_desc": {
+      "message": "Po vymazaní sa nebudú dať obnoviť."
+   },
+   "clear_allpass_title": {
+      "message": "Naozaj chcete vymazať všetky heslá?"
+   },
+   "clear_deleted_desc": {
+      "message": "Po odstránení sa už nedajú obnoviť."
+   },
+   "clear_deleted_title": {
+      "message": "Naozaj chcete odstrániť všetky položky z Odstránených položiek?"
+   },
+   "clear_password": {
+      "message": "Vymazať heslo"
+   },
+   "cleared_successfully": {
+      "message": "Úspešne vymazané."
+   },
+   "close": {
+      "message": "Zatvoriť"
+   },
+   "code_desc": {
+      "message": "Ak chcete resetovať obnovovací kód, zadajte svoje hlavné heslo"
+   },
+   "code_pairing_desc": {
+      "message": "Potvrďte kód z vyskakovacieho okna počítačovej aplikácie a kliknutím na Pripojiť, autorizujte automatické prihlásenie a odomknutie."
+   },
+   "code_pairing_title": {
+      "message": "Kód pripojenia"
+   },
+   "code_title": {
+      "message": "Reset obnovovacieho kódu"
+   },
+   "comma": {
+      "message": ":"
+   },
+   "comprehensive_pwd_Desc": {
+      "message": "Kompletná kontrola stavu hesla"
+   },
+   "confirmMasterNewPass": {
+      "message": "Potvrďte nové hlavné heslo"
+   },
+   "confirmMasterPass": {
+      "message": "Potvrďte svoje hlavné heslo"
+   },
+   "continue": {
+      "message": "Pokračovať"
+   },
+   "continue_sign_in": {
+      "message": "Pokračovať v prihlásení"
+   },
+   "copied": {
+      "message": "skopírované"
+   },
+   "copy": {
+      "message": "Kopírovať"
+   },
+   "copy_generator_password": {
+      "message": "Kopírovať heslo"
+   },
+   "copy_notes": {
+      "message": "Kopírovať poznámky"
+   },
+   "copy_one_time_Password": {
+      "message": "Kopírovať jednorázové heslo"
+   },
+   "copy_password": {
+      "message": "heslo"
+   },
+   "copy_username": {
+      "message": "Kopírovať meno užívateľa"
+   },
+   "countryRegion": {
+      "message": "Krajina alebo oblasť"
+   },
+   "countryRegion_placeholder": {
+      "message": "Vyberte svoju krajinu alebo oblasť"
+   },
+   "createNewAccount": {
+      "message": "Vytvoriť účet"
+   },
+   "create_new_account": {
+      "message": "Vytvoriť účet"
+   },
+   "createdAt": {
+      "message": "Vytvorené"
+   },
+   "currentMasterPass": {
+      "message": "Súčasné hlavné heslo"
+   },
+   "day": {
+      "message": "Deň"
+   },
+   "days": {
+      "message": "Dni"
+   },
+   "days_case": {
+      "message": "dni"
+   },
+   "default_password_manager": {
+      "message": "Predvolený správca hesiel"
+   },
+   "delete": {
+      "message": "Odstrániť"
+   },
+   "delete_all": {
+      "message": "Odstrániť všetko"
+   },
+   "delete_at": {
+      "message": "Odstránené "
+   },
+   "delete_item": {
+      "message": "Naozaj chcete odstrániť túto položku do Koša?"
+   },
+   "delete_item_Recycle_Bin": {
+      "message": "Naozaj chcete túto položku odstrániť z Koša?"
+   },
+   "delete_item_Recycle_Bin_Dec": {
+      "message": "Po odstránení už to nebude možné obnoviť."
+   },
+   "delete_item_dec": {
+      "message": "Môžete to obnoviť z Koša, pokiaľ nebude natrvalo odstránené."
+   },
+   "deletedSuccessfully": {
+      "message": "Úspešne odstránené."
+   },
+   "deleted_this_item": {
+      "message": "Odstrániť túto položku"
+   },
+   "desktop": {
+      "message": "Desktop"
+   },
+   "desktop_app": {
+      "message": "Desktopová aplikácia"
+   },
+   "details": {
+      "message": "Detaily"
+   },
+   "device_limit_desc": {
+      "message": "Dosiahli ste maximálny povolený počet prihlásení v 3 zariadeniach. Inovujte aplikáciu teraz a užite si neobmedzený prístup k zariadeniam a všetky výhody uvedené nižšie:"
+   },
+   "device_limit_tips": {
+      "message": "* Budete odhlásený/-á zo zariadenia: "
+   },
+   "device_limit_title": {
+      "message": "Bol dosiahnutý limit zariadení!"
+   },
+   "dinersclub": {
+      "message": "Diners Club"
+   },
+   "dir": {
+      "message": "ltr"
+   },
+   "discard": {
+      "message": "Zahodiť"
+   },
+   "discard_change": {
+      "message": "Naozaj chcete zahodiť všetky neuložené zmeny?"
+   },
+   "discover": {
+      "message": "Discover"
+   },
+   "downloadApp": {
+      "message": "Stiahnuť▼"
+   },
+   "edit": {
+      "message": "Upraviť"
+   },
+   "editInfo": {
+      "message": "Upraviť info."
+   },
+   "emailAddress": {
+      "message": "E-mailová adresa"
+   },
+   "emailOrPassIncorrect": {
+      "message": "Nesprávna e-mailová adresa alebo heslo."
+   },
+   "emailVerfy": {
+      "message": "Overte tento e-mail"
+   },
+   "email_address_copied": {
+      "message": "E-mailová adresa bola skopírovaná"
+   },
+   "emergency_contact": {
+      "message": "Núdzový prístup"
+   },
+   "emergency_contact_Desc": {
+      "message": "Keď stratíte prístup k svojim údajom, osobu, ktorej udelíte núdzový prístup, môžete požiadať o export vašich údajov alebo zmenu vášho hlavného hesla."
+   },
+   "enterMasterNewPass": {
+      "message": "Zadajte nové hlavné heslo"
+   },
+   "enterMasterPass": {
+      "message": "Zadajte svoje hlavné heslo"
+   },
+   "enterRecoveryCass": {
+      "message": "Zadajte obnovovací kód"
+   },
+   "enterYourPass": {
+      "message": "Zadajte svoje heslo"
+   },
+   "enter_email_desc": {
+      "message": " Zadajte svoju e-mailovú adresu a získate obnovovací kód !"
+   },
+   "enter_email_tips": {
+      "message": " Neplatná e-mailová adresa. Prosím, skontrolujte to a znovu zadajte!"
+   },
+   "exclude_website": {
+      "message": "Vylúčenie web. stránky"
+   },
+   "exclude_website_list": {
+      "message": "Zoznam vylúčených webových stránok"
+   },
+   "exit": {
+      "message": "VÝCHOD"
+   },
+   "expOptionDate": {
+      "message": "Dátum expirácie"
+   },
+   "expiration_date_copied": {
+      "message": "Dátum vypršania platnosti bol skopírovaný"
+   },
+   "expired": {
+      "message": "EXPIROVANÁ"
+   },
+   "extDesc": {
+      "message": "Rozšírenie DualSafe Password Manager pomáha na jednom mieste bezpečne spravovať heslá, kedykoľvek ich automaticky ukladať, dopĺňať a k nim pristupovať."
+   },
+   "extName": {
+      "description": "Správca hesiel DualSafe & Digitálny trezor",
+      "message": "DualSafe Password Manager & Digitálny trezor"
+   },
+   "extension": {
+      "message": "Rozšírenie"
+   },
+   "failedToDelete": {
+      "message": "Nepodarilo sa odstrániť."
+   },
+   "failedToOpenLoading_DPM": {
+      "message": "Načítava sa počítačová verzia"
+   },
+   "failedToOpenLoading_Dark_Web_Monitor_Dec": {
+      "message": "Dark Web Monitor je k dispozícii iba vo verzii pre počítače. Kliknutím na \"Otvoriť\" v rozbaľovacom okne a potvrdením spustíte verziu pre počítač. Alebo môžete kliknutím na tlačidlo %s nižšie znovu otvoriť rozbaľovacie okno."
+   },
+   "failedToOpenLoading_Emergency_Contact_Dec": {
+      "message": "Emergency Contact je k dispozícii iba vo verzii pre počítače. Kliknutím na \"Otvoriť\" v rozbaľovacom okne a potvrdením spustíte verziu pre počítač. Alebo môžete kliknutím na tlačidlo %s nižšie znovu otvoriť rozbaľovacie okno."
+   },
+   "failedToOpenLoading_Import_Export_Dec": {
+      "message": "Import a export je k dispozícii iba vo verzii pre počítače. Kliknutím na \"Otvoriť\" v rozbaľovacom okne a potvrdením spustíte verziu pre počítač. Alebo môžete kliknutím na tlačidlo %s nižšie znovu otvoriť rozbaľovacie okno."
+   },
+   "failedToOpenLoading_Password_Health_Dec": {
+      "message": "Zdravie/kvalita hesla je k dispozícii iba vo verzii pre počítače. Kliknutím na \"Otvoriť\" v rozbaľovacom okne a potvrdením, spustíte počítačovú verziu. Môžete aj kliknúť na tlačidlo %s nižšie, aby ste znovu otvorili rozbaľovacie okno."
+   },
+   "failedToOpen_DPM": {
+      "message": "Nepodarilo sa otvoriť verziu pre počítač"
+   },
+   "failedToOpen_Dark_Web_Monitor_Dec": {
+      "message": "Dark Web Monitor je k dispozícii iba vo verzii pre počítače. Kliknutím na tlačidlo %d stiahnete a nainštalujete verziu pre počítač. Alebo môžete opäť to otvoriť kliknutím na tlačidlo %s."
+   },
+   "failedToOpen_Emergency_Contact_Dec": {
+      "message": "Emergency Contact je k dispozícii iba vo verzii pre počítače. Kliknutím na tlačidlo %d stiahnete a nainštalujete verziu pre počítač. Alebo môžete opäť to otvoriť kliknutím na tlačidlo %s."
+   },
+   "failedToOpen_Import_Export_Dec": {
+      "message": "Import a export je k dispozícii iba v počítačovej verzii. Kliknutím na tlačidlo %d si stiahnete a nainštalujete verziu pre počítač. Alebo môžete opäť to otvoriť kliknutím na tlačidlo %s."
+   },
+   "failedToOpen_Password_Health_Dec": {
+      "message": "Zdravie/stav hesla je k dispozícii iba v počítačovej verzii. Kliknutím na tlačidlo %d môžete si stiahnuť a nainštalovať verziu pre počítač. Alebo môžete opäť to otvoriť kliknutím na tlačidlo %s."
+   },
+   "failedToRestore": {
+      "message": "Nepodarilo sa obnoviť."
+   },
+   "failed_send_desc": {
+      "message": "Odoslanie e-mailu s kódom na obnovenie zlyhalo. Prosím, skúste to znovu."
+   },
+   "failed_send_title": {
+      "message": "Nepodarilo sa odoslať."
+   },
+   "favoties": {
+      "message": "Obľúbené"
+   },
+   "feedback": {
+      "message": "Spätná väzba"
+   },
+   "fill": {
+      "message": "Vyplniť"
+   },
+   "firstName": {
+      "message": "Krstné meno"
+   },
+   "fiveMinutes": {
+      "message": "5 min."
+   },
+   "forgotYourPass": {
+      "message": "Zabudli ste heslo?"
+   },
+   "fourHours": {
+      "message": "4 hod."
+   },
+   "fourteenDays": {
+      "message": "14 dní"
+   },
+   "free": {
+      "message": "FREE"
+   },
+   "gender": {
+      "message": "Pohlavie"
+   },
+   "genderFemale": {
+      "message": "Žena"
+   },
+   "genderMale": {
+      "message": "Muž"
+   },
+   "genderNone": {
+      "message": "Nezadané"
+   },
+   "genderOther": {
+      "message": "Iné"
+   },
+   "gender_copied": {
+      "message": "Pohlavie bolo skopírované"
+   },
+   "goPremiumBtn": {
+      "message": "Prejsť na Premium"
+   },
+   "go_back_to_signin": {
+      "message": "Vrátiť sa na Prihlásenie"
+   },
+   "hideCode": {
+      "message": "Skryť bezpečnostný kód"
+   },
+   "hidePass": {
+      "message": "Skryť heslo"
+   },
+   "ignore_website": {
+      "message": "Ignorovať túto webovú stránku"
+   },
+   "installDesktopApp": {
+      "message": "Inštalácia desktopovej aplikácie"
+   },
+   "invalid_email": {
+      "message": "Nesprávna e-mailová adresa. Zadajte prosím už svoju overenú e-mailovú adresu."
+   },
+   "invalid_master_pass": {
+      "message": "Nesprávne hlavné heslo!"
+   },
+   "invalid_master_tips": {
+      "message": "Nesprávne hlavné heslo. Prosím, skontrolujte, opravte a skúste to znovu."
+   },
+   "invalid_recovery_code": {
+      "message": "Nesprávny obnovovací kód. Prosím, skontrolujte, opravte a skúste to znovu."
+   },
+   "invalid_secret_key": {
+      "message": "Neplatný tajný kľúč!"
+   },
+   "item_remove_from_favorites": {
+      "message": "Odobrať z obľúbených"
+   },
+   "jcb": {
+      "message": "JCB"
+   },
+   "lang": {
+      "message": "sk"
+   },
+   "lastModifiedAt": {
+      "message": "Upravené"
+   },
+   "lastName": {
+      "message": "Priezvisko"
+   },
+   "lastPasswordChangedAt": {
+      "message": "Zmena hesla"
+   },
+   "learn_more": {
+      "message": "Viac údajov"
+   },
+   "length": {
+      "message": "Dĺžka"
+   },
+   "loading": {
+      "message": "Načítava sa..."
+   },
+   "loading_data_error": {
+      "message": "Nepodarilo sa načítať. Skontrolujte svoje pripojenie k sieti."
+   },
+   "lock": {
+      "message": "Zamknúť"
+   },
+   "lock_comfirm_btn": {
+      "message": "Odomknúť manuálne"
+   },
+   "login_comfirm_btn": {
+      "message": "Prihlásiť sa manuálne"
+   },
+   "login_comfirm_desc": {
+      "message": "Kliknite na svoj účet, aby ste autorizovali automatické prihlásenie a odomknutie cez aplikáciu pre počítač."
+   },
+   "login_feature_auto": {
+      "message": "\u003Cb>Automatizácia\u003C/b> - Prístup v neobmedzenom počte zariadení pomocou automatickej synchronizácie"
+   },
+   "login_feature_easy": {
+      "message": "\u003Cb>Jednoduchosť\u003C/b> - Automaticky ukladá a vylňuje heslá jednoduchými kliknutiami"
+   },
+   "login_feature_safe": {
+      "message": "\u003Cb>Ochrana\u003C/b> - Ukladá dáta pomocou najlepšieho šifrovania vo svojej triede"
+   },
+   "login_feature_secure": {
+      "message": "\u003Cb>Bezpečnosť\u003C/b> - Generuje silné a jedinečné heslá"
+   },
+   "login_feature_unlimited": {
+      "message": "\u003Cb>Bez obmedzenia\u003C/b> - Uloží neobmedzené množstvo hesiel, platieb atď."
+   },
+   "login_left_title": {
+      "message": "Bezpečný, jednoduchý a bezplatný spôsob spravovania hesiel, ktorý je nevyhnutný pre váš digitálny život."
+   },
+   "login_waiting_title": {
+      "message": "Čaká sa na autorizáciu cez aplikáciu pre stolný PC..."
+   },
+   "logins": {
+      "message": "Prihlásenia"
+   },
+   "lower_case": {
+      "message": "Malé písmená (a-z)"
+   },
+   "maestro": {
+      "message": "Maestro"
+   },
+   "mastercard": {
+      "message": "Mastercard"
+   },
+   "masterpassIncorrect": {
+      "message": "Nesprávne hlavné heslo"
+   },
+   "match_change_pass": {
+      "message": "Heslo nevyhovuje požiadavkám."
+   },
+   "match_master_pass": {
+      "message": "Heslá sa nezhodujú."
+   },
+   "middleName": {
+      "message": "Meno za slobodna"
+   },
+   "month": {
+      "message": "Mesiac"
+   },
+   "more": {
+      "message": "Viac"
+   },
+   "name": {
+      "message": "Meno"
+   },
+   "name_copied": {
+      "message": "Meno bolo skopírované"
+   },
+   "networkError": {
+      "message": "Problém sieťového pripojenia."
+   },
+   "never": {
+      "message": "Nikdy"
+   },
+   "newUser": {
+      "message": "Nový/á užívateľ/ka?"
+   },
+   "new_password": {
+      "message": "Nové heslo"
+   },
+   "new_tag": {
+      "message": "Nový tag"
+   },
+   "new_tag_number": {
+      "message": "Nový tag"
+   },
+   "ninetyDays": {
+      "message": "90 dní"
+   },
+   "noItemsAddAllItem": {
+      "message": "Nie su pridané žiadne položky."
+   },
+   "noItemsAddLoginItem": {
+      "message": "Nie su pridané žiadne prihlasovacie údaje."
+   },
+   "noItemsAddNotesItem": {
+      "message": "Nie su pridané žiadne bezpečnostné poznámky."
+   },
+   "noItemsAddPayItem": {
+      "message": "Nie su pridané žiadne platobné údaje."
+   },
+   "noItemsAddPersonalItem": {
+      "message": "Nie su pridané žiadne osobné údaje."
+   },
+   "noItemsAddRecycleItem": {
+      "message": "Tu sa nenachádzajú žiadne položky."
+   },
+   "noItemsFound": {
+      "message": "Neboli nájdené žiadne položky."
+   },
+   "noResult": {
+      "message": "Bez výsledku!"
+   },
+   "noSaved": {
+      "message": "Pre túto stránku nie su uložené žiadne prihlasovacie údaje."
+   },
+   "noSavedPrss": {
+      "message": "Nie je uložené žiadne heslo!"
+   },
+   "no_excluded_websites": {
+      "message": "Nie je vylúčená žiadna webová stránka."
+   },
+   "no_password_history": {
+      "message": "Žiadna história hesiel."
+   },
+   "no_valid_secret_key_found": {
+      "message": "Nebol nájdený žiadny platný tajný kľúč!"
+   },
+   "notNow": {
+      "message": "Teraz nie"
+   },
+   "not_have_code": {
+      "message": "Nemáte obnovovací kód?"
+   },
+   "notes": {
+      "message": "Poznámky"
+   },
+   "notes_characters_tips": {
+      "message": "Počet zostávajúcich znakov: %s"
+   },
+   "notes_copied": {
+      "message": "Poznámky boli skopírované"
+   },
+   "notes_placeholder": {
+      "message": "Zadajte si nejaké poznámky k tejto položke (maximálny počet znakov: %s)."
+   },
+   "numWords": {
+      "message": "Číslice (0-9)"
+   },
+   "offer_to_save_passwords": {
+      "message": "Ponúkať uloženie hesiel"
+   },
+   "offer_to_save_passwords_desc": {
+      "message": "Vyzývať na uloženie hesiel pri prihlásení alebo registrácii"
+   },
+   "ok": {
+      "message": "OK"
+   },
+   "okIgotIt": {
+      "message": "OK"
+   },
+   "oneHour": {
+      "message": "1 hod."
+   },
+   "oneMinute": {
+      "message": "1 min."
+   },
+   "one_time_Password": {
+      "message": "Jednorázové heslo"
+   },
+   "one_time_pass_copied": {
+      "message": "Jednorázové heslo bolo skopírované"
+   },
+   "only": {
+      "message": "Iba"
+   },
+   "open": {
+      "message": "Otvoriť"
+   },
+   "options": {
+      "message": "Možnosti"
+   },
+   "passIncorrect": {
+      "message": "Nesprávne heslo."
+   },
+   "password": {
+      "message": "Heslo"
+   },
+   "password_copied": {
+      "message": "Heslo bolo skopírované"
+   },
+   "password_history_item": {
+      "message": "História hesla"
+   },
+   "password_history_tips": {
+      "message": "Tu sú zobrazené posledné heslá: %s."
+   },
+   "password_history_title": {
+      "message": "História hesiel"
+   },
+   "password_tip_one": {
+      "message": "Minimálne 8 znakov. Odporúča sa viac ako 16 znakov."
+   },
+   "password_tip_three": {
+      "message": "Aspoň jeden symbol."
+   },
+   "password_tip_two": {
+      "message": "Aspoň jedno číslo."
+   },
+   "payment_Info": {
+      "message": "Údaje o platení"
+   },
+   "personal_Info": {
+      "message": "Osobné údaje"
+   },
+   "phoneNumber": {
+      "message": "Telefónne číslo"
+   },
+   "phone_number_copied": {
+      "message": "Telefónne číslo bolo skopírované"
+   },
+   "premiumExpiredPurchase": {
+      "message": "Platnosť vašej Premium edície už \u003Cb class='text-red'>VYPRŠALA!\u003C/b>"
+   },
+   "premiumExpiredPurchaseAlert": {
+      "message": "Pokročilé funkcie sú teraz pre vás nedostupné. Inovujte si aplikáciu, aby ste mali naďalej prístup k prémiovému účtu a jednoducho uchovávali svoje heslá v bezpečí."
+   },
+   "premiumExpiringSoonPurchase": {
+      "message": "Iba \u003Cb class=\"text-yellow\">%s dni\u003C/b> môžete využívať Premium verziu!"
+   },
+   "premiumExpiringSoonPurchaseAlert": {
+      "message": "Inovujte verziu, aby ste si zachovali prístup k nasledujúcim pokročilým funkciám Premium verzie:"
+   },
+   "premiumFreePurchase": {
+      "message": "Jednoduchší a bezpečnejší spôsob spravovanie hesiel"
+   },
+   "premiumFreePurchaseAlert": {
+      "message": "Začnite s Premium účtom ešte dnes pre zachovanie nasledujúcich pokročilých funkcií:"
+   },
+   "premiumFreePurchaseAlert_New": {
+      "message": "Začnite s Premium ešte dnes aby ste si zachovali tieto pokročilé funkcie:"
+   },
+   "premiumFreePurchase_New": {
+      "message": "Jednoduchší a bezpečnejší spôsob spravovania hesiel"
+   },
+   "premiumPurchase": {
+      "message": "Získali ste 30-dňovú Premium verziu!"
+   },
+   "premiumPurchaseAlert": {
+      "message": "Teraz môžete využívať nasledujúce pokročilé funkcie:"
+   },
+   "premiun": {
+      "message": "PREMIUM"
+   },
+   "purchase_Dark_Web_Monitor": {
+      "message": "Dark Web -> Monitorovanie & Upozornenia"
+   },
+   "purchase_Password_Health": {
+      "message": "Kontrola stavu hesla"
+   },
+   "purchase_Password_Health_Check": {
+      "message": "Kontrola stavu hesla"
+   },
+   "purchase_Unlimited_Devices": {
+      "message": "Synchronizácia v neobmedzenom množstve zariadení"
+   },
+   "questionMark": {
+      "message": "?"
+   },
+   "recovery_code_copied": {
+      "message": "Obnovovací kód bol skopírovaný"
+   },
+   "recycle_Bin": {
+      "message": "Kôš"
+   },
+   "refresh": {
+      "message": "Obnoviť"
+   },
+   "rememberMeOnThisDevice": {
+      "message": "Pamätať si to v tomto zariadení"
+   },
+   "remindExpirationDate": {
+      "message": "Pripomenúť 2 mesiace pred dátumom expirácie"
+   },
+   "remind_me_after_days": {
+      "message": "Pripomenúť o 7 dní"
+   },
+   "remind_me_tomorrow": {
+      "message": "Pripomenúť zajtra"
+   },
+   "remind_password": {
+      "message": "Pripomenúť zmenu hesla po 90-tich dňoch"
+   },
+   "remove": {
+      "message": "Odstrániť"
+   },
+   "remove_from_favorites": {
+      "message": "Odobrať z obľúbených"
+   },
+   "remove_from_favorites_succ": {
+      "message": "Odstránené z obľúbených"
+   },
+   "resend": {
+      "message": "Poslať znovu"
+   },
+   "reset": {
+      "message": "Resetovať"
+   },
+   "reset_code_desc": {
+      "message": "Ak chcete resetovať svoje hlavné heslo, musíte zadať svoj obnovovací kód. Váš obnovovací kód bol uložený ako PDF súbor."
+   },
+   "reset_code_title": {
+      "message": "Zadajte obnovovací kód"
+   },
+   "reset_desc": {
+      "message": "Ak chcete resetovať heslo, zadajte svoju overenú e-mailovú adresu"
+   },
+   "reset_email_place": {
+      "message": "Zadajte svoju overenú e-mailovú adresu"
+   },
+   "reset_master_title": {
+      "message": "Resetovať hlavné heslo"
+   },
+   "reset_recovery_code": {
+      "message": "Resetovať kód na obnovenie"
+   },
+   "reset_success_desc": {
+      "message": "Vaše hlavné heslo bolo resetované. Teraz sa môžete prihlásiť pomocou nového hlavného hesla."
+   },
+   "reset_success_title": {
+      "message": "Úspešne!"
+   },
+   "reset_title": {
+      "message": "Resetovať heslo"
+   },
+   "restore": {
+      "message": "Obnoviť"
+   },
+   "restoreSuccessfully": {
+      "message": "Úspešne obnovené."
+   },
+   "retry": {
+      "message": "Skúsiť znovu"
+   },
+   "save": {
+      "message": "Uložiť"
+   },
+   "saveIn_DPM": {
+      "message": "Uložiť v DualSafe Password Manager"
+   },
+   "save_as_pdf": {
+      "message": "Uložiť ako PDF"
+   },
+   "save_code_desc_login": {
+      "message": "Uložte si kód na obnovenie vo formáte PDF."
+   },
+   "save_code_desc_one": {
+      "message": "Uložte obnovovací kód vo formáte PDF, vytlačte ho a odložte na svoje tajné miesto."
+   },
+   "save_code_desc_options": {
+      "message": "Váš predchádzajúci kód na obnovenie je odteraz už neplatný. Uložte si nový kód na obnovenie vo formáte PDF a vytlačte si ho, aby bol v bezpečí."
+   },
+   "save_code_desc_two": {
+      "message": "Umožní vám to opätovne získať prístup k aplikácii DualSafe Password Manager v prípade, že zabudnete svoje hlavné heslo."
+   },
+   "save_code_new_title": {
+      "message": "Uložte si svoj nový obnovovací kód"
+   },
+   "save_code_tips": {
+      "message": "\u003Cb>Dôležité:\u003C/b> Obnovovací kód je jediný spôsob, pre opätovné získanie prístupu do aplikácie DualSafe Password Manager v prípade zabudnutia hlavného hesla."
+   },
+   "save_code_title": {
+      "message": "Uložiť obnovovací kód"
+   },
+   "save_totp": {
+      "message": "Chcete si uložiť jednorazové heslo?"
+   },
+   "savedFailedData": {
+      "message": "Zo servera boli synchronizované najnovšie údaje."
+   },
+   "savedFailedSynced": {
+      "message": "Uloženie zlyhalo! Najnovšie údaje boli synchronizované zo servera."
+   },
+   "savedSuccessfully": {
+      "message": "Úspešne uložené."
+   },
+   "scan_web_page_QRCode": {
+      "message": "Naskenujte QR kód webovej stránky"
+   },
+   "search": {
+      "message": "Hľadať"
+   },
+   "secure": {
+      "message": "Bezpečné"
+   },
+   "secureNotes": {
+      "message": "Bezpečnostné poznámky"
+   },
+   "secure_notes_placeholder": {
+      "message": "Tu zadajte svoje dôležité poznámky (maximálny počet znakov: %s)."
+   },
+   "securityCode": {
+      "message": "Bezpečnostný kód"
+   },
+   "security_code_copied": {
+      "message": "Bezpečnostný kód bol skopírovaný"
+   },
+   "send": {
+      "message": "Odoslať"
+   },
+   "send_email_hint": {
+      "message": "Odoslať na môj e-mail"
+   },
+   "sending_desc": {
+      "message": "Odošle sa obnovovací kód na vašu e-mailovú adresu."
+   },
+   "sending_title": {
+      "message": "Odosielanie"
+   },
+   "sent_succ_desc": {
+      "message": "Váš obnovovací kód bol odoslaný na e-mailovú adresu %s. Ak sa nenachádza vo vašej doručenej pošte, skontrolujte priečinok Spam. Alebo môžete kliknúť na \u003Cbutton class=\"resndbtn\">Poslať znovu\u003C/button>."
+   },
+   "sent_succ_title": {
+      "message": "Úspešne odoslané!"
+   },
+   "set_master_password": {
+      "message": "Nastaviť hlavné heslo"
+   },
+   "set_master_password_tips": {
+      "message": "Pre bezpečnosť vášho účtu odporúčame nastaviť hlavné heslo v DualSafe Password Manager."
+   },
+   "set_master_tips": {
+      "message": "\u003Cb>Dôležité:\u003C/b> Hlavné heslo bude jediným platným heslom pre prístup do vášho DualSafe Password Manager."
+   },
+   "set_master_title": {
+      "message": "Nastavste hlavné heslo"
+   },
+   "set_success_desc": {
+      "message": "Hlavné heslo bolo nastavené a obnovovací kód bol úspešne uložený. Prihláste sa pomocou hlavného hesla."
+   },
+   "settings": {
+      "message": "Nastavenia"
+   },
+   "settings_Auto_Fill": {
+      "message": "Automaticky vyplňovať"
+   },
+   "settings_Auto_Fill_Dec": {
+      "message": "Automaticky vyplní vaše uložené prihlasovacie údaje, platobné údaje atď."
+   },
+   "settings_Auto_Fill_Password": {
+      "message": "Automatické vyplňovanie hesla"
+   },
+   "settings_Auto_Fill_Password_Dec": {
+      "message": "Automaticky vyplňuje účty a heslá, keď sa prihlasujete na svoje uložené webové stránky."
+   },
+   "settings_Auto_Lock": {
+      "message": "Automatický zámok"
+   },
+   "settings_Auto_Lock_Dec": {
+      "message": "Automaticky uzamkýnať aplikáciou DualSafe Password Manager podľa zadaných kritérií"
+   },
+   "settings_Auto_Save": {
+      "message": "Automaticky uložiť"
+   },
+   "settings_Auto_Save_Dec": {
+      "message": "Automaticky sa uložia zadané používateľské mená a heslá"
+   },
+   "settings_Autofill_and_Autosave": {
+      "message": "Automatické dopĺňanie a automatické ukladanie"
+   },
+   "settings_Clear_Clipboard": {
+      "message": "Vymazať schránku"
+   },
+   "settings_Clear_Clipboard_Dec": {
+      "message": "Automaticky vymazávať schránku po skopírovaní hesla v určenom čase"
+   },
+   "settings_Fill_Payments": {
+      "message": "Vyplňte platobné údaje"
+   },
+   "settings_Fill_Payments_Desc": {
+      "message": "Pomôže vám jediným kliknutím vyplniť uložené platobné údaje, ako je číslo karty, držiteľ karty a dátum vypršania platnosti."
+   },
+   "settings_Fill_Personal_Infol": {
+      "message": "Vyplňte osobné údaje"
+   },
+   "settings_Fill_Personal_Infol_Desc": {
+      "message": "Pomôže vám jediným kliknutím vyplniť vaše uložené osobné údaje, ako je e-mail, telefónne číslo alebo adresa."
+   },
+   "settings_General": {
+      "message": "Všeobecné"
+   },
+   "settings_General_Dec": {
+      "message": "Nastaviť DualSafe Password Manager ako predvoleného Správcu hesiel"
+   },
+   "settings_Limited_time_free": {
+      "message": "(Časovo obmedzená ponuka)"
+   },
+   "settings_Security_Options": {
+      "message": "Bezpečnostné možnosti"
+   },
+   "settings_Show_Icon": {
+      "message": "Zobraziť ikonu"
+   },
+   "settings_Show_Icon_Dec": {
+      "message": "Zobrazí sa ikona aplikácie DualSafe Password Manager vo všetkých poliach pre zadanie hesla a uloženie vašich prihlasovacích údajov jediným kliknutím."
+   },
+   "sevenDays": {
+      "message": "7 dní"
+   },
+   "showCode": {
+      "message": "Zobraziť bezpečnostný kód"
+   },
+   "showPass": {
+      "message": "Zobraziť heslo"
+   },
+   "signIn": {
+      "message": "Prihlásiť sa"
+   },
+   "signInAutoNow": {
+      "message": "Prihláste sa teraz, aby aplikácia automaticky vyplňovala vaše prihlasovacie, osobné alebo platobné údaje."
+   },
+   "signInLocked": {
+      "message": "Váš účet bol zablokovaný. Skúste to zopakovať o 5 minút."
+   },
+   "signInNow": {
+      "message": "Ak chcete automaticky vyplňovať svoje prihlasovacie údaje pre túto stránku, prihláste sa."
+   },
+   "signInSave": {
+      "message": "Prihlásiť a uložiť"
+   },
+   "signInTimeout": {
+      "message": "Časový limit prihlásenia vypršal! Skontrolujte svoju sieť a skúste to znovu!"
+   },
+   "signIn_DPM": {
+      "message": "Prihlásiť sa do Správcu hesiel DualSafe"
+   },
+   "signIn_Desc": {
+      "message": "Odomknutím budete môcť ukladať svoje prihlasovacie údaje v \u003Ca class=\"btn-link btn-name\">\u003C/a> a pri ďalšej návšteve stránok automaticky ich vyplňovať."
+   },
+   "signOut": {
+      "message": "Odhlásiť sa"
+   },
+   "sign_in_again_desc": {
+      "message": "Zatiaľ ste si nenastavili heslo, pretože ste sa predtým prihlásili cez Google / Facebook. Kliknutím na “OK” sa prihlásite cez Google / Facebook."
+   },
+   "sign_in_now": {
+      "message": "Prihlásiť sa"
+   },
+   "sign_in_with": {
+      "message": "Alebo sa prihláste pomocou"
+   },
+   "sign_in_with_app": {
+      "message": "Prihlásiť sa cez aplikáciu pre stolné PC"
+   },
+   "sign_in_with_facebook": {
+      "message": "Prihlásiť sa cez Facebook"
+   },
+   "sign_in_with_google": {
+      "message": "Prihlásiť sa cez Google"
+   },
+   "sixtyDays": {
+      "message": "60 dní"
+   },
+   "skip_for_now": {
+      "message": "Zatiaľ preskočiť"
+   },
+   "sort_by": {
+      "message": "Triediť podľa"
+   },
+   "sort_date_created": {
+      "message": "Dátumu vytvorenia"
+   },
+   "sort_date_modified": {
+      "message": "Dátumu úprav"
+   },
+   "sort_newest_first": {
+      "message": "Najprv najnovšie"
+   },
+   "sort_oldest_first": {
+      "message": "Najprv najstaršie"
+   },
+   "sort_show_az": {
+      "message": "A-Z"
+   },
+   "sort_show_favorites": {
+      "message": "Zobraziť obľúbené"
+   },
+   "sort_show_title_az": {
+      "message": "Názvu od: A po Z"
+   },
+   "sort_show_title_za": {
+      "message": "Názvu od: Z to A"
+   },
+   "sort_show_za": {
+      "message": "Z-A"
+   },
+   "sort_title": {
+      "message": "Názvu"
+   },
+   "state": {
+      "message": "Štát"
+   },
+   "strong": {
+      "message": "Silné"
+   },
+   "success_desc": {
+      "message": "Kliknite na ikonu rozšírenia \u003Cspan class=\"succ-icon\">\u003C/span> a DualSafe Password Manager pripnite na panel s nástrojmi. Potom môžete kedykoľvek kliknúť na \u003Cspan class=\"succ-icon dpm\">\u003C/span>, keď bude potrebné použiť aplikáciu DualSafe Password Manager."
+   },
+   "success_title": {
+      "message": "GRATULUJEME 🎉🎉🎉 \u003Cbr>DualSafe Password Manager je pripravený!"
+   },
+   "suggestion": {
+      "message": "Návrh"
+   },
+   "suggestion_tips": {
+      "message": "Tu sa zobrazujú uložené prihlasovacie údaje pre aktuálne otvorenú webovú stránku."
+   },
+   "symbols": {
+      "message": "Symboly (%s)"
+   },
+   "systemLocks": {
+      "message": "Uzamknutie systému"
+   },
+   "tags": {
+      "message": "Tag"
+   },
+   "tenMinutes": {
+      "message": "10 min."
+   },
+   "thirtyDays": {
+      "message": "30 dní"
+   },
+   "thirtyMinutes": {
+      "message": "30 min."
+   },
+   "title": {
+      "message": "Názov"
+   },
+   "title_placeholder": {
+      "message": "Zadajte názov prosím"
+   },
+   "tools": {
+      "message": "Nástroje"
+   },
+   "tools_Dark_Web_Monitor": {
+      "message": "Dark Web Monitor"
+   },
+   "tools_Dark_Web_Monitor_Dec": {
+      "message": "Pomáha monitorovať únik citlivých údajov v Dark Web prostredí"
+   },
+   "tools_Import_Export": {
+      "message": "Import a Export"
+   },
+   "tools_Import_Export_Dec": {
+      "message": "Importuje údaje z vašich prehliadačov alebo iných nástrojov na vytváranie hesiel a exportuje uložené údaje do CSV súboru iba jediným kliknutím."
+   },
+   "tools_Password_Health": {
+      "message": "Zdravie hesla"
+   },
+   "tools_Password_Health_Dec": {
+      "message": "Pomáha kontrolovať zraniteľnosť hesiel, silu/kvalitu, opakované používanie alebo ich prelomenie."
+   },
+   "tools_Unlimited_Passwords": {
+      "message": "Obmedzenie hesiel"
+   },
+   "tools_Unlimited_Passwords_Only": {
+      "message": "(Iba 50 v rámci bezplatného plánu)"
+   },
+   "twoMinutes": {
+      "message": "2 min."
+   },
+   "type": {
+      "message": "Typ"
+   },
+   "unionpay": {
+      "message": "UnionPay"
+   },
+   "unknown": {
+      "message": "Neznáme"
+   },
+   "unlock": {
+      "message": "Odomknúť"
+   },
+   "unlockAutoNow": {
+      "message": "Odomknite aplikáciu teraz, aby mohla za vás automaticky vyplňovať prihlasovacie, osobné alebo platobné údaje."
+   },
+   "unlockDPM": {
+      "message": "Odomknúť Správcu hesiel DualSafe"
+   },
+   "unlockDPM_Desc": {
+      "message": "Odomknite to teraz, aby ste uložili svoje prihlasovacie údaje \u003Ca class=\"btn-link btn-name\">\u003C/a> a pri ďalšej návšteve stránky automaticky boli vyplňované vaše chránené údaje."
+   },
+   "unlockNow": {
+      "message": "Ak chcete automaticky dopĺňať svoje prihlasovacie údaje pre túto lokalitu, prihláste sa."
+   },
+   "unlockSave": {
+      "message": "Odomknúť a uložiť"
+   },
+   "unlock_now": {
+      "message": "Odomknúť"
+   },
+   "until_sign_out": {
+      "message": "Až kým sa neodhlásim"
+   },
+   "update": {
+      "message": "Aktualizovať"
+   },
+   "updateFailed": {
+      "message": "Aktualizacia neuspešná."
+   },
+   "updateLogins": {
+      "message": "Aktualizácia prihlásení"
+   },
+   "updateSuccessfully": {
+      "message": "Úspešne aktualizované."
+   },
+   "upgradeBtn": {
+      "message": "Inovácia"
+   },
+   "upgradeNowBtn": {
+      "message": "Inovovať"
+   },
+   "upper_case": {
+      "message": "Veľké písmená (A-Z)"
+   },
+   "url": {
+      "message": "URL"
+   },
+   "url_copied": {
+      "message": "Webová stránka bola skopírovaná"
+   },
+   "use": {
+      "message": "Užívateľ"
+   },
+   "use_generator_password": {
+      "message": "Heslo užívateľa"
+   },
+   "user_manual": {
+      "message": "Návod na použitie"
+   },
+   "username": {
+      "message": "Meno užívateľa"
+   },
+   "username_copied": {
+      "message": "Meno používateľa bolo skopírované"
+   },
+   "username_placeholder": {
+      "message": "E-mail / Meno užívateľa / Telefónne číslo"
+   },
+   "view": {
+      "message": "Zobraziť"
+   },
+   "visa": {
+      "message": "Visa"
+   },
+   "visaelectron": {
+      "message": "Visa Electron"
+   },
+   "weak": {
+      "message": "Slabé"
+   },
+   "web_password_sync": {
+      "message": "Poznámka: Nezabudnite aktualizovať heslo pre webovú stránku"
+   },
+   "welcomeTo": {
+      "message": "Vítame vás"
+   },
+   "year": {
+      "message": "Rok"
+   },
+   "yes": {
+      "message": "Áno"
+   },
+   "zip": {
+      "message": "ZIP"
+   },
+   "zipPostalCode": {
+      "message": "PSČ"
+   }
+}

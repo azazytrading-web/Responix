@@ -4,16 +4,9 @@ import { useState, useEffect, useCallback } from "react";
 import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import { cn } from "@responix/ui";
-import {
-  LayoutDashboard,
-  Settings,
-  MessageSquare,
-  Users,
-  Brain,
-  BookOpen,
-  Workflow,
-  Search,
-} from "lucide-react";
+import { Search } from "lucide-react";
+import { NavigationRegistry, resolveIcon, useResolvedNavigation } from "../navigation";
+import { usePlatformBootstrap } from "../platform";
 
 interface CommandItem {
   id: string;
@@ -23,21 +16,25 @@ interface CommandItem {
   action: () => void;
 }
 
+const emptyRegistry = new NavigationRegistry();
+
 export function CommandPalette() {
   const t = useTranslations("commandPalette");
   const router = useRouter();
+  const { navigationRegistry } = usePlatformBootstrap();
+  const navigation = useResolvedNavigation(navigationRegistry ?? emptyRegistry, "sidebar");
   const [isOpen, setIsOpen] = useState(false);
   const [query, setQuery] = useState("");
 
-  const commands: CommandItem[] = [
-    { id: "dashboard", label: t("navigation") + ": Dashboard", icon: LayoutDashboard, action: () => router.push("/") },
-    { id: "inbox", label: t("navigation") + ": Inbox", icon: MessageSquare, action: () => router.push("/inbox") },
-    { id: "customers", label: t("navigation") + ": Customers", icon: Users, action: () => router.push("/customers") },
-    { id: "ai", label: t("navigation") + ": AI Studio", icon: Brain, action: () => router.push("/ai-studio") },
-    { id: "workflows", label: t("navigation") + ": Workflows", icon: Workflow, action: () => router.push("/workflows") },
-    { id: "knowledge", label: t("navigation") + ": Knowledge Base", icon: BookOpen, action: () => router.push("/knowledge") },
-    { id: "settings", label: t("navigation") + ": Settings", icon: Settings, action: () => router.push("/settings") },
-  ];
+  const commands: CommandItem[] = navigation.flatMap((item) => {
+    if (!item.route) return [];
+    return [{
+      id: item.id,
+      label: `${t("navigation")}: ${item.label}`,
+      icon: resolveIcon(item.icon?.name) ?? Search,
+      action: () => router.push(item.route!)
+    }];
+  });
 
   const filtered = query
     ? commands.filter((c) => c.label.toLowerCase().includes(query.toLowerCase()))

@@ -143,6 +143,17 @@ describe("ProviderDestinationPolicy", () => {
     });
   });
 
+  it("accepts wildcard-allowlisted subdomains", async () => {
+    const { policy, resolve } = createPolicy({
+      allowedHosts: ["*.fbcdn.net", "graph.facebook.com"],
+      resolve: jest.fn().mockResolvedValue([{ address: PUBLIC_IPV4, family: 4 }])
+    });
+    await expect(policy.authorize("https://scontent.xx.fbcdn.net/media")).resolves.toMatchObject({
+      hostname: "scontent.xx.fbcdn.net"
+    });
+    expect(resolve).toHaveBeenCalledWith("scontent.xx.fbcdn.net");
+  });
+
   it("rejects DNS rebinding when any resolved address is prohibited", async () => {
     const { policy } = createPolicy({
       resolve: jest.fn().mockResolvedValue([

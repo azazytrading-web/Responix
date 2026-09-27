@@ -1,0 +1,28 @@
+﻿[33m[Nest] 15288  - [39m09/14/2026, 8:21:16 PM [33m   WARN[39m [38;5;3m[TextExtractorService] [39m[33mPDF extraction attempt 1/3 failed (Unable to deserialize cloned data); retrying[39m
+[33m[Nest] 15288  - [39m09/14/2026, 8:21:16 PM [33m   WARN[39m [38;5;3m[TextExtractorService] [39m[33mPDF extraction attempt 2/3 failed (Unable to deserialize cloned data); retrying[39m
+[33m[Nest] 15288  - [39m09/14/2026, 8:21:16 PM [33m   WARN[39m [38;5;3m[TextExtractorService] [39m[33mPDF extraction attempt 1/3 failed (Unable to deserialize cloned data); retrying[39m
+[33m[Nest] 15288  - [39m09/14/2026, 8:21:16 PM [33m   WARN[39m [38;5;3m[TextExtractorService] [39m[33mPDF extraction attempt 2/3 failed (Unable to deserialize cloned data); retrying[39m
+npx : PASS src/modules/knowledge-base/text-extractor.service.spec.ts
+At line:1 char:38
++ ... t\apps\api; npx jest src/modules/knowledge-base/text-extractor.servic ...
++                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (PASS src/module...service.spec.ts:String) [], Remote 
+   Exception
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+  TextExtractorService
+    ΓêÜ extracts plain text and markdown content (8 ms)
+    ΓêÜ counts non-empty CSV rows (1 ms)
+    ΓêÜ pretty-prints valid JSON and keeps malformed JSON as raw text (3 ms)
+    ΓêÜ strips HTML chrome and tags and decodes entities (3 ms)
+    ΓêÜ rejects unsupported document types (15 ms)
+    ΓêÜ resolves MIME types from explicit headers first and file extensions second (7 ms)
+    PDF extraction retry (worker clone race)
+      ΓêÜ recovers from a transient worker deserialization failure (377 ms)
+      ΓêÜ gives up and rethrows after exhausting attempts (385 ms)
+
+Test Suites: 1 passed, 1 total
+Tests:       8 passed, 8 total
+Snapshots:   0 total
+Time:        3.222 s
+Ran all test suites matching /src\\modules\\knowledge-base\\text-extractor.service.spec.ts/i.

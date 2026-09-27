@@ -14,6 +14,7 @@ const providerRecord = {
       settings: { organization: "org-id" }
     }
   ],
+  credentials: [{ id: "credential-id" }],
   models: [
     {
       id: "model-id",
@@ -45,26 +46,10 @@ describe("ProviderRepository", () => {
 
     const providers = await repository.discover("workspace-id");
 
-    const query = capturedQuery as {
-      where: {
-        status: string;
-        configurations: {
-          none: {
-            workspaceId: string;
-            OR: unknown[];
-          };
-        };
-      };
-    };
+    const query = capturedQuery as { where: { status: string } };
     expect(query.where).toEqual(
       expect.objectContaining({
-        status: "ACTIVE",
-        configurations: {
-          none: {
-            workspaceId: "workspace-id",
-            OR: [{ enabled: false }, { deletedAt: { not: null } }]
-          }
-        }
+        status: "ACTIVE"
       })
     );
     expect(providers).toEqual([

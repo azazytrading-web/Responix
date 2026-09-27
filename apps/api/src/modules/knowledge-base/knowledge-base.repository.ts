@@ -9,6 +9,7 @@ import {
   KnowledgeStatus,
   Prisma
 } from "@prisma/client";
+import { randomUUID } from "node:crypto";
 import { PrismaService } from "../../database/prisma.service";
 import type {
   CreateKnowledgeCollectionDto,
@@ -116,7 +117,7 @@ export class KnowledgeBaseRepository {
 
   listSpaces(workspaceId: string) {
     return this.prisma.knowledgeBase.findMany({
-      where: { workspaceId, deletedAt: null },
+      where: { workspaceId, deletedAt: null, archivedAt: null },
       orderBy: { name: "asc" },
       select: this.spaceSelect
     });
@@ -447,7 +448,7 @@ export class KnowledgeBaseRepository {
   ) {
     return this.prisma.$transaction(async (tx) => {
       const current = await this.requireDocument(tx, workspaceId, documentId);
-      this.assertDraft(current.status);
+      this.assertPublishable(current.status);
       const revision = current.revision + 1;
       const snapshot = this.snapshot(current);
       const version = await tx.knowledgeVersion.create({
@@ -468,6 +469,142 @@ export class KnowledgeBaseRepository {
       });
       await this.audit(tx, workspaceId, actorId, "knowledge.document.published", "KnowledgeDocument", document.id, current, { document, version });
       return { document, version };
+    });
+  }
+
+  publishSpace(workspaceId: string, actorId: string, spaceId: string) {
+    return this.prisma.$transaction(async (tx) => {
+      const current = await this.requireSpace(tx, workspaceId, spaceId);
+      if (current.status === "PUBLISHED") {
+        throw new ConflictException("Knowledge space is already published");
+      }
+      const space = await tx.knowledgeBase.update({
+        where: { id: spaceId },
+        data: { status: "PUBLISHED", updatedById: actorId },
+        select: this.spaceSelect
+      });
+      await this.audit(tx, workspaceId, actorId, "knowledge.space.published", "KnowledgeSpace", spaceId, current, space);
+      return space;
+    });
+  }
+
+  beginProcessing(workspaceId: string, actorId: string, documentId: string) {
+    return this.prisma.$transaction(async (tx) => {
+      const current = await this.requireDocument(tx, workspaceId, documentId);
+      if (current.status !== "DRAFT") {
+        throw new ConflictException("Only draft knowledge documents can be indexed");
+      }
+      const document = await tx.knowledgeDocument.update({
+        where: { id: documentId },
+        data: {
+          status: "INDEXING",
+          indexingStatus: "PROCESSING",
+          uploadStatus: "UPLOADED",
+          updatedById: actorId
+        },
+        select: this.documentSelect
+      });
+      await this.audit(tx, workspaceId, actorId, "knowledge.document.indexing_started", "KnowledgeDocument", documentId, current, document);
+      return document;
+    });
+  }
+
+  persistProcessingResult(
+    workspaceId: string,
+    actorId: string,
+    documentId: string,
+    result: {
+      chunks: KnowledgeChunkMetadataDto[];
+      embeddings: Array<{
+        chunkNumber: number;
+        chunkText: string;
+        vector: number[];
+        embeddingModel: string;
+        tokenCount: number;
+      }>;
+      parserMetadata: JsonRecord;
+      chunkStrategy: JsonRecord;
+      embeddingStatus: JsonRecord;
+      totalPages: number | null;
+      fileSizeBytes: number;
+    }
+  ) {
+    return this.prisma.$transaction(async (tx) => {
+      const current = await this.requireDocument(tx, workspaceId, documentId);
+      if (current.status !== "INDEXING") {
+        throw new ConflictException("Document is not being indexed");
+      }
+      this.validateChunks(result.chunks);
+      await tx.knowledgeChunkMetadata.deleteMany({ where: { documentId } });
+      if (result.chunks.length) {
+        await tx.knowledgeChunkMetadata.createMany({
+          data: this.chunkData(workspaceId, result.chunks).map((chunk) => ({ ...chunk, documentId }))
+        });
+      }
+      for (const embedding of result.embeddings) {
+        const row = await tx.embedding.create({
+          data: {
+            documentId,
+            chunkNumber: embedding.chunkNumber,
+            chunkText: embedding.chunkText,
+            vectorId: randomUUID(),
+            embeddingModel: embedding.embeddingModel,
+            tokenCount: embedding.tokenCount,
+            metadata: json({ dimension: embedding.vector.length })
+          },
+          select: { id: true }
+        });
+        await tx.$executeRaw`UPDATE "embeddings" SET "vector" = ${`[${embedding.vector.join(",")}]`}::vector WHERE "id" = ${row.id}`;
+      }
+      const document = await tx.knowledgeDocument.update({
+        where: { id: documentId },
+        data: {
+          status: "READY",
+          indexingStatus: "COMPLETED",
+          uploadStatus: "UPLOADED",
+          totalChunks: result.chunks.length,
+          totalPages: result.totalPages,
+          parserMetadata: json(result.parserMetadata),
+          chunkStrategy: json(result.chunkStrategy),
+          embeddingStatusMetadata: json(result.embeddingStatus),
+          fileSize: BigInt(result.fileSizeBytes),
+          updatedById: actorId
+        },
+        select: this.documentSelect
+      });
+      await this.audit(tx, workspaceId, actorId, "knowledge.document.indexed", "KnowledgeDocument", documentId, current, document);
+      return document;
+    });
+  }
+
+  failProcessing(
+    workspaceId: string,
+    actorId: string,
+    documentId: string,
+    failure: { code: string; message: string }
+  ) {
+    return this.prisma.$transaction(async (tx) => {
+      const current = await this.requireDocument(tx, workspaceId, documentId);
+      if (current.status !== "INDEXING") {
+        throw new ConflictException("Document is not being indexed");
+      }
+      const document = await tx.knowledgeDocument.update({
+        where: { id: documentId },
+        data: {
+          status: "FAILED",
+          indexingStatus: "FAILED",
+          embeddingStatusMetadata: json({
+            status: "FAILED",
+            code: failure.code,
+            message: failure.message,
+            failedAt: new Date().toISOString()
+          }),
+          updatedById: actorId
+        },
+        select: this.documentSelect
+      });
+      await this.audit(tx, workspaceId, actorId, "knowledge.document.indexing_failed", "KnowledgeDocument", documentId, current, { document, failure });
+      return document;
     });
   }
 
@@ -660,6 +797,7 @@ export class KnowledgeBaseRepository {
     sourceMetadata: true, fileMetadata: true, urlMetadata: true, fileName: true,
     originalName: true, mimeType: true, fileSize: true, language: true, checksum: true,
     parserMetadata: true, chunkStrategy: true, embeddingStatusMetadata: true,
+    indexingStatus: true, totalChunks: true,
     syncMetadata: true, importMetadata: true, metadata: true, status: true, revision: true,
     createdById: true, updatedById: true, createdAt: true, updatedAt: true,
     archivedAt: true, deletedAt: true,
@@ -1047,6 +1185,12 @@ export class KnowledgeBaseRepository {
 
   private assertDraft(status: KnowledgeStatus) {
     if (status !== "DRAFT") throw new BadRequestException("Only draft knowledge documents can be modified");
+  }
+
+  private assertPublishable(status: KnowledgeStatus) {
+    if (status !== "DRAFT" && status !== "READY") {
+      throw new BadRequestException("Only draft or indexed knowledge documents can be published");
+    }
   }
 
   private async audit(

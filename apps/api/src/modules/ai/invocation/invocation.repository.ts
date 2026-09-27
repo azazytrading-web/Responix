@@ -148,7 +148,7 @@ export class InvocationRepository {
 
   async complete(input: InvocationCompletionInput): Promise<void> {
     await this.prisma.$transaction(async (transaction) => {
-      await transaction.$queryRaw`SELECT pg_advisory_xact_lock(hashtextextended(${input.workspaceId}, 0))`;
+      await transaction.$queryRaw`SELECT 1 AS locked FROM pg_advisory_xact_lock(hashtextextended(${input.workspaceId}, 0))`;
       const updated = await transaction.aiInvocationLog.updateMany({
         where: {
           id: input.invocationId,
@@ -266,7 +266,7 @@ export class InvocationRepository {
 
   async completeUnknownUsage(input: UnknownUsageCompletionInput): Promise<void> {
     await this.prisma.$transaction(async (transaction) => {
-      await transaction.$queryRaw`SELECT pg_advisory_xact_lock(hashtextextended(${input.workspaceId}, 0))`;
+      await transaction.$queryRaw`SELECT 1 AS locked FROM pg_advisory_xact_lock(hashtextextended(${input.workspaceId}, 0))`;
       const updated = await transaction.aiInvocationLog.updateMany({
         where: {
           id: input.invocationId, workspaceId: input.workspaceId, status: "PENDING"
@@ -366,7 +366,7 @@ export class InvocationRepository {
 
   async failWithRuntime(input: InvocationFailureInput): Promise<void> {
     await this.prisma.$transaction(async (transaction) => {
-      await transaction.$queryRaw`SELECT pg_advisory_xact_lock(hashtextextended(${input.workspaceId}, 0))`;
+      await transaction.$queryRaw`SELECT 1 AS locked FROM pg_advisory_xact_lock(hashtextextended(${input.workspaceId}, 0))`;
       const updated = await transaction.aiInvocationLog.updateMany({
         where: {
           id: input.invocationId,

@@ -10,11 +10,13 @@ import {
   AgentVisibility,
   Prisma
 } from "@prisma/client";
+import { createHash } from "node:crypto";
 import { PrismaService } from "../../database/prisma.service";
 import type {
   AgentCapabilitiesDto,
   AgentConfigurationDto,
-  AgentPromptBindingDto
+  AgentPromptBindingDto,
+  ConversationHistoryConfigDto
 } from "./dto/agent-studio.dto";
 
 type JsonRecord = Record<string, unknown>;
@@ -74,6 +76,7 @@ type AgentSnapshot = {
     variableMetadata: unknown[];
     metadata: JsonRecord;
   }>;
+  retrievalRuntimeId: string | null;
 };
 
 const json = (value: unknown): Prisma.InputJsonValue => value as Prisma.InputJsonValue;
@@ -100,6 +103,7 @@ export class AgentStudioRepository {
     configuration: AgentConfigurationDto;
     capabilities?: AgentCapabilitiesDto;
     promptBindings?: AgentPromptBindingDto[];
+    conversationHistory?: ConversationHistoryConfigDto;
   }) {
     return this.withUniqueErrors(async () =>
       this.prisma.$transaction(async (tx) => {
@@ -124,6 +128,14 @@ export class AgentStudioRepository {
             personality: null,
             prompt: "",
             ...this.configurationData(input.configuration),
+            // Conversation history is an operational working-context flag stored
+            // in runtimeConfiguration (no dedicated column). New Agents default
+            // to OFF so history is explicit opt-in under the Context Isolation
+            // architecture; the user can enable it from Agent Studio.
+            runtimeConfiguration: json({
+              ...record(input.configuration.runtimeConfiguration),
+              conversationHistory: input.conversationHistory ?? { enabled: false }
+            }),
             ...this.capabilityData(input.capabilities),
             status: "DRAFT",
             version: 0,
@@ -277,6 +289,28 @@ export class AgentStudioRepository {
     });
   }
 
+  async revertFailedPublish(
+    workspaceId: string,
+    actorId: string,
+    agentId: string,
+    versionId: string
+  ) {
+    await this.prisma.$transaction(async (tx) => {
+      const version = await tx.aiAgentVersion.findFirst({
+        where: { id: versionId, agentId, agent: { workspaceId } },
+        select: { revision: true }
+      });
+      if (!version) return;
+      await tx.aiAgent.updateMany({
+        where: { id: agentId, workspaceId, version: version.revision, status: "PUBLISHED" },
+        data: { status: "DRAFT", updatedById: actorId }
+      });
+      // Keep the immutable failed revision: runtime preparation may already have
+      // persisted assets that correctly reference it. A retry publishes the next
+      // revision, while the mutable Agent is never left advertised as PUBLISHED.
+    });
+  }
+
   rollback(input: {
     workspaceId: string;
     actorId: string;
@@ -387,6 +421,7 @@ export class AgentStudioRepository {
   archive(workspaceId: string, actorId: string, agentId: string) {
     return this.prisma.$transaction(async (tx) => {
       const current = await this.requireAgent(tx, workspaceId, agentId);
+      await this.assertNotActiveOnChannel(tx, workspaceId, current.id);
       const agent = await tx.aiAgent.update({
         where: { id: current.id },
         data: {
@@ -441,6 +476,10 @@ export class AgentStudioRepository {
   softDelete(workspaceId: string, actorId: string, agentId: string) {
     return this.prisma.$transaction(async (tx) => {
       const current = await this.requireAgent(tx, workspaceId, agentId);
+      if (current.status !== "DRAFT" && current.status !== "ARCHIVED") {
+        throw new BadRequestException("Only draft or archived agents can be deleted");
+      }
+      await this.assertNotActiveOnChannel(tx, workspaceId, current.id);
       const now = new Date();
       const agent = await tx.aiAgent.update({
         where: { id: current.id },
@@ -465,8 +504,303 @@ export class AgentStudioRepository {
     });
   }
 
-  get(workspaceId: string, agentId: string) {
-    return this.requireAgent(this.prisma, workspaceId, agentId);
+  async switchChannelAgent(
+    workspaceId: string,
+    actorId: string,
+    agentId: string,
+    connectionId: string,
+    expectedStateVersion: number
+  ) {
+    return this.prisma.$transaction(async (tx) => {
+      const target = await this.requireAgent(tx, workspaceId, agentId);
+      if (target.status !== "PUBLISHED") {
+        throw new ConflictException({
+          message: "Only published agents can be bound to a channel connection",
+          code: "AGENT_NOT_PUBLISHED"
+        });
+      }
+      const connection = await tx.channelConnection.findFirst({
+        where: { id: connectionId, workspaceId },
+        select: { id: true, channelId: true, stateVersion: true }
+      });
+      if (!connection) throw new NotFoundException("Channel connection was not found");
+      if (connection.stateVersion !== expectedStateVersion) {
+        throw new ConflictException({
+          message: "Channel connection state changed",
+          code: "CHANNEL_CONNECTION_STATE_CHANGED"
+        });
+      }
+      const targetSnapshots = await tx.agentRuntimeSnapshot.findMany({
+        where: { workspaceId, agentId: target.id }, select: { id: true }
+      });
+      const orchestration = targetSnapshots.length
+        ? await tx.agentExecutionOrchestration.findFirst({
+            where: {
+              workspaceId,
+              status: "READY",
+              agentRuntimeSnapshotId: { in: targetSnapshots.map((snapshot) => snapshot.id) }
+            },
+            orderBy: { createdAt: "desc" },
+            select: {
+              agentRuntimeSnapshotId: true,
+              promptExecutionPayloadId: true,
+              providerRuntimeSnapshotId: true,
+              conversationRuntimeSnapshotId: true,
+              executionPipelineSnapshotId: true,
+              orchestrationPlan: true
+            }
+          })
+        : null;
+      if (!orchestration) {
+        throw new ConflictException({
+          message: "Agent has no valid runtime package and cannot be bound to this channel yet",
+          code: "AGENT_NOT_CHANNEL_READY"
+        });
+      }
+      const latest = await tx.channelConfiguration.findFirst({
+        where: { connectionId },
+        orderBy: { revision: "desc" },
+        select: { revision: true, configuration: true }
+      });
+      const current = record(latest?.configuration);
+      const orchestrationPlan = record(orchestration.orchestrationPlan);
+      const orchestrationAssets = record(orchestrationPlan.assets);
+      const memorySnapshotIds = Array.isArray(orchestrationAssets.memoryRuntimeSnapshotIds)
+        ? orchestrationAssets.memoryRuntimeSnapshotIds.filter((id): id is string => typeof id === "string")
+        : [];
+      const memorySnapshots = memorySnapshotIds.length
+        ? await tx.memoryRuntimeSnapshot.findMany({
+            where: { workspaceId, id: { in: memorySnapshotIds } },
+            select: { id: true, runtimeId: true }
+          })
+        : [];
+      if (memorySnapshots.length !== memorySnapshotIds.length) {
+        throw new ConflictException("Agent memory runtime package is incomplete");
+      }
+      const memoryRuntimeIdsBySnapshot = new Map(memorySnapshots.map((snapshot) => [snapshot.id, snapshot.runtimeId]));
+      const memoryRuntimeIds = memorySnapshotIds.map((id) => memoryRuntimeIdsBySnapshot.get(id)!);
+      let retrievalRuntimeSnapshotId: string | undefined;
+      if (target.knowledgeEnabled && target.retrievalRuntimeId) {
+        const retrievalSnapshot = await tx.retrievalRuntimeSnapshot.findFirst({
+          where: { workspaceId, runtimeId: target.retrievalRuntimeId },
+          orderBy: { revision: "desc" },
+          select: { id: true }
+        });
+        if (!retrievalSnapshot) {
+          throw new ConflictException({
+            message:
+              "Agent has a bound retrieval runtime without a published snapshot and cannot be bound to this channel yet",
+            code: "RETRIEVAL_RUNTIME_NOT_PUBLISHED"
+          });
+        }
+        retrievalRuntimeSnapshotId = retrievalSnapshot.id;
+      }
+      // Conversation-history working-context flag: carried from the Agent's
+      // operational runtimeConfiguration into the connection's agentExecution so
+      // the channel runtime reads the same authoritative value. Absent/other
+      // values mean OFF; only an explicit enabled: true turns history on.
+      const conversationHistoryEnabled =
+        record(record(target.runtimeConfiguration).conversationHistory).enabled === true;
+      const agentExecution: JsonRecord = {
+        agentId: target.id,
+        agentName: target.name,
+        agentRuntimeSnapshotId: orchestration.agentRuntimeSnapshotId,
+        promptExecutionPayloadId: orchestration.promptExecutionPayloadId,
+        providerRuntimeSnapshotId: orchestration.providerRuntimeSnapshotId,
+        ...(orchestration.conversationRuntimeSnapshotId
+          ? { conversationRuntimeSnapshotId: orchestration.conversationRuntimeSnapshotId }
+          : {}),
+        executionPipelineSnapshotId: orchestration.executionPipelineSnapshotId,
+        conversationHistory: { enabled: conversationHistoryEnabled },
+        ...(memoryRuntimeIds.length ? { memoryRuntimeIds } : {}),
+        ...(retrievalRuntimeSnapshotId ? { retrievalRuntimeSnapshotId } : {})
+      };
+      const existingExecution = record(current.agentExecution);
+      const preserved = Object.fromEntries(
+        Object.entries(existingExecution).filter(
+          ([key]) =>
+            ![
+              "agentId",
+              "agentName",
+              "agentRuntimeSnapshotId",
+              "promptExecutionPayloadId",
+              "providerRuntimeSnapshotId",
+              "conversationRuntimeSnapshotId",
+              "executionPipelineSnapshotId",
+              "memoryRuntimeIds",
+              "memoryRuntimeSnapshotIds",
+              "retrievalRuntimeSnapshotId"
+            ].includes(key)
+        )
+      );
+      const nextConfiguration = {
+        ...current,
+        agentExecution: { ...preserved, ...agentExecution }
+      };
+      const revision = (latest?.revision ?? 0) + 1;
+      const hash = this.stableHash(nextConfiguration);
+      await tx.channelConfiguration.create({
+        data: {
+          connectionId,
+          revision,
+          configuration: json(nextConfiguration),
+          hash,
+          checksum: this.stableHash({ connectionId, hash }),
+          createdById: actorId
+        }
+      });
+      const updated = await tx.channelConnection.updateMany({
+        where: { id: connectionId, workspaceId, stateVersion: expectedStateVersion },
+        data: { stateVersion: { increment: 1 } }
+      });
+      if (updated.count !== 1) {
+        throw new ConflictException({
+          message: "Channel connection state changed",
+          code: "CHANNEL_CONNECTION_STATE_CHANGED"
+        });
+      }
+      await this.audit(
+        tx,
+        workspaceId,
+        actorId,
+        "agent.studio.channel_switched",
+        target.id,
+        { connectionId, previousAgentId: undefined },
+        { connectionId, agentId: target.id, revision }
+      );
+      return {
+        connectionId,
+        channelId: connection.channelId,
+        agentId: target.id,
+        newStateVersion: connection.stateVersion + 1,
+        newRevision: revision,
+        agentExecution: nextConfiguration.agentExecution
+      };
+    });
+  }
+
+  async bindRetrievalRuntime(
+    workspaceId: string,
+    actorId: string,
+    agentId: string,
+    retrievalRuntimeId: string
+  ) {
+    return this.prisma.$transaction(async (tx) => {
+      const agent = await this.requireAgent(tx, workspaceId, agentId);
+      const updated = await tx.aiAgent.update({
+        where: { id: agent.id },
+        data: { retrievalRuntimeId, updatedById: actorId },
+        select: this.agentSelect
+      });
+      await this.audit(
+        tx,
+        workspaceId,
+        actorId,
+        "agent.studio.retrieval_runtime_bound",
+        agent.id,
+        agent,
+        { retrievalRuntimeId, agent: updated }
+      );
+      return updated;
+    });
+  }
+
+  async unbindRetrievalRuntime(workspaceId: string, actorId: string, agentId: string) {
+    return this.prisma.$transaction(async (tx) => {
+      const agent = await this.requireAgent(tx, workspaceId, agentId);
+      const updated = await tx.aiAgent.update({
+        where: { id: agent.id },
+        data: { retrievalRuntimeId: null, updatedById: actorId },
+        select: this.agentSelect
+      });
+      await this.audit(
+        tx,
+        workspaceId,
+        actorId,
+        "agent.studio.retrieval_runtime_unbound",
+        agent.id,
+        agent,
+        { agent: updated }
+      );
+      return updated;
+    });
+  }
+
+  /** Operational controls are intentionally the sole published-Agent write. */
+  async updateOperationalPersonality(
+    workspaceId: string,
+    actorId: string,
+    agentId: string,
+    personality: Record<string, unknown>
+  ) {
+    return this.prisma.$transaction(async (tx) => {
+      const agent = await this.requireAgent(tx, workspaceId, agentId);
+      const runtimeConfiguration = { ...record(agent.runtimeConfiguration), personality };
+      const updated = await tx.aiAgent.update({
+        where: { id: agent.id },
+        data: { runtimeConfiguration: json(runtimeConfiguration), updatedById: actorId },
+        select: this.agentSelect
+      });
+      await this.audit(tx, workspaceId, actorId, "agent.studio.operational_personality_updated",
+        agent.id, { personality: record(agent.runtimeConfiguration).personality }, { personality });
+      return updated;
+    });
+  }
+
+  /**
+   * Operational control for the conversation-history working-context flag.
+   * Like personality, this is a published-Agent write that does not touch the
+   * immutable Agent definition and never deletes stored conversation data.
+   */
+  async updateOperationalConversationHistory(
+    workspaceId: string,
+    actorId: string,
+    agentId: string,
+    conversationHistory: { enabled: boolean }
+  ) {
+    return this.prisma.$transaction(async (tx) => {
+      const agent = await this.requireAgent(tx, workspaceId, agentId);
+      const runtimeConfiguration = {
+        ...record(agent.runtimeConfiguration),
+        conversationHistory
+      };
+      const updated = await tx.aiAgent.update({
+        where: { id: agent.id },
+        data: { runtimeConfiguration: json(runtimeConfiguration), updatedById: actorId },
+        select: this.agentSelect
+      });
+      await this.audit(
+        tx,
+        workspaceId,
+        actorId,
+        "agent.studio.conversation_history_updated",
+        agent.id,
+        { conversationHistory: record(agent.runtimeConfiguration).conversationHistory },
+        { conversationHistory }
+      );
+      return updated;
+    });
+  }
+
+  async updateOperationalAutomaticExecution(
+    workspaceId: string, actorId: string, agentId: string, enabled: boolean
+  ) {
+    return this.prisma.$transaction(async (tx) => {
+      const agent = await this.requireAgent(tx, workspaceId, agentId);
+      const runtimeConfiguration = {
+        ...record(agent.runtimeConfiguration), automaticExecution: { enabled }
+      };
+      const updated = await tx.aiAgent.update({ where: { id: agent.id },
+        data: { runtimeConfiguration: json(runtimeConfiguration), updatedById: actorId }, select: this.agentSelect });
+      await this.audit(tx, workspaceId, actorId, "agent.studio.automatic_execution_updated", agent.id,
+        { automaticExecution: record(agent.runtimeConfiguration).automaticExecution }, { automaticExecution: { enabled } });
+      return updated;
+    });
+  }
+
+  async get(workspaceId: string, agentId: string) {
+    const agent = await this.requireAgent(this.prisma, workspaceId, agentId);
+    return this.withActiveChannels(workspaceId, agent);
   }
 
   async history(workspaceId: string, agentId: string) {
@@ -513,8 +847,36 @@ export class AgentStudioRepository {
       }),
       this.prisma.aiAgent.count({ where })
     ]);
+    const agentIds = data.map((agent) => agent.id);
+    const snapshots = agentIds.length
+      ? await this.prisma.agentRuntimeSnapshot.findMany({
+          where: { workspaceId: input.workspaceId, agentId: { in: agentIds } },
+          select: { agentId: true, id: true }
+        })
+      : [];
+    const agentBySnapshot = new Map(snapshots.map((item) => [item.id, item.agentId]));
+    const references = snapshots.length
+      ? await this.activeChannelReferences(this.prisma, input.workspaceId, snapshots.map((s) => s.id))
+      : [];
+    const activeByAgent = new Map<string, Array<{ connectionId: string; channelId: string; stateVersion: number }>>();
+    for (const reference of references) {
+      const agentId = agentBySnapshot.get(reference.snapshotId);
+      if (!agentId) continue;
+      const current = activeByAgent.get(agentId);
+      const entry = {
+        connectionId: reference.connectionId,
+        channelId: reference.channelId,
+        stateVersion: reference.stateVersion
+      };
+      if (current) current.push(entry);
+      else activeByAgent.set(agentId, [entry]);
+    }
+    const enriched = data.map((agent) => ({
+      ...agent,
+      activeChannels: activeByAgent.get(agent.id) ?? []
+    }));
     return {
-      data,
+      data: enriched,
       pagination: {
         page: input.page,
         limit: input.limit,
@@ -563,6 +925,7 @@ export class AgentStudioRepository {
     fallbackStrategy: true,
     memoryEnabled: true,
     knowledgeEnabled: true,
+    retrievalRuntimeId: true,
     toolsEnabled: true,
     visionEnabled: true,
     reasoningEnabled: true,
@@ -710,6 +1073,86 @@ export class AgentStudioRepository {
     }
   }
 
+  private async assertNotActiveOnChannel(
+    tx: Prisma.TransactionClient,
+    workspaceId: string,
+    agentId: string
+  ) {
+    const snapshots = await tx.agentRuntimeSnapshot.findMany({
+      where: { workspaceId, agentId }, select: { id: true }
+    });
+    const references = await this.activeChannelReferences(tx, workspaceId, snapshots.map((s) => s.id));
+    if (references.length) {
+      throw new ConflictException({
+        message: "Agent is active on channel connections and must be replaced before this lifecycle operation",
+        code: "AGENT_ACTIVE_CHANNEL_REFERENCE",
+        connections: references.map((reference) => ({
+          connectionId: reference.connectionId,
+          channelId: reference.channelId
+        }))
+      });
+    }
+  }
+
+  private async activeChannelReferences(
+    client: PrismaService | Prisma.TransactionClient,
+    workspaceId: string,
+    snapshotIds: string[]
+  ): Promise<Array<{ snapshotId: string; connectionId: string; channelId: string; stateVersion: number }>> {
+    if (!snapshotIds.length) return [];
+    const snapshotIdSet = new Set(snapshotIds);
+    const configurations = await client.channelConfiguration.findMany({
+      where: { connection: { workspaceId } },
+      select: {
+        connectionId: true,
+        configuration: true,
+        connection: { select: { channelId: true, stateVersion: true } }
+      },
+      orderBy: [{ connectionId: "asc" }, { revision: "desc" }]
+    });
+    const latestByConnection = new Map<string, typeof configurations[number]>();
+    for (const configuration of configurations) {
+      if (!latestByConnection.has(configuration.connectionId)) {
+        latestByConnection.set(configuration.connectionId, configuration);
+      }
+    }
+    return [...latestByConnection.values()].flatMap((configuration) => {
+      const root = record(configuration.configuration);
+      const execution = record(root.agentExecution);
+      const snapshotId = execution.agentRuntimeSnapshotId;
+      return typeof snapshotId === "string" && snapshotIdSet.has(snapshotId)
+        ? [{
+            snapshotId,
+            connectionId: configuration.connectionId,
+            channelId: configuration.connection.channelId,
+            stateVersion: configuration.connection.stateVersion
+          }]
+        : [];
+    });
+  }
+
+  private async withActiveChannels<T extends { id: string }>(
+    workspaceId: string,
+    agent: T
+  ): Promise<T & { activeChannels: Array<{ connectionId: string; channelId: string; stateVersion: number }> }> {
+    const snapshots = await this.prisma.agentRuntimeSnapshot.findMany({
+      where: { workspaceId, agentId: agent.id }, select: { id: true }
+    });
+    const references = await this.activeChannelReferences(
+      this.prisma,
+      workspaceId,
+      snapshots.map((s) => s.id)
+    );
+    return {
+      ...agent,
+      activeChannels: references.map((reference) => ({
+        connectionId: reference.connectionId,
+        channelId: reference.channelId,
+        stateVersion: reference.stateVersion
+      }))
+    };
+  }
+
   private async validateBindings(
     tx: Prisma.TransactionClient,
     workspaceId: string,
@@ -735,6 +1178,38 @@ export class AgentStudioRepository {
     });
     if (promptCount !== promptIds.length) {
       throw new BadRequestException("One or more prompts are not available in this workspace");
+    }
+    const compilationBindings = bindings.filter((binding) => binding.role === AgentPromptRole.SYSTEM);
+    if (compilationBindings.length === 0 && bindings.length === 1) compilationBindings.push(bindings[0]!);
+    for (const binding of compilationBindings) {
+      const version = await tx.promptLibraryVersion.findFirst({
+        where: {
+          promptId: binding.promptId,
+          ...(binding.promptVersionId ? { id: binding.promptVersionId } : {}),
+          publishedAt: { not: null },
+          prompt: { workspaceId, deletedAt: null }
+        },
+        orderBy: { revision: "desc" },
+        select: { id: true, snapshot: true }
+      });
+      if (!version) {
+        throw new BadRequestException("Agent prompt bindings require a published Prompt version");
+      }
+      const snapshot = record(version.snapshot);
+      const draft = record(snapshot.draft);
+      const sections = record(draft.sections);
+      const userPrompt = [
+        sections.userPrompt, draft.userPrompt, draft.user_prompt, draft.content, draft.template
+      ].find((value): value is string => typeof value === "string" && value.trim().length > 0);
+      if (!userPrompt) {
+        throw new BadRequestException({
+          message: "The selected Prompt is not valid for Agent compilation",
+          code: "USER_PROMPT_MISSING",
+          path: "sections.userPrompt",
+          promptId: binding.promptId,
+          promptVersionId: version.id
+        });
+      }
     }
     const versionBindings = bindings.filter(
       (binding): binding is AgentPromptBindingDto & { promptVersionId: string } =>
@@ -900,7 +1375,8 @@ export class AgentStudioRepository {
           ? binding.variableMetadata
           : [],
         metadata: record(binding.metadata)
-      }))
+      })),
+      retrievalRuntimeId: agent.retrievalRuntimeId
     };
   }
 
@@ -937,7 +1413,8 @@ export class AgentStudioRepository {
       voiceEnabled: snapshot.capabilities.voiceEnabled,
       imageEnabled: snapshot.capabilities.imageEnabled,
       moderationEnabled: snapshot.capabilities.moderationEnabled,
-      capabilitiesMetadata: json(snapshot.capabilities.metadata)
+      capabilitiesMetadata: json(snapshot.capabilities.metadata),
+      retrievalRuntimeId: snapshot.retrievalRuntimeId
     };
   }
 
@@ -958,7 +1435,11 @@ export class AgentStudioRepository {
       snapshot.capabilities !== null &&
       typeof snapshot.capabilities === "object";
     if (!valid) throw new ConflictException("Published agent version has an invalid snapshot");
-    return snapshot as AgentSnapshot;
+    return {
+      ...snapshot,
+      retrievalRuntimeId:
+        typeof snapshot.retrievalRuntimeId === "string" ? snapshot.retrievalRuntimeId : null
+    } as AgentSnapshot;
   }
 
   private assertDraft(status: AgentStatus) {
@@ -996,5 +1477,22 @@ export class AgentStudioRepository {
       }
       throw error;
     }
+  }
+
+  private stableHash(value: unknown): string {
+    return createHash("sha256").update(this.stableSerialize(value)).digest("hex");
+  }
+
+  private stableSerialize(value: unknown): string {
+    if (Array.isArray(value)) {
+      return `[${value.map((item) => this.stableSerialize(item)).join(",")}]`;
+    }
+    if (value !== null && typeof value === "object") {
+      return `{${Object.entries(value)
+        .sort(([left], [right]) => left.localeCompare(right))
+        .map(([key, item]) => `${JSON.stringify(key)}:${this.stableSerialize(item)}`)
+        .join(",")}}`;
+    }
+    return JSON.stringify(value);
   }
 }

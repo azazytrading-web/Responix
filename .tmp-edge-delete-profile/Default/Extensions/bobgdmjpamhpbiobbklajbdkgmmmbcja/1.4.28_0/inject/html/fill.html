@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DualSafe Password Manager</title>
+    <link rel="stylesheet" href="../../css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="../../css/fill.css" />
+</head>
+
+<body>
+    <div class="ractive-container">
+        <div id="ractive-container" style="display: none;">
+
+        </div>
+
+        <div id="password-layout" class="password-layout">
+            <header class="cardlayout-header">
+                <span class="header-logo"></span>
+                <span class="header-title"></span>
+            </header>
+            <main class="cardmain-layout">
+                <div id="fillPasswordContainer" class="list-item from-inner fill-inner">
+                    <div class="pwd-result">
+                            <div class="generated-wrapper"></div>
+                    </div>
+                    <div id="fillResultCopy" class="copy-hidden"></div>
+                    <input id="fillPassword" class="form-control  hidden" type="password" value="" 
+                            data-canvas="fillPwstrengthCanvas" data-copy="fillPassword" data-master="fillMeter"
+                            data-cid="password-layout">
+                    <div class="strongMeter">
+                        <meter class="meter hidden" id="fillMeter" min="0" max="4" value="0"></meter>
+                        <div class="progress">
+                            <div class="progress-bar" style="display: none;"></div>
+                            <span class="score-segment"></span>
+                            <span class="score-segment"></span>
+                            <span class="score-segment"></span>
+                            <span class="score-segment"></span>
+                        </div>
+                    </div>
+                    <div class="pwstrength-inner d-flex justify-content-between  align-items-center">
+                        <button class="button-css button-refresh" title="New password"
+                            aria-refresh="password-layout"></button>
+                        <button id="fillGeneratePwd" class="button-css button-blue button-use button-generate"
+                            data-clipboard-target="#generateResultCopy">
+                            <p><span class="generate-use">Use</span> <span class="copy-type" style="display: none;"> </span></p>
+                        </button>
+                    </div>
+                    <div class="generate-more">
+                        <a id="ShowMore" class="btn btn-link btn-more">
+                            <div class="more-label">Advanced Options</div>
+                            <i class="more-icon"></i>
+                        </a>
+                    </div>
+                </div>
+                <div id="generate-settings" class="generate-settings">
+                    <div class="generate-setting pwd-length range__slider d-flex justify-content-between" data-min="4"
+                        data-max="32">
+                        <div class="length__title field-title" data-length='0'>Length</div>
+                        <input id="pwdSlider" class="generate-input" type="range" min="8" max="100" value="20" />
+                        <input id="lengthNumber" class="length__number" value="20" type="text"  min="8" max="100">
+                    </div>
+                    <div class="generate-setting form-check form-switch d-flex justify-content-between">
+                        <label class="form-check-label generate-uppercase" for="generateUppercase" data-properties="upper_case"></label>
+                        <input class="form-check-input generate-input" type="checkbox" role="switch"
+                            id="generateUppercase" checked="checked" name="generate">
+                    </div>
+                    <div
+                        class="generate-setting form-check form-switch d-flex justify-content-between lower-case">
+                        <label class="form-check-label" for="generateLowercase" data-properties="lower_case">Lowercase (a-z)</label>
+                        <input class="form-check-input generate-input" type="checkbox" role="switch"
+                            id="generateLowercase" checked="checked" name="generate">
+                    </div>
+                    <div class="generate-setting form-check form-switch d-flex justify-content-between">
+                        <label class="form-check-label generate-number" for="generateNumber">Digits (0-9)</label>
+                        <input class="form-check-input generate-input" type="checkbox" role="switch" id="generateNumber"
+                            checked="checked" name="generate">
+                    </div>
+                    <div class="generate-setting form-check form-switch d-flex justify-content-between">
+                        <label class="form-check-label generate-symbols" for="generateSymbol">Symbols (!@#$%^&*)</label>
+                        <input class="form-check-input generate-input" type="checkbox" role="switch" id="generateSymbol"
+                            checked="checked" name="generate">
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+    <script src="../../polyfill/polyfill-firefox.js"></script>
+    <script src="../js/jquery-3.6.0.min.js"></script>
+    <script src="../../uri2color.js"></script>
+
+    <script src="../js/vendor/autosize.js"></script>
+    <script src="../js/vendor/clipboard.js"></script>
+    <script src="../js/vendor.js"></script>
+
+    <script src="../js/fillhandle.js"></script>
+    <script src="../js/fill.js"></script>
+</body>
+
+</html>

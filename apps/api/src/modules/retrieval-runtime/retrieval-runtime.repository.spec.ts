@@ -290,4 +290,46 @@ describe("RetrievalRuntimeRepository", () => {
     await expect(repository.compare("workspace", "left", "missing"))
       .rejects.toBeInstanceOf(NotFoundException);
   });
+
+  it("returns the latest published snapshot for a published runtime", async () => {
+    prisma.retrievalRuntime.findFirst.mockResolvedValue({
+      id: "runtime",
+      status: "PUBLISHED",
+      latestSnapshotRevision: 2
+    });
+    prisma.retrievalRuntimeSnapshot.findFirst.mockResolvedValue({
+      id: "snapshot",
+      revision: 2
+    });
+
+    const result = await repository.getPublishedSnapshot("workspace", "runtime");
+
+    expect(prisma.retrievalRuntimeSnapshot.findFirst).toHaveBeenCalledWith(
+      expect.objectContaining({
+        where: { workspaceId: "workspace", runtimeId: "runtime", revision: 2 }
+      })
+    );
+    expect(result).toMatchObject({ id: "snapshot", revision: 2 });
+  });
+
+  it("rejects binding when the runtime is not published", async () => {
+    prisma.retrievalRuntime.findFirst.mockResolvedValue({
+      id: "runtime",
+      status: "PREPARED",
+      latestSnapshotRevision: 0
+    });
+
+    await expect(repository.getPublishedSnapshot("workspace", "runtime")).rejects.toBeInstanceOf(
+      BadRequestException
+    );
+    expect(prisma.retrievalRuntimeSnapshot.findFirst).not.toHaveBeenCalled();
+  });
+
+  it("rejects binding when the runtime does not exist", async () => {
+    prisma.retrievalRuntime.findFirst.mockResolvedValue(null);
+
+    await expect(repository.getPublishedSnapshot("workspace", "runtime")).rejects.toBeInstanceOf(
+      NotFoundException
+    );
+  });
 });

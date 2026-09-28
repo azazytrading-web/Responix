@@ -1,1 +1,0 @@
-chrome.runtime.sendMessage({method:"keep-alive"}),setInterval((async()=>{chrome.runtime.sendMessage({method:"keep-alive"},(e=>{}))}),5e3);

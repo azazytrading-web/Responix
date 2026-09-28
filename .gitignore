@@ -16,3 +16,6 @@ temp
 .next-client
 *.tsbuildinfo
 **/*.tsbuildinfo
+.tmp-edge-delete-profile/
+.tmp-edge-delete-profile2/
+apps/api/data/baileys-sessions/

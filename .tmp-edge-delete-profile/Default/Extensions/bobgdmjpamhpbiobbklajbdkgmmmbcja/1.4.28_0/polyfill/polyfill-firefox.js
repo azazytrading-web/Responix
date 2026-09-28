@@ -1,1 +1,0 @@
-self.chrome=self.browser||self.chrome;

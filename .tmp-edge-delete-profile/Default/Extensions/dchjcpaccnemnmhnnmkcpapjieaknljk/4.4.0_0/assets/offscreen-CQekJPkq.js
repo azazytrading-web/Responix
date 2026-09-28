@@ -1,1 +1,0 @@
-import"./modulepreload-polyfill-B5Qt9EMX.js";let u=null;chrome.runtime.onMessage.addListener((e,r,i)=>(e.type==="playAudio"?(u||(u=new Audio(chrome.runtime.getURL(e.sound)),u.volume=e.volume??1),u.play(),i({success:!0})):e.type==="pauseAudio"?u?(u.pause(),i({success:!0})):i({success:!1,error:"No audio to pause"}):e.type==="hasAudio"&&i({exists:u!==null}),!0));

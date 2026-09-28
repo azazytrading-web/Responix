@@ -1,1 +1,0 @@
-try{if("function"==typeof importScripts){try{var baseUrl=location.pathname.slice(0,-28);importScripts(baseUrl+"/zxcvbn.js")}catch(t){try{importScripts("./zxcvbn.js")}catch(t){importScripts("./zxcvbn.js")}}var startTime;onmessage=function(t){t=t.data,t=zxcvbn(t);postMessage(t.score)}}}catch(t){}

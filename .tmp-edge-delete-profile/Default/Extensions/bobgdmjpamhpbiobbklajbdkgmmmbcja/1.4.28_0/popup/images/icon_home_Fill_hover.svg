@@ -1,8 +1,0 @@
-<svg id="icon_home_Fill" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
-  <g id="path" transform="translate(4 4)">
-    <rect width="32" height="32" rx="8" transform="translate(-4 -4)" fill="#2b64e8" opacity="0"/>
-    <path id="Vector" d="M8.006,3.758,5.051.8a2.091,2.091,0,0,0-3.4.137L0,3.544,5.266,8.81l2.6-1.648A2.175,2.175,0,0,0,8.006,3.758Z" transform="translate(11.587 3.63)" fill="none" stroke="#2b64e8" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/>
-    <path id="Vector-2" data-name="Vector" d="M7.931.249,4.1.015C1.963-.112,1.212.542.978,2.58L.022,10.693a2.349,2.349,0,0,0,2.731,2.73l8.114-.956c2.038-.244,2.779-.985,2.565-3.121l-.224-3.832" transform="translate(3.657 6.924)" fill="none" stroke="#2b64e8" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/>
-    <path id="Vector-3" data-name="Vector" d="M0,2.964,2.955,0" transform="translate(4.791 16.272)" fill="none" stroke="#2b64e8" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/>
-  </g>
-</svg>

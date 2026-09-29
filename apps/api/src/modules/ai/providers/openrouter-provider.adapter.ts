@@ -14,6 +14,7 @@ import { streamOpenAiCompatible } from "./openai-compatible-stream";
 @Injectable()
 export class OpenRouterProviderAdapter implements AiProviderAdapter {
   readonly providerName = "OpenRouter";
+  readonly protocolId = "responix-native-openrouter-v1";
   readonly contractVersion = "1.0";
   readonly promptCache = nativeProviderPromptCache("AUTOMATIC", 300);
   constructor(private readonly http: ProviderHttpClient) {}

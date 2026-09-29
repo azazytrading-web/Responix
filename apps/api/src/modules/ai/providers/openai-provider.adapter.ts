@@ -40,6 +40,7 @@ const openAiResponseSchema = z.object({
 @Injectable()
 export class OpenAiProviderAdapter implements AiProviderAdapter {
   readonly providerName = "OpenAI";
+  readonly protocolId = "responix-native-openai-v1";
   readonly contractVersion = "1.0";
   readonly promptCache = nativeProviderPromptCache("AUTOMATIC", 600);
 

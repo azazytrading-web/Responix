@@ -1,5 +1,6 @@
 import { EventEmitter } from "node:events";
 import { request as httpsRequest } from "node:https";
+import { Logger } from "@nestjs/common";
 import { ProviderDestinationRejectedError } from "./provider-destination-policy.service";
 import {
   ProviderHttpClient,
@@ -33,6 +34,9 @@ class FakeResponse extends EventEmitter {
   destroy(error?: Error): void {
     if (error) this.emit("error", error);
   }
+
+  pause(): void {}
+  resume(): void {}
 }
 
 class FakeRequest extends EventEmitter {
@@ -137,6 +141,14 @@ describe("ProviderHttpClient", () => {
     });
   });
 
+  it("never writes provider credentials to HTTP logs", async () => {
+    const fixture = createClient({ chunks: [Buffer.from("{}") ] });
+    const log = jest.spyOn(Logger.prototype, "log").mockImplementation(() => undefined);
+    await fixture.client.postJson(requestInput);
+    expect(JSON.stringify(log.mock.calls)).not.toContain("provider-secret");
+    log.mockRestore();
+  });
+
   it("rejects redirects without following them", async () => {
     const fixture = createClient({ status: 302, headers: { location: "https://attacker.test" } });
     await expect(fixture.client.postJson(requestInput)).rejects.toBeInstanceOf(
@@ -158,6 +170,20 @@ describe("ProviderHttpClient", () => {
     await expect(fixture.client.postJson(requestInput)).rejects.toBeInstanceOf(
       ProviderResponseTooLargeError
     );
+  });
+
+  it("bounds SSE response bytes and rejects SSE redirects", async () => {
+    const oversized = createClient({ chunks: [Buffer.alloc(101)] });
+    await expect(oversized.client.postSse({
+      provider: "Custom", url: "https://custom.example/v1/chat/completions", body: "{}",
+      signal: new AbortController().signal, onEvent: jest.fn()
+    })).rejects.toBeInstanceOf(ProviderResponseTooLargeError);
+
+    const redirected = createClient({ status: 302 });
+    await expect(redirected.client.postSse({
+      provider: "Custom", url: "https://custom.example/v1/chat/completions", body: "{}",
+      signal: new AbortController().signal, onEvent: jest.fn()
+    })).rejects.toBeInstanceOf(ProviderDestinationRejectedError);
   });
 
   it("propagates caller abort and discards late completion", async () => {

@@ -1,4 +1,7 @@
 # Roadmap Status
+## Authoritative Mega Modification Sequence — 2026-09-29
+
+MOD-1 — Universal Provider Architecture: **COMPLETE WITH DOCUMENTED EXCEPTION** for private/local/self-hosted providers, deferred behind a separate network and security contract (not cancelled). See [`MOD_1_CLOSEOUT.md`](MOD_1_CLOSEOUT.md). **Next: MOD-2 — Universal Model Catalog**, whose bounded contract requires human approval before implementation. Continue MOD-3 through MOD-10 in order; CRM remains deferred until successful MOD-10 closeout and a separate CRM decision. The CRM-first ordering in the V1 reconciliation material below is superseded by the approved Mega Modification charter.
 
 ## WhatsApp Connection Management Milestone - 2026-08-09
 

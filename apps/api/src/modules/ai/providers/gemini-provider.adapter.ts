@@ -28,6 +28,7 @@ const schema = z.object({
 @Injectable()
 export class GeminiProviderAdapter implements AiProviderAdapter {
   readonly providerName = "Gemini";
+  readonly protocolId = "responix-native-gemini-v1";
   readonly contractVersion = "1.0";
   readonly promptCache = nativeProviderPromptCache("AUTOMATIC", 3600);
   constructor(private readonly http: ProviderHttpClient) {}

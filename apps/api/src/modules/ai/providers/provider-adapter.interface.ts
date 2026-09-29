@@ -8,6 +8,8 @@ import type { ProviderPromptCache } from "./provider-prompt-cache.interface";
 
 export interface AiProviderAdapter {
   readonly providerName: string;
+  /** Stable semantic protocol key; providerName remains a compatibility alias only. */
+  readonly protocolId?: string;
   readonly contractVersion?: string;
   readonly promptCache?: ProviderPromptCache;
   invoke(

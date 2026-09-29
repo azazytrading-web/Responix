@@ -655,6 +655,145 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/ai/custom-providers": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List workspace Custom Providers */
+        get: operations["CustomProviderController_list_v1"];
+        put?: never;
+        /** Register a workspace Custom Provider */
+        post: operations["CustomProviderController_create_v1"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/ai/custom-providers/{providerId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get a workspace Custom Provider */
+        get: operations["CustomProviderController_get_v1"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /** Update allowed Custom Provider definition fields */
+        patch: operations["CustomProviderController_update_v1"];
+        trace?: never;
+    };
+    "/api/v1/ai/custom-providers/{providerId}/enable": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Enable a configured Custom Provider */
+        post: operations["CustomProviderController_enable_v1"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/ai/custom-providers/{providerId}/disable": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Disable a Custom Provider */
+        post: operations["CustomProviderController_disable_v1"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/ai/custom-providers/{providerId}/archive": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Archive a Custom Provider */
+        post: operations["CustomProviderController_archive_v1"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/ai/custom-providers/{providerId}/restore": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Restore an archived Custom Provider */
+        post: operations["CustomProviderController_restore_v1"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/ai/custom-providers/{providerId}/credentials": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List safe Custom Provider credential metadata */
+        get: operations["CustomProviderController_listCredentials_v1"];
+        /** Create or replace a write-only Custom Provider credential */
+        put: operations["CustomProviderController_replaceCredential_v1"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/ai/custom-providers/{providerId}/validate": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Test connection to a saved Custom Provider */
+        post: operations["CustomProviderController_validate_v1"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/dashboard-runtime/bootstrap": {
         parameters: {
             query?: never;
@@ -5199,6 +5338,73 @@ export interface components {
             cost: components["schemas"]["AiCostResponseDto"];
             routing: components["schemas"]["AiRoutingSelectionResponseDto"];
         };
+        CustomProviderCredentialMetadataDto: {
+            id: string;
+            name: string;
+            /** @enum {string} */
+            status: "ACTIVE" | "DISABLED" | "REVOKED";
+            priority: number;
+            /** Format: date-time */
+            lastUsedAt?: string;
+        };
+        CustomProviderResponseDto: {
+            id: string;
+            displayName: string;
+            /** @enum {string} */
+            protocolId: "openai-chat-completions-v1";
+            baseUrl: string;
+            validationModelId: string;
+            supportsStreaming: boolean;
+            supportsTools: boolean;
+            /** @enum {string} */
+            status: "ACTIVE" | "DISABLED" | "ARCHIVED";
+            credentialConfigured: boolean;
+            credentials: components["schemas"]["CustomProviderCredentialMetadataDto"][];
+            /** Format: date-time */
+            archivedAt?: string;
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            updatedAt: string;
+        };
+        CreateCustomProviderDto: {
+            displayName: string;
+            /** @enum {string} */
+            protocolId: "openai-chat-completions-v1";
+            baseUrl: string;
+            validationModelId: string;
+            /** @default false */
+            supportsStreaming: boolean;
+            /** @default false */
+            supportsTools: boolean;
+        };
+        UpdateCustomProviderDto: {
+            displayName?: string;
+            baseUrl?: string;
+            validationModelId?: string;
+            supportsStreaming?: boolean;
+            supportsTools?: boolean;
+        };
+        CustomProviderCredentialDto: {
+            name?: string;
+            secret: string;
+        };
+        CustomProviderCredentialWriteResponseDto: {
+            id: string;
+            name: string;
+            /** @enum {string} */
+            status: "ACTIVE" | "DISABLED" | "REVOKED";
+        };
+        CustomProviderValidationResponseDto: {
+            providerId: string;
+            protocolId: string;
+            available: boolean;
+            /** Format: date-time */
+            checkedAt: string;
+            latencyMs: number;
+            errorCode?: string;
+            providerStatus?: number;
+        };
         DashboardRuntimeBootstrapDto: {
             version: string;
             compatibilityVersion: string;
@@ -6181,7 +6387,6 @@ export interface components {
         InvalidateOptimizationPackageDto: {
             reason: string;
         };
-        Function: Record<string, never>;
         MemoryReferenceDto: {
             referenceKey: string;
             /** Format: uuid */
@@ -9028,6 +9233,250 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["AiErrorResponseDto"];
+                };
+            };
+        };
+    };
+    CustomProviderController_list_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Custom Providers with safe credential metadata */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CustomProviderResponseDto"][];
+                };
+            };
+        };
+    };
+    CustomProviderController_create_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateCustomProviderDto"];
+            };
+        };
+        responses: {
+            /** @description Registered Custom Provider */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CustomProviderResponseDto"];
+                };
+            };
+        };
+    };
+    CustomProviderController_get_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                providerId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Custom Provider with safe credential metadata */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CustomProviderResponseDto"];
+                };
+            };
+        };
+    };
+    CustomProviderController_update_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                providerId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateCustomProviderDto"];
+            };
+        };
+        responses: {
+            /** @description Updated Custom Provider */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CustomProviderResponseDto"];
+                };
+            };
+        };
+    };
+    CustomProviderController_enable_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                providerId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CustomProviderResponseDto"];
+                };
+            };
+        };
+    };
+    CustomProviderController_disable_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                providerId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CustomProviderResponseDto"];
+                };
+            };
+        };
+    };
+    CustomProviderController_archive_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                providerId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CustomProviderResponseDto"];
+                };
+            };
+        };
+    };
+    CustomProviderController_restore_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                providerId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CustomProviderResponseDto"];
+                };
+            };
+        };
+    };
+    CustomProviderController_listCredentials_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                providerId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CustomProviderCredentialMetadataDto"][];
+                };
+            };
+        };
+    };
+    CustomProviderController_replaceCredential_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                providerId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CustomProviderCredentialDto"];
+            };
+        };
+        responses: {
+            /** @description Safe credential metadata; secret is never returned */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CustomProviderCredentialWriteResponseDto"];
+                };
+            };
+        };
+    };
+    CustomProviderController_validate_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                providerId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CustomProviderValidationResponseDto"];
                 };
             };
         };
@@ -13344,11 +13793,7 @@ export interface operations {
             path?: never;
             cookie?: never;
         };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["Function"];
-            };
-        };
+        requestBody?: never;
         responses: {
             201: {
                 headers: {
@@ -13374,11 +13819,7 @@ export interface operations {
             };
             cookie?: never;
         };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["Function"];
-            };
-        };
+        requestBody?: never;
         responses: {
             201: {
                 headers: {
@@ -13506,11 +13947,7 @@ export interface operations {
             path?: never;
             cookie?: never;
         };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["Function"];
-            };
-        };
+        requestBody?: never;
         responses: {
             201: {
                 headers: {

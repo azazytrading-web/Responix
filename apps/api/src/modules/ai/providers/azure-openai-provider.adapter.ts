@@ -14,6 +14,7 @@ import { nativeProviderPromptCache } from "./provider-prompt-cache.interface";
 @Injectable()
 export class AzureOpenAiProviderAdapter implements AiProviderAdapter {
   readonly providerName = "Azure OpenAI";
+  readonly protocolId = "responix-native-azure-openai-v1";
   readonly contractVersion = "1.0";
   readonly promptCache = nativeProviderPromptCache("AUTOMATIC", 600);
   constructor(private readonly http: ProviderHttpClient) {}

@@ -24,6 +24,15 @@ export interface ProviderExecutionRequest {
   signal: AbortSignal;
   tools?: AiToolDefinitionContract[];
   promptCache?: AiRequestContract["promptCache"];
+  /** Trusted server-resolved context; never accepted from public invocation DTOs. */
+  customProvider?: {
+    workspaceId: string;
+    providerId: string;
+    supportsStreaming: boolean;
+    supportsTools: boolean;
+    /** Set only by the explicit validation flow so DISABLED providers can be tested. */
+    allowDisabledForValidation?: boolean;
+  };
 }
 
 export interface ProviderExecutionCredential {

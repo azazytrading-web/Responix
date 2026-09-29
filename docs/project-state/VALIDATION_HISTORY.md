@@ -1,5 +1,38 @@
 # Validation History
 
+## MOD-1 Unit 5 Test Connection and Approved Closeout Validation - 2026-09-29
+
+| Check | Result | Evidence / limitation |
+|---|---|---|
+| Isolated PostgreSQL bootstrap | PASS | Temporary local cluster bound only to `127.0.0.1:55432`; task-only database `responix_mod1_openapi_test`; no persistent Compose volume. |
+| Migration deployment | PASS | Repository `db:deploy` applied the complete 43-migration history, including `000043_custom_ai_provider_validation_records`, only to the ephemeral database. |
+| API/OpenAPI source | PASS | Current API served `/docs-json`; Custom Provider lifecycle and `/api/v1/ai/custom-providers/{providerId}/validate` paths verified. |
+| Official API client generation | PASS | `pnpm --filter @responix/api-client openapi:generate`; generated output includes Unit 5 response/operation. Current Swagger omits request-body schemas for existing Streaming Runtime operations because their DTO imports are type-only; generation removes the old empty `Function` placeholder. This separate API-doc accuracy issue was not changed in MOD-1. |
+| API typecheck | PASS | `pnpm --filter @responix/api typecheck`. |
+| API-client typecheck | PASS | `pnpm --filter @responix/api-client typecheck`. |
+| Unit 5 focused tests | PASS | 7 suites, 105 tests. |
+| Combined MOD-1 provider/security tests | PASS | 21 suites, 203 tests, including OpenAI, Claude, Gemini, Azure OpenAI, OpenRouter, DeepSeek, destination policy, secure transport, and Custom Provider lifecycle/validation. Provider traffic was mocked. |
+| Targeted API lint | PASS | `pnpm --filter @responix/api exec eslint src/modules/ai`. |
+| Generated client lint | PASS | `pnpm --filter @responix/api-client exec eslint src/generated/api.types.ts`. |
+| Prisma schema validation/generation | PASS | `pnpm --filter @responix/database db:validate`; `pnpm --filter @responix/database db:generate`. |
+| `git diff --check` | PASS | LF/CRLF working-copy warnings only. |
+| Real provider calls / full build / full monorepo tests | NOT RUN | No paid/external provider call; full build and monorepo tests were outside this closeout scope. |
+| Closeout | APPROVED | Project owner approved public-provider MOD-1 completion with private/local/self-hosted providers deferred, not cancelled, behind a separate network/security contract. See [`MOD_1_CLOSEOUT.md`](MOD_1_CLOSEOUT.md). |
+
+The API watch launcher emitted Windows `spawn EPERM` warnings, but webpack compiled and the current source API started and served the verified OpenAPI document. The API and ephemeral database were stopped afterward. The full monorepo test suite and production build were not run.
+
+## Roadmap Reconciliation Planning — 2026-09-28
+
+| Check | Result | Evidence / limitation |
+|---|---|---|
+| Read-only source/documentation reconnaissance | PASS | Official roadmap and relevant architecture, CRM, billing, analytics, dashboard, API, database and QA documents reviewed against repository modules/models/routes/plugins/tests and V1 closure. |
+| Documentation scope | PASS | Intended changes are project-state Markdown plus the new CRM-1 sprint charter only; no application source, schema, migration, generated artifact or dependency file changed. |
+| Documentation consistency review | PASS | Current handoff/context/version/issues point to the reconciled roadmap and proposed CRM-1 charter; historical August next-step statements are identified as superseded. |
+| Application tests, build, typecheck, migrations | NOT RUN | Planning-only change; no application code or schema changed. Existing V1 closure limitations remain open and are not treated as passing validation. |
+| Git checkpoint | NOT CREATED | Human review requested; no commit or push performed. |
+
+This record documents planning checks only and does not replace V1 runtime/release validation.
+
 ## WhatsApp Connection Management — Edit, Callback URL, Verify Token - 2026-08-09
 
 | Validation | Result |

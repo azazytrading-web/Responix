@@ -18,17 +18,18 @@ const schema = z.object({
     prompt_tokens_details: z.object({
       cached_tokens: z.number().int().nonnegative().optional()
     }).optional()
-  })
+  }).optional()
 });
 
 export function normalizeOpenAiCompatibleResponse(
-  response: ProviderHttpResponse, request: ProviderExecutionRequest
+  response: ProviderHttpResponse, request: ProviderExecutionRequest, options: { usageOptional?: boolean } = {}
 ): ProviderExecutionResult {
   const parsed = schema.safeParse(parseJson(response.body));
-  if (!parsed.success) throw new AiContractError("RESPONSE_INVALID", "AI provider response was invalid");
+  if (!parsed.success || (!options.usageOptional && !parsed.data?.usage)) throw new AiContractError("RESPONSE_INVALID", "AI provider response was invalid");
   const choice = parsed.data.choices[0];
   if (!choice) throw new AiContractError("RESPONSE_INVALID", "AI provider response was empty");
-  assertTokenLimit(parsed.data.usage.completion_tokens, request.maxOutputTokens);
+  const usage = parsed.data.usage;
+  if (usage) assertTokenLimit(usage.completion_tokens, request.maxOutputTokens);
   const toolCalls = (choice.message.tool_calls ?? []).map((call) => ({ id: call.id,
     name: call.function.name, arguments: parseToolArguments(call.function.arguments), status: "pending" as const }));
   return {
@@ -36,10 +37,10 @@ export function normalizeOpenAiCompatibleResponse(
     ...(toolCalls.length ? { toolCalls } : {}),
     ...(choice.finish_reason ? { finishReason: choice.finish_reason } : {}),
     usage: {
-      inputTokens: parsed.data.usage.prompt_tokens,
-      outputTokens: parsed.data.usage.completion_tokens,
-      cachedTokens: parsed.data.usage.prompt_tokens_details?.cached_tokens ??
-        parsed.data.usage.prompt_cache_hit_tokens ?? 0
+      inputTokens: usage?.prompt_tokens ?? 0,
+      outputTokens: usage?.completion_tokens ?? 0,
+      cachedTokens: usage?.prompt_tokens_details?.cached_tokens ??
+        usage?.prompt_cache_hit_tokens ?? 0
     }
   };
 }

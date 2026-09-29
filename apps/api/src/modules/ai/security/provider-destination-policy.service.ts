@@ -1,6 +1,7 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable, Optional } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { isIP } from "node:net";
+import { PrismaService } from "../../../database/prisma.service";
 import { ProviderDnsResolver, type ProviderDnsRecord } from "./provider-dns-resolver.service";
 
 export class ProviderDestinationRejectedError extends Error {
@@ -23,20 +24,46 @@ export interface ApprovedProviderDestination {
 export class ProviderDestinationPolicy {
   constructor(
     private readonly config: ConfigService,
-    private readonly dns: ProviderDnsResolver
+    private readonly dns: ProviderDnsResolver,
+    @Optional() private readonly prisma?: PrismaService
   ) {}
 
-  async authorize(rawUrl: string): Promise<ApprovedProviderDestination> {
+  async validateCustomProviderBaseUrl(rawUrl: string): Promise<string> {
     const url = this.parse(rawUrl);
     const hostname = this.normalizeHostname(url.hostname);
-    this.validateUrl(url, hostname);
+    this.validateUrl(url, hostname, false);
+    await this.resolveAndValidate(hostname);
+    url.hostname = hostname.includes(":") ? `[${hostname}]` : hostname;
+    url.pathname = url.pathname.replace(/\/+$/, "") || "/";
+    return url.toString().replace(/\/$/, url.pathname === "/" ? "/" : "");
+  }
 
-    const literalFamily = isIP(hostname);
-    const records = literalFamily
-      ? [{ address: hostname, family: literalFamily as 4 | 6 }]
-      : await this.resolveWithTimeout(hostname);
-    if (!records.length) this.reject("DNS resolution returned no addresses");
-    for (const record of records) this.validateAddress(record.address);
+  async authorize(
+    rawUrl: string,
+    customProvider?: { workspaceId: string; providerId: string; requiresStreaming?: boolean; requiresTools?: boolean; allowDisabledForValidation?: boolean }
+  ): Promise<ApprovedProviderDestination> {
+    const url = this.parse(rawUrl);
+    const hostname = this.normalizeHostname(url.hostname);
+    this.validateUrl(url, hostname, !customProvider);
+    if (customProvider) {
+      const provider = await this.prisma?.customAiProvider.findFirst({
+        where: {
+          id: customProvider.providerId,
+          workspaceId: customProvider.workspaceId,
+          status: customProvider.allowDisabledForValidation ? { in: ["ACTIVE", "DISABLED"] } : "ACTIVE"
+        },
+        select: { baseUrl: true, supportsStreaming: true, supportsTools: true }
+      });
+      if (!provider || this.canonicalOrigin(provider.baseUrl) !== this.canonicalOrigin(rawUrl)) {
+        return this.reject("Custom provider destination is not authorized");
+      }
+      if ((customProvider.requiresStreaming && !provider.supportsStreaming) ||
+          (customProvider.requiresTools && !provider.supportsTools)) {
+        return this.reject("Custom provider capability is not authorized");
+      }
+    }
+
+    const records = await this.resolveAndValidate(hostname);
 
     const selected = records[0];
     if (!selected) this.reject("DNS resolution returned no addresses");
@@ -57,7 +84,7 @@ export class ProviderDestinationPolicy {
     }
   }
 
-  private validateUrl(url: URL, hostname: string): void {
+  private validateUrl(url: URL, hostname: string, enforcePlatformAllowlist = true): void {
     if (url.protocol !== "https:") this.reject("Provider scheme is not HTTPS");
     if (url.username || url.password) this.reject("Provider URL contains user information");
     if (url.hash) this.reject("Provider URL contains a fragment");
@@ -69,16 +96,34 @@ export class ProviderDestinationPolicy {
       this.reject("Provider URL contains credential parameters");
     }
     if (!hostname || hostname.includes("%")) this.reject("Provider hostname is invalid");
+    if (hostname.includes("*") || hostname.includes("/")) this.reject("Provider hostname is invalid");
     if (this.isLocalHostname(hostname)) this.reject("Provider hostname is local or reserved");
 
-    const allowedHosts = this.config.getOrThrow<string[]>("ai.network.allowedHosts");
-    if (!this.isHostAllowlisted(hostname, allowedHosts)) this.reject("Provider hostname is not allowlisted");
+    if (enforcePlatformAllowlist) {
+      const allowedHosts = this.config.getOrThrow<string[]>("ai.network.allowedHosts");
+      if (!this.isHostAllowlisted(hostname, allowedHosts)) this.reject("Provider hostname is not allowlisted");
+    }
 
     const port = url.port ? Number.parseInt(url.port, 10) : 443;
     const allowedPorts = this.config.getOrThrow<number[]>("ai.network.allowedPorts");
     if (!Number.isInteger(port) || port < 1 || port > 65_535 || !allowedPorts.includes(port)) {
       this.reject("Provider port is not allowlisted");
     }
+  }
+
+  private async resolveAndValidate(hostname: string): Promise<ProviderDnsRecord[]> {
+    const literalFamily = isIP(hostname);
+    const records = literalFamily
+      ? [{ address: hostname, family: literalFamily as 4 | 6 }]
+      : await this.resolveWithTimeout(hostname);
+    if (!records.length) this.reject("DNS resolution returned no addresses");
+    for (const record of records) this.validateAddress(record.address);
+    return records;
+  }
+
+  private canonicalOrigin(rawUrl: string): string {
+    const url = this.parse(rawUrl);
+    return url.origin.toLowerCase();
   }
 
   private async resolveWithTimeout(hostname: string): Promise<ProviderDnsRecord[]> {
@@ -163,12 +208,10 @@ export class ProviderDestinationPolicy {
     const second = groups[1]!;
     if ((first & 0xe000) !== 0x2000) return false;
     if (first === 0x2001) {
-      if (second === 0x0000 || second === 0x0002 || second === 0x000d || second === 0x0010) {
-        return false;
-      }
-      if (second === 0x0db8) return false;
+      if (second <= 0x01ff || second === 0x0db8) return false;
     }
     if (first === 0x2002) return false;
+    if (first === 0x3fff && second <= 0x0fff) return false;
     return true;
   }
 
@@ -188,6 +231,7 @@ export class ProviderDestinationPolicy {
   }
 
   private isLocalHostname(hostname: string): boolean {
+    if (isIP(hostname)) return false;
     return (
       hostname === "localhost" ||
       hostname.endsWith(".localhost") ||

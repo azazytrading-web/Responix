@@ -538,6 +538,12 @@ enum AiCredentialStatus {
   REVOKED
 }
 
+enum CustomAiProviderStatus {
+  ACTIVE
+  DISABLED
+  ARCHIVED
+}
+
 enum AiInvocationStatus {
   PENDING
   SUCCEEDED
@@ -714,6 +720,9 @@ model Workspace {
   aiProviderCredentials               AiProviderCredential[]
   aiProviderConfigurations            AiProviderConfiguration[]
   aiProviderHealthRecords             AiProviderHealthRecord[]
+  customAiProviders                    CustomAiProvider[]
+  customAiProviderCredentials          CustomAiProviderCredential[]
+  customAiProviderValidationRecords    CustomAiProviderValidationRecord[]
   aiInvocations                       AiInvocationLog[]
   aiUsageRecords                      AiUsageRecord[]
   aiCostRecords                       AiCostRecord[]
@@ -1380,6 +1389,73 @@ model AiProviderHealthRecord {
   @@index([workspaceId, providerId, checkedAt])
   @@index([credentialId, checkedAt])
   @@map("ai_provider_health_records")
+}
+
+model CustomAiProvider {
+  id                 String                 @id @default(uuid()) @db.Uuid
+  workspaceId        String                 @map("workspace_id") @db.Uuid
+  displayName        String                 @map("display_name")
+  normalizedName     String                 @map("normalized_name")
+  protocolId         String                 @map("protocol_id")
+  baseUrl            String                 @map("base_url")
+  validationModelId  String                 @map("validation_model_id")
+  supportsStreaming  Boolean                @default(false) @map("supports_streaming")
+  supportsTools      Boolean                @default(false) @map("supports_tools")
+  status             CustomAiProviderStatus @default(DISABLED)
+  archivedAt         DateTime?              @map("archived_at")
+  createdAt          DateTime               @default(now()) @map("created_at")
+  updatedAt          DateTime               @updatedAt @map("updated_at")
+
+  workspace   Workspace                    @relation(fields: [workspaceId], references: [id], onDelete: Restrict)
+  credentials CustomAiProviderCredential[]
+  validations CustomAiProviderValidationRecord[]
+
+  @@unique([workspaceId, normalizedName])
+  @@unique([id, workspaceId])
+  @@index([workspaceId, status])
+  @@map("custom_ai_providers")
+}
+
+model CustomAiProviderCredential {
+  id                       String             @id @default(uuid()) @db.Uuid
+  workspaceId              String             @map("workspace_id") @db.Uuid
+  customProviderId         String             @map("custom_provider_id") @db.Uuid
+  name                     String
+  encryptedSecret          String             @map("encrypted_secret")
+  encryptionVersion        Int                @default(1) @map("encryption_version")
+  keyFingerprint           String             @map("key_fingerprint")
+  status                   AiCredentialStatus @default(ACTIVE)
+  priority                 Int                @default(0)
+  lastUsedAt               DateTime?          @map("last_used_at")
+  createdAt                DateTime           @default(now()) @map("created_at")
+  updatedAt                DateTime           @updatedAt @map("updated_at")
+  deletedAt                DateTime?          @map("deleted_at")
+
+  workspace      Workspace       @relation(fields: [workspaceId], references: [id], onDelete: Restrict)
+  customProvider CustomAiProvider @relation(fields: [customProviderId, workspaceId], references: [id, workspaceId], onDelete: Restrict)
+
+  @@unique([workspaceId, customProviderId, name], map: "custom_ai_provider_credentials_workspace_provider_name_key")
+  @@unique([workspaceId, customProviderId, keyFingerprint], map: "custom_ai_provider_credentials_workspace_provider_fprint_key")
+  @@index([workspaceId, customProviderId, status, priority])
+  @@map("custom_ai_provider_credentials")
+}
+
+model CustomAiProviderValidationRecord {
+  id               String          @id @default(uuid()) @db.Uuid
+  workspaceId      String          @map("workspace_id") @db.Uuid
+  customProviderId String          @map("custom_provider_id") @db.Uuid
+  protocolId       String          @map("protocol_id")
+  available        Boolean
+  latencyMs        Int             @map("latency_ms")
+  errorCode        String?         @map("error_code")
+  providerStatus   Int?            @map("provider_status")
+  checkedAt        DateTime        @default(now()) @map("checked_at")
+
+  workspace      Workspace       @relation(fields: [workspaceId], references: [id], onDelete: Restrict)
+  customProvider CustomAiProvider @relation(fields: [customProviderId, workspaceId], references: [id, workspaceId], onDelete: Restrict)
+
+  @@index([workspaceId, customProviderId, checkedAt])
+  @@map("custom_ai_provider_validation_records")
 }
 
 model AiInvocationLog {

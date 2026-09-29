@@ -32,16 +32,19 @@ export function normalizeTransportError(error: unknown, signal: AbortSignal): ne
 
 export function normalizeHttpStatus(status: number): never {
   if (status === 401 || status === 403) {
-    throw new AiContractError("AUTHENTICATION_FAILED", "AI provider authentication failed");
+    throw new AiContractError("AUTHENTICATION_FAILED", "AI provider authentication failed", { providerStatus: status });
   }
   if (status === 408 || status === 409 || status === 429) {
     throw new AiContractError(
       status === 429 ? "RATE_LIMITED" : "PROVIDER_UNAVAILABLE",
       status === 429 ? "AI provider rate limit exceeded" : "AI provider request could not be completed",
-      { retryable: status === 408 || status === 429 }
+      { retryable: status === 408 || status === 429, providerStatus: status }
     );
   }
-  throw new AiContractError("PROVIDER_UNAVAILABLE", "AI provider is unavailable", { retryable: status >= 500 });
+  throw new AiContractError("PROVIDER_UNAVAILABLE", "AI provider is unavailable", {
+    retryable: status >= 500,
+    providerStatus: status
+  });
 }
 
 export function parseJson(body: string): unknown {

@@ -10,19 +10,21 @@ export async function streamOpenAiCompatible(input: {
   http: ProviderHttpClient;
   provider: string;
   url: string;
+  customProvider?: { workspaceId: string; providerId: string; requiresStreaming?: boolean; requiresTools?: boolean };
   authorization?: string;
   headers?: Record<string, string>;
   request: ProviderExecutionRequest;
   credential: ProviderExecutionCredential;
   emit: (event: ProviderStreamEvent) => Promise<void>;
   body?: Record<string, unknown>;
+  allowToolCalls?: boolean;
 }): Promise<void> {
   let terminal = false;
   let usage: ProviderStreamEvent["usage"] | undefined;
   const calls = new Map<number, { id: string; name: string; arguments: string }>();
   try {
     const response = await input.http.postSse({
-      provider: input.provider, url: input.url, authorization: input.authorization,
+      provider: input.provider, url: input.url, customProvider: input.customProvider, authorization: input.authorization,
       headers: input.headers,
       body: JSON.stringify({
         model: input.request.modelName, messages: input.request.messages,
@@ -42,6 +44,9 @@ export async function streamOpenAiCompatible(input: {
         const content = typeof delta?.content === "string" ? delta.content : undefined;
         const finishReason = typeof choice?.finish_reason === "string" ? choice.finish_reason : undefined;
         const toolDeltas = Array.isArray(delta?.tool_calls) ? delta.tool_calls as Array<Record<string, unknown>> : [];
+        if (toolDeltas.length && input.allowToolCalls === false) {
+          throw new AiContractError("RESPONSE_INVALID", "Provider returned unrequested tool calls");
+        }
         for (const toolDelta of toolDeltas) {
           const index = typeof toolDelta.index === "number" ? toolDelta.index : 0;
           const fn = toolDelta.function as Record<string, unknown> | undefined;

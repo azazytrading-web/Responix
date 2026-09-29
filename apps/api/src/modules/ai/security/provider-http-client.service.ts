@@ -50,12 +50,13 @@ export class ProviderHttpClient {
   async postJson(input: {
     provider: string;
     url: string;
+    customProvider?: { workspaceId: string; providerId: string; requiresStreaming?: boolean; requiresTools?: boolean; allowDisabledForValidation?: boolean };
     authorization?: string;
     headers?: Readonly<Record<string, string>>;
     body: string;
     signal: AbortSignal;
   }): Promise<ProviderHttpResponse> {
-    const destination = await this.policy.authorize(input.url);
+    const destination = await this.policy.authorize(input.url, input.customProvider);
     const startedAt = Date.now();
     let status: number | string = "failed";
     let bytes = 0;
@@ -117,13 +118,14 @@ export class ProviderHttpClient {
   async postSse(input: {
     provider: string;
     url: string;
+    customProvider?: { workspaceId: string; providerId: string; requiresStreaming?: boolean; requiresTools?: boolean; allowDisabledForValidation?: boolean };
     authorization?: string;
     headers?: Readonly<Record<string, string>>;
     body: string;
     signal: AbortSignal;
     onEvent: (event: { event?: string; data: string; id?: string }) => Promise<void>;
   }): Promise<{ status: number }> {
-    const destination = await this.policy.authorize(input.url);
+    const destination = await this.policy.authorize(input.url, input.customProvider);
     const connectionTimeoutMs = this.config.getOrThrow<number>("ai.network.connectionTimeoutMs");
     const readTimeoutMs = this.config.getOrThrow<number>("ai.network.readTimeoutMs");
     const providerTimeoutMs = this.config.getOrThrow<number>("ai.requestTimeoutMs");
@@ -162,13 +164,20 @@ export class ProviderHttpClient {
         const status = response.statusCode ?? 502;
         if (status < 200 || status >= 300) { response.resume(); finish(undefined, status); return; }
         let buffer = "";
+        let totalBytes = 0;
         let chain = Promise.resolve();
         const reset = () => {
           if (readTimer) clearTimeout(readTimer);
           readTimer = setTimeout(() => request.destroy(new ProviderNetworkTimeoutError("read")), readTimeoutMs);
         };
         response.on("data", (chunk: Buffer | string) => {
-          response.pause(); reset(); buffer += Buffer.isBuffer(chunk) ? chunk.toString("utf8") : chunk;
+          response.pause(); reset();
+          totalBytes += Buffer.isBuffer(chunk) ? chunk.length : Buffer.byteLength(chunk);
+          if (totalBytes > this.config.getOrThrow<number>("ai.network.maxResponseBytes")) {
+            request.destroy(new ProviderResponseTooLargeError());
+            return;
+          }
+          buffer += Buffer.isBuffer(chunk) ? chunk.toString("utf8") : chunk;
           const blocks = buffer.split(/\r?\n\r?\n/); buffer = blocks.pop() ?? "";
           for (const block of blocks) chain = chain.then(async () => {
             const lines = block.split(/\r?\n/); const data = lines.filter((line) => line.startsWith("data:"))

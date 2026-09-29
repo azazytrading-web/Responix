@@ -11,6 +11,7 @@ function createPolicy(input?: {
   allowedPorts?: number[];
   dnsTimeoutMs?: number;
   resolve?: jest.Mock;
+  customProvider?: jest.Mock;
 }) {
   const resolve =
     input?.resolve ?? jest.fn().mockResolvedValue([{ address: PUBLIC_IPV4, family: 4 }]);
@@ -22,9 +23,14 @@ function createPolicy(input?: {
   const config = {
     getOrThrow: (key: string) => values[key]
   };
+  const customProvider = input?.customProvider ?? jest.fn().mockResolvedValue({
+    baseUrl: "https://custom.example/v1"
+  });
   return {
-    policy: new ProviderDestinationPolicy(config as never, { resolve }),
-    resolve
+    policy: new ProviderDestinationPolicy(config as never, { resolve }, {
+      customAiProvider: { findFirst: customProvider }
+    } as never),
+    resolve, customProvider
   };
 }
 
@@ -122,6 +128,9 @@ describe("ProviderDestinationPolicy", () => {
     "fe80::1",
     "ff02::1",
     "2001:db8::1",
+    "2001:1::1",
+    "2001:100::1",
+    "3fff::1",
     "2001:2::1",
     "2002::1"
   ])("rejects prohibited IPv6 address %s after DNS resolution", async (address) => {
@@ -186,5 +195,66 @@ describe("ProviderDestinationPolicy", () => {
     await expect(policy.authorize("https://api.openai.com/v1")).rejects.toBeInstanceOf(
       ProviderDestinationRejectedError
     );
+  });
+
+  it("validates and normalizes public custom endpoints without the platform host allowlist", async () => {
+    const { policy } = createPolicy();
+    await expect(policy.validateCustomProviderBaseUrl("HTTPS://Custom.Example:443/v1/"))
+      .resolves.toBe("https://custom.example/v1");
+    await expect(policy.validateCustomProviderBaseUrl("https://[2606:4700:4700::1111]/v1"))
+      .resolves.toBe("https://[2606:4700:4700::1111]/v1");
+    await expect(policy.validateCustomProviderBaseUrl("https://custom.example/v1?api_key=x"))
+      .rejects.toBeInstanceOf(ProviderDestinationRejectedError);
+  });
+
+  it("authorizes custom destinations only for an active workspace-owned matching definition", async () => {
+    const { policy, customProvider, resolve } = createPolicy();
+    await expect(policy.authorize("https://custom.example/v1", {
+      workspaceId: "workspace-a", providerId: "provider-a"
+    })).resolves.toMatchObject({ hostname: "custom.example", address: PUBLIC_IPV4 });
+    expect(customProvider).toHaveBeenCalledWith({
+      where: { id: "provider-a", workspaceId: "workspace-a", status: "ACTIVE" },
+      select: { baseUrl: true, supportsStreaming: true, supportsTools: true }
+    });
+    expect(resolve).toHaveBeenCalledWith("custom.example");
+  });
+
+  it("permits the explicit validation flow to authorize a DISABLED provider without widening invocation policy", async () => {
+    const customProvider = jest.fn().mockResolvedValue({
+      baseUrl: "https://custom.example/v1", supportsStreaming: false, supportsTools: false
+    });
+    const { policy } = createPolicy({ customProvider });
+    await expect(policy.authorize("https://custom.example/v1/chat/completions", {
+      workspaceId: "workspace-a", providerId: "provider-a", allowDisabledForValidation: true
+    })).resolves.toMatchObject({ hostname: "custom.example" });
+    expect(customProvider).toHaveBeenCalledWith(expect.objectContaining({
+      where: { id: "provider-a", workspaceId: "workspace-a", status: { in: ["ACTIVE", "DISABLED"] } }
+    }));
+  });
+
+  const rejectedCustomScopes: Array<{ name: string; lookup: jest.Mock; url: string }> = [
+    { name: "wrong workspace", lookup: jest.fn().mockResolvedValue(null), url: "https://custom.example/v1" },
+    { name: "disabled or archived", lookup: jest.fn().mockResolvedValue(null), url: "https://custom.example/v1" },
+    { name: "replaced endpoint", lookup: jest.fn().mockResolvedValue({ baseUrl: "https://new.example/v1" }), url: "https://custom.example/v1" }
+  ];
+
+  it.each(rejectedCustomScopes)("rejects custom authorization for $name", async ({ lookup, url }) => {
+    const { policy, resolve } = createPolicy({ customProvider: lookup });
+    await expect(policy.authorize(url, {
+      workspaceId: "workspace-a", providerId: "provider-a"
+    })).rejects.toBeInstanceOf(ProviderDestinationRejectedError);
+    expect(resolve).not.toHaveBeenCalled();
+  });
+
+  it("rejects internal capability claims not enabled on the persisted Custom Provider", async () => {
+    const { policy, resolve } = createPolicy({
+      customProvider: jest.fn().mockResolvedValue({
+        baseUrl: "https://custom.example/v1", supportsStreaming: false, supportsTools: false
+      })
+    });
+    await expect(policy.authorize("https://custom.example/v1/chat/completions", {
+      workspaceId: "workspace-a", providerId: "provider-a", requiresStreaming: true
+    })).rejects.toBeInstanceOf(ProviderDestinationRejectedError);
+    expect(resolve).not.toHaveBeenCalled();
   });
 });

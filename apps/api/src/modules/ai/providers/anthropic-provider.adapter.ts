@@ -26,6 +26,7 @@ const schema = z.object({
 @Injectable()
 export class AnthropicProviderAdapter implements AiProviderAdapter {
   readonly providerName = "Claude";
+  readonly protocolId = "responix-native-anthropic-messages-v1";
   readonly contractVersion = "1.0";
   readonly promptCache = nativeProviderPromptCache("EXPLICIT", 300);
   constructor(private readonly http: ProviderHttpClient) {}

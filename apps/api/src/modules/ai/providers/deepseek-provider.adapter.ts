@@ -26,6 +26,7 @@ export const DEEPSEEK_CAPABILITIES = Object.freeze({
 @Injectable()
 export class DeepSeekProviderAdapter implements AiProviderAdapter {
   readonly providerName = "DeepSeek";
+  readonly protocolId = "responix-native-deepseek-v1";
   readonly contractVersion = "1.0";
   readonly capabilities = DEEPSEEK_CAPABILITIES;
   readonly promptCache = nativeProviderPromptCache("AUTOMATIC", 3600);

@@ -441,13 +441,13 @@ export class InvocationOrchestratorService {
       };
       if (usage && cost) {
         await this.repository.complete({
-          invocationId, workspaceId: request.workspaceId, providerId: providerId!, modelId: modelId!, routing: finalRouting!,
+          invocationId, workspaceId: request.workspaceId, providerId, modelId, routing: finalRouting,
           usage, cost, ...(finishReason ? { finishReason } : {}), responseContent,
           runtime: { ...runtimeBase, usage, cost }
         });
       } else {
         await this.repository.completeUnknownUsage({
-          invocationId, workspaceId: request.workspaceId, providerId: providerId!, modelId: modelId!, routing: finalRouting!,
+          invocationId, workspaceId: request.workspaceId, providerId, modelId, routing: finalRouting,
           responseContent, pricing: activePricing, ...(finishReason ? { finishReason } : {}),
           runtime: runtimeBase
         });

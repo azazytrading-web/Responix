@@ -16,7 +16,13 @@ const credential = {
 
 describe("CredentialRepository", () => {
   it("returns metadata without encrypted credential material", async () => {
-    const findMany = jest.fn().mockResolvedValue([credential]);
+    const findMany = jest.fn((args: {
+      where?: unknown;
+      select?: Record<string, unknown>;
+    }) => {
+      void args;
+      return Promise.resolve([credential]);
+    });
     const repository = new CredentialRepository({
       aiProviderCredential: { findMany }
     } as never);
@@ -32,14 +38,20 @@ describe("CredentialRepository", () => {
         }
       })
     );
-    const query = findMany.mock.calls[0]?.[0] as { select: Record<string, unknown> };
-    expect(query.select).not.toHaveProperty("encryptedSecret");
+    const query = findMany.mock.calls[0]?.[0];
+    expect(query?.select).not.toHaveProperty("encryptedSecret");
     expect(result[0]).not.toHaveProperty("encryptedSecret");
   });
 
   it("retrieves an active encrypted envelope only inside the workspace boundary", async () => {
-    const findFirst = jest.fn().mockResolvedValue(credential);
-    const updateMany = jest.fn().mockResolvedValue({ count: 1 });
+    const findFirst = jest.fn((args: { where: unknown; orderBy: unknown }) => {
+      void args;
+      return Promise.resolve(credential);
+    });
+    const updateMany = jest.fn((args: { where: unknown; data: { lastUsedAt: Date } }) => {
+      void args;
+      return Promise.resolve({ count: 1 });
+    });
     const repository = new CredentialRepository({
       aiProviderCredential: { findFirst, updateMany }
     } as never);
@@ -67,9 +79,11 @@ describe("CredentialRepository", () => {
         ]
       })
     );
-    expect(updateMany).toHaveBeenCalledWith(expect.objectContaining({
-      where: { id: "credential-id", workspaceId: "workspace-id", providerId: "provider-id", status: "ACTIVE", deletedAt: null },
-      data: { lastUsedAt: expect.any(Date) }
-    }));
+    const update = updateMany.mock.calls[0]?.[0];
+    expect(update?.where).toEqual({
+      id: "credential-id", workspaceId: "workspace-id", providerId: "provider-id",
+      status: "ACTIVE", deletedAt: null
+    });
+    expect(update?.data.lastUsedAt).toBeInstanceOf(Date);
   });
 });

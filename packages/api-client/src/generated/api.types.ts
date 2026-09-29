@@ -576,6 +576,41 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/ai/providers/{providerId}/configuration": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get safe workspace provider configuration */
+        get: operations["AiController_providerConfiguration_v1"];
+        /** Create or update encrypted workspace provider configuration */
+        put: operations["AiController_configureProvider_v1"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/ai/providers/{providerId}/validate": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Validate workspace provider credentials using a minimal provider request */
+        post: operations["AiController_validateProvider_v1"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/ai/routing/resolve": {
         parameters: {
             query?: never;
@@ -843,7 +878,8 @@ export interface paths {
         /** Edit a prompt draft */
         put: operations["PromptLibraryController_update_v1"];
         post?: never;
-        delete?: never;
+        /** Delete an unreferenced prompt draft */
+        delete: operations["PromptLibraryController_delete_v1"];
         options?: never;
         head?: never;
         patch?: never;
@@ -1057,6 +1093,57 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/agent-studio/agents/{agentId}/operational-personality": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** Update live operational personality controls without changing the Agent definition */
+        put: operations["AgentStudioController_updateOperationalPersonality_v1"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/agent-studio/agents/{agentId}/conversation-history": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** Update the Agent's conversation-history working-context control without changing the Agent definition */
+        put: operations["AgentStudioController_updateConversationHistory_v1"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/agent-studio/agents/{agentId}/automatic-execution": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** Pause or resume automatic execution for one Agent */
+        put: operations["AgentStudioController_updateAutomaticExecution_v1"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/agent-studio/agents/{agentId}/publish": {
         parameters: {
             query?: never;
@@ -1142,25 +1229,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/v1/knowledge-base/spaces": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** List knowledge spaces */
-        get: operations["KnowledgeBaseController_spaces_v1"];
-        put?: never;
-        /** Create a knowledge space */
-        post: operations["KnowledgeBaseController_createSpace_v1"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/knowledge-base/spaces/{id}": {
+    "/api/v1/agent-studio/agents/{agentId}/channels/{connectionId}/switch": {
         parameters: {
             query?: never;
             header?: never;
@@ -1168,35 +1237,16 @@ export interface paths {
             cookie?: never;
         };
         get?: never;
-        /** Update a knowledge space */
-        put: operations["KnowledgeBaseController_updateSpace_v1"];
-        post?: never;
-        /** Soft-delete an empty knowledge space */
-        delete: operations["KnowledgeBaseController_deleteSpace_v1"];
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/knowledge-base/collections": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** List knowledge collections */
-        get: operations["KnowledgeBaseController_collections_v1"];
         put?: never;
-        /** Create a knowledge collection */
-        post: operations["KnowledgeBaseController_createCollection_v1"];
+        /** Bind a published, runtime-ready agent to a channel connection */
+        post: operations["AgentStudioController_switch_v1"];
         delete?: never;
         options?: never;
         head?: never;
         patch?: never;
         trace?: never;
     };
-    "/api/v1/knowledge-base/collections/{id}": {
+    "/api/v1/agent-studio/agents/{agentId}/retrieval-runtime": {
         parameters: {
             query?: never;
             header?: never;
@@ -1204,170 +1254,43 @@ export interface paths {
             cookie?: never;
         };
         get?: never;
-        /** Update a knowledge collection */
-        put: operations["KnowledgeBaseController_updateCollection_v1"];
-        post?: never;
-        /** Soft-delete an empty knowledge collection */
-        delete: operations["KnowledgeBaseController_deleteCollection_v1"];
+        put?: never;
+        /** Bind a published RetrievalRuntime to an agent */
+        post: operations["AgentStudioController_bindRetrievalRuntime_v1"];
+        /** Unbind the RetrievalRuntime from an agent */
+        delete: operations["AgentStudioController_unbindRetrievalRuntime_v1"];
         options?: never;
         head?: never;
         patch?: never;
         trace?: never;
     };
-    "/api/v1/knowledge-base/folders": {
+    "/api/v1/agent-runtime/runtimes": {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        /** List knowledge folders */
-        get: operations["KnowledgeBaseController_folders_v1"];
+        /** Filter and paginate prepared Agent Runtime records */
+        get: operations["AgentRuntimeController_list_v1"];
         put?: never;
-        /** Create a knowledge folder */
-        post: operations["KnowledgeBaseController_createFolder_v1"];
+        /** Resolve and persist an Agent Runtime preparation without invoking a provider */
+        post: operations["AgentRuntimeController_prepare_v1"];
         delete?: never;
         options?: never;
         head?: never;
         patch?: never;
         trace?: never;
     };
-    "/api/v1/knowledge-base/folders/{id}": {
+    "/api/v1/agent-runtime/runtimes/{id}": {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        get?: never;
-        /** Update a knowledge folder and validate hierarchy */
-        put: operations["KnowledgeBaseController_updateFolder_v1"];
-        post?: never;
-        /** Soft-delete an empty knowledge folder */
-        delete: operations["KnowledgeBaseController_deleteFolder_v1"];
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/knowledge-base/categories": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** List knowledge categories */
-        get: operations["KnowledgeBaseController_categories_v1"];
-        put?: never;
-        /** Create a knowledge category */
-        post: operations["KnowledgeBaseController_createCategory_v1"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/knowledge-base/categories/{id}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        /** Update a knowledge category */
-        put: operations["KnowledgeBaseController_updateCategory_v1"];
-        post?: never;
-        /** Delete an unused knowledge category */
-        delete: operations["KnowledgeBaseController_deleteCategory_v1"];
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/knowledge-base/tags": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** List knowledge tags */
-        get: operations["KnowledgeBaseController_tags_v1"];
-        put?: never;
-        /** Create a knowledge tag */
-        post: operations["KnowledgeBaseController_createTag_v1"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/knowledge-base/tags/{id}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        /** Update a knowledge tag */
-        put: operations["KnowledgeBaseController_updateTag_v1"];
-        post?: never;
-        /** Delete an unused knowledge tag */
-        delete: operations["KnowledgeBaseController_deleteTag_v1"];
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/knowledge-base/documents": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Search and paginate knowledge document metadata */
-        get: operations["KnowledgeBaseController_documents_v1"];
-        put?: never;
-        /** Create a knowledge document draft */
-        post: operations["KnowledgeBaseController_createDocument_v1"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/knowledge-base/documents/{id}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Get a knowledge document */
-        get: operations["KnowledgeBaseController_document_v1"];
-        /** Update knowledge document draft metadata */
-        put: operations["KnowledgeBaseController_updateDocument_v1"];
-        post?: never;
-        /** Soft-delete a knowledge document without removing versions */
-        delete: operations["KnowledgeBaseController_deleteDocument_v1"];
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/knowledge-base/documents/{id}/history": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Get immutable knowledge document history */
-        get: operations["KnowledgeBaseController_history_v1"];
+        /** Load Agent Runtime preparation, conversation metadata, and snapshot reference */
+        get: operations["AgentRuntimeController_get_v1"];
         put?: never;
         post?: never;
         delete?: never;
@@ -1376,7 +1299,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/v1/knowledge-base/documents/{id}/publish": {
+    "/api/v1/agent-runtime/runtimes/{id}/validate": {
         parameters: {
             query?: never;
             header?: never;
@@ -1385,15 +1308,15 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /** Publish an immutable knowledge document revision */
-        post: operations["KnowledgeBaseController_publish_v1"];
+        /** Revalidate runtime readiness against current workspace configuration */
+        post: operations["AgentRuntimeController_validate_v1"];
         delete?: never;
         options?: never;
         head?: never;
         patch?: never;
         trace?: never;
     };
-    "/api/v1/knowledge-base/documents/{id}/rollback": {
+    "/api/v1/agent-runtime/runtimes/{id}/resolve": {
         parameters: {
             query?: never;
             header?: never;
@@ -1402,15 +1325,15 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /** Create a new published revision from prior knowledge metadata */
-        post: operations["KnowledgeBaseController_rollback_v1"];
+        /** Resolve a prepared runtime without executing or mutating it */
+        post: operations["AgentRuntimeController_resolve_v1"];
         delete?: never;
         options?: never;
         head?: never;
         patch?: never;
         trace?: never;
     };
-    "/api/v1/knowledge-base/documents/{id}/clone": {
+    "/api/v1/agent-runtime/runtimes/{id}/snapshot": {
         parameters: {
             query?: never;
             header?: never;
@@ -1419,166 +1342,23 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /** Clone a knowledge document into an independent draft */
-        post: operations["KnowledgeBaseController_clone_v1"];
+        /** Create the immutable Provider Runtime handoff snapshot */
+        post: operations["AgentRuntimeController_snapshot_v1"];
         delete?: never;
         options?: never;
         head?: never;
         patch?: never;
         trace?: never;
     };
-    "/api/v1/knowledge-base/documents/{id}/archive": {
+    "/api/v1/agent-runtime/snapshots/{id}": {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        get?: never;
-        put?: never;
-        /** Archive a knowledge document while retaining history */
-        post: operations["KnowledgeBaseController_archive_v1"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/knowledge-base/documents/{id}/restore": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /** Restore an archived or soft-deleted knowledge document */
-        post: operations["KnowledgeBaseController_restore_v1"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/tool-registry/categories": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** List tool categories */
-        get: operations["ToolRegistryController_categories_v1"];
-        put?: never;
-        /** Create a tool category */
-        post: operations["ToolRegistryController_createCategory_v1"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/tool-registry/categories/{id}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        /** Update a tool category */
-        put: operations["ToolRegistryController_updateCategory_v1"];
-        post?: never;
-        /** Delete an unused tool category */
-        delete: operations["ToolRegistryController_deleteCategory_v1"];
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/tool-registry/groups": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** List tool groups */
-        get: operations["ToolRegistryController_groups_v1"];
-        put?: never;
-        /** Create a tool group */
-        post: operations["ToolRegistryController_createGroup_v1"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/tool-registry/groups/{id}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        /** Update a tool group */
-        put: operations["ToolRegistryController_updateGroup_v1"];
-        post?: never;
-        /** Delete an unused tool group */
-        delete: operations["ToolRegistryController_deleteGroup_v1"];
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/tool-registry/tools": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Search and paginate tool definitions */
-        get: operations["ToolRegistryController_list_v1"];
-        put?: never;
-        /** Create a tool definition draft */
-        post: operations["ToolRegistryController_create_v1"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/tool-registry/tools/{id}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Get a tool definition */
-        get: operations["ToolRegistryController_get_v1"];
-        /** Update tool definition draft metadata */
-        put: operations["ToolRegistryController_update_v1"];
-        post?: never;
-        /** Soft-delete a tool without deleting version history */
-        delete: operations["ToolRegistryController_delete_v1"];
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/tool-registry/tools/{id}/history": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Get immutable tool version history */
-        get: operations["ToolRegistryController_history_v1"];
+        /** Load an immutable Agent Runtime snapshot */
+        get: operations["AgentRuntimeController_getSnapshot_v1"];
         put?: never;
         post?: never;
         delete?: never;
@@ -1587,7 +1367,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/v1/tool-registry/tools/{id}/publish": {
+    "/api/v1/prompt-compiler/compile": {
         parameters: {
             query?: never;
             header?: never;
@@ -1596,15 +1376,15 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /** Publish an immutable tool definition revision */
-        post: operations["ToolRegistryController_publish_v1"];
+        /** Compile and persist an immutable prompt package without provider execution */
+        post: operations["PromptCompilerController_compile_v1"];
         delete?: never;
         options?: never;
         head?: never;
         patch?: never;
         trace?: never;
     };
-    "/api/v1/tool-registry/tools/{id}/rollback": {
+    "/api/v1/prompt-compiler/preview": {
         parameters: {
             query?: never;
             header?: never;
@@ -1613,15 +1393,15 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /** Create a new published revision from prior tool metadata */
-        post: operations["ToolRegistryController_rollback_v1"];
+        /** Compile an audited, non-persisted prompt package preview */
+        post: operations["PromptCompilerController_preview_v1"];
         delete?: never;
         options?: never;
         head?: never;
         patch?: never;
         trace?: never;
     };
-    "/api/v1/tool-registry/tools/{id}/clone": {
+    "/api/v1/prompt-compiler/validate": {
         parameters: {
             query?: never;
             header?: never;
@@ -1630,15 +1410,84 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /** Clone a tool into an independent draft */
-        post: operations["ToolRegistryController_clone_v1"];
+        /** Validate prompt sources, variables, dependencies, and size metadata */
+        post: operations["PromptCompilerController_validate_v1"];
         delete?: never;
         options?: never;
         head?: never;
         patch?: never;
         trace?: never;
     };
-    "/api/v1/tool-registry/tools/{id}/archive": {
+    "/api/v1/prompt-compiler/compiled": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Filter and paginate immutable compiled prompt records */
+        get: operations["PromptCompilerController_list_v1"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/prompt-compiler/compiled/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Load an immutable compiled prompt package */
+        get: operations["PromptCompilerController_get_v1"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/prompt-compiler/compare": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Compare two workspace-isolated compiled prompt versions */
+        get: operations["PromptCompilerController_compare_v1"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/prompt-executions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Filter and paginate immutable prompt execution payloads */
+        get: operations["PromptExecutionController_list_v1"];
+        put?: never;
+        /** Render and persist an immutable provider-ready prompt payload */
+        post: operations["PromptExecutionController_render_v1"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/prompt-executions/validate": {
         parameters: {
             query?: never;
             header?: never;
@@ -1647,15 +1496,50 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /** Archive a tool without deleting version history */
-        post: operations["ToolRegistryController_archive_v1"];
+        /** Validate prompt execution without persisting a payload */
+        post: operations["PromptExecutionController_validate_v1"];
         delete?: never;
         options?: never;
         head?: never;
         patch?: never;
         trace?: never;
     };
-    "/api/v1/tool-registry/tools/{id}/restore": {
+    "/api/v1/prompt-executions/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Load an immutable prompt execution payload */
+        get: operations["PromptExecutionController_get_v1"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/provider-runtime/requests": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Filter and paginate workspace provider requests */
+        get: operations["ProviderRuntimeController_listRequests_v1"];
+        put?: never;
+        /** Prepare an immutable, vendor-neutral provider request without execution */
+        post: operations["ProviderRuntimeController_prepare_v1"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/provider-runtime/requests/{id}/validate": {
         parameters: {
             query?: never;
             header?: never;
@@ -1664,57 +1548,40 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /** Restore an archived or soft-deleted tool */
-        post: operations["ToolRegistryController_restore_v1"];
+        /** Revalidate a prepared provider request against its resolved sources */
+        post: operations["ProviderRuntimeController_validate_v1"];
         delete?: never;
         options?: never;
         head?: never;
         patch?: never;
         trace?: never;
     };
-    "/api/v1/tool-runtime/executions": {
+    "/api/v1/provider-runtime/requests/{id}/snapshots": {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        /** Filter and paginate immutable tool invocation history */
-        get: operations["ToolRuntimeController_list_v1"];
+        get?: never;
         put?: never;
-        /** Execute a hash-verified immutable tool version */
-        post: operations["ToolRuntimeController_execute_v1"];
+        /** Create an immutable versioned provider request snapshot */
+        post: operations["ProviderRuntimeController_createSnapshot_v1"];
         delete?: never;
         options?: never;
         head?: never;
         patch?: never;
         trace?: never;
     };
-    "/api/v1/tool-runtime/executions/{id}": {
+    "/api/v1/provider-runtime/requests/{id}": {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        get: operations["ToolRuntimeController_get_v1"];
-        put?: never;
-        post?: never;
-        /** Cancel an active tool execution and its Execution Kernel run */
-        delete: operations["ToolRuntimeController_cancel_v1"];
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/tool-runtime/executions/{id}/history": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["ToolRuntimeController_history_v1"];
+        /** Load a workspace-isolated prepared provider request */
+        get: operations["ProviderRuntimeController_getRequest_v1"];
         put?: never;
         post?: never;
         delete?: never;
@@ -1723,14 +1590,15 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/v1/tool-runtime/executions/{id}/diagnostics": {
+    "/api/v1/provider-runtime/snapshots/compare": {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        get: operations["ToolRuntimeController_diagnostics_v1"];
+        /** Compare two immutable provider request snapshots */
+        get: operations["ProviderRuntimeController_compare_v1"];
         put?: never;
         post?: never;
         delete?: never;
@@ -1739,14 +1607,15 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/v1/tool-runtime/executions/{id}/metrics": {
+    "/api/v1/provider-runtime/snapshots": {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        get: operations["ToolRuntimeController_metrics_v1"];
+        /** Filter and paginate immutable provider request snapshots */
+        get: operations["ProviderRuntimeController_listSnapshots_v1"];
         put?: never;
         post?: never;
         delete?: never;
@@ -1755,14 +1624,15 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/v1/tool-runtime/executions/{id}/events": {
+    "/api/v1/provider-runtime/snapshots/{id}": {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        get: operations["ToolRuntimeController_persistedEvents_v1"];
+        /** Load an immutable provider request snapshot */
+        get: operations["ProviderRuntimeController_getSnapshot_v1"];
         put?: never;
         post?: never;
         delete?: never;
@@ -1771,15 +1641,188 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/v1/tool-runtime/executions/{id}/stream": {
+    "/api/v1/execution-pipelines": {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        /** Receive tool progress, partial-output, and terminal events over SSE */
-        get: operations["ToolRuntimeController_stream_v1"];
+        /** Filter and paginate workspace execution pipelines */
+        get: operations["ExecutionPipelineController_list_v1"];
+        put?: never;
+        /** Assemble a metadata-only execution plan draft */
+        post: operations["ExecutionPipelineController_create_v1"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/execution-pipelines/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Load an execution pipeline and revision history */
+        get: operations["ExecutionPipelineController_get_v1"];
+        put?: never;
+        post?: never;
+        /** Soft-delete a pipeline while preserving history */
+        delete: operations["ExecutionPipelineController_softDelete_v1"];
+        options?: never;
+        head?: never;
+        /** Update an execution pipeline draft */
+        patch: operations["ExecutionPipelineController_update_v1"];
+        trace?: never;
+    };
+    "/api/v1/execution-pipelines/{id}/validate": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Validate graph, dependencies, compatibility, and snapshot integrity */
+        post: operations["ExecutionPipelineController_validate_v1"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/execution-pipelines/{id}/publish": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Publish an immutable execution plan snapshot and revision */
+        post: operations["ExecutionPipelineController_publish_v1"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/execution-pipelines/{id}/rollback": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Create a new published revision from immutable history */
+        post: operations["ExecutionPipelineController_rollback_v1"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/execution-pipelines/{id}/clone": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Clone an execution pipeline with new persistence identities */
+        post: operations["ExecutionPipelineController_clone_v1"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/execution-pipelines/{id}/archive": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Archive a pipeline while preserving immutable history */
+        post: operations["ExecutionPipelineController_archive_v1"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/execution-pipelines/{id}/restore": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Restore archived or soft-deleted pipeline metadata */
+        post: operations["ExecutionPipelineController_restore_v1"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/execution-pipelines/snapshots/compare": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Compare immutable execution plan snapshots */
+        get: operations["ExecutionPipelineController_compare_v1"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/execution-pipelines/snapshots": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Filter and paginate immutable execution plan snapshots */
+        get: operations["ExecutionPipelineController_listSnapshots_v1"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/execution-pipelines/snapshots/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Load an immutable execution plan snapshot */
+        get: operations["ExecutionPipelineController_getSnapshot_v1"];
         put?: never;
         post?: never;
         delete?: never;
@@ -1970,6 +2013,605 @@ export interface paths {
         put?: never;
         /** Append a structured execution log record */
         post: operations["ExecutionKernelController_appendLog_v1"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/agent-executions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Filter and paginate agent execution plans */
+        get: operations["AgentExecutionController_list_v1"];
+        put?: never;
+        /** Coordinate immutable runtime assets into an agent execution plan */
+        post: operations["AgentExecutionController_prepare_v1"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/agent-executions/{id}/cancel": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Cancel a coordinated agent execution through Execution Kernel */
+        post: operations["AgentExecutionController_cancel_v1"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/agent-executions/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Load an immutable agent execution plan */
+        get: operations["AgentExecutionController_get_v1"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/agent-execution/execute": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Execute a validated immutable agent runtime plan */
+        post: operations["UnifiedAgentExecutionController_execute_v1"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/agent-execution/stream": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Start a real provider stream backed by immutable runtime assets */
+        post: operations["UnifiedAgentExecutionController_stream_v1"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/agent-execution/stream/{sessionId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** Cancel an active provider stream */
+        delete: operations["UnifiedAgentExecutionController_cancelStream_v1"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/agent-execution/stream/{sessionId}/events": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Receive incremental provider stream events over SSE */
+        get: operations["UnifiedAgentExecutionController_events_v1"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/conversation-runtime": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Filter and paginate workspace conversation runtime records */
+        get: operations["ConversationRuntimeController_list_v1"];
+        put?: never;
+        /** Prepare normalized conversation runtime metadata without AI execution */
+        post: operations["ConversationRuntimeController_prepare_v1"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/conversation-runtime/{id}/validate": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Validate normalized conversation metadata and snapshot integrity */
+        post: operations["ConversationRuntimeController_validate_v1"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/conversation-runtime/{id}/state": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Apply a validated conversation metadata state transition */
+        post: operations["ConversationRuntimeController_transition_v1"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/conversation-runtime/{id}/publish": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Publish immutable conversation snapshot and version records */
+        post: operations["ConversationRuntimeController_publish_v1"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/conversation-runtime/{id}/rollback": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Rollback by creating a new published revision from immutable history */
+        post: operations["ConversationRuntimeController_rollback_v1"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/conversation-runtime/{id}/clone": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Clone conversation metadata with entirely new persistence identities */
+        post: operations["ConversationRuntimeController_clone_v1"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/conversation-runtime/{id}/archive": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Archive conversation runtime without deleting revision history */
+        post: operations["ConversationRuntimeController_archive_v1"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/conversation-runtime/{id}/restore": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Restore archived or soft-deleted conversation runtime metadata */
+        post: operations["ConversationRuntimeController_restore_v1"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/conversation-runtime/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Load normalized conversation runtime metadata and history */
+        get: operations["ConversationRuntimeController_get_v1"];
+        put?: never;
+        post?: never;
+        /** Soft-delete conversation runtime while preserving immutable history */
+        delete: operations["ConversationRuntimeController_softDelete_v1"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/conversation-runtime/snapshots/compare": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Compare immutable conversation runtime snapshots */
+        get: operations["ConversationRuntimeController_compare_v1"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/conversation-runtime/snapshots": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Filter and paginate immutable conversation runtime snapshots */
+        get: operations["ConversationRuntimeController_listSnapshots_v1"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/conversation-runtime/snapshots/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Load an immutable conversation runtime snapshot */
+        get: operations["ConversationRuntimeController_getSnapshot_v1"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/runtime-optimizations/compiled-prompts": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Cache or reuse an immutable compiled prompt package */
+        post: operations["RuntimeOptimizationController_cacheCompiled_v1"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/runtime-optimizations/rendered-prompts": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Cache deterministic static prompt rendering only */
+        post: operations["RuntimeOptimizationController_cacheRendered_v1"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/runtime-optimizations/runtime-contexts": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Create or reuse a complete immutable runtime context snapshot */
+        post: operations["RuntimeOptimizationController_createContext_v1"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/runtime-optimizations/retrieval-packages": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Cache deterministic query-independent retrieval preparation */
+        post: operations["RuntimeOptimizationController_cacheRetrieval_v1"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/runtime-optimizations/immutable-packages": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Cache or reuse a hash-protected immutable runtime package */
+        post: operations["RuntimeOptimizationController_cacheImmutable_v1"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/runtime-optimizations/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Load an immutable optimization package */
+        get: operations["RuntimeOptimizationController_get_v1"];
+        put?: never;
+        post?: never;
+        /** Invalidate an immutable cache package using optimistic locking */
+        delete: operations["RuntimeOptimizationController_invalidate_v1"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/runtime-optimizations": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Filter and paginate immutable optimization packages */
+        get: operations["RuntimeOptimizationController_list_v1"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/runtime-optimizations/{id}/metrics": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Load aggregated optimization reuse metrics */
+        get: operations["RuntimeOptimizationController_metrics_v1"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/stream-sessions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Filter and paginate stream sessions */
+        get: operations["StreamingRuntimeController_list_v1"];
+        put?: never;
+        /** Create immutable streaming session */
+        post: operations["StreamingRuntimeController_create_v1"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/stream-sessions/{id}/cancel": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Cancel a stream and propagate lifecycle cancellation */
+        post: operations["StreamingRuntimeController_cancel_v1"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/stream-sessions/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Load stream session */
+        get: operations["StreamingRuntimeController_get_v1"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/stream-sessions/{id}/metrics": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Load stream metrics */
+        get: operations["StreamingRuntimeController_metrics_v1"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/stream-sessions/{id}/diagnostics": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Load stream diagnostics */
+        get: operations["StreamingRuntimeController_diagnostics_v1"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/stream-sessions/{id}/chunks": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Load immutable ordered stream chunks */
+        get: operations["StreamingRuntimeController_chunks_v1"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/stream-sessions/compare": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Compare immutable stream snapshots */
+        post: operations["StreamingRuntimeController_compare_v1"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/stream-sessions/{id}/events": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["StreamingRuntimeController_events_v1"];
+        put?: never;
+        post?: never;
         delete?: never;
         options?: never;
         head?: never;
@@ -2251,118 +2893,49 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/v1/runtime-optimizations/compiled-prompts": {
+    "/api/v1/tool-runtime/executions": {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        get?: never;
+        /** Filter and paginate immutable tool invocation history */
+        get: operations["ToolRuntimeController_list_v1"];
         put?: never;
-        /** Cache or reuse an immutable compiled prompt package */
-        post: operations["RuntimeOptimizationController_cacheCompiled_v1"];
+        /** Execute a hash-verified immutable tool version */
+        post: operations["ToolRuntimeController_execute_v1"];
         delete?: never;
         options?: never;
         head?: never;
         patch?: never;
         trace?: never;
     };
-    "/api/v1/runtime-optimizations/rendered-prompts": {
+    "/api/v1/tool-runtime/executions/{id}": {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        get?: never;
-        put?: never;
-        /** Cache deterministic static prompt rendering only */
-        post: operations["RuntimeOptimizationController_cacheRendered_v1"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/runtime-optimizations/runtime-contexts": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /** Create or reuse a complete immutable runtime context snapshot */
-        post: operations["RuntimeOptimizationController_createContext_v1"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/runtime-optimizations/retrieval-packages": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /** Cache deterministic query-independent retrieval preparation */
-        post: operations["RuntimeOptimizationController_cacheRetrieval_v1"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/runtime-optimizations/immutable-packages": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /** Cache or reuse a hash-protected immutable runtime package */
-        post: operations["RuntimeOptimizationController_cacheImmutable_v1"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/runtime-optimizations/{id}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Load an immutable optimization package */
-        get: operations["RuntimeOptimizationController_get_v1"];
+        get: operations["ToolRuntimeController_get_v1"];
         put?: never;
         post?: never;
-        /** Invalidate an immutable cache package using optimistic locking */
-        delete: operations["RuntimeOptimizationController_invalidate_v1"];
+        /** Cancel an active tool execution and its Execution Kernel run */
+        delete: operations["ToolRuntimeController_cancel_v1"];
         options?: never;
         head?: never;
         patch?: never;
         trace?: never;
     };
-    "/api/v1/runtime-optimizations": {
+    "/api/v1/tool-runtime/executions/{id}/history": {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        /** Filter and paginate immutable optimization packages */
-        get: operations["RuntimeOptimizationController_list_v1"];
+        get: operations["ToolRuntimeController_history_v1"];
         put?: never;
         post?: never;
         delete?: never;
@@ -2371,15 +2944,14 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/v1/runtime-optimizations/{id}/metrics": {
+    "/api/v1/tool-runtime/executions/{id}/diagnostics": {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        /** Load aggregated optimization reuse metrics */
-        get: operations["RuntimeOptimizationController_metrics_v1"];
+        get: operations["ToolRuntimeController_diagnostics_v1"];
         put?: never;
         post?: never;
         delete?: never;
@@ -2388,50 +2960,14 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/v1/agent-executions": {
+    "/api/v1/tool-runtime/executions/{id}/metrics": {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        /** Filter and paginate agent execution plans */
-        get: operations["AgentExecutionController_list_v1"];
-        put?: never;
-        /** Coordinate immutable runtime assets into an agent execution plan */
-        post: operations["AgentExecutionController_prepare_v1"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/agent-executions/{id}/cancel": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /** Cancel a coordinated agent execution through Execution Kernel */
-        post: operations["AgentExecutionController_cancel_v1"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/agent-executions/{id}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Load an immutable agent execution plan */
-        get: operations["AgentExecutionController_get_v1"];
+        get: operations["ToolRuntimeController_metrics_v1"];
         put?: never;
         post?: never;
         delete?: never;
@@ -2440,66 +2976,14 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/v1/agent-execution/execute": {
+    "/api/v1/tool-runtime/executions/{id}/events": {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        get?: never;
-        put?: never;
-        /** Execute a validated immutable agent runtime plan */
-        post: operations["UnifiedAgentExecutionController_execute_v1"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/agent-execution/stream": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /** Start a real provider stream backed by immutable runtime assets */
-        post: operations["UnifiedAgentExecutionController_stream_v1"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/agent-execution/stream/{sessionId}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post?: never;
-        /** Cancel an active provider stream */
-        delete: operations["UnifiedAgentExecutionController_cancelStream_v1"];
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/agent-execution/stream/{sessionId}/events": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Receive incremental provider stream events over SSE */
-        get: operations["UnifiedAgentExecutionController_events_v1"];
+        get: operations["ToolRuntimeController_persistedEvents_v1"];
         put?: never;
         post?: never;
         delete?: never;
@@ -2508,33 +2992,15 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/v1/agent-runtime/runtimes": {
+    "/api/v1/tool-runtime/executions/{id}/stream": {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        /** Filter and paginate prepared Agent Runtime records */
-        get: operations["AgentRuntimeController_list_v1"];
-        put?: never;
-        /** Resolve and persist an Agent Runtime preparation without invoking a provider */
-        post: operations["AgentRuntimeController_prepare_v1"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/agent-runtime/runtimes/{id}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Load Agent Runtime preparation, conversation metadata, and snapshot reference */
-        get: operations["AgentRuntimeController_get_v1"];
+        /** Receive tool progress, partial-output, and terminal events over SSE */
+        get: operations["ToolRuntimeController_stream_v1"];
         put?: never;
         post?: never;
         delete?: never;
@@ -2543,7 +3009,25 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/v1/agent-runtime/runtimes/{id}/validate": {
+    "/api/v1/tool-registry/categories": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List tool categories */
+        get: operations["ToolRegistryController_categories_v1"];
+        put?: never;
+        /** Create a tool category */
+        post: operations["ToolRegistryController_createCategory_v1"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/tool-registry/categories/{id}": {
         parameters: {
             query?: never;
             header?: never;
@@ -2551,16 +3035,35 @@ export interface paths {
             cookie?: never;
         };
         get?: never;
+        /** Update a tool category */
+        put: operations["ToolRegistryController_updateCategory_v1"];
+        post?: never;
+        /** Delete an unused tool category */
+        delete: operations["ToolRegistryController_deleteCategory_v1"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/tool-registry/groups": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List tool groups */
+        get: operations["ToolRegistryController_groups_v1"];
         put?: never;
-        /** Revalidate runtime readiness against current workspace configuration */
-        post: operations["AgentRuntimeController_validate_v1"];
+        /** Create a tool group */
+        post: operations["ToolRegistryController_createGroup_v1"];
         delete?: never;
         options?: never;
         head?: never;
         patch?: never;
         trace?: never;
     };
-    "/api/v1/agent-runtime/runtimes/{id}/resolve": {
+    "/api/v1/tool-registry/groups/{id}": {
         parameters: {
             query?: never;
             header?: never;
@@ -2568,41 +3071,62 @@ export interface paths {
             cookie?: never;
         };
         get?: never;
-        put?: never;
-        /** Resolve a prepared runtime without executing or mutating it */
-        post: operations["AgentRuntimeController_resolve_v1"];
-        delete?: never;
+        /** Update a tool group */
+        put: operations["ToolRegistryController_updateGroup_v1"];
+        post?: never;
+        /** Delete an unused tool group */
+        delete: operations["ToolRegistryController_deleteGroup_v1"];
         options?: never;
         head?: never;
         patch?: never;
         trace?: never;
     };
-    "/api/v1/agent-runtime/runtimes/{id}/snapshot": {
+    "/api/v1/tool-registry/tools": {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        get?: never;
+        /** Search and paginate tool definitions */
+        get: operations["ToolRegistryController_list_v1"];
         put?: never;
-        /** Create the immutable Provider Runtime handoff snapshot */
-        post: operations["AgentRuntimeController_snapshot_v1"];
+        /** Create a tool definition draft */
+        post: operations["ToolRegistryController_create_v1"];
         delete?: never;
         options?: never;
         head?: never;
         patch?: never;
         trace?: never;
     };
-    "/api/v1/agent-runtime/snapshots/{id}": {
+    "/api/v1/tool-registry/tools/{id}": {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        /** Load an immutable Agent Runtime snapshot */
-        get: operations["AgentRuntimeController_getSnapshot_v1"];
+        /** Get a tool definition */
+        get: operations["ToolRegistryController_get_v1"];
+        /** Update tool definition draft metadata */
+        put: operations["ToolRegistryController_update_v1"];
+        post?: never;
+        /** Soft-delete a tool without deleting version history */
+        delete: operations["ToolRegistryController_delete_v1"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/tool-registry/tools/{id}/history": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get immutable tool version history */
+        get: operations["ToolRegistryController_history_v1"];
         put?: never;
         post?: never;
         delete?: never;
@@ -2611,25 +3135,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/v1/prompt-executions": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Filter and paginate immutable prompt execution payloads */
-        get: operations["PromptExecutionController_list_v1"];
-        put?: never;
-        /** Render and persist an immutable provider-ready prompt payload */
-        post: operations["PromptExecutionController_render_v1"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/prompt-executions/validate": {
+    "/api/v1/tool-registry/tools/{id}/publish": {
         parameters: {
             query?: never;
             header?: never;
@@ -2638,50 +3144,15 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /** Validate prompt execution without persisting a payload */
-        post: operations["PromptExecutionController_validate_v1"];
+        /** Publish an immutable tool definition revision */
+        post: operations["ToolRegistryController_publish_v1"];
         delete?: never;
         options?: never;
         head?: never;
         patch?: never;
         trace?: never;
     };
-    "/api/v1/prompt-executions/{id}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Load an immutable prompt execution payload */
-        get: operations["PromptExecutionController_get_v1"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/provider-runtime/requests": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Filter and paginate workspace provider requests */
-        get: operations["ProviderRuntimeController_listRequests_v1"];
-        put?: never;
-        /** Prepare an immutable, vendor-neutral provider request without execution */
-        post: operations["ProviderRuntimeController_prepare_v1"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/provider-runtime/requests/{id}/validate": {
+    "/api/v1/tool-registry/tools/{id}/rollback": {
         parameters: {
             query?: never;
             header?: never;
@@ -2690,15 +3161,15 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /** Revalidate a prepared provider request against its resolved sources */
-        post: operations["ProviderRuntimeController_validate_v1"];
+        /** Create a new published revision from prior tool metadata */
+        post: operations["ToolRegistryController_rollback_v1"];
         delete?: never;
         options?: never;
         head?: never;
         patch?: never;
         trace?: never;
     };
-    "/api/v1/provider-runtime/requests/{id}/snapshots": {
+    "/api/v1/tool-registry/tools/{id}/clone": {
         parameters: {
             query?: never;
             header?: never;
@@ -2707,101 +3178,15 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /** Create an immutable versioned provider request snapshot */
-        post: operations["ProviderRuntimeController_createSnapshot_v1"];
+        /** Clone a tool into an independent draft */
+        post: operations["ToolRegistryController_clone_v1"];
         delete?: never;
         options?: never;
         head?: never;
         patch?: never;
         trace?: never;
     };
-    "/api/v1/provider-runtime/requests/{id}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Load a workspace-isolated prepared provider request */
-        get: operations["ProviderRuntimeController_getRequest_v1"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/provider-runtime/snapshots/compare": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Compare two immutable provider request snapshots */
-        get: operations["ProviderRuntimeController_compare_v1"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/provider-runtime/snapshots": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Filter and paginate immutable provider request snapshots */
-        get: operations["ProviderRuntimeController_listSnapshots_v1"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/provider-runtime/snapshots/{id}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Load an immutable provider request snapshot */
-        get: operations["ProviderRuntimeController_getSnapshot_v1"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/conversation-runtime": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Filter and paginate workspace conversation runtime records */
-        get: operations["ConversationRuntimeController_list_v1"];
-        put?: never;
-        /** Prepare normalized conversation runtime metadata without AI execution */
-        post: operations["ConversationRuntimeController_prepare_v1"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/conversation-runtime/{id}/validate": {
+    "/api/v1/tool-registry/tools/{id}/archive": {
         parameters: {
             query?: never;
             header?: never;
@@ -2810,15 +3195,15 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /** Validate normalized conversation metadata and snapshot integrity */
-        post: operations["ConversationRuntimeController_validate_v1"];
+        /** Archive a tool without deleting version history */
+        post: operations["ToolRegistryController_archive_v1"];
         delete?: never;
         options?: never;
         head?: never;
         patch?: never;
         trace?: never;
     };
-    "/api/v1/conversation-runtime/{id}/state": {
+    "/api/v1/tool-registry/tools/{id}/restore": {
         parameters: {
             query?: never;
             header?: never;
@@ -2827,488 +3212,8 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /** Apply a validated conversation metadata state transition */
-        post: operations["ConversationRuntimeController_transition_v1"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/conversation-runtime/{id}/publish": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /** Publish immutable conversation snapshot and version records */
-        post: operations["ConversationRuntimeController_publish_v1"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/conversation-runtime/{id}/rollback": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /** Rollback by creating a new published revision from immutable history */
-        post: operations["ConversationRuntimeController_rollback_v1"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/conversation-runtime/{id}/clone": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /** Clone conversation metadata with entirely new persistence identities */
-        post: operations["ConversationRuntimeController_clone_v1"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/conversation-runtime/{id}/archive": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /** Archive conversation runtime without deleting revision history */
-        post: operations["ConversationRuntimeController_archive_v1"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/conversation-runtime/{id}/restore": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /** Restore archived or soft-deleted conversation runtime metadata */
-        post: operations["ConversationRuntimeController_restore_v1"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/conversation-runtime/{id}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Load normalized conversation runtime metadata and history */
-        get: operations["ConversationRuntimeController_get_v1"];
-        put?: never;
-        post?: never;
-        /** Soft-delete conversation runtime while preserving immutable history */
-        delete: operations["ConversationRuntimeController_softDelete_v1"];
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/conversation-runtime/snapshots/compare": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Compare immutable conversation runtime snapshots */
-        get: operations["ConversationRuntimeController_compare_v1"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/conversation-runtime/snapshots": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Filter and paginate immutable conversation runtime snapshots */
-        get: operations["ConversationRuntimeController_listSnapshots_v1"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/conversation-runtime/snapshots/{id}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Load an immutable conversation runtime snapshot */
-        get: operations["ConversationRuntimeController_getSnapshot_v1"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/execution-pipelines": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Filter and paginate workspace execution pipelines */
-        get: operations["ExecutionPipelineController_list_v1"];
-        put?: never;
-        /** Assemble a metadata-only execution plan draft */
-        post: operations["ExecutionPipelineController_create_v1"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/execution-pipelines/{id}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Load an execution pipeline and revision history */
-        get: operations["ExecutionPipelineController_get_v1"];
-        put?: never;
-        post?: never;
-        /** Soft-delete a pipeline while preserving history */
-        delete: operations["ExecutionPipelineController_softDelete_v1"];
-        options?: never;
-        head?: never;
-        /** Update an execution pipeline draft */
-        patch: operations["ExecutionPipelineController_update_v1"];
-        trace?: never;
-    };
-    "/api/v1/execution-pipelines/{id}/validate": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /** Validate graph, dependencies, compatibility, and snapshot integrity */
-        post: operations["ExecutionPipelineController_validate_v1"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/execution-pipelines/{id}/publish": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /** Publish an immutable execution plan snapshot and revision */
-        post: operations["ExecutionPipelineController_publish_v1"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/execution-pipelines/{id}/rollback": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /** Create a new published revision from immutable history */
-        post: operations["ExecutionPipelineController_rollback_v1"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/execution-pipelines/{id}/clone": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /** Clone an execution pipeline with new persistence identities */
-        post: operations["ExecutionPipelineController_clone_v1"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/execution-pipelines/{id}/archive": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /** Archive a pipeline while preserving immutable history */
-        post: operations["ExecutionPipelineController_archive_v1"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/execution-pipelines/{id}/restore": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /** Restore archived or soft-deleted pipeline metadata */
-        post: operations["ExecutionPipelineController_restore_v1"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/execution-pipelines/snapshots/compare": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Compare immutable execution plan snapshots */
-        get: operations["ExecutionPipelineController_compare_v1"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/execution-pipelines/snapshots": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Filter and paginate immutable execution plan snapshots */
-        get: operations["ExecutionPipelineController_listSnapshots_v1"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/execution-pipelines/snapshots/{id}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Load an immutable execution plan snapshot */
-        get: operations["ExecutionPipelineController_getSnapshot_v1"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/stream-sessions": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Filter and paginate stream sessions */
-        get: operations["StreamingRuntimeController_list_v1"];
-        put?: never;
-        /** Create immutable streaming session */
-        post: operations["StreamingRuntimeController_create_v1"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/stream-sessions/{id}/cancel": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /** Cancel a stream and propagate lifecycle cancellation */
-        post: operations["StreamingRuntimeController_cancel_v1"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/stream-sessions/{id}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Load stream session */
-        get: operations["StreamingRuntimeController_get_v1"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/stream-sessions/{id}/metrics": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Load stream metrics */
-        get: operations["StreamingRuntimeController_metrics_v1"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/stream-sessions/{id}/diagnostics": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Load stream diagnostics */
-        get: operations["StreamingRuntimeController_diagnostics_v1"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/stream-sessions/{id}/chunks": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Load immutable ordered stream chunks */
-        get: operations["StreamingRuntimeController_chunks_v1"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/stream-sessions/compare": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /** Compare immutable stream snapshots */
-        post: operations["StreamingRuntimeController_compare_v1"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/stream-sessions/{id}/events": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["StreamingRuntimeController_events_v1"];
-        put?: never;
-        post?: never;
+        /** Restore an archived or soft-deleted tool */
+        post: operations["ToolRegistryController_restore_v1"];
         delete?: never;
         options?: never;
         head?: never;
@@ -3426,6 +3331,530 @@ export interface paths {
         get: operations["WorkflowRuntimeController_metrics_v1"];
         put?: never;
         post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/retrieval-runtime": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Filter and paginate workspace retrieval packages */
+        get: operations["RetrievalRuntimeController_list_v1"];
+        put?: never;
+        /** Prepare immutable retrieval metadata without search or execution */
+        post: operations["RetrievalRuntimeController_prepare_v1"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/retrieval-runtime/{id}/validate": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Validate prepared metadata against current published Knowledge assets */
+        post: operations["RetrievalRuntimeController_validate_v1"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/retrieval-runtime/{id}/publish": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Publish an immutable versioned retrieval snapshot */
+        post: operations["RetrievalRuntimeController_publish_v1"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/retrieval-runtime/{id}/archive": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Archive retrieval metadata without deleting snapshot history */
+        post: operations["RetrievalRuntimeController_archive_v1"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/retrieval-runtime/{id}/restore": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Restore archived retrieval metadata and preserve history */
+        post: operations["RetrievalRuntimeController_restore_v1"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/retrieval-runtime/snapshots/compare": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Compare two immutable retrieval snapshots */
+        get: operations["RetrievalRuntimeController_compare_v1"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/retrieval-runtime/snapshots": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Filter and paginate immutable retrieval snapshots */
+        get: operations["RetrievalRuntimeController_listSnapshots_v1"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/retrieval-runtime/snapshots/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Load an immutable retrieval snapshot */
+        get: operations["RetrievalRuntimeController_getSnapshot_v1"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/retrieval-runtime/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Load a workspace-isolated retrieval package and diagnostics */
+        get: operations["RetrievalRuntimeController_get_v1"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/knowledge-base/spaces": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List knowledge spaces */
+        get: operations["KnowledgeBaseController_spaces_v1"];
+        put?: never;
+        /** Create a knowledge space */
+        post: operations["KnowledgeBaseController_createSpace_v1"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/knowledge-base/spaces/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** Update a knowledge space */
+        put: operations["KnowledgeBaseController_updateSpace_v1"];
+        post?: never;
+        /** Soft-delete an empty knowledge space */
+        delete: operations["KnowledgeBaseController_deleteSpace_v1"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/knowledge-base/spaces/{id}/publish": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Publish all indexed knowledge documents in a space */
+        post: operations["KnowledgeBaseController_publishSpace_v1"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/knowledge-base/collections": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List knowledge collections */
+        get: operations["KnowledgeBaseController_collections_v1"];
+        put?: never;
+        /** Create a knowledge collection */
+        post: operations["KnowledgeBaseController_createCollection_v1"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/knowledge-base/collections/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** Update a knowledge collection */
+        put: operations["KnowledgeBaseController_updateCollection_v1"];
+        post?: never;
+        /** Soft-delete an empty knowledge collection */
+        delete: operations["KnowledgeBaseController_deleteCollection_v1"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/knowledge-base/folders": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List knowledge folders */
+        get: operations["KnowledgeBaseController_folders_v1"];
+        put?: never;
+        /** Create a knowledge folder */
+        post: operations["KnowledgeBaseController_createFolder_v1"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/knowledge-base/folders/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** Update a knowledge folder and validate hierarchy */
+        put: operations["KnowledgeBaseController_updateFolder_v1"];
+        post?: never;
+        /** Soft-delete an empty knowledge folder */
+        delete: operations["KnowledgeBaseController_deleteFolder_v1"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/knowledge-base/categories": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List knowledge categories */
+        get: operations["KnowledgeBaseController_categories_v1"];
+        put?: never;
+        /** Create a knowledge category */
+        post: operations["KnowledgeBaseController_createCategory_v1"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/knowledge-base/categories/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** Update a knowledge category */
+        put: operations["KnowledgeBaseController_updateCategory_v1"];
+        post?: never;
+        /** Delete an unused knowledge category */
+        delete: operations["KnowledgeBaseController_deleteCategory_v1"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/knowledge-base/tags": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List knowledge tags */
+        get: operations["KnowledgeBaseController_tags_v1"];
+        put?: never;
+        /** Create a knowledge tag */
+        post: operations["KnowledgeBaseController_createTag_v1"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/knowledge-base/tags/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** Update a knowledge tag */
+        put: operations["KnowledgeBaseController_updateTag_v1"];
+        post?: never;
+        /** Delete an unused knowledge tag */
+        delete: operations["KnowledgeBaseController_deleteTag_v1"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/knowledge-base/documents": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Search and paginate knowledge document metadata */
+        get: operations["KnowledgeBaseController_documents_v1"];
+        put?: never;
+        /** Create a knowledge document draft */
+        post: operations["KnowledgeBaseController_createDocument_v1"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/knowledge-base/documents/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get a knowledge document */
+        get: operations["KnowledgeBaseController_document_v1"];
+        /** Update knowledge document draft metadata */
+        put: operations["KnowledgeBaseController_updateDocument_v1"];
+        post?: never;
+        /** Soft-delete a knowledge document without removing versions */
+        delete: operations["KnowledgeBaseController_deleteDocument_v1"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/knowledge-base/documents/{id}/history": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get immutable knowledge document history */
+        get: operations["KnowledgeBaseController_history_v1"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/knowledge-base/documents/upload": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Upload a knowledge document file and process it into indexed chunks */
+        post: operations["KnowledgeBaseController_uploadDocument_v1"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/knowledge-base/documents/text": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Create a knowledge document from raw text and process it into indexed chunks */
+        post: operations["KnowledgeBaseController_createTextDocument_v1"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/knowledge-base/documents/{id}/publish": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Publish an immutable knowledge document revision */
+        post: operations["KnowledgeBaseController_publish_v1"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/knowledge-base/documents/{id}/rollback": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Create a new published revision from prior knowledge metadata */
+        post: operations["KnowledgeBaseController_rollback_v1"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/knowledge-base/documents/{id}/clone": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Clone a knowledge document into an independent draft */
+        post: operations["KnowledgeBaseController_clone_v1"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/knowledge-base/documents/{id}/archive": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Archive a knowledge document while retaining history */
+        post: operations["KnowledgeBaseController_archive_v1"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/knowledge-base/documents/{id}/restore": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Restore an archived or soft-deleted knowledge document */
+        post: operations["KnowledgeBaseController_restore_v1"];
         delete?: never;
         options?: never;
         head?: never;
@@ -3890,262 +4319,6 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/v1/prompt-compiler/compile": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /** Compile and persist an immutable prompt package without provider execution */
-        post: operations["PromptCompilerController_compile_v1"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/prompt-compiler/preview": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /** Compile an audited, non-persisted prompt package preview */
-        post: operations["PromptCompilerController_preview_v1"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/prompt-compiler/validate": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /** Validate prompt sources, variables, dependencies, and size metadata */
-        post: operations["PromptCompilerController_validate_v1"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/prompt-compiler/compiled": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Filter and paginate immutable compiled prompt records */
-        get: operations["PromptCompilerController_list_v1"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/prompt-compiler/compiled/{id}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Load an immutable compiled prompt package */
-        get: operations["PromptCompilerController_get_v1"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/prompt-compiler/compare": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Compare two workspace-isolated compiled prompt versions */
-        get: operations["PromptCompilerController_compare_v1"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/retrieval-runtime": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Filter and paginate workspace retrieval packages */
-        get: operations["RetrievalRuntimeController_list_v1"];
-        put?: never;
-        /** Prepare immutable retrieval metadata without search or execution */
-        post: operations["RetrievalRuntimeController_prepare_v1"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/retrieval-runtime/{id}/validate": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /** Validate prepared metadata against current published Knowledge assets */
-        post: operations["RetrievalRuntimeController_validate_v1"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/retrieval-runtime/{id}/publish": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /** Publish an immutable versioned retrieval snapshot */
-        post: operations["RetrievalRuntimeController_publish_v1"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/retrieval-runtime/{id}/archive": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /** Archive retrieval metadata without deleting snapshot history */
-        post: operations["RetrievalRuntimeController_archive_v1"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/retrieval-runtime/{id}/restore": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /** Restore archived retrieval metadata and preserve history */
-        post: operations["RetrievalRuntimeController_restore_v1"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/retrieval-runtime/snapshots/compare": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Compare two immutable retrieval snapshots */
-        get: operations["RetrievalRuntimeController_compare_v1"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/retrieval-runtime/snapshots": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Filter and paginate immutable retrieval snapshots */
-        get: operations["RetrievalRuntimeController_listSnapshots_v1"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/retrieval-runtime/snapshots/{id}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Load an immutable retrieval snapshot */
-        get: operations["RetrievalRuntimeController_getSnapshot_v1"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/retrieval-runtime/{id}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Load a workspace-isolated retrieval package and diagnostics */
-        get: operations["RetrievalRuntimeController_get_v1"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
     "/api/v1/channel-runtime/channels": {
         parameters: {
             query?: never;
@@ -4293,6 +4466,70 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/channel-runtime/connections/{id}/diagnostics": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["ChannelRuntimeController_connectionDiagnostics_v1"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/channel-runtime/connections/{id}/reconnect": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["ChannelRuntimeController_reconnect_v1"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/channel-runtime/connections/{id}/disconnect": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["ChannelRuntimeController_disconnect_v1"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/channel-runtime/connections/{id}/new-pairing": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["ChannelRuntimeController_newPairing_v1"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/channel-runtime/connections/{id}/configurations": {
         parameters: {
             query?: never;
@@ -4307,6 +4544,22 @@ export interface paths {
         options?: never;
         head?: never;
         patch?: never;
+        trace?: never;
+    };
+    "/api/v1/channel-runtime/connections/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch: operations["ChannelRuntimeController_updateConnection_v1"];
         trace?: never;
     };
     "/api/v1/channel-runtime/connections/{id}/configuration": {
@@ -4368,6 +4621,23 @@ export interface paths {
         get: operations["ChannelRuntimeController_batches_v1"];
         put?: never;
         post: operations["ChannelRuntimeController_createBatch_v1"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/channel-runtime/connections/{id}/verify-token/regenerate": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Regenerate webhook verify token */
+        post: operations["ChannelRuntimeController_regenerateVerifyToken_v1"];
         delete?: never;
         options?: never;
         head?: never;
@@ -4518,6 +4788,23 @@ export interface paths {
         options?: never;
         head?: never;
         patch?: never;
+        trace?: never;
+    };
+    "/api/v1/channel-runtime/conversations/{id}/agent-execution": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /** Enable or disable automatic Responix execution for one channel conversation */
+        patch: operations["ChannelRuntimeController_setConversationExecution_v1"];
         trace?: never;
     };
     "/api/v1/channel-runtime/diagnostics": {
@@ -4768,6 +5055,7 @@ export interface components {
             modelId: string;
             modelName: string;
             displayName: string;
+            version?: string;
             /** @enum {string} */
             status: "ACTIVE" | "DISABLED" | "DEPRECATED";
             priority: number;
@@ -4778,6 +5066,10 @@ export interface components {
             supportsTools: boolean;
             supportsReasoning: boolean;
             supportsStreaming: boolean;
+            supportsFunctionCalling: boolean;
+            supportsVideo: boolean;
+            supportsMcp: boolean;
+            categories: string[];
         };
         AiProviderResponseDto: {
             id: string;
@@ -4786,8 +5078,47 @@ export interface components {
             status: "ACTIVE" | "DISABLED" | "UNHEALTHY";
             priority: number;
             configured: boolean;
+            providerConfigurationId?: string;
+            credentialConfigured: boolean;
             enabled: boolean;
             models: components["schemas"]["AiModelResponseDto"][];
+        };
+        ProviderConfigurationResponseDto: {
+            providerId: string;
+            providerName: string;
+            configured: boolean;
+            enabled: boolean;
+            credentialConfigured: boolean;
+            settings: {
+                [key: string]: unknown;
+            };
+            updatedAt?: string;
+            lastValidatedAt?: string;
+            available?: boolean;
+            errorCode?: string;
+        };
+        ProviderSettingsDto: {
+            /** @description Workspace-specific HTTPS provider endpoint */
+            apiBaseUrl?: string;
+        };
+        ProviderCredentialInputDto: {
+            /** @default default */
+            name: string;
+            secret: string;
+        };
+        ConfigureProviderDto: {
+            enabled: boolean;
+            settings?: components["schemas"]["ProviderSettingsDto"];
+            credential?: components["schemas"]["ProviderCredentialInputDto"];
+            /** @description Current configuration updatedAt value for optimistic concurrency */
+            expectedUpdatedAt?: string;
+        };
+        ProviderValidationResponseDto: {
+            providerId: string;
+            available: boolean;
+            checkedAt: string;
+            latencyMs?: number;
+            errorCode?: string;
         };
         AiRoutingRequestDto: {
             minimumContextWindow?: number;
@@ -5043,6 +5374,13 @@ export interface components {
                 [key: string]: unknown;
             };
         };
+        ConversationHistoryConfigDto: {
+            /**
+             * @description Whether the Agent may use conversation history as working context
+             * @default false
+             */
+            enabled: boolean;
+        };
         CreateAgentDto: {
             name: string;
             slug: string;
@@ -5065,6 +5403,8 @@ export interface components {
             configuration: components["schemas"]["AgentConfigurationDto"];
             capabilities?: components["schemas"]["AgentCapabilitiesDto"];
             promptBindings?: components["schemas"]["AgentPromptBindingDto"][];
+            /** @description Whether this Agent may use conversation history as working context. Defaults to OFF for new Agents. */
+            conversationHistory?: components["schemas"]["ConversationHistoryConfigDto"];
         };
         UpdateAgentDraftDto: {
             name?: string;
@@ -5088,6 +5428,25 @@ export interface components {
             configuration?: components["schemas"]["AgentConfigurationDto"];
             capabilities?: components["schemas"]["AgentCapabilitiesDto"];
             promptBindings?: components["schemas"]["AgentPromptBindingDto"][];
+            /** @description Whether this Agent may use conversation history as working context. Defaults to OFF for new Agents. */
+            conversationHistory?: components["schemas"]["ConversationHistoryConfigDto"];
+        };
+        PersonalityDimensionDto: {
+            base: number;
+            intensity: number;
+        };
+        UpdateOperationalPersonalityDto: {
+            warmth: components["schemas"]["PersonalityDimensionDto"];
+            enthusiasm: components["schemas"]["PersonalityDimensionDto"];
+            formality: components["schemas"]["PersonalityDimensionDto"];
+        };
+        UpdateConversationHistoryDto: {
+            /** @description Whether the Agent may use conversation history as working context */
+            enabled: boolean;
+        };
+        UpdateAutomaticExecutionDto: {
+            /** @description Whether this Agent may automatically execute on inbound channel messages */
+            enabled: boolean;
         };
         PublishAgentDto: {
             changeSummary?: string;
@@ -5100,212 +5459,877 @@ export interface components {
             name: string;
             slug: string;
         };
-        CreateKnowledgeSpaceDto: {
+        SwitchChannelAgentDto: {
+            /** @description Expected ChannelConnection state version for optimistic concurrency */
+            expectedStateVersion: number;
+        };
+        BindRetrievalRuntimeDto: {
+            /**
+             * Format: uuid
+             * @description Id of a published RetrievalRuntime to bind to the agent
+             */
+            retrievalRuntimeId: string;
+        };
+        AgentRuntimeContextDto: {
+            traceId: string;
+            /** @example en-US */
+            locale?: string;
+            /** @example Africa/Cairo */
+            timezone?: string;
+            requestMetadata?: {
+                [key: string]: unknown;
+            };
+            executionMetadata?: {
+                [key: string]: unknown;
+            };
+            environmentMetadata?: {
+                [key: string]: unknown;
+            };
+            tenantMetadata?: {
+                [key: string]: unknown;
+            };
+            runtimeMetadata?: {
+                [key: string]: unknown;
+            };
+        };
+        RuntimeVariableDto: {
             name: string;
-            slug: string;
+            /** @enum {string} */
+            type: "STRING" | "NUMBER" | "INTEGER" | "BOOLEAN" | "OBJECT" | "ARRAY" | "ANY";
+            /** @enum {string} */
+            source: "EXECUTION_REQUEST" | "AGENT" | "CONVERSATION" | "WORKSPACE" | "EXECUTION" | "ENVIRONMENT";
+            /** @description JSON-compatible runtime value */
+            value: Record<string, never>;
+        };
+        RuntimeConversationContextDto: {
+            /** Format: uuid */
+            conversationId?: string;
+            /** Format: uuid */
+            parentExecutionRunId?: string;
+            historyReferences?: Record<string, never>[];
+            memoryReferences?: Record<string, never>[];
+            participantMetadata?: {
+                [key: string]: unknown;
+            };
+            tokenAccountingMetadata?: {
+                [key: string]: unknown;
+            };
+        };
+        RuntimePromptContextDto: {
+            assistantHistory?: Record<string, never>[];
+            metadataBlocks?: Record<string, never>[];
+            attachments?: Record<string, never>[];
+            templateReferences?: Record<string, never>[];
+        };
+        PrepareAgentRuntimeDto: {
+            /** Format: uuid */
+            agentId: string;
+            /** Format: uuid */
+            agentVersionId?: string;
+            /** Format: uuid */
+            executionProfileId: string;
+            /** Format: uuid */
+            executionProfileVersionId?: string;
+            /** Format: uuid */
+            executionRequestId: string;
+            /** Format: uuid */
+            executionRunId?: string;
+            context: components["schemas"]["AgentRuntimeContextDto"];
+            variables?: components["schemas"]["RuntimeVariableDto"][];
+            conversation?: components["schemas"]["RuntimeConversationContextDto"];
+            prompt?: components["schemas"]["RuntimePromptContextDto"];
+        };
+        PromptSectionsDto: {
+            systemPrompt?: string;
+            developerPrompt?: string;
+            userPrompt?: string;
+        };
+        AssistantHistoryDto: {
+            content: string;
             metadata?: {
                 [key: string]: unknown;
             };
-            description?: string;
-            /** Format: uuid */
-            categoryId?: string;
         };
-        UpdateKnowledgeSpaceDto: {
-            name?: string;
-            slug?: string;
+        PromptMetadataBlockDto: {
+            type: string;
+            /** @description JSON-compatible metadata block content */
+            content: Record<string, never>;
             metadata?: {
                 [key: string]: unknown;
             };
-            description?: string;
-            /** Format: uuid */
-            categoryId?: string;
         };
-        CreateKnowledgeCollectionDto: {
+        PromptConditionDto: {
+            variable: string;
+            /** @enum {string} */
+            operator: "EXISTS" | "EQUALS" | "NOT_EQUALS";
+            value?: Record<string, never> | null;
+            target?: string;
+        };
+        CompilerVariableDto: {
             name: string;
-            slug: string;
-            metadata?: {
+            /** @enum {string} */
+            type: "STRING" | "NUMBER" | "BOOLEAN" | "JSON" | "ARRAY" | "OBJECT" | "NULL";
+            /** @enum {string} */
+            source: "EXECUTION_RUNTIME" | "AGENT_RUNTIME" | "WORKSPACE" | "CONVERSATION" | "EXECUTION_METADATA" | "ENVIRONMENT" | "STATIC_DEFAULT" | "PROMPT_DEFAULT";
+            /** @description JSON-compatible variable value */
+            value: Record<string, never> | null;
+        };
+        CompilePromptDto: {
+            /** Format: uuid */
+            promptId: string;
+            /** Format: uuid */
+            promptVersionId: string;
+            /** Format: uuid */
+            agentVersionId?: string;
+            /** Format: uuid */
+            agentRuntimeSnapshotId?: string;
+            /** Format: uuid */
+            executionRequestId?: string;
+            /** Format: uuid */
+            conversationId?: string;
+            sections?: components["schemas"]["PromptSectionsDto"];
+            assistantHistory?: components["schemas"]["AssistantHistoryDto"][];
+            metadataBlocks?: components["schemas"]["PromptMetadataBlockDto"][];
+            conditions?: components["schemas"]["PromptConditionDto"][];
+            variables?: components["schemas"]["CompilerVariableDto"][];
+            conversationMetadata?: {
                 [key: string]: unknown;
             };
-            /** Format: uuid */
-            spaceId: string;
-            description?: string;
-        };
-        UpdateKnowledgeCollectionDto: {
-            name?: string;
-            slug?: string;
-            metadata?: {
+            runtimeMetadata?: {
                 [key: string]: unknown;
             };
-            /** Format: uuid */
-            spaceId?: string;
-            description?: string;
+            executionMetadata?: {
+                [key: string]: unknown;
+            };
+            environmentMetadata?: {
+                [key: string]: unknown;
+            };
+            workspaceMetadata?: {
+                [key: string]: unknown;
+            };
+            /** @default 500000 */
+            maxPromptSizeBytes: number;
         };
-        CreateKnowledgeFolderDto: {
+        PromptExecutionVariableDto: {
             name: string;
-            slug: string;
-            metadata?: {
-                [key: string]: unknown;
-            };
-            /** Format: uuid */
-            spaceId: string;
-            /** Format: uuid */
-            collectionId?: string;
-            /** Format: uuid */
-            parentId?: string;
+            /** @enum {string} */
+            type: "STRING" | "NUMBER" | "BOOLEAN" | "JSON" | "ARRAY" | "OBJECT" | "NULL";
+            value: Record<string, never> | null;
         };
-        UpdateKnowledgeFolderDto: {
-            name?: string;
-            slug?: string;
-            metadata?: {
-                [key: string]: unknown;
-            };
-            /** Format: uuid */
-            spaceId?: string;
-            /** Format: uuid */
-            collectionId?: string;
-            /** Format: uuid */
-            parentId?: string;
-        };
-        KnowledgeNamedDto: {
-            name: string;
-            slug: string;
+        PromptExecutionMessageDto: {
+            /** @enum {string} */
+            role: "system" | "user" | "assistant";
+            content: string;
             metadata?: {
                 [key: string]: unknown;
             };
         };
-        UpdateKnowledgeNamedDto: {
-            name?: string;
-            slug?: string;
+        PromptAssistantHistoryDto: {
+            content: string;
             metadata?: {
                 [key: string]: unknown;
             };
         };
-        KnowledgeChunkMetadataDto: {
+        RenderPromptExecutionDto: {
+            /** Format: uuid */
+            compiledPromptId: string;
+            /** Format: uuid */
+            agentRuntimeSnapshotId?: string;
+            /** Format: uuid */
+            conversationRuntimeSnapshotId?: string;
+            /** Format: uuid */
+            providerRuntimeSnapshotId?: string;
+            /** Format: uuid */
+            executionPipelineSnapshotId?: string;
+            /** Format: uuid */
+            executionRequestId?: string;
+            /** Format: uuid */
+            executionRunId?: string;
+            variables?: components["schemas"]["PromptExecutionVariableDto"][];
+            conversationMessages?: components["schemas"]["PromptExecutionMessageDto"][];
+            assistantHistory?: components["schemas"]["PromptAssistantHistoryDto"][];
+            runtimeMetadata?: {
+                [key: string]: unknown;
+            };
+        };
+        PrepareProviderRequestDto: {
+            estimatedInputTokens: number;
+            maxOutputTokens?: number;
+            temperature?: number;
+            topP?: number;
+            presencePenalty?: number;
+            frequencyPenalty?: number;
+            stopSequences?: string[];
+            structuredOutput?: boolean;
+            vision?: boolean;
+            image?: boolean;
+            tools?: boolean;
+            streaming?: boolean;
+            reasoning?: boolean;
+            /** Format: uuid */
+            compiledPromptId: string;
+            /** Format: uuid */
+            agentRuntimeSnapshotId: string;
+            providerVersion?: string;
+            modelVersion?: string;
+            conversationMetadata?: {
+                [key: string]: unknown;
+            };
+            requestMetadata?: {
+                [key: string]: unknown;
+            };
+            executionPolicies?: {
+                [key: string]: unknown;
+            };
+            safetyMetadata?: {
+                [key: string]: unknown;
+            };
+            traceMetadata?: {
+                [key: string]: unknown;
+            };
+        };
+        PipelineNodeDto: {
+            nodeKey: string;
+            stage: string;
             ordinal: number;
-            checksum?: string;
-            tokenCount?: number;
-            characterCount?: number;
-            strategyMetadata?: {
-                [key: string]: unknown;
-            };
-            metadata?: {
-                [key: string]: unknown;
-            };
-        };
-        CreateKnowledgeDocumentDto: {
-            /** Format: uuid */
-            spaceId: string;
-            /** Format: uuid */
-            collectionId?: string;
-            /** Format: uuid */
-            folderId?: string;
-            /** Format: uuid */
-            categoryId?: string;
-            name: string;
-            slug: string;
-            description?: string;
             /** @enum {string} */
-            sourceType: "FILE" | "URL" | "TEXT" | "IMPORT" | "API";
-            sourceUrl?: string;
-            fileName?: string;
-            originalName?: string;
-            /** @default application/octet-stream */
-            mimeType: string;
-            sizeBytes?: number;
-            language?: string;
-            checksum?: string;
-            tagIds?: string[];
-            chunks?: components["schemas"]["KnowledgeChunkMetadataDto"][];
-            sourceMetadata?: {
-                [key: string]: unknown;
-            };
-            fileMetadata?: {
-                [key: string]: unknown;
-            };
-            urlMetadata?: {
-                [key: string]: unknown;
-            };
-            parserMetadata?: {
-                [key: string]: unknown;
-            };
-            chunkStrategy?: {
-                [key: string]: unknown;
-            };
-            embeddingStatusMetadata?: {
-                [key: string]: unknown;
-            };
-            syncMetadata?: {
-                [key: string]: unknown;
-            };
-            importMetadata?: {
-                [key: string]: unknown;
-            };
+            assetType?: "EXECUTION_REQUEST" | "AGENT_RUNTIME" | "COMPILED_PROMPT" | "PROVIDER_RUNTIME" | "RETRIEVAL_RUNTIME" | "CONVERSATION_RUNTIME" | "WORKFLOW" | "EXECUTION_PROFILE";
+            /** Format: uuid */
+            assetId?: string;
             metadata?: {
                 [key: string]: unknown;
             };
         };
-        UpdateKnowledgeDocumentDto: {
+        PipelineDependencyDto: {
+            dependencyKey: string;
+            fromNodeKey: string;
+            toNodeKey: string;
+            /** @default true */
+            required: boolean;
+            metadata?: {
+                [key: string]: unknown;
+            };
+        };
+        PipelineVariableDto: {
+            name: string;
+            /** @enum {string} */
+            type: "STRING" | "NUMBER" | "BOOLEAN" | "JSON" | "ARRAY" | "OBJECT" | "NULL";
+            value: Record<string, never> | null;
+            /** @default false */
+            required: boolean;
+        };
+        PipelineMetadataDto: {
+            key: string;
+            value: Record<string, never> | null;
+        };
+        PipelineValueDto: {
+            value: string;
+        };
+        CreateExecutionPipelineDto: {
+            name: string;
+            /** @example 1.0.0 */
+            compatibilityVersion: string;
+            nodes: components["schemas"]["PipelineNodeDto"][];
+            dependencies?: components["schemas"]["PipelineDependencyDto"][];
+            variables?: components["schemas"]["PipelineVariableDto"][];
+            metadataItems?: components["schemas"]["PipelineMetadataDto"][];
+            labels?: components["schemas"]["PipelineValueDto"][];
+            tags?: components["schemas"]["PipelineValueDto"][];
+            metadata?: {
+                [key: string]: unknown;
+            };
+        };
+        UpdateExecutionPipelineDto: {
+            name: string;
+            /** @example 1.0.0 */
+            compatibilityVersion: string;
+            nodes: components["schemas"]["PipelineNodeDto"][];
+            dependencies?: components["schemas"]["PipelineDependencyDto"][];
+            variables?: components["schemas"]["PipelineVariableDto"][];
+            metadataItems?: components["schemas"]["PipelineMetadataDto"][];
+            labels?: components["schemas"]["PipelineValueDto"][];
+            tags?: components["schemas"]["PipelineValueDto"][];
+            metadata?: {
+                [key: string]: unknown;
+            };
+        };
+        RollbackExecutionPipelineDto: {
             /** Format: uuid */
-            spaceId?: string;
-            /** Format: uuid */
-            collectionId?: string;
-            /** Format: uuid */
-            folderId?: string;
-            /** Format: uuid */
-            categoryId?: string;
+            revisionId: string;
+        };
+        CloneExecutionPipelineDto: {
             name?: string;
-            slug?: string;
-            description?: string;
+        };
+        CreateExecutionRequestDto: {
             /** @enum {string} */
-            sourceType?: "FILE" | "URL" | "TEXT" | "IMPORT" | "API";
-            sourceUrl?: string;
-            fileName?: string;
-            originalName?: string;
-            /** @default application/octet-stream */
-            mimeType: string;
-            sizeBytes?: number;
+            sourceType: "PROFILE" | "WORKFLOW" | "AGENT" | "PROMPT" | "KNOWLEDGE" | "TOOL" | "PROVIDER" | "WORKSPACE" | "MANUAL" | "SYSTEM";
+            /** Format: uuid */
+            sourceReferenceId?: string;
+            correlationId: string;
+            idempotencyKey: string;
+            /** @default 0 */
+            priority: number;
+            metadata?: {
+                [key: string]: unknown;
+            };
+        };
+        CreateExecutionRunDto: {
+            /** Format: uuid */
+            parentRunId?: string;
+            runtimeMetadata?: {
+                [key: string]: unknown;
+            };
+        };
+        TransitionExecutionDto: {
+            /** @enum {string} */
+            status: "REQUESTED" | "QUEUED" | "STARTING" | "RUNNING" | "PAUSED" | "SUCCEEDED" | "FAILED" | "CANCELLED" | "TIMED_OUT";
+            expectedStateVersion?: number;
+            message?: string;
+            metadata?: {
+                [key: string]: unknown;
+            };
+        };
+        CancelExecutionDto: {
+            expectedStateVersion?: number;
+            reason?: string;
+            metadata?: {
+                [key: string]: unknown;
+            };
+        };
+        RecordExecutionFailureDto: {
+            code: string;
+            message: string;
+            expectedStateVersion?: number;
+            metadata?: {
+                [key: string]: unknown;
+            };
+        };
+        RecordExecutionStepDto: {
+            sequence: number;
+            stepType: string;
+            name?: string;
+            /** @enum {string} */
+            status: "PENDING" | "RUNNING" | "SUCCEEDED" | "FAILED" | "CANCELLED" | "TIMED_OUT" | "SKIPPED";
+            inputMetadata?: {
+                [key: string]: unknown;
+            };
+            outputMetadata?: {
+                [key: string]: unknown;
+            };
+            errorMetadata?: {
+                [key: string]: unknown;
+            };
+            /** Format: date-time */
+            startedAt?: string;
+            /** Format: date-time */
+            endedAt?: string;
+            metadata?: {
+                [key: string]: unknown;
+            };
+        };
+        AppendExecutionEventDto: {
+            eventType: string;
+            message?: string;
+            metadata?: {
+                [key: string]: unknown;
+            };
+        };
+        AppendExecutionLogDto: {
+            /** @enum {string} */
+            level: "TRACE" | "DEBUG" | "INFO" | "WARN" | "ERROR";
+            message: string;
+            /** Format: uuid */
+            stepId?: string;
+            metadata?: {
+                [key: string]: unknown;
+            };
+        };
+        PrepareAgentExecutionDto: {
+            /** Format: uuid */
+            agentRuntimeSnapshotId: string;
+            /** Format: uuid */
+            promptExecutionPayloadId: string;
+            /** Format: uuid */
+            providerRuntimeSnapshotId: string;
+            /** Format: uuid */
+            conversationRuntimeSnapshotId?: string;
+            /** Format: uuid */
+            executionPipelineSnapshotId: string;
+            /**
+             * Format: uuid
+             * @description Parent Execution Kernel run for nested orchestration
+             */
+            parentExecutionRunId?: string;
+            correlationId: string;
+            idempotencyKey: string;
+            priority?: number;
+            metadata?: {
+                [key: string]: unknown;
+            };
+            memoryRuntimeSnapshotIds?: string[];
+            memoryCompatibilityVersion?: string;
+        };
+        CancelAgentExecutionDto: {
+            reason?: string;
+        };
+        AgentConversationMessageDto: {
+            /** @enum {string} */
+            role: "user" | "assistant";
+            content: string;
+            /** Format: uuid */
+            agentId?: string;
+            agentName?: string;
+        };
+        AgentIdentityDto: {
+            /** Format: uuid */
+            agentId?: string;
+            agentName?: string;
+        };
+        AgentMemoryWriteDto: {
+            /** Format: uuid */
+            runtimeId: string;
+            content: {
+                [key: string]: unknown;
+            };
+            expectedStateVersion: number;
+            metadata?: {
+                [key: string]: unknown;
+            };
+        };
+        AgentToolCallDto: {
+            /** Format: uuid */
+            toolVersionId: string;
+            input: {
+                [key: string]: unknown;
+            };
+            timeoutMs?: number;
+        };
+        ExecuteAgentExecutionDto: {
+            /** Format: uuid */
+            agentRuntimeSnapshotId: string;
+            /** Format: uuid */
+            promptExecutionPayloadId: string;
+            /** Format: uuid */
+            providerRuntimeSnapshotId: string;
+            /** Format: uuid */
+            conversationRuntimeSnapshotId?: string;
+            /** Format: uuid */
+            executionPipelineSnapshotId: string;
+            /**
+             * Format: uuid
+             * @description Parent Execution Kernel run for nested orchestration
+             */
+            parentExecutionRunId?: string;
+            correlationId: string;
+            idempotencyKey: string;
+            priority?: number;
+            metadata?: {
+                [key: string]: unknown;
+            };
+            memoryRuntimeSnapshotIds?: string[];
+            memoryCompatibilityVersion?: string;
+            taskType: string;
+            userMessage?: string;
+            conversationHistory?: components["schemas"]["AgentConversationMessageDto"][];
+            agentIdentity?: components["schemas"]["AgentIdentityDto"];
             language?: string;
+            /** Format: uuid */
+            retrievalRuntimeSnapshotId?: string;
+            /** @enum {string} */
+            retrievalMode?: "KEYWORD" | "SEMANTIC" | "HYBRID";
+            retrievalTopK?: number;
+            retrievalTokenBudget?: number;
+            staticVariables?: {
+                [key: string]: unknown;
+            };
+            memoryWrites?: components["schemas"]["AgentMemoryWriteDto"][];
+            toolCalls?: components["schemas"]["AgentToolCallDto"][];
+            availableToolVersionIds?: string[];
+        };
+        StreamAgentExecutionDto: {
+            /** Format: uuid */
+            agentRuntimeSnapshotId: string;
+            /** Format: uuid */
+            promptExecutionPayloadId: string;
+            /** Format: uuid */
+            providerRuntimeSnapshotId: string;
+            /** Format: uuid */
+            conversationRuntimeSnapshotId?: string;
+            /** Format: uuid */
+            executionPipelineSnapshotId: string;
+            /**
+             * Format: uuid
+             * @description Parent Execution Kernel run for nested orchestration
+             */
+            parentExecutionRunId?: string;
+            correlationId: string;
+            idempotencyKey: string;
+            priority?: number;
+            metadata?: {
+                [key: string]: unknown;
+            };
+            memoryRuntimeSnapshotIds?: string[];
+            memoryCompatibilityVersion?: string;
+            taskType: string;
+            userMessage?: string;
+            conversationHistory?: components["schemas"]["AgentConversationMessageDto"][];
+            agentIdentity?: components["schemas"]["AgentIdentityDto"];
+            language?: string;
+            /** Format: uuid */
+            retrievalRuntimeSnapshotId?: string;
+            /** @enum {string} */
+            retrievalMode?: "KEYWORD" | "SEMANTIC" | "HYBRID";
+            retrievalTopK?: number;
+            retrievalTokenBudget?: number;
+            staticVariables?: {
+                [key: string]: unknown;
+            };
+            memoryWrites?: components["schemas"]["AgentMemoryWriteDto"][];
+            toolCalls?: components["schemas"]["AgentToolCallDto"][];
+            availableToolVersionIds?: string[];
+            timeoutMs?: number;
+        };
+        ConversationContextDto: {
+            metadata?: {
+                [key: string]: unknown;
+            };
+            contextKey: string;
+            /** Format: uuid */
+            agentRuntimeSnapshotId?: string;
+            /** Format: uuid */
+            retrievalSnapshotId?: string;
+            /** Format: uuid */
+            compiledPromptId?: string;
+            /** Format: uuid */
+            providerSnapshotId?: string;
+            /** Format: uuid */
+            executionRequestId?: string;
+            /** Format: uuid */
+            executionRunId?: string;
+            locale?: string;
+            timezone?: string;
+            correlationId?: string;
+        };
+        ConversationVariableDto: {
+            metadata?: {
+                [key: string]: unknown;
+            };
+            name: string;
+            /** @enum {string} */
+            type: "STRING" | "NUMBER" | "BOOLEAN" | "JSON" | "ARRAY" | "OBJECT" | "NULL";
+            value: Record<string, never> | null;
+        };
+        ConversationParticipantDto: {
+            metadata?: {
+                [key: string]: unknown;
+            };
+            participantKey: string;
+            /** @enum {string} */
+            type: "CUSTOMER" | "USER" | "AGENT" | "SYSTEM" | "EXTERNAL";
+            /** Format: uuid */
+            referenceId?: string;
+            displayMetadata?: {
+                [key: string]: unknown;
+            };
+        };
+        ConversationMessageDto: {
+            metadata?: {
+                [key: string]: unknown;
+            };
+            messageIdentifier: string;
+            ordinal: number;
+            /** @enum {string} */
+            role: "SYSTEM" | "DEVELOPER" | "USER" | "ASSISTANT" | "TOOL";
+            participantKey?: string;
+            contentHash?: string;
+            tokenMetadata?: {
+                [key: string]: unknown;
+            };
+        };
+        ConversationAttachmentDto: {
+            metadata?: {
+                [key: string]: unknown;
+            };
+            attachmentIdentifier: string;
+            messageIdentifier?: string;
+            /** @enum {string} */
+            type: "FILE" | "IMAGE" | "AUDIO" | "VIDEO" | "OTHER";
+            mimeType: string;
+            fileName?: string;
+            sizeBytes?: number;
             checksum?: string;
-            tagIds?: string[];
-            chunks?: components["schemas"]["KnowledgeChunkMetadataDto"][];
-            sourceMetadata?: {
+        };
+        ConversationValueDto: {
+            metadata?: {
                 [key: string]: unknown;
             };
-            fileMetadata?: {
+            value: string;
+        };
+        ConversationNoteDto: {
+            metadata?: {
                 [key: string]: unknown;
             };
-            urlMetadata?: {
+            noteKey: string;
+        };
+        ConversationSettingsDto: {
+            /** @default false */
+            memoryEnabled: boolean;
+            /** @default false */
+            moderationEnabled: boolean;
+            maxHistoryMessages?: number;
+            metadata?: {
                 [key: string]: unknown;
             };
-            parserMetadata?: {
+        };
+        PrepareConversationRuntimeDto: {
+            name: string;
+            /** Format: uuid */
+            sourceConversationId?: string;
+            /** @example 1.0.0 */
+            compatibilityVersion: string;
+            /**
+             * @default READY
+             * @enum {string}
+             */
+            initialState: "INITIALIZED" | "READY" | "ACTIVE" | "PAUSED" | "CLOSED";
+            contexts?: components["schemas"]["ConversationContextDto"][];
+            variables?: components["schemas"]["ConversationVariableDto"][];
+            participants?: components["schemas"]["ConversationParticipantDto"][];
+            messages?: components["schemas"]["ConversationMessageDto"][];
+            attachments?: components["schemas"]["ConversationAttachmentDto"][];
+            labels?: components["schemas"]["ConversationValueDto"][];
+            tags?: components["schemas"]["ConversationValueDto"][];
+            notes?: components["schemas"]["ConversationNoteDto"][];
+            settings?: components["schemas"]["ConversationSettingsDto"];
+            stateMetadata?: {
                 [key: string]: unknown;
             };
-            chunkStrategy?: {
-                [key: string]: unknown;
-            };
-            embeddingStatusMetadata?: {
-                [key: string]: unknown;
-            };
-            syncMetadata?: {
-                [key: string]: unknown;
-            };
-            importMetadata?: {
+            auditMetadata?: {
                 [key: string]: unknown;
             };
             metadata?: {
                 [key: string]: unknown;
             };
         };
-        PublishKnowledgeDocumentDto: {
-            changeSummary?: string;
+        TransitionConversationStateDto: {
+            /** @enum {string} */
+            state: "INITIALIZED" | "READY" | "ACTIVE" | "PAUSED" | "CLOSED";
+            metadata?: {
+                [key: string]: unknown;
+            };
         };
-        RollbackKnowledgeDocumentDto: {
-            changeSummary?: string;
-            revision: number;
+        RollbackConversationRuntimeDto: {
+            /** Format: uuid */
+            versionId: string;
         };
-        CloneKnowledgeDocumentDto: {
+        CloneConversationRuntimeDto: {
+            name?: string;
+        };
+        CacheCompiledPromptDto: {
+            /** Format: uuid */
+            compiledPromptId: string;
+        };
+        CacheRenderedPromptDto: {
+            /** Format: uuid */
+            compiledPromptId: string;
+            staticVariables: {
+                [key: string]: unknown;
+            };
+        };
+        CreateRuntimeContextSnapshotDto: {
+            /** Format: uuid */
+            agentRuntimeSnapshotId?: string;
+            /** Format: uuid */
+            compiledPromptId?: string;
+            /** Format: uuid */
+            providerRuntimeSnapshotId?: string;
+            /** Format: uuid */
+            conversationRuntimeSnapshotId?: string;
+            /** Format: uuid */
+            retrievalRuntimeSnapshotId?: string;
+            /** Format: uuid */
+            executionPipelineSnapshotId?: string;
+            /** Format: uuid */
+            executionProfileVersionId?: string;
+            immutableMetadata?: {
+                [key: string]: unknown;
+            };
+        };
+        CacheRetrievalRuntimeDto: {
+            /** Format: uuid */
+            retrievalRuntimeSnapshotId: string;
+            languages?: string[];
+            searchConfiguration?: {
+                [key: string]: unknown;
+            };
+        };
+        CacheImmutablePackageDto: {
+            /** @enum {string} */
+            type: "COMPILED_PROMPT" | "RENDERED_PROMPT" | "PROVIDER_PROMPT" | "CONVERSATION_PREFIX" | "STUDIO_CONFIGURATION" | "RUNTIME_CONTEXT" | "RETRIEVAL_RUNTIME" | "MEMORY_RUNTIME" | "TOOL_DEFINITION" | "WORKFLOW_PACKAGE" | "EXECUTION_PLAN";
+            scopeKey: string;
+            sourceHash: string;
+            payload: {
+                [key: string]: unknown;
+            };
+            references?: {
+                [key: string]: string;
+            };
+            revision?: number;
+            savedTokens?: number;
+            compileTimeMs?: number;
+        };
+        InvalidateOptimizationPackageDto: {
+            reason: string;
+        };
+        Function: Record<string, never>;
+        MemoryReferenceDto: {
+            referenceKey: string;
+            /** Format: uuid */
+            targetRuntimeId: string;
+            targetRevision?: number;
+            /** @enum {string} */
+            kind: "DEPENDENCY" | "REFERENCE";
+            required?: boolean;
+            metadata?: {
+                [key: string]: unknown;
+            };
+        };
+        CreateMemoryRuntimeDto: {
+            identifier: string;
             name: string;
-            slug: string;
+            /** @enum {string} */
+            type: "CONVERSATION" | "SESSION" | "WORKSPACE" | "AGENT" | "EXECUTION" | "TEMPORARY_RUNTIME" | "SHARED_RUNTIME" | "REFERENCE";
+            scopeKey: string;
+            content: {
+                [key: string]: unknown;
+            };
+            metadata?: {
+                [key: string]: unknown;
+            };
+            compatibilityVersion: string;
+            /** Format: uuid */
+            executionRequestId?: string;
+            /** Format: uuid */
+            executionRunId?: string;
+            references?: components["schemas"]["MemoryReferenceDto"][];
+        };
+        UpdateMemoryRuntimeDto: {
+            content: {
+                [key: string]: unknown;
+            };
+            metadata?: {
+                [key: string]: unknown;
+            };
+            expectedStateVersion: number;
+            references?: components["schemas"]["MemoryReferenceDto"][];
+        };
+        RollbackMemoryRuntimeDto: {
+            /** Format: uuid */
+            versionId: string;
+            expectedStateVersion: number;
+        };
+        ResolveMemoryRuntimeDto: {
+            snapshotIds: string[];
+            compatibilityVersion: string;
+            /** Format: uuid */
+            executionRequestId?: string;
+            /** Format: uuid */
+            executionRunId?: string;
+        };
+        CommitMemoryWritesDto: {
+            /** Format: uuid */
+            runtimeId: string;
+            content: {
+                [key: string]: unknown;
+            };
+            expectedStateVersion: number;
+            /** Format: uuid */
+            executionRunId: string;
+            metadata?: {
+                [key: string]: unknown;
+            };
+        };
+        RetrievalExecutionFilterDto: {
+            key: string;
+            /** @enum {string} */
+            operator: "EQUALS" | "NOT_EQUALS" | "IN" | "NOT_IN" | "EXISTS";
+            value: Record<string, never>;
+        };
+        ExecuteRetrievalDto: {
+            /** Format: uuid */
+            retrievalRuntimeSnapshotId: string;
+            query: string;
+            /**
+             * @default HYBRID
+             * @enum {string}
+             */
+            mode: "KEYWORD" | "SEMANTIC" | "HYBRID";
+            /** @default 10 */
+            topK: number;
+            /** @default 0 */
+            minScore: number;
+            /** @default 4000 */
+            maxTokens: number;
+            /** @default 1.0 */
+            compatibilityVersion: string;
+            /** Format: uuid */
+            executionRequestId?: string;
+            /** Format: uuid */
+            executionRunId?: string;
+            filters?: components["schemas"]["RetrievalExecutionFilterDto"][];
+            providerCapabilities?: string[];
+            metadata?: {
+                [key: string]: unknown;
+            };
+        };
+        ToolRetrievalRequestDto: {
+            /** Format: uuid */
+            retrievalRuntimeSnapshotId: string;
+            query: string;
+            topK?: number;
+            tokenBudget?: number;
+        };
+        ToolMemoryWriteDto: {
+            /** Format: uuid */
+            runtimeId: string;
+            content: {
+                [key: string]: unknown;
+            };
+            expectedStateVersion: number;
+            metadata?: {
+                [key: string]: unknown;
+            };
+        };
+        ExecuteToolDto: {
+            /** Format: uuid */
+            toolVersionId: string;
+            input: {
+                [key: string]: unknown;
+            };
+            /**
+             * @default SYNC
+             * @enum {string}
+             */
+            mode: "SYNC" | "STREAM";
+            correlationId: string;
+            idempotencyKey: string;
+            traceId?: string;
+            /** Format: uuid */
+            parentExecutionId?: string;
+            /** Format: uuid */
+            parentExecutionRunId?: string;
+            timeoutMs?: number;
+            retrieval?: components["schemas"]["ToolRetrievalRequestDto"];
+            memoryWrites?: components["schemas"]["ToolMemoryWriteDto"][];
+            promptVariables?: {
+                [key: string]: unknown;
+            };
+            metadata?: {
+                [key: string]: unknown;
+            };
+        };
+        CancelToolExecutionDto: {
+            reason?: string;
         };
         ToolTaxonomyDto: {
             name: string;
@@ -5478,779 +6502,6 @@ export interface components {
             name: string;
             slug: string;
         };
-        ToolRetrievalRequestDto: {
-            /** Format: uuid */
-            retrievalRuntimeSnapshotId: string;
-            query: string;
-            topK?: number;
-            tokenBudget?: number;
-        };
-        ToolMemoryWriteDto: {
-            /** Format: uuid */
-            runtimeId: string;
-            content: {
-                [key: string]: unknown;
-            };
-            expectedStateVersion: number;
-            metadata?: {
-                [key: string]: unknown;
-            };
-        };
-        ExecuteToolDto: {
-            /** Format: uuid */
-            toolVersionId: string;
-            input: {
-                [key: string]: unknown;
-            };
-            /**
-             * @default SYNC
-             * @enum {string}
-             */
-            mode: "SYNC" | "STREAM";
-            correlationId: string;
-            idempotencyKey: string;
-            traceId?: string;
-            /** Format: uuid */
-            parentExecutionId?: string;
-            /** Format: uuid */
-            parentExecutionRunId?: string;
-            timeoutMs?: number;
-            retrieval?: components["schemas"]["ToolRetrievalRequestDto"];
-            memoryWrites?: components["schemas"]["ToolMemoryWriteDto"][];
-            promptVariables?: {
-                [key: string]: unknown;
-            };
-            metadata?: {
-                [key: string]: unknown;
-            };
-        };
-        CancelToolExecutionDto: {
-            reason?: string;
-        };
-        CreateExecutionRequestDto: {
-            /** @enum {string} */
-            sourceType: "PROFILE" | "WORKFLOW" | "AGENT" | "PROMPT" | "KNOWLEDGE" | "TOOL" | "PROVIDER" | "WORKSPACE" | "MANUAL" | "SYSTEM";
-            /** Format: uuid */
-            sourceReferenceId?: string;
-            correlationId: string;
-            idempotencyKey: string;
-            /** @default 0 */
-            priority: number;
-            metadata?: {
-                [key: string]: unknown;
-            };
-        };
-        CreateExecutionRunDto: {
-            /** Format: uuid */
-            parentRunId?: string;
-            runtimeMetadata?: {
-                [key: string]: unknown;
-            };
-        };
-        TransitionExecutionDto: {
-            /** @enum {string} */
-            status: "REQUESTED" | "QUEUED" | "STARTING" | "RUNNING" | "PAUSED" | "SUCCEEDED" | "FAILED" | "CANCELLED" | "TIMED_OUT";
-            expectedStateVersion?: number;
-            message?: string;
-            metadata?: {
-                [key: string]: unknown;
-            };
-        };
-        CancelExecutionDto: {
-            expectedStateVersion?: number;
-            reason?: string;
-            metadata?: {
-                [key: string]: unknown;
-            };
-        };
-        RecordExecutionFailureDto: {
-            code: string;
-            message: string;
-            expectedStateVersion?: number;
-            metadata?: {
-                [key: string]: unknown;
-            };
-        };
-        RecordExecutionStepDto: {
-            sequence: number;
-            stepType: string;
-            name?: string;
-            /** @enum {string} */
-            status: "PENDING" | "RUNNING" | "SUCCEEDED" | "FAILED" | "CANCELLED" | "TIMED_OUT" | "SKIPPED";
-            inputMetadata?: {
-                [key: string]: unknown;
-            };
-            outputMetadata?: {
-                [key: string]: unknown;
-            };
-            errorMetadata?: {
-                [key: string]: unknown;
-            };
-            /** Format: date-time */
-            startedAt?: string;
-            /** Format: date-time */
-            endedAt?: string;
-            metadata?: {
-                [key: string]: unknown;
-            };
-        };
-        AppendExecutionEventDto: {
-            eventType: string;
-            message?: string;
-            metadata?: {
-                [key: string]: unknown;
-            };
-        };
-        AppendExecutionLogDto: {
-            /** @enum {string} */
-            level: "TRACE" | "DEBUG" | "INFO" | "WARN" | "ERROR";
-            message: string;
-            /** Format: uuid */
-            stepId?: string;
-            metadata?: {
-                [key: string]: unknown;
-            };
-        };
-        MemoryReferenceDto: {
-            referenceKey: string;
-            /** Format: uuid */
-            targetRuntimeId: string;
-            targetRevision?: number;
-            /** @enum {string} */
-            kind: "DEPENDENCY" | "REFERENCE";
-            required?: boolean;
-            metadata?: {
-                [key: string]: unknown;
-            };
-        };
-        CreateMemoryRuntimeDto: {
-            identifier: string;
-            name: string;
-            /** @enum {string} */
-            type: "CONVERSATION" | "SESSION" | "WORKSPACE" | "AGENT" | "EXECUTION" | "TEMPORARY_RUNTIME" | "SHARED_RUNTIME" | "REFERENCE";
-            scopeKey: string;
-            content: {
-                [key: string]: unknown;
-            };
-            metadata?: {
-                [key: string]: unknown;
-            };
-            compatibilityVersion: string;
-            /** Format: uuid */
-            executionRequestId?: string;
-            /** Format: uuid */
-            executionRunId?: string;
-            references?: components["schemas"]["MemoryReferenceDto"][];
-        };
-        UpdateMemoryRuntimeDto: {
-            content: {
-                [key: string]: unknown;
-            };
-            metadata?: {
-                [key: string]: unknown;
-            };
-            expectedStateVersion: number;
-            references?: components["schemas"]["MemoryReferenceDto"][];
-        };
-        RollbackMemoryRuntimeDto: {
-            /** Format: uuid */
-            versionId: string;
-            expectedStateVersion: number;
-        };
-        ResolveMemoryRuntimeDto: {
-            snapshotIds: string[];
-            compatibilityVersion: string;
-            /** Format: uuid */
-            executionRequestId?: string;
-            /** Format: uuid */
-            executionRunId?: string;
-        };
-        CommitMemoryWritesDto: {
-            /** Format: uuid */
-            runtimeId: string;
-            content: {
-                [key: string]: unknown;
-            };
-            expectedStateVersion: number;
-            /** Format: uuid */
-            executionRunId: string;
-            metadata?: {
-                [key: string]: unknown;
-            };
-        };
-        RetrievalExecutionFilterDto: {
-            key: string;
-            /** @enum {string} */
-            operator: "EQUALS" | "NOT_EQUALS" | "IN" | "NOT_IN" | "EXISTS";
-            value: Record<string, never>;
-        };
-        ExecuteRetrievalDto: {
-            /** Format: uuid */
-            retrievalRuntimeSnapshotId: string;
-            query: string;
-            /**
-             * @default HYBRID
-             * @enum {string}
-             */
-            mode: "KEYWORD" | "SEMANTIC" | "HYBRID";
-            /** @default 10 */
-            topK: number;
-            /** @default 0 */
-            minScore: number;
-            /** @default 4000 */
-            maxTokens: number;
-            /** @default 1.0 */
-            compatibilityVersion: string;
-            /** Format: uuid */
-            executionRequestId?: string;
-            /** Format: uuid */
-            executionRunId?: string;
-            filters?: components["schemas"]["RetrievalExecutionFilterDto"][];
-            providerCapabilities?: string[];
-            metadata?: {
-                [key: string]: unknown;
-            };
-        };
-        CacheCompiledPromptDto: {
-            /** Format: uuid */
-            compiledPromptId: string;
-        };
-        CacheRenderedPromptDto: {
-            /** Format: uuid */
-            compiledPromptId: string;
-            staticVariables: {
-                [key: string]: unknown;
-            };
-        };
-        CreateRuntimeContextSnapshotDto: {
-            /** Format: uuid */
-            agentRuntimeSnapshotId?: string;
-            /** Format: uuid */
-            compiledPromptId?: string;
-            /** Format: uuid */
-            providerRuntimeSnapshotId?: string;
-            /** Format: uuid */
-            conversationRuntimeSnapshotId?: string;
-            /** Format: uuid */
-            retrievalRuntimeSnapshotId?: string;
-            /** Format: uuid */
-            executionPipelineSnapshotId?: string;
-            /** Format: uuid */
-            executionProfileVersionId?: string;
-            immutableMetadata?: {
-                [key: string]: unknown;
-            };
-        };
-        CacheRetrievalRuntimeDto: {
-            /** Format: uuid */
-            retrievalRuntimeSnapshotId: string;
-            languages?: string[];
-            searchConfiguration?: {
-                [key: string]: unknown;
-            };
-        };
-        CacheImmutablePackageDto: {
-            /** @enum {string} */
-            type: "COMPILED_PROMPT" | "RENDERED_PROMPT" | "PROVIDER_PROMPT" | "CONVERSATION_PREFIX" | "STUDIO_CONFIGURATION" | "RUNTIME_CONTEXT" | "RETRIEVAL_RUNTIME" | "MEMORY_RUNTIME" | "TOOL_DEFINITION" | "WORKFLOW_PACKAGE" | "EXECUTION_PLAN";
-            scopeKey: string;
-            sourceHash: string;
-            payload: {
-                [key: string]: unknown;
-            };
-            references?: {
-                [key: string]: string;
-            };
-            revision?: number;
-            savedTokens?: number;
-            compileTimeMs?: number;
-        };
-        InvalidateOptimizationPackageDto: {
-            reason: string;
-        };
-        PrepareAgentExecutionDto: {
-            /** Format: uuid */
-            agentRuntimeSnapshotId: string;
-            /** Format: uuid */
-            promptExecutionPayloadId: string;
-            /** Format: uuid */
-            providerRuntimeSnapshotId: string;
-            /** Format: uuid */
-            conversationRuntimeSnapshotId?: string;
-            /** Format: uuid */
-            executionPipelineSnapshotId: string;
-            /**
-             * Format: uuid
-             * @description Parent Execution Kernel run for nested orchestration
-             */
-            parentExecutionRunId?: string;
-            correlationId: string;
-            idempotencyKey: string;
-            priority?: number;
-            metadata?: {
-                [key: string]: unknown;
-            };
-            memoryRuntimeSnapshotIds?: string[];
-            memoryCompatibilityVersion?: string;
-        };
-        CancelAgentExecutionDto: {
-            reason?: string;
-        };
-        AgentMemoryWriteDto: {
-            /** Format: uuid */
-            runtimeId: string;
-            content: {
-                [key: string]: unknown;
-            };
-            expectedStateVersion: number;
-            metadata?: {
-                [key: string]: unknown;
-            };
-        };
-        AgentToolCallDto: {
-            /** Format: uuid */
-            toolVersionId: string;
-            input: {
-                [key: string]: unknown;
-            };
-            timeoutMs?: number;
-        };
-        ExecuteAgentExecutionDto: {
-            /** Format: uuid */
-            agentRuntimeSnapshotId: string;
-            /** Format: uuid */
-            promptExecutionPayloadId: string;
-            /** Format: uuid */
-            providerRuntimeSnapshotId: string;
-            /** Format: uuid */
-            conversationRuntimeSnapshotId?: string;
-            /** Format: uuid */
-            executionPipelineSnapshotId: string;
-            /**
-             * Format: uuid
-             * @description Parent Execution Kernel run for nested orchestration
-             */
-            parentExecutionRunId?: string;
-            correlationId: string;
-            idempotencyKey: string;
-            priority?: number;
-            metadata?: {
-                [key: string]: unknown;
-            };
-            memoryRuntimeSnapshotIds?: string[];
-            memoryCompatibilityVersion?: string;
-            taskType: string;
-            userMessage?: string;
-            language?: string;
-            /** Format: uuid */
-            retrievalRuntimeSnapshotId?: string;
-            /** @enum {string} */
-            retrievalMode?: "KEYWORD" | "SEMANTIC" | "HYBRID";
-            retrievalTopK?: number;
-            retrievalTokenBudget?: number;
-            staticVariables?: {
-                [key: string]: unknown;
-            };
-            memoryWrites?: components["schemas"]["AgentMemoryWriteDto"][];
-            toolCalls?: components["schemas"]["AgentToolCallDto"][];
-            availableToolVersionIds?: string[];
-        };
-        StreamAgentExecutionDto: {
-            /** Format: uuid */
-            agentRuntimeSnapshotId: string;
-            /** Format: uuid */
-            promptExecutionPayloadId: string;
-            /** Format: uuid */
-            providerRuntimeSnapshotId: string;
-            /** Format: uuid */
-            conversationRuntimeSnapshotId?: string;
-            /** Format: uuid */
-            executionPipelineSnapshotId: string;
-            /**
-             * Format: uuid
-             * @description Parent Execution Kernel run for nested orchestration
-             */
-            parentExecutionRunId?: string;
-            correlationId: string;
-            idempotencyKey: string;
-            priority?: number;
-            metadata?: {
-                [key: string]: unknown;
-            };
-            memoryRuntimeSnapshotIds?: string[];
-            memoryCompatibilityVersion?: string;
-            taskType: string;
-            userMessage?: string;
-            language?: string;
-            /** Format: uuid */
-            retrievalRuntimeSnapshotId?: string;
-            /** @enum {string} */
-            retrievalMode?: "KEYWORD" | "SEMANTIC" | "HYBRID";
-            retrievalTopK?: number;
-            retrievalTokenBudget?: number;
-            staticVariables?: {
-                [key: string]: unknown;
-            };
-            memoryWrites?: components["schemas"]["AgentMemoryWriteDto"][];
-            toolCalls?: components["schemas"]["AgentToolCallDto"][];
-            availableToolVersionIds?: string[];
-            timeoutMs?: number;
-        };
-        AgentRuntimeContextDto: {
-            traceId: string;
-            /** @example en-US */
-            locale?: string;
-            /** @example Africa/Cairo */
-            timezone?: string;
-            requestMetadata?: {
-                [key: string]: unknown;
-            };
-            executionMetadata?: {
-                [key: string]: unknown;
-            };
-            environmentMetadata?: {
-                [key: string]: unknown;
-            };
-            tenantMetadata?: {
-                [key: string]: unknown;
-            };
-            runtimeMetadata?: {
-                [key: string]: unknown;
-            };
-        };
-        RuntimeVariableDto: {
-            name: string;
-            /** @enum {string} */
-            type: "STRING" | "NUMBER" | "INTEGER" | "BOOLEAN" | "OBJECT" | "ARRAY" | "ANY";
-            /** @enum {string} */
-            source: "EXECUTION_REQUEST" | "AGENT" | "CONVERSATION" | "WORKSPACE" | "EXECUTION" | "ENVIRONMENT";
-            /** @description JSON-compatible runtime value */
-            value: Record<string, never>;
-        };
-        RuntimeConversationContextDto: {
-            /** Format: uuid */
-            conversationId?: string;
-            /** Format: uuid */
-            parentExecutionRunId?: string;
-            historyReferences?: Record<string, never>[];
-            memoryReferences?: Record<string, never>[];
-            participantMetadata?: {
-                [key: string]: unknown;
-            };
-            tokenAccountingMetadata?: {
-                [key: string]: unknown;
-            };
-        };
-        RuntimePromptContextDto: {
-            assistantHistory?: Record<string, never>[];
-            metadataBlocks?: Record<string, never>[];
-            attachments?: Record<string, never>[];
-            templateReferences?: Record<string, never>[];
-        };
-        PrepareAgentRuntimeDto: {
-            /** Format: uuid */
-            agentId: string;
-            /** Format: uuid */
-            agentVersionId?: string;
-            /** Format: uuid */
-            executionProfileId: string;
-            /** Format: uuid */
-            executionProfileVersionId?: string;
-            /** Format: uuid */
-            executionRequestId: string;
-            /** Format: uuid */
-            executionRunId?: string;
-            context: components["schemas"]["AgentRuntimeContextDto"];
-            variables?: components["schemas"]["RuntimeVariableDto"][];
-            conversation?: components["schemas"]["RuntimeConversationContextDto"];
-            prompt?: components["schemas"]["RuntimePromptContextDto"];
-        };
-        PromptExecutionVariableDto: {
-            name: string;
-            /** @enum {string} */
-            type: "STRING" | "NUMBER" | "BOOLEAN" | "JSON" | "ARRAY" | "OBJECT" | "NULL";
-            value: Record<string, never> | null;
-        };
-        PromptExecutionMessageDto: {
-            /** @enum {string} */
-            role: "system" | "user" | "assistant";
-            content: string;
-            metadata?: {
-                [key: string]: unknown;
-            };
-        };
-        PromptAssistantHistoryDto: {
-            content: string;
-            metadata?: {
-                [key: string]: unknown;
-            };
-        };
-        RenderPromptExecutionDto: {
-            /** Format: uuid */
-            compiledPromptId: string;
-            /** Format: uuid */
-            agentRuntimeSnapshotId?: string;
-            /** Format: uuid */
-            conversationRuntimeSnapshotId?: string;
-            /** Format: uuid */
-            providerRuntimeSnapshotId?: string;
-            /** Format: uuid */
-            executionPipelineSnapshotId?: string;
-            /** Format: uuid */
-            executionRequestId?: string;
-            /** Format: uuid */
-            executionRunId?: string;
-            variables?: components["schemas"]["PromptExecutionVariableDto"][];
-            conversationMessages?: components["schemas"]["PromptExecutionMessageDto"][];
-            assistantHistory?: components["schemas"]["PromptAssistantHistoryDto"][];
-            runtimeMetadata?: {
-                [key: string]: unknown;
-            };
-        };
-        PrepareProviderRequestDto: {
-            estimatedInputTokens: number;
-            maxOutputTokens?: number;
-            temperature?: number;
-            topP?: number;
-            presencePenalty?: number;
-            frequencyPenalty?: number;
-            stopSequences?: string[];
-            structuredOutput?: boolean;
-            vision?: boolean;
-            image?: boolean;
-            tools?: boolean;
-            streaming?: boolean;
-            reasoning?: boolean;
-            /** Format: uuid */
-            compiledPromptId: string;
-            /** Format: uuid */
-            agentRuntimeSnapshotId: string;
-            providerVersion?: string;
-            modelVersion?: string;
-            conversationMetadata?: {
-                [key: string]: unknown;
-            };
-            requestMetadata?: {
-                [key: string]: unknown;
-            };
-            executionPolicies?: {
-                [key: string]: unknown;
-            };
-            safetyMetadata?: {
-                [key: string]: unknown;
-            };
-            traceMetadata?: {
-                [key: string]: unknown;
-            };
-        };
-        ConversationContextDto: {
-            metadata?: {
-                [key: string]: unknown;
-            };
-            contextKey: string;
-            /** Format: uuid */
-            agentRuntimeSnapshotId?: string;
-            /** Format: uuid */
-            retrievalSnapshotId?: string;
-            /** Format: uuid */
-            compiledPromptId?: string;
-            /** Format: uuid */
-            providerSnapshotId?: string;
-            /** Format: uuid */
-            executionRequestId?: string;
-            /** Format: uuid */
-            executionRunId?: string;
-            locale?: string;
-            timezone?: string;
-            correlationId?: string;
-        };
-        ConversationVariableDto: {
-            metadata?: {
-                [key: string]: unknown;
-            };
-            name: string;
-            /** @enum {string} */
-            type: "STRING" | "NUMBER" | "BOOLEAN" | "JSON" | "ARRAY" | "OBJECT" | "NULL";
-            value: Record<string, never> | null;
-        };
-        ConversationParticipantDto: {
-            metadata?: {
-                [key: string]: unknown;
-            };
-            participantKey: string;
-            /** @enum {string} */
-            type: "CUSTOMER" | "USER" | "AGENT" | "SYSTEM" | "EXTERNAL";
-            /** Format: uuid */
-            referenceId?: string;
-            displayMetadata?: {
-                [key: string]: unknown;
-            };
-        };
-        ConversationMessageDto: {
-            metadata?: {
-                [key: string]: unknown;
-            };
-            messageIdentifier: string;
-            ordinal: number;
-            /** @enum {string} */
-            role: "SYSTEM" | "DEVELOPER" | "USER" | "ASSISTANT" | "TOOL";
-            participantKey?: string;
-            contentHash?: string;
-            tokenMetadata?: {
-                [key: string]: unknown;
-            };
-        };
-        ConversationAttachmentDto: {
-            metadata?: {
-                [key: string]: unknown;
-            };
-            attachmentIdentifier: string;
-            messageIdentifier?: string;
-            /** @enum {string} */
-            type: "FILE" | "IMAGE" | "AUDIO" | "VIDEO" | "OTHER";
-            mimeType: string;
-            fileName?: string;
-            sizeBytes?: number;
-            checksum?: string;
-        };
-        ConversationValueDto: {
-            metadata?: {
-                [key: string]: unknown;
-            };
-            value: string;
-        };
-        ConversationNoteDto: {
-            metadata?: {
-                [key: string]: unknown;
-            };
-            noteKey: string;
-        };
-        ConversationSettingsDto: {
-            /** @default false */
-            memoryEnabled: boolean;
-            /** @default false */
-            moderationEnabled: boolean;
-            maxHistoryMessages?: number;
-            metadata?: {
-                [key: string]: unknown;
-            };
-        };
-        PrepareConversationRuntimeDto: {
-            name: string;
-            /** Format: uuid */
-            sourceConversationId?: string;
-            /** @example 1.0.0 */
-            compatibilityVersion: string;
-            /**
-             * @default READY
-             * @enum {string}
-             */
-            initialState: "INITIALIZED" | "READY" | "ACTIVE" | "PAUSED" | "CLOSED";
-            contexts?: components["schemas"]["ConversationContextDto"][];
-            variables?: components["schemas"]["ConversationVariableDto"][];
-            participants?: components["schemas"]["ConversationParticipantDto"][];
-            messages?: components["schemas"]["ConversationMessageDto"][];
-            attachments?: components["schemas"]["ConversationAttachmentDto"][];
-            labels?: components["schemas"]["ConversationValueDto"][];
-            tags?: components["schemas"]["ConversationValueDto"][];
-            notes?: components["schemas"]["ConversationNoteDto"][];
-            settings?: components["schemas"]["ConversationSettingsDto"];
-            stateMetadata?: {
-                [key: string]: unknown;
-            };
-            auditMetadata?: {
-                [key: string]: unknown;
-            };
-            metadata?: {
-                [key: string]: unknown;
-            };
-        };
-        TransitionConversationStateDto: {
-            /** @enum {string} */
-            state: "INITIALIZED" | "READY" | "ACTIVE" | "PAUSED" | "CLOSED";
-            metadata?: {
-                [key: string]: unknown;
-            };
-        };
-        RollbackConversationRuntimeDto: {
-            /** Format: uuid */
-            versionId: string;
-        };
-        CloneConversationRuntimeDto: {
-            name?: string;
-        };
-        PipelineNodeDto: {
-            nodeKey: string;
-            stage: string;
-            ordinal: number;
-            /** @enum {string} */
-            assetType?: "EXECUTION_REQUEST" | "AGENT_RUNTIME" | "COMPILED_PROMPT" | "PROVIDER_RUNTIME" | "RETRIEVAL_RUNTIME" | "CONVERSATION_RUNTIME" | "WORKFLOW" | "EXECUTION_PROFILE";
-            /** Format: uuid */
-            assetId?: string;
-            metadata?: {
-                [key: string]: unknown;
-            };
-        };
-        PipelineDependencyDto: {
-            dependencyKey: string;
-            fromNodeKey: string;
-            toNodeKey: string;
-            /** @default true */
-            required: boolean;
-            metadata?: {
-                [key: string]: unknown;
-            };
-        };
-        PipelineVariableDto: {
-            name: string;
-            /** @enum {string} */
-            type: "STRING" | "NUMBER" | "BOOLEAN" | "JSON" | "ARRAY" | "OBJECT" | "NULL";
-            value: Record<string, never> | null;
-            /** @default false */
-            required: boolean;
-        };
-        PipelineMetadataDto: {
-            key: string;
-            value: Record<string, never> | null;
-        };
-        PipelineValueDto: {
-            value: string;
-        };
-        CreateExecutionPipelineDto: {
-            name: string;
-            /** @example 1.0.0 */
-            compatibilityVersion: string;
-            nodes: components["schemas"]["PipelineNodeDto"][];
-            dependencies?: components["schemas"]["PipelineDependencyDto"][];
-            variables?: components["schemas"]["PipelineVariableDto"][];
-            metadataItems?: components["schemas"]["PipelineMetadataDto"][];
-            labels?: components["schemas"]["PipelineValueDto"][];
-            tags?: components["schemas"]["PipelineValueDto"][];
-            metadata?: {
-                [key: string]: unknown;
-            };
-        };
-        UpdateExecutionPipelineDto: {
-            name: string;
-            /** @example 1.0.0 */
-            compatibilityVersion: string;
-            nodes: components["schemas"]["PipelineNodeDto"][];
-            dependencies?: components["schemas"]["PipelineDependencyDto"][];
-            variables?: components["schemas"]["PipelineVariableDto"][];
-            metadataItems?: components["schemas"]["PipelineMetadataDto"][];
-            labels?: components["schemas"]["PipelineValueDto"][];
-            tags?: components["schemas"]["PipelineValueDto"][];
-            metadata?: {
-                [key: string]: unknown;
-            };
-        };
-        RollbackExecutionPipelineDto: {
-            /** Format: uuid */
-            revisionId: string;
-        };
-        CloneExecutionPipelineDto: {
-            name?: string;
-        };
-        Function: Record<string, never>;
         ExecuteWorkflowDto: {
             /** Format: uuid */
             workflowVersionId: string;
@@ -6289,6 +6540,300 @@ export interface components {
             output?: {
                 [key: string]: unknown;
             };
+        };
+        RetrievalSourceDto: {
+            /** Format: uuid */
+            documentId: string;
+            /** Format: uuid */
+            versionId: string;
+            metadata?: {
+                [key: string]: unknown;
+            };
+        };
+        RetrievalCollectionDto: {
+            /** Format: uuid */
+            collectionId: string;
+            metadata?: {
+                [key: string]: unknown;
+            };
+        };
+        RetrievalFilterDto: {
+            key: string;
+            /** @enum {string} */
+            operator: "EQUALS" | "NOT_EQUALS" | "IN" | "NOT_IN" | "EXISTS";
+            value: Record<string, never> | null;
+            metadata?: {
+                [key: string]: unknown;
+            };
+        };
+        RetrievalVariableDto: {
+            name: string;
+            /** @enum {string} */
+            type: "STRING" | "NUMBER" | "BOOLEAN" | "JSON" | "ARRAY" | "OBJECT" | "NULL";
+            value: Record<string, never> | null;
+            metadata?: {
+                [key: string]: unknown;
+            };
+        };
+        PrepareRetrievalRuntimeDto: {
+            name: string;
+            /** Format: uuid */
+            knowledgeBaseId: string;
+            language?: string;
+            allowedMimeTypes?: string[];
+            sources?: components["schemas"]["RetrievalSourceDto"][];
+            collections?: components["schemas"]["RetrievalCollectionDto"][];
+            folderIds?: string[];
+            categoryIds?: string[];
+            tagIds?: string[];
+            filters?: components["schemas"]["RetrievalFilterDto"][];
+            variables?: components["schemas"]["RetrievalVariableDto"][];
+            metadata?: {
+                [key: string]: unknown;
+            };
+        };
+        CreateKnowledgeSpaceDto: {
+            name: string;
+            slug: string;
+            metadata?: {
+                [key: string]: unknown;
+            };
+            description?: string;
+            /** Format: uuid */
+            categoryId?: string;
+        };
+        UpdateKnowledgeSpaceDto: {
+            name?: string;
+            slug?: string;
+            metadata?: {
+                [key: string]: unknown;
+            };
+            description?: string;
+            /** Format: uuid */
+            categoryId?: string;
+        };
+        CreateKnowledgeCollectionDto: {
+            name: string;
+            slug: string;
+            metadata?: {
+                [key: string]: unknown;
+            };
+            /** Format: uuid */
+            spaceId: string;
+            description?: string;
+        };
+        UpdateKnowledgeCollectionDto: {
+            name?: string;
+            slug?: string;
+            metadata?: {
+                [key: string]: unknown;
+            };
+            /** Format: uuid */
+            spaceId?: string;
+            description?: string;
+        };
+        CreateKnowledgeFolderDto: {
+            name: string;
+            slug: string;
+            metadata?: {
+                [key: string]: unknown;
+            };
+            /** Format: uuid */
+            spaceId: string;
+            /** Format: uuid */
+            collectionId?: string;
+            /** Format: uuid */
+            parentId?: string;
+        };
+        UpdateKnowledgeFolderDto: {
+            name?: string;
+            slug?: string;
+            metadata?: {
+                [key: string]: unknown;
+            };
+            /** Format: uuid */
+            spaceId?: string;
+            /** Format: uuid */
+            collectionId?: string;
+            /** Format: uuid */
+            parentId?: string;
+        };
+        KnowledgeNamedDto: {
+            name: string;
+            slug: string;
+            metadata?: {
+                [key: string]: unknown;
+            };
+        };
+        UpdateKnowledgeNamedDto: {
+            name?: string;
+            slug?: string;
+            metadata?: {
+                [key: string]: unknown;
+            };
+        };
+        KnowledgeChunkMetadataDto: {
+            ordinal: number;
+            checksum?: string;
+            tokenCount?: number;
+            characterCount?: number;
+            strategyMetadata?: {
+                [key: string]: unknown;
+            };
+            metadata?: {
+                [key: string]: unknown;
+            };
+        };
+        CreateKnowledgeDocumentDto: {
+            /** Format: uuid */
+            spaceId: string;
+            /** Format: uuid */
+            collectionId?: string;
+            /** Format: uuid */
+            folderId?: string;
+            /** Format: uuid */
+            categoryId?: string;
+            name: string;
+            slug: string;
+            description?: string;
+            /** @enum {string} */
+            sourceType: "FILE" | "URL" | "TEXT" | "IMPORT" | "API";
+            sourceUrl?: string;
+            fileName?: string;
+            originalName?: string;
+            /** @default application/octet-stream */
+            mimeType: string;
+            sizeBytes?: number;
+            language?: string;
+            checksum?: string;
+            tagIds?: string[];
+            chunks?: components["schemas"]["KnowledgeChunkMetadataDto"][];
+            sourceMetadata?: {
+                [key: string]: unknown;
+            };
+            fileMetadata?: {
+                [key: string]: unknown;
+            };
+            urlMetadata?: {
+                [key: string]: unknown;
+            };
+            parserMetadata?: {
+                [key: string]: unknown;
+            };
+            chunkStrategy?: {
+                [key: string]: unknown;
+            };
+            embeddingStatusMetadata?: {
+                [key: string]: unknown;
+            };
+            syncMetadata?: {
+                [key: string]: unknown;
+            };
+            importMetadata?: {
+                [key: string]: unknown;
+            };
+            metadata?: {
+                [key: string]: unknown;
+            };
+        };
+        UploadKnowledgeDocumentDto: {
+            /** Format: uuid */
+            spaceId: string;
+            /** Format: uuid */
+            collectionId?: string;
+            /** Format: uuid */
+            folderId?: string;
+            /** Format: uuid */
+            categoryId?: string;
+            name?: string;
+            slug?: string;
+            description?: string;
+            language?: string;
+            metadata?: {
+                [key: string]: unknown;
+            };
+        };
+        CreateKnowledgeTextDocumentDto: {
+            /** Format: uuid */
+            spaceId: string;
+            /** Format: uuid */
+            collectionId?: string;
+            /** Format: uuid */
+            folderId?: string;
+            /** Format: uuid */
+            categoryId?: string;
+            name: string;
+            slug: string;
+            /** @description Raw document text to index */
+            content: string;
+            description?: string;
+            language?: string;
+            metadata?: {
+                [key: string]: unknown;
+            };
+        };
+        UpdateKnowledgeDocumentDto: {
+            /** Format: uuid */
+            spaceId?: string;
+            /** Format: uuid */
+            collectionId?: string;
+            /** Format: uuid */
+            folderId?: string;
+            /** Format: uuid */
+            categoryId?: string;
+            name?: string;
+            slug?: string;
+            description?: string;
+            /** @enum {string} */
+            sourceType?: "FILE" | "URL" | "TEXT" | "IMPORT" | "API";
+            sourceUrl?: string;
+            fileName?: string;
+            originalName?: string;
+            /** @default application/octet-stream */
+            mimeType: string;
+            sizeBytes?: number;
+            language?: string;
+            checksum?: string;
+            tagIds?: string[];
+            chunks?: components["schemas"]["KnowledgeChunkMetadataDto"][];
+            sourceMetadata?: {
+                [key: string]: unknown;
+            };
+            fileMetadata?: {
+                [key: string]: unknown;
+            };
+            urlMetadata?: {
+                [key: string]: unknown;
+            };
+            parserMetadata?: {
+                [key: string]: unknown;
+            };
+            chunkStrategy?: {
+                [key: string]: unknown;
+            };
+            embeddingStatusMetadata?: {
+                [key: string]: unknown;
+            };
+            syncMetadata?: {
+                [key: string]: unknown;
+            };
+            importMetadata?: {
+                [key: string]: unknown;
+            };
+            metadata?: {
+                [key: string]: unknown;
+            };
+        };
+        PublishKnowledgeDocumentDto: {
+            changeSummary?: string;
+        };
+        RollbackKnowledgeDocumentDto: {
+            changeSummary?: string;
+            revision: number;
+        };
+        CloneKnowledgeDocumentDto: {
+            name: string;
+            slug: string;
         };
         WorkflowTaxonomyDto: {
             name: string;
@@ -6721,128 +7266,6 @@ export interface components {
             name: string;
             slug: string;
         };
-        PromptSectionsDto: {
-            systemPrompt?: string;
-            developerPrompt?: string;
-            userPrompt?: string;
-        };
-        AssistantHistoryDto: {
-            content: string;
-            metadata?: {
-                [key: string]: unknown;
-            };
-        };
-        PromptMetadataBlockDto: {
-            type: string;
-            /** @description JSON-compatible metadata block content */
-            content: Record<string, never>;
-            metadata?: {
-                [key: string]: unknown;
-            };
-        };
-        PromptConditionDto: {
-            variable: string;
-            /** @enum {string} */
-            operator: "EXISTS" | "EQUALS" | "NOT_EQUALS";
-            value?: Record<string, never> | null;
-            target?: string;
-        };
-        CompilerVariableDto: {
-            name: string;
-            /** @enum {string} */
-            type: "STRING" | "NUMBER" | "BOOLEAN" | "JSON" | "ARRAY" | "OBJECT" | "NULL";
-            /** @enum {string} */
-            source: "EXECUTION_RUNTIME" | "AGENT_RUNTIME" | "WORKSPACE" | "CONVERSATION" | "EXECUTION_METADATA" | "ENVIRONMENT" | "STATIC_DEFAULT" | "PROMPT_DEFAULT";
-            /** @description JSON-compatible variable value */
-            value: Record<string, never> | null;
-        };
-        CompilePromptDto: {
-            /** Format: uuid */
-            promptId: string;
-            /** Format: uuid */
-            promptVersionId: string;
-            /** Format: uuid */
-            agentVersionId?: string;
-            /** Format: uuid */
-            agentRuntimeSnapshotId?: string;
-            /** Format: uuid */
-            executionRequestId?: string;
-            /** Format: uuid */
-            conversationId?: string;
-            sections?: components["schemas"]["PromptSectionsDto"];
-            assistantHistory?: components["schemas"]["AssistantHistoryDto"][];
-            metadataBlocks?: components["schemas"]["PromptMetadataBlockDto"][];
-            conditions?: components["schemas"]["PromptConditionDto"][];
-            variables?: components["schemas"]["CompilerVariableDto"][];
-            conversationMetadata?: {
-                [key: string]: unknown;
-            };
-            runtimeMetadata?: {
-                [key: string]: unknown;
-            };
-            executionMetadata?: {
-                [key: string]: unknown;
-            };
-            environmentMetadata?: {
-                [key: string]: unknown;
-            };
-            workspaceMetadata?: {
-                [key: string]: unknown;
-            };
-            /** @default 100000 */
-            maxPromptSizeBytes: number;
-        };
-        RetrievalSourceDto: {
-            /** Format: uuid */
-            documentId: string;
-            /** Format: uuid */
-            versionId: string;
-            metadata?: {
-                [key: string]: unknown;
-            };
-        };
-        RetrievalCollectionDto: {
-            /** Format: uuid */
-            collectionId: string;
-            metadata?: {
-                [key: string]: unknown;
-            };
-        };
-        RetrievalFilterDto: {
-            key: string;
-            /** @enum {string} */
-            operator: "EQUALS" | "NOT_EQUALS" | "IN" | "NOT_IN" | "EXISTS";
-            value: Record<string, never> | null;
-            metadata?: {
-                [key: string]: unknown;
-            };
-        };
-        RetrievalVariableDto: {
-            name: string;
-            /** @enum {string} */
-            type: "STRING" | "NUMBER" | "BOOLEAN" | "JSON" | "ARRAY" | "OBJECT" | "NULL";
-            value: Record<string, never> | null;
-            metadata?: {
-                [key: string]: unknown;
-            };
-        };
-        PrepareRetrievalRuntimeDto: {
-            name: string;
-            /** Format: uuid */
-            knowledgeBaseId: string;
-            language?: string;
-            allowedMimeTypes?: string[];
-            sources?: components["schemas"]["RetrievalSourceDto"][];
-            collections?: components["schemas"]["RetrievalCollectionDto"][];
-            folderIds?: string[];
-            categoryIds?: string[];
-            tagIds?: string[];
-            filters?: components["schemas"]["RetrievalFilterDto"][];
-            variables?: components["schemas"]["RetrievalVariableDto"][];
-            metadata?: {
-                [key: string]: unknown;
-            };
-        };
         CreateChannelDto: {
             name: string;
             /** @default whatsapp */
@@ -6872,6 +7295,18 @@ export interface components {
             verifyToken: string;
             appSecret: string;
         };
+        UpdateChannelConnectionDto: {
+            businessAccountId?: string;
+            phoneNumberId?: string;
+            /** @example +15551234567 */
+            displayPhoneNumber?: string;
+            /** @example v23.0 */
+            apiVersion?: string;
+            accessToken?: string;
+            verifyToken?: string;
+            appSecret?: string;
+            expectedStateVersion: number;
+        };
         UpdateChannelConfigurationDto: {
             configuration: {
                 [key: string]: unknown;
@@ -6896,6 +7331,11 @@ export interface components {
             /** Format: date-time */
             scheduledAt: string;
         };
+        AgentProducerDto: {
+            /** Format: uuid */
+            agentId: string;
+            agentName?: string;
+        };
         SendChannelMessageDto: {
             /** Format: uuid */
             connectionId: string;
@@ -6910,6 +7350,7 @@ export interface components {
             /** Format: uuid */
             replyToMessageId?: string;
             idempotencyKey: string;
+            producer?: components["schemas"]["AgentProducerDto"];
         };
         TransitionChannelMessageDto: {
             /** @enum {string} */
@@ -6924,6 +7365,9 @@ export interface components {
             mimeType: string;
             sizeBytes: number;
             dataBase64: string;
+        };
+        SetConversationExecutionDto: {
+            enabled: boolean;
         };
     };
     responses: never;
@@ -8266,6 +8710,124 @@ export interface operations {
             };
         };
     };
+    AiController_providerConfiguration_v1: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description Optional correlation ID; a generated value is returned when omitted */
+                "x-request-id"?: string;
+            };
+            path: {
+                providerId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProviderConfigurationResponseDto"];
+                };
+            };
+            /** @description A valid bearer token is required */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Active tenant membership and permission are required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    AiController_configureProvider_v1: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description Optional correlation ID; a generated value is returned when omitted */
+                "x-request-id"?: string;
+            };
+            path: {
+                providerId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ConfigureProviderDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProviderConfigurationResponseDto"];
+                };
+            };
+            /** @description A valid bearer token is required */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Active tenant membership and permission are required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    AiController_validateProvider_v1: {
+        parameters: {
+            query?: never;
+            header?: {
+                /** @description Optional correlation ID; a generated value is returned when omitted */
+                "x-request-id"?: string;
+            };
+            path: {
+                providerId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProviderValidationResponseDto"];
+                };
+            };
+            /** @description A valid bearer token is required */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Active tenant membership and permission are required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
     AiController_resolveRoute_v1: {
         parameters: {
             query?: never;
@@ -9001,6 +9563,33 @@ export interface operations {
             };
         };
     };
+    PromptLibraryController_delete_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Active workspace membership and the endpoint permission are required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Only unreferenced draft prompts can be deleted */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
     PromptLibraryController_history_v1: {
         parameters: {
             query?: never;
@@ -9501,6 +10090,117 @@ export interface operations {
             };
         };
     };
+    AgentStudioController_updateOperationalPersonality_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                agentId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateOperationalPersonalityDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Active workspace membership and the endpoint-specific Agent Studio permission are required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Agent was not found in the active workspace */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    AgentStudioController_updateConversationHistory_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                agentId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateConversationHistoryDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Active workspace membership and the endpoint-specific Agent Studio permission are required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Agent was not found in the active workspace */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    AgentStudioController_updateAutomaticExecution_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                agentId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateAutomaticExecutionDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Active workspace membership and the endpoint-specific Agent Studio permission are required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Agent was not found in the active workspace */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
     AgentStudioController_publish_v1: {
         parameters: {
             query?: never;
@@ -9680,6 +10380,5479 @@ export interface operations {
             };
         };
     };
+    AgentStudioController_switch_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                agentId: string;
+                connectionId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SwitchChannelAgentDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Active workspace membership and the endpoint-specific Agent Studio permission are required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Agent was not found in the active workspace */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    AgentStudioController_bindRetrievalRuntime_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                agentId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["BindRetrievalRuntimeDto"];
+            };
+        };
+        responses: {
+            /** @description Bound RetrievalRuntime is missing or not published */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Active workspace membership and the endpoint-specific Agent Studio permission are required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Agent was not found in the active workspace */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    AgentStudioController_unbindRetrievalRuntime_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                agentId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Active workspace membership and the endpoint-specific Agent Studio permission are required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Agent was not found in the active workspace */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    AgentRuntimeController_list_v1: {
+        parameters: {
+            query?: {
+                page?: number;
+                limit?: number;
+                status?: "PREPARED" | "VALIDATED" | "REJECTED" | "SNAPSHOTTED";
+                agentId?: string;
+                conversationId?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Active membership and endpoint-specific Agent Runtime permission are required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Agent runtime resource was not found in the active workspace */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    AgentRuntimeController_prepare_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PrepareAgentRuntimeDto"];
+            };
+        };
+        responses: {
+            /** @description Agent, prompts, provider, profile, context, or variables are not runtime-ready */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Active membership and endpoint-specific Agent Runtime permission are required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Agent runtime resource was not found in the active workspace */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    AgentRuntimeController_get_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Active membership and endpoint-specific Agent Runtime permission are required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Agent runtime resource was not found in the active workspace */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    AgentRuntimeController_validate_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Active membership and endpoint-specific Agent Runtime permission are required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Agent runtime resource was not found in the active workspace */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    AgentRuntimeController_resolve_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Stored preparation can no longer be resolved */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Active membership and endpoint-specific Agent Runtime permission are required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Agent runtime resource was not found in the active workspace */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    AgentRuntimeController_snapshot_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Active membership and endpoint-specific Agent Runtime permission are required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Agent runtime resource was not found in the active workspace */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Runtime already has an immutable snapshot */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    AgentRuntimeController_getSnapshot_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Active membership and endpoint-specific Agent Runtime permission are required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Agent runtime resource was not found in the active workspace */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    PromptCompilerController_compile_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CompilePromptDto"];
+            };
+        };
+        responses: {
+            /** @description Prompt sources, variables, templates, versions, or ownership are invalid */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Active membership and endpoint-specific Prompt Compiler permission are required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Compiled prompt was not found in the active workspace */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    PromptCompilerController_preview_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CompilePromptDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Active membership and endpoint-specific Prompt Compiler permission are required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Compiled prompt was not found in the active workspace */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    PromptCompilerController_validate_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CompilePromptDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Active membership and endpoint-specific Prompt Compiler permission are required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Compiled prompt was not found in the active workspace */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    PromptCompilerController_list_v1: {
+        parameters: {
+            query?: {
+                page?: number;
+                limit?: number;
+                promptId?: string;
+                promptVersionId?: string;
+                agentVersionId?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Active membership and endpoint-specific Prompt Compiler permission are required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Compiled prompt was not found in the active workspace */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    PromptCompilerController_get_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Active membership and endpoint-specific Prompt Compiler permission are required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Compiled prompt was not found in the active workspace */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    PromptCompilerController_compare_v1: {
+        parameters: {
+            query: {
+                leftId: string;
+                rightId: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Active membership and endpoint-specific Prompt Compiler permission are required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Compiled prompt was not found in the active workspace */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    PromptExecutionController_list_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Active membership and Prompt Execution permission required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Prompt package or execution payload was not found in the workspace */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    PromptExecutionController_render_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["RenderPromptExecutionDto"];
+            };
+        };
+        responses: {
+            /** @description Prompt hash, variables, conditions, or references are invalid */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Active membership and Prompt Execution permission required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Prompt package or execution payload was not found in the workspace */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    PromptExecutionController_validate_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["RenderPromptExecutionDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Active membership and Prompt Execution permission required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Prompt package or execution payload was not found in the workspace */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    PromptExecutionController_get_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Active membership and Prompt Execution permission required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Prompt package or execution payload was not found in the workspace */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    ProviderRuntimeController_listRequests_v1: {
+        parameters: {
+            query?: {
+                page?: number;
+                limit?: number;
+                status?: "PREPARED" | "VALIDATED" | "REJECTED" | "SNAPSHOTTED";
+                providerId?: string;
+                modelId?: string;
+                executionRequestId?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Active membership and endpoint-specific Provider Runtime permission are required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Provider Runtime resource was not found in the active workspace */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    ProviderRuntimeController_prepare_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PrepareProviderRequestDto"];
+            };
+        };
+        responses: {
+            /** @description Provider sources or requested capabilities are invalid */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Active membership and endpoint-specific Provider Runtime permission are required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Provider Runtime resource was not found in the active workspace */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    ProviderRuntimeController_validate_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Active membership and endpoint-specific Provider Runtime permission are required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Provider Runtime resource was not found in the active workspace */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    ProviderRuntimeController_createSnapshot_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Active membership and endpoint-specific Provider Runtime permission are required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Provider Runtime resource was not found in the active workspace */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    ProviderRuntimeController_getRequest_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Active membership and endpoint-specific Provider Runtime permission are required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Provider Runtime resource was not found in the active workspace */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    ProviderRuntimeController_compare_v1: {
+        parameters: {
+            query: {
+                leftId: string;
+                rightId: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Active membership and endpoint-specific Provider Runtime permission are required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Provider Runtime resource was not found in the active workspace */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    ProviderRuntimeController_listSnapshots_v1: {
+        parameters: {
+            query?: {
+                page?: number;
+                limit?: number;
+                requestId?: string;
+                providerId?: string;
+                modelId?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Active membership and endpoint-specific Provider Runtime permission are required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Provider Runtime resource was not found in the active workspace */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    ProviderRuntimeController_getSnapshot_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Active membership and endpoint-specific Provider Runtime permission are required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Provider Runtime resource was not found in the active workspace */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    ExecutionPipelineController_list_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Active membership and endpoint-specific Execution Pipeline permission required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Execution Pipeline resource was not found in the active workspace */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    ExecutionPipelineController_create_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateExecutionPipelineDto"];
+            };
+        };
+        responses: {
+            /** @description Pipeline graph, variables, or immutable asset references are invalid */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Active membership and endpoint-specific Execution Pipeline permission required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Execution Pipeline resource was not found in the active workspace */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    ExecutionPipelineController_get_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Active membership and endpoint-specific Execution Pipeline permission required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Execution Pipeline resource was not found in the active workspace */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    ExecutionPipelineController_softDelete_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Active membership and endpoint-specific Execution Pipeline permission required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Execution Pipeline resource was not found in the active workspace */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    ExecutionPipelineController_update_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateExecutionPipelineDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Active membership and endpoint-specific Execution Pipeline permission required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Execution Pipeline resource was not found in the active workspace */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    ExecutionPipelineController_validate_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Active membership and endpoint-specific Execution Pipeline permission required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Execution Pipeline resource was not found in the active workspace */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    ExecutionPipelineController_publish_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Active membership and endpoint-specific Execution Pipeline permission required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Execution Pipeline resource was not found in the active workspace */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    ExecutionPipelineController_rollback_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["RollbackExecutionPipelineDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Active membership and endpoint-specific Execution Pipeline permission required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Execution Pipeline resource was not found in the active workspace */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    ExecutionPipelineController_clone_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CloneExecutionPipelineDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Active membership and endpoint-specific Execution Pipeline permission required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Execution Pipeline resource was not found in the active workspace */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    ExecutionPipelineController_archive_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Active membership and endpoint-specific Execution Pipeline permission required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Execution Pipeline resource was not found in the active workspace */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    ExecutionPipelineController_restore_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Active membership and endpoint-specific Execution Pipeline permission required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Execution Pipeline resource was not found in the active workspace */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    ExecutionPipelineController_compare_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Active membership and endpoint-specific Execution Pipeline permission required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Execution Pipeline resource was not found in the active workspace */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    ExecutionPipelineController_listSnapshots_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Active membership and endpoint-specific Execution Pipeline permission required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Execution Pipeline resource was not found in the active workspace */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    ExecutionPipelineController_getSnapshot_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Active membership and endpoint-specific Execution Pipeline permission required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Execution Pipeline resource was not found in the active workspace */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    ExecutionKernelController_listRequests_v1: {
+        parameters: {
+            query?: {
+                page?: number;
+                limit?: number;
+                sourceType?: "PROFILE" | "WORKFLOW" | "AGENT" | "PROMPT" | "KNOWLEDGE" | "TOOL" | "PROVIDER" | "WORKSPACE" | "MANUAL" | "SYSTEM";
+                correlationId?: string;
+                requestedById?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Active membership and endpoint-specific Execution Kernel permission are required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Execution record was not found in the active workspace */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    ExecutionKernelController_createRequest_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateExecutionRequestDto"];
+            };
+        };
+        responses: {
+            /** @description Source reference, priority, correlation, or idempotency metadata is invalid */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Active membership and endpoint-specific Execution Kernel permission are required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Execution record was not found in the active workspace */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Idempotency key was reused with a different request */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    ExecutionKernelController_getRequest_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Active membership and endpoint-specific Execution Kernel permission are required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Execution record was not found in the active workspace */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    ExecutionKernelController_createRun_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateExecutionRunDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Active membership and endpoint-specific Execution Kernel permission are required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Execution record was not found in the active workspace */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    ExecutionKernelController_listRuns_v1: {
+        parameters: {
+            query?: {
+                page?: number;
+                limit?: number;
+                status?: "REQUESTED" | "QUEUED" | "STARTING" | "RUNNING" | "PAUSED" | "SUCCEEDED" | "FAILED" | "CANCELLED" | "TIMED_OUT";
+                requestId?: string;
+                correlationId?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Active membership and endpoint-specific Execution Kernel permission are required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Execution record was not found in the active workspace */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    ExecutionKernelController_getRun_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Active membership and endpoint-specific Execution Kernel permission are required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Execution record was not found in the active workspace */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    ExecutionKernelController_transition_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["TransitionExecutionDto"];
+            };
+        };
+        responses: {
+            /** @description Requested lifecycle transition is invalid */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Active membership and endpoint-specific Execution Kernel permission are required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Execution record was not found in the active workspace */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Expected state version is stale or state changed concurrently */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    ExecutionKernelController_cancel_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CancelExecutionDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Active membership and endpoint-specific Execution Kernel permission are required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Execution record was not found in the active workspace */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    ExecutionKernelController_recordFailure_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["RecordExecutionFailureDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Active membership and endpoint-specific Execution Kernel permission are required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Execution record was not found in the active workspace */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    ExecutionKernelController_recordStep_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["RecordExecutionStepDto"];
+            };
+        };
+        responses: {
+            /** @description Active membership and endpoint-specific Execution Kernel permission are required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Execution record was not found in the active workspace */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Step sequence already exists or run is terminal */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    ExecutionKernelController_appendEvent_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AppendExecutionEventDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Active membership and endpoint-specific Execution Kernel permission are required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Execution record was not found in the active workspace */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    ExecutionKernelController_appendLog_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AppendExecutionLogDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Active membership and endpoint-specific Execution Kernel permission are required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Execution record was not found in the active workspace */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    AgentExecutionController_list_v1: {
+        parameters: {
+            query?: {
+                page?: number;
+                limit?: number;
+                status?: "PREPARING" | "READY" | "FAILED" | "CANCELLED";
+                correlationId?: string;
+                executionRequestId?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Active membership and Agent Execution permission required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Execution or runtime asset was not found in the workspace */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    AgentExecutionController_prepare_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PrepareAgentExecutionDto"];
+            };
+        };
+        responses: {
+            /** @description Runtime dependencies or lifecycle state are invalid */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Active membership and Agent Execution permission required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Execution or runtime asset was not found in the workspace */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    AgentExecutionController_cancel_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CancelAgentExecutionDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Active membership and Agent Execution permission required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Execution or runtime asset was not found in the workspace */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    AgentExecutionController_get_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Active membership and Agent Execution permission required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Execution or runtime asset was not found in the workspace */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    UnifiedAgentExecutionController_execute_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ExecuteAgentExecutionDto"];
+            };
+        };
+        responses: {
+            /** @description Runtime dependencies or the rendered prompt are invalid */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Active membership and execution permissions required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    UnifiedAgentExecutionController_stream_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["StreamAgentExecutionDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Active membership and execution permissions required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    UnifiedAgentExecutionController_cancelStream_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                sessionId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Active membership and execution permissions required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    UnifiedAgentExecutionController_events_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                sessionId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Active membership and execution permissions required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    ConversationRuntimeController_list_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Active membership and endpoint-specific Conversation Runtime permission required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Conversation Runtime resource was not found in the active workspace */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    ConversationRuntimeController_prepare_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PrepareConversationRuntimeDto"];
+            };
+        };
+        responses: {
+            /** @description Conversation metadata or referenced resources are invalid */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Active membership and endpoint-specific Conversation Runtime permission required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Conversation Runtime resource was not found in the active workspace */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    ConversationRuntimeController_validate_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Active membership and endpoint-specific Conversation Runtime permission required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Conversation Runtime resource was not found in the active workspace */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    ConversationRuntimeController_transition_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["TransitionConversationStateDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Active membership and endpoint-specific Conversation Runtime permission required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Conversation Runtime resource was not found in the active workspace */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    ConversationRuntimeController_publish_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Active membership and endpoint-specific Conversation Runtime permission required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Conversation Runtime resource was not found in the active workspace */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    ConversationRuntimeController_rollback_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["RollbackConversationRuntimeDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Active membership and endpoint-specific Conversation Runtime permission required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Conversation Runtime resource was not found in the active workspace */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    ConversationRuntimeController_clone_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CloneConversationRuntimeDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Active membership and endpoint-specific Conversation Runtime permission required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Conversation Runtime resource was not found in the active workspace */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    ConversationRuntimeController_archive_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Active membership and endpoint-specific Conversation Runtime permission required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Conversation Runtime resource was not found in the active workspace */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    ConversationRuntimeController_restore_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Active membership and endpoint-specific Conversation Runtime permission required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Conversation Runtime resource was not found in the active workspace */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    ConversationRuntimeController_get_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Active membership and endpoint-specific Conversation Runtime permission required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Conversation Runtime resource was not found in the active workspace */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    ConversationRuntimeController_softDelete_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Active membership and endpoint-specific Conversation Runtime permission required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Conversation Runtime resource was not found in the active workspace */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    ConversationRuntimeController_compare_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Active membership and endpoint-specific Conversation Runtime permission required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Conversation Runtime resource was not found in the active workspace */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    ConversationRuntimeController_listSnapshots_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Active membership and endpoint-specific Conversation Runtime permission required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Conversation Runtime resource was not found in the active workspace */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    ConversationRuntimeController_getSnapshot_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Active membership and endpoint-specific Conversation Runtime permission required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Conversation Runtime resource was not found in the active workspace */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    RuntimeOptimizationController_cacheCompiled_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CacheCompiledPromptDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Runtime Optimization permission required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Immutable runtime asset was not found in the workspace */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    RuntimeOptimizationController_cacheRendered_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CacheRenderedPromptDto"];
+            };
+        };
+        responses: {
+            /** @description Variables are dynamic or not deterministic */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Runtime Optimization permission required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Immutable runtime asset was not found in the workspace */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    RuntimeOptimizationController_createContext_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateRuntimeContextSnapshotDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Runtime Optimization permission required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Immutable runtime asset was not found in the workspace */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    RuntimeOptimizationController_cacheRetrieval_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CacheRetrievalRuntimeDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Runtime Optimization permission required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Immutable runtime asset was not found in the workspace */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    RuntimeOptimizationController_cacheImmutable_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CacheImmutablePackageDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Runtime Optimization permission required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Immutable runtime asset was not found in the workspace */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    RuntimeOptimizationController_get_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Runtime Optimization permission required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Immutable runtime asset was not found in the workspace */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    RuntimeOptimizationController_invalidate_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["InvalidateOptimizationPackageDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Runtime Optimization permission required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Immutable runtime asset was not found in the workspace */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    RuntimeOptimizationController_list_v1: {
+        parameters: {
+            query?: {
+                page?: number;
+                limit?: number;
+                type?: "COMPILED_PROMPT" | "RENDERED_PROMPT" | "PROVIDER_PROMPT" | "CONVERSATION_PREFIX" | "STUDIO_CONFIGURATION" | "RUNTIME_CONTEXT" | "RETRIEVAL_RUNTIME" | "MEMORY_RUNTIME" | "TOOL_DEFINITION" | "WORKFLOW_PACKAGE" | "EXECUTION_PLAN";
+                sourceHash?: string;
+                scopeKey?: string;
+                status?: "ACTIVE" | "INVALIDATED";
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Runtime Optimization permission required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Immutable runtime asset was not found in the workspace */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    RuntimeOptimizationController_metrics_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Runtime Optimization permission required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Immutable runtime asset was not found in the workspace */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    StreamingRuntimeController_list_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Streaming Runtime permission required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    StreamingRuntimeController_create_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["Function"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Streaming Runtime permission required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    StreamingRuntimeController_cancel_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["Function"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Streaming Runtime permission required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    StreamingRuntimeController_get_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Streaming Runtime permission required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    StreamingRuntimeController_metrics_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Streaming Runtime permission required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    StreamingRuntimeController_diagnostics_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Streaming Runtime permission required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    StreamingRuntimeController_chunks_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Streaming Runtime permission required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    StreamingRuntimeController_compare_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["Function"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Streaming Runtime permission required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    StreamingRuntimeController_events_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Streaming Runtime permission required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    MemoryRuntimeController_list_v1: {
+        parameters: {
+            query?: {
+                page?: number;
+                limit?: number;
+                type?: "CONVERSATION" | "SESSION" | "WORKSPACE" | "AGENT" | "EXECUTION" | "TEMPORARY_RUNTIME" | "SHARED_RUNTIME" | "REFERENCE";
+                status?: "DRAFT" | "PUBLISHED" | "ARCHIVED";
+                scopeKey?: string;
+                search?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Active membership and Memory Runtime permission are required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Memory Runtime resource was not found in the active workspace */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    MemoryRuntimeController_create_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateMemoryRuntimeDto"];
+            };
+        };
+        responses: {
+            /** @description Memory scope, ownership, or references are invalid */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Active membership and Memory Runtime permission are required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Memory Runtime resource was not found in the active workspace */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    MemoryRuntimeController_get_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Active membership and Memory Runtime permission are required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Memory Runtime resource was not found in the active workspace */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    MemoryRuntimeController_update_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateMemoryRuntimeDto"];
+            };
+        };
+        responses: {
+            /** @description Active membership and Memory Runtime permission are required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Memory Runtime resource was not found in the active workspace */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Memory state version changed */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    MemoryRuntimeController_publish_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Active membership and Memory Runtime permission are required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Memory Runtime resource was not found in the active workspace */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    MemoryRuntimeController_rollback_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["RollbackMemoryRuntimeDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Active membership and Memory Runtime permission are required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Memory Runtime resource was not found in the active workspace */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    MemoryRuntimeController_archive_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Active membership and Memory Runtime permission are required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Memory Runtime resource was not found in the active workspace */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    MemoryRuntimeController_resolve_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ResolveMemoryRuntimeDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Active membership and Memory Runtime permission are required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Memory Runtime resource was not found in the active workspace */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    MemoryRuntimeController_commit_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CommitMemoryWritesDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Active membership and Memory Runtime permission are required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Memory Runtime resource was not found in the active workspace */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    MemoryRuntimeController_compare_v1: {
+        parameters: {
+            query: {
+                leftId: string;
+                rightId: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Active membership and Memory Runtime permission are required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Memory Runtime resource was not found in the active workspace */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    MemoryRuntimeController_snapshots_v1: {
+        parameters: {
+            query?: {
+                page?: number;
+                limit?: number;
+                runtimeId?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Active membership and Memory Runtime permission are required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Memory Runtime resource was not found in the active workspace */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    MemoryRuntimeController_snapshot_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Active membership and Memory Runtime permission are required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Memory Runtime resource was not found in the active workspace */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    MemoryRuntimeController_diagnostics_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Active membership and Memory Runtime permission are required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Memory Runtime resource was not found in the active workspace */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    MemoryRuntimeController_metrics_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Active membership and Memory Runtime permission are required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Memory Runtime resource was not found in the active workspace */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    MemoryRuntimeController_history_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Active membership and Memory Runtime permission are required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Memory Runtime resource was not found in the active workspace */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    RetrievalExecutionController_list_v1: {
+        parameters: {
+            query?: {
+                page?: number;
+                limit?: number;
+                status?: "COMPLETED" | "FAILED" | "CANCELLED";
+                mode?: "KEYWORD" | "SEMANTIC" | "HYBRID";
+                retrievalRuntimeSnapshotId?: string;
+                search?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Active membership and Retrieval Execution permission are required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Retrieval dependency was not found in the active workspace */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    RetrievalExecutionController_execute_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ExecuteRetrievalDto"];
+            };
+        };
+        responses: {
+            /** @description Retrieval dependencies, integrity, compatibility, or query are invalid */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Active membership and Retrieval Execution permission are required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Retrieval dependency was not found in the active workspace */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    RetrievalExecutionController_diagnostics_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Active membership and Retrieval Execution permission are required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Retrieval dependency was not found in the active workspace */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    RetrievalExecutionController_metrics_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Active membership and Retrieval Execution permission are required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Retrieval dependency was not found in the active workspace */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    RetrievalExecutionController_get_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Active membership and Retrieval Execution permission are required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Retrieval dependency was not found in the active workspace */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    ToolRuntimeController_list_v1: {
+        parameters: {
+            query?: {
+                page?: number;
+                limit?: number;
+                status?: "CREATED" | "QUEUED" | "PREPARING" | "RUNNING" | "STREAMING" | "COMPLETED" | "CANCELLED" | "FAILED" | "TIMED_OUT";
+                toolId?: string;
+                toolVersionId?: string;
+                correlationId?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Active workspace membership and tool permissions are required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Tool version, execution, or dependency was not found in the active workspace */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    ToolRuntimeController_execute_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ExecuteToolDto"];
+            };
+        };
+        responses: {
+            /** @description Tool input, output, policy, compatibility, or dependency is invalid */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Active workspace membership and tool permissions are required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Tool version, execution, or dependency was not found in the active workspace */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Tool snapshot integrity or execution state changed */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    ToolRuntimeController_get_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Active workspace membership and tool permissions are required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Tool version, execution, or dependency was not found in the active workspace */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    ToolRuntimeController_cancel_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CancelToolExecutionDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Active workspace membership and tool permissions are required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Tool version, execution, or dependency was not found in the active workspace */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    ToolRuntimeController_history_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Active workspace membership and tool permissions are required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Tool version, execution, or dependency was not found in the active workspace */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    ToolRuntimeController_diagnostics_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Active workspace membership and tool permissions are required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Tool version, execution, or dependency was not found in the active workspace */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    ToolRuntimeController_metrics_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Active workspace membership and tool permissions are required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Tool version, execution, or dependency was not found in the active workspace */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    ToolRuntimeController_persistedEvents_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Active workspace membership and tool permissions are required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Tool version, execution, or dependency was not found in the active workspace */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    ToolRuntimeController_stream_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Active workspace membership and tool permissions are required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Tool version, execution, or dependency was not found in the active workspace */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    ToolRegistryController_categories_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Active membership and endpoint-specific Tool Registry permission are required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Tool Registry resource was not found in the active workspace */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    ToolRegistryController_createCategory_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ToolTaxonomyDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Active membership and endpoint-specific Tool Registry permission are required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Tool Registry resource was not found in the active workspace */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    ToolRegistryController_updateCategory_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateToolTaxonomyDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Active membership and endpoint-specific Tool Registry permission are required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Tool Registry resource was not found in the active workspace */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    ToolRegistryController_deleteCategory_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Active membership and endpoint-specific Tool Registry permission are required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Tool Registry resource was not found in the active workspace */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Category is in use */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    ToolRegistryController_groups_v1: {
+        parameters: {
+            query: {
+                categoryId: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Active membership and endpoint-specific Tool Registry permission are required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Tool Registry resource was not found in the active workspace */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    ToolRegistryController_createGroup_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateToolGroupDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Active membership and endpoint-specific Tool Registry permission are required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Tool Registry resource was not found in the active workspace */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    ToolRegistryController_updateGroup_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateToolGroupDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Active membership and endpoint-specific Tool Registry permission are required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Tool Registry resource was not found in the active workspace */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    ToolRegistryController_deleteGroup_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Active membership and endpoint-specific Tool Registry permission are required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Tool Registry resource was not found in the active workspace */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Group is in use */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    ToolRegistryController_list_v1: {
+        parameters: {
+            query?: {
+                page?: number;
+                limit?: number;
+                search?: string;
+                status?: "DRAFT" | "PUBLISHED" | "ARCHIVED";
+                type?: "INTERNAL" | "HTTP" | "REST" | "WEBHOOK" | "DATABASE" | "FILE" | "STORAGE" | "WORKFLOW" | "AGENT" | "COMPOSITE" | "OPENAPI" | "INTERNAL_SERVICE" | "FUNCTION" | "MCP";
+                visibility?: "PRIVATE" | "WORKSPACE";
+                categoryId?: string;
+                groupId?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Active membership and endpoint-specific Tool Registry permission are required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Tool Registry resource was not found in the active workspace */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    ToolRegistryController_create_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateToolDefinitionDto"];
+            };
+        };
+        responses: {
+            /** @description Tool metadata, schema, permission, or taxonomy is invalid */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Active membership and endpoint-specific Tool Registry permission are required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Tool Registry resource was not found in the active workspace */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    ToolRegistryController_get_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Active membership and endpoint-specific Tool Registry permission are required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Tool Registry resource was not found in the active workspace */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    ToolRegistryController_update_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateToolDefinitionDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Active membership and endpoint-specific Tool Registry permission are required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Tool Registry resource was not found in the active workspace */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    ToolRegistryController_delete_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Active membership and endpoint-specific Tool Registry permission are required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Tool Registry resource was not found in the active workspace */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    ToolRegistryController_history_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Active membership and endpoint-specific Tool Registry permission are required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Tool Registry resource was not found in the active workspace */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    ToolRegistryController_publish_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PublishToolDefinitionDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Active membership and endpoint-specific Tool Registry permission are required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Tool Registry resource was not found in the active workspace */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    ToolRegistryController_rollback_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["RollbackToolDefinitionDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Active membership and endpoint-specific Tool Registry permission are required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Tool Registry resource was not found in the active workspace */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    ToolRegistryController_clone_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CloneToolDefinitionDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Active membership and endpoint-specific Tool Registry permission are required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Tool Registry resource was not found in the active workspace */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    ToolRegistryController_archive_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Active membership and endpoint-specific Tool Registry permission are required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Tool Registry resource was not found in the active workspace */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    ToolRegistryController_restore_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Active membership and endpoint-specific Tool Registry permission are required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Tool Registry resource was not found in the active workspace */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    WorkflowRuntimeController_list_v1: {
+        parameters: {
+            query?: {
+                page?: number;
+                limit?: number;
+                status?: "CREATED" | "QUEUED" | "PREPARING" | "RUNNING" | "WAITING" | "PAUSED" | "COMPLETED" | "CANCELLED" | "FAILED" | "TIMED_OUT" | "COMPENSATED";
+                workflowId?: string;
+                workflowVersionId?: string;
+                correlationId?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Active workspace membership and workflow runtime permission are required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Workflow execution or dependency was not found in the active workspace */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    WorkflowRuntimeController_execute_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ExecuteWorkflowDto"];
+            };
+        };
+        responses: {
+            /** @description Workflow graph, input, node configuration, or dependency is invalid */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Active workspace membership and workflow runtime permission are required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Workflow execution or dependency was not found in the active workspace */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Workflow snapshot integrity or execution state changed */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    WorkflowRuntimeController_cancel_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CancelWorkflowExecutionDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Active workspace membership and workflow runtime permission are required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Workflow execution or dependency was not found in the active workspace */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    WorkflowRuntimeController_approve_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ResolveApprovalDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Active workspace membership and workflow runtime permission are required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Workflow execution or dependency was not found in the active workspace */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    WorkflowRuntimeController_get_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Active workspace membership and workflow runtime permission are required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Workflow execution or dependency was not found in the active workspace */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    WorkflowRuntimeController_history_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Active workspace membership and workflow runtime permission are required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Workflow execution or dependency was not found in the active workspace */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    WorkflowRuntimeController_diagnostics_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Active workspace membership and workflow runtime permission are required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Workflow execution or dependency was not found in the active workspace */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    WorkflowRuntimeController_metrics_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Active workspace membership and workflow runtime permission are required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Workflow execution or dependency was not found in the active workspace */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    RetrievalRuntimeController_list_v1: {
+        parameters: {
+            query?: {
+                page?: number;
+                limit?: number;
+                status?: "PREPARED" | "PUBLISHED" | "ARCHIVED" | "REJECTED";
+                knowledgeBaseId?: string;
+                search?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Active membership and endpoint-specific Retrieval Runtime permission are required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Retrieval Runtime resource was not found in the active workspace */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    RetrievalRuntimeController_prepare_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PrepareRetrievalRuntimeDto"];
+            };
+        };
+        responses: {
+            /** @description Knowledge references or retrieval metadata are invalid */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Active membership and endpoint-specific Retrieval Runtime permission are required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Retrieval Runtime resource was not found in the active workspace */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    RetrievalRuntimeController_validate_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Active membership and endpoint-specific Retrieval Runtime permission are required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Retrieval Runtime resource was not found in the active workspace */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    RetrievalRuntimeController_publish_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Active membership and endpoint-specific Retrieval Runtime permission are required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Retrieval Runtime resource was not found in the active workspace */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    RetrievalRuntimeController_archive_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Active membership and endpoint-specific Retrieval Runtime permission are required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Retrieval Runtime resource was not found in the active workspace */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    RetrievalRuntimeController_restore_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Active membership and endpoint-specific Retrieval Runtime permission are required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Retrieval Runtime resource was not found in the active workspace */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    RetrievalRuntimeController_compare_v1: {
+        parameters: {
+            query: {
+                leftId: string;
+                rightId: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Active membership and endpoint-specific Retrieval Runtime permission are required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Retrieval Runtime resource was not found in the active workspace */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    RetrievalRuntimeController_listSnapshots_v1: {
+        parameters: {
+            query?: {
+                page?: number;
+                limit?: number;
+                runtimeId?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Active membership and endpoint-specific Retrieval Runtime permission are required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Retrieval Runtime resource was not found in the active workspace */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    RetrievalRuntimeController_getSnapshot_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Active membership and endpoint-specific Retrieval Runtime permission are required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Retrieval Runtime resource was not found in the active workspace */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    RetrievalRuntimeController_get_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Active membership and endpoint-specific Retrieval Runtime permission are required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Retrieval Runtime resource was not found in the active workspace */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
     KnowledgeBaseController_spaces_v1: {
         parameters: {
             query?: never;
@@ -9809,6 +15982,40 @@ export interface operations {
                 content?: never;
             };
             /** @description Knowledge space must be empty */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    KnowledgeBaseController_publishSpace_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Active membership and endpoint-specific Knowledge Base permission are required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Knowledge resource was not found in the active workspace */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Space contains missing, failed, or unpublished knowledge documents */
             409: {
                 headers: {
                     [name: string]: unknown;
@@ -10578,6 +16785,85 @@ export interface operations {
             };
         };
     };
+    KnowledgeBaseController_uploadDocument_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UploadKnowledgeDocumentDto"];
+            };
+        };
+        responses: {
+            /** @description Unsupported file type or missing upload field */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Active membership and endpoint-specific Knowledge Base permission are required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Knowledge resource was not found in the active workspace */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Document slug already exists in the workspace */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    KnowledgeBaseController_createTextDocument_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateKnowledgeTextDocumentDto"];
+            };
+        };
+        responses: {
+            /** @description Active membership and endpoint-specific Knowledge Base permission are required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Knowledge resource was not found in the active workspace */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Document slug already exists in the workspace */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
     KnowledgeBaseController_publish_v1: {
         parameters: {
             query?: never;
@@ -10747,4820 +17033,6 @@ export interface operations {
                 content?: never;
             };
             /** @description Knowledge resource was not found in the active workspace */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    ToolRegistryController_categories_v1: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Active membership and endpoint-specific Tool Registry permission are required */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Tool Registry resource was not found in the active workspace */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    ToolRegistryController_createCategory_v1: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["ToolTaxonomyDto"];
-            };
-        };
-        responses: {
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Active membership and endpoint-specific Tool Registry permission are required */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Tool Registry resource was not found in the active workspace */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    ToolRegistryController_updateCategory_v1: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["UpdateToolTaxonomyDto"];
-            };
-        };
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Active membership and endpoint-specific Tool Registry permission are required */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Tool Registry resource was not found in the active workspace */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    ToolRegistryController_deleteCategory_v1: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Active membership and endpoint-specific Tool Registry permission are required */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Tool Registry resource was not found in the active workspace */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Category is in use */
-            409: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    ToolRegistryController_groups_v1: {
-        parameters: {
-            query: {
-                categoryId: string;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Active membership and endpoint-specific Tool Registry permission are required */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Tool Registry resource was not found in the active workspace */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    ToolRegistryController_createGroup_v1: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["CreateToolGroupDto"];
-            };
-        };
-        responses: {
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Active membership and endpoint-specific Tool Registry permission are required */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Tool Registry resource was not found in the active workspace */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    ToolRegistryController_updateGroup_v1: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["UpdateToolGroupDto"];
-            };
-        };
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Active membership and endpoint-specific Tool Registry permission are required */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Tool Registry resource was not found in the active workspace */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    ToolRegistryController_deleteGroup_v1: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Active membership and endpoint-specific Tool Registry permission are required */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Tool Registry resource was not found in the active workspace */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Group is in use */
-            409: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    ToolRegistryController_list_v1: {
-        parameters: {
-            query?: {
-                page?: number;
-                limit?: number;
-                search?: string;
-                status?: "DRAFT" | "PUBLISHED" | "ARCHIVED";
-                type?: "INTERNAL" | "HTTP" | "REST" | "WEBHOOK" | "DATABASE" | "FILE" | "STORAGE" | "WORKFLOW" | "AGENT" | "COMPOSITE" | "OPENAPI" | "INTERNAL_SERVICE" | "FUNCTION" | "MCP";
-                visibility?: "PRIVATE" | "WORKSPACE";
-                categoryId?: string;
-                groupId?: string;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Active membership and endpoint-specific Tool Registry permission are required */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Tool Registry resource was not found in the active workspace */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    ToolRegistryController_create_v1: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["CreateToolDefinitionDto"];
-            };
-        };
-        responses: {
-            /** @description Tool metadata, schema, permission, or taxonomy is invalid */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Active membership and endpoint-specific Tool Registry permission are required */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Tool Registry resource was not found in the active workspace */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    ToolRegistryController_get_v1: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Active membership and endpoint-specific Tool Registry permission are required */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Tool Registry resource was not found in the active workspace */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    ToolRegistryController_update_v1: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["UpdateToolDefinitionDto"];
-            };
-        };
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Active membership and endpoint-specific Tool Registry permission are required */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Tool Registry resource was not found in the active workspace */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    ToolRegistryController_delete_v1: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Active membership and endpoint-specific Tool Registry permission are required */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Tool Registry resource was not found in the active workspace */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    ToolRegistryController_history_v1: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Active membership and endpoint-specific Tool Registry permission are required */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Tool Registry resource was not found in the active workspace */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    ToolRegistryController_publish_v1: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["PublishToolDefinitionDto"];
-            };
-        };
-        responses: {
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Active membership and endpoint-specific Tool Registry permission are required */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Tool Registry resource was not found in the active workspace */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    ToolRegistryController_rollback_v1: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["RollbackToolDefinitionDto"];
-            };
-        };
-        responses: {
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Active membership and endpoint-specific Tool Registry permission are required */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Tool Registry resource was not found in the active workspace */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    ToolRegistryController_clone_v1: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["CloneToolDefinitionDto"];
-            };
-        };
-        responses: {
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Active membership and endpoint-specific Tool Registry permission are required */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Tool Registry resource was not found in the active workspace */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    ToolRegistryController_archive_v1: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Active membership and endpoint-specific Tool Registry permission are required */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Tool Registry resource was not found in the active workspace */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    ToolRegistryController_restore_v1: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Active membership and endpoint-specific Tool Registry permission are required */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Tool Registry resource was not found in the active workspace */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    ToolRuntimeController_list_v1: {
-        parameters: {
-            query?: {
-                page?: number;
-                limit?: number;
-                status?: "CREATED" | "QUEUED" | "PREPARING" | "RUNNING" | "STREAMING" | "COMPLETED" | "CANCELLED" | "FAILED" | "TIMED_OUT";
-                toolId?: string;
-                toolVersionId?: string;
-                correlationId?: string;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Active workspace membership and tool permissions are required */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Tool version, execution, or dependency was not found in the active workspace */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    ToolRuntimeController_execute_v1: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["ExecuteToolDto"];
-            };
-        };
-        responses: {
-            /** @description Tool input, output, policy, compatibility, or dependency is invalid */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Active workspace membership and tool permissions are required */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Tool version, execution, or dependency was not found in the active workspace */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Tool snapshot integrity or execution state changed */
-            409: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    ToolRuntimeController_get_v1: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Active workspace membership and tool permissions are required */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Tool version, execution, or dependency was not found in the active workspace */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    ToolRuntimeController_cancel_v1: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["CancelToolExecutionDto"];
-            };
-        };
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Active workspace membership and tool permissions are required */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Tool version, execution, or dependency was not found in the active workspace */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    ToolRuntimeController_history_v1: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Active workspace membership and tool permissions are required */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Tool version, execution, or dependency was not found in the active workspace */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    ToolRuntimeController_diagnostics_v1: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Active workspace membership and tool permissions are required */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Tool version, execution, or dependency was not found in the active workspace */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    ToolRuntimeController_metrics_v1: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Active workspace membership and tool permissions are required */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Tool version, execution, or dependency was not found in the active workspace */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    ToolRuntimeController_persistedEvents_v1: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Active workspace membership and tool permissions are required */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Tool version, execution, or dependency was not found in the active workspace */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    ToolRuntimeController_stream_v1: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Active workspace membership and tool permissions are required */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Tool version, execution, or dependency was not found in the active workspace */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    ExecutionKernelController_listRequests_v1: {
-        parameters: {
-            query?: {
-                page?: number;
-                limit?: number;
-                sourceType?: "PROFILE" | "WORKFLOW" | "AGENT" | "PROMPT" | "KNOWLEDGE" | "TOOL" | "PROVIDER" | "WORKSPACE" | "MANUAL" | "SYSTEM";
-                correlationId?: string;
-                requestedById?: string;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Active membership and endpoint-specific Execution Kernel permission are required */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Execution record was not found in the active workspace */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    ExecutionKernelController_createRequest_v1: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["CreateExecutionRequestDto"];
-            };
-        };
-        responses: {
-            /** @description Source reference, priority, correlation, or idempotency metadata is invalid */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Active membership and endpoint-specific Execution Kernel permission are required */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Execution record was not found in the active workspace */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Idempotency key was reused with a different request */
-            409: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    ExecutionKernelController_getRequest_v1: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Active membership and endpoint-specific Execution Kernel permission are required */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Execution record was not found in the active workspace */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    ExecutionKernelController_createRun_v1: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["CreateExecutionRunDto"];
-            };
-        };
-        responses: {
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Active membership and endpoint-specific Execution Kernel permission are required */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Execution record was not found in the active workspace */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    ExecutionKernelController_listRuns_v1: {
-        parameters: {
-            query?: {
-                page?: number;
-                limit?: number;
-                status?: "REQUESTED" | "QUEUED" | "STARTING" | "RUNNING" | "PAUSED" | "SUCCEEDED" | "FAILED" | "CANCELLED" | "TIMED_OUT";
-                requestId?: string;
-                correlationId?: string;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Active membership and endpoint-specific Execution Kernel permission are required */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Execution record was not found in the active workspace */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    ExecutionKernelController_getRun_v1: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Active membership and endpoint-specific Execution Kernel permission are required */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Execution record was not found in the active workspace */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    ExecutionKernelController_transition_v1: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["TransitionExecutionDto"];
-            };
-        };
-        responses: {
-            /** @description Requested lifecycle transition is invalid */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Active membership and endpoint-specific Execution Kernel permission are required */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Execution record was not found in the active workspace */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Expected state version is stale or state changed concurrently */
-            409: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    ExecutionKernelController_cancel_v1: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["CancelExecutionDto"];
-            };
-        };
-        responses: {
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Active membership and endpoint-specific Execution Kernel permission are required */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Execution record was not found in the active workspace */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    ExecutionKernelController_recordFailure_v1: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["RecordExecutionFailureDto"];
-            };
-        };
-        responses: {
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Active membership and endpoint-specific Execution Kernel permission are required */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Execution record was not found in the active workspace */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    ExecutionKernelController_recordStep_v1: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["RecordExecutionStepDto"];
-            };
-        };
-        responses: {
-            /** @description Active membership and endpoint-specific Execution Kernel permission are required */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Execution record was not found in the active workspace */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Step sequence already exists or run is terminal */
-            409: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    ExecutionKernelController_appendEvent_v1: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["AppendExecutionEventDto"];
-            };
-        };
-        responses: {
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Active membership and endpoint-specific Execution Kernel permission are required */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Execution record was not found in the active workspace */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    ExecutionKernelController_appendLog_v1: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["AppendExecutionLogDto"];
-            };
-        };
-        responses: {
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Active membership and endpoint-specific Execution Kernel permission are required */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Execution record was not found in the active workspace */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    MemoryRuntimeController_list_v1: {
-        parameters: {
-            query?: {
-                page?: number;
-                limit?: number;
-                type?: "CONVERSATION" | "SESSION" | "WORKSPACE" | "AGENT" | "EXECUTION" | "TEMPORARY_RUNTIME" | "SHARED_RUNTIME" | "REFERENCE";
-                status?: "DRAFT" | "PUBLISHED" | "ARCHIVED";
-                scopeKey?: string;
-                search?: string;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Active membership and Memory Runtime permission are required */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Memory Runtime resource was not found in the active workspace */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    MemoryRuntimeController_create_v1: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["CreateMemoryRuntimeDto"];
-            };
-        };
-        responses: {
-            /** @description Memory scope, ownership, or references are invalid */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Active membership and Memory Runtime permission are required */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Memory Runtime resource was not found in the active workspace */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    MemoryRuntimeController_get_v1: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Active membership and Memory Runtime permission are required */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Memory Runtime resource was not found in the active workspace */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    MemoryRuntimeController_update_v1: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["UpdateMemoryRuntimeDto"];
-            };
-        };
-        responses: {
-            /** @description Active membership and Memory Runtime permission are required */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Memory Runtime resource was not found in the active workspace */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Memory state version changed */
-            409: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    MemoryRuntimeController_publish_v1: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Active membership and Memory Runtime permission are required */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Memory Runtime resource was not found in the active workspace */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    MemoryRuntimeController_rollback_v1: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["RollbackMemoryRuntimeDto"];
-            };
-        };
-        responses: {
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Active membership and Memory Runtime permission are required */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Memory Runtime resource was not found in the active workspace */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    MemoryRuntimeController_archive_v1: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Active membership and Memory Runtime permission are required */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Memory Runtime resource was not found in the active workspace */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    MemoryRuntimeController_resolve_v1: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["ResolveMemoryRuntimeDto"];
-            };
-        };
-        responses: {
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Active membership and Memory Runtime permission are required */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Memory Runtime resource was not found in the active workspace */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    MemoryRuntimeController_commit_v1: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["CommitMemoryWritesDto"];
-            };
-        };
-        responses: {
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Active membership and Memory Runtime permission are required */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Memory Runtime resource was not found in the active workspace */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    MemoryRuntimeController_compare_v1: {
-        parameters: {
-            query: {
-                leftId: string;
-                rightId: string;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Active membership and Memory Runtime permission are required */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Memory Runtime resource was not found in the active workspace */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    MemoryRuntimeController_snapshots_v1: {
-        parameters: {
-            query?: {
-                page?: number;
-                limit?: number;
-                runtimeId?: string;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Active membership and Memory Runtime permission are required */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Memory Runtime resource was not found in the active workspace */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    MemoryRuntimeController_snapshot_v1: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Active membership and Memory Runtime permission are required */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Memory Runtime resource was not found in the active workspace */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    MemoryRuntimeController_diagnostics_v1: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Active membership and Memory Runtime permission are required */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Memory Runtime resource was not found in the active workspace */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    MemoryRuntimeController_metrics_v1: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Active membership and Memory Runtime permission are required */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Memory Runtime resource was not found in the active workspace */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    MemoryRuntimeController_history_v1: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Active membership and Memory Runtime permission are required */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Memory Runtime resource was not found in the active workspace */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    RetrievalExecutionController_list_v1: {
-        parameters: {
-            query?: {
-                page?: number;
-                limit?: number;
-                status?: "COMPLETED" | "FAILED" | "CANCELLED";
-                mode?: "KEYWORD" | "SEMANTIC" | "HYBRID";
-                retrievalRuntimeSnapshotId?: string;
-                search?: string;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Active membership and Retrieval Execution permission are required */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Retrieval dependency was not found in the active workspace */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    RetrievalExecutionController_execute_v1: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["ExecuteRetrievalDto"];
-            };
-        };
-        responses: {
-            /** @description Retrieval dependencies, integrity, compatibility, or query are invalid */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Active membership and Retrieval Execution permission are required */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Retrieval dependency was not found in the active workspace */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    RetrievalExecutionController_diagnostics_v1: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Active membership and Retrieval Execution permission are required */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Retrieval dependency was not found in the active workspace */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    RetrievalExecutionController_metrics_v1: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Active membership and Retrieval Execution permission are required */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Retrieval dependency was not found in the active workspace */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    RetrievalExecutionController_get_v1: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Active membership and Retrieval Execution permission are required */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Retrieval dependency was not found in the active workspace */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    RuntimeOptimizationController_cacheCompiled_v1: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["CacheCompiledPromptDto"];
-            };
-        };
-        responses: {
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Runtime Optimization permission required */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Immutable runtime asset was not found in the workspace */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    RuntimeOptimizationController_cacheRendered_v1: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["CacheRenderedPromptDto"];
-            };
-        };
-        responses: {
-            /** @description Variables are dynamic or not deterministic */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Runtime Optimization permission required */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Immutable runtime asset was not found in the workspace */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    RuntimeOptimizationController_createContext_v1: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["CreateRuntimeContextSnapshotDto"];
-            };
-        };
-        responses: {
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Runtime Optimization permission required */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Immutable runtime asset was not found in the workspace */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    RuntimeOptimizationController_cacheRetrieval_v1: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["CacheRetrievalRuntimeDto"];
-            };
-        };
-        responses: {
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Runtime Optimization permission required */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Immutable runtime asset was not found in the workspace */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    RuntimeOptimizationController_cacheImmutable_v1: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["CacheImmutablePackageDto"];
-            };
-        };
-        responses: {
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Runtime Optimization permission required */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Immutable runtime asset was not found in the workspace */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    RuntimeOptimizationController_get_v1: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Runtime Optimization permission required */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Immutable runtime asset was not found in the workspace */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    RuntimeOptimizationController_invalidate_v1: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["InvalidateOptimizationPackageDto"];
-            };
-        };
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Runtime Optimization permission required */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Immutable runtime asset was not found in the workspace */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    RuntimeOptimizationController_list_v1: {
-        parameters: {
-            query?: {
-                page?: number;
-                limit?: number;
-                type?: "COMPILED_PROMPT" | "RENDERED_PROMPT" | "PROVIDER_PROMPT" | "CONVERSATION_PREFIX" | "STUDIO_CONFIGURATION" | "RUNTIME_CONTEXT" | "RETRIEVAL_RUNTIME" | "MEMORY_RUNTIME" | "TOOL_DEFINITION" | "WORKFLOW_PACKAGE" | "EXECUTION_PLAN";
-                sourceHash?: string;
-                scopeKey?: string;
-                status?: "ACTIVE" | "INVALIDATED";
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Runtime Optimization permission required */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Immutable runtime asset was not found in the workspace */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    RuntimeOptimizationController_metrics_v1: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Runtime Optimization permission required */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Immutable runtime asset was not found in the workspace */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    AgentExecutionController_list_v1: {
-        parameters: {
-            query?: {
-                page?: number;
-                limit?: number;
-                status?: "PREPARING" | "READY" | "FAILED" | "CANCELLED";
-                correlationId?: string;
-                executionRequestId?: string;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Active membership and Agent Execution permission required */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Execution or runtime asset was not found in the workspace */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    AgentExecutionController_prepare_v1: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["PrepareAgentExecutionDto"];
-            };
-        };
-        responses: {
-            /** @description Runtime dependencies or lifecycle state are invalid */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Active membership and Agent Execution permission required */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Execution or runtime asset was not found in the workspace */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    AgentExecutionController_cancel_v1: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["CancelAgentExecutionDto"];
-            };
-        };
-        responses: {
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Active membership and Agent Execution permission required */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Execution or runtime asset was not found in the workspace */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    AgentExecutionController_get_v1: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Active membership and Agent Execution permission required */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Execution or runtime asset was not found in the workspace */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    UnifiedAgentExecutionController_execute_v1: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["ExecuteAgentExecutionDto"];
-            };
-        };
-        responses: {
-            /** @description Runtime dependencies or the rendered prompt are invalid */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Active membership and execution permissions required */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    UnifiedAgentExecutionController_stream_v1: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["StreamAgentExecutionDto"];
-            };
-        };
-        responses: {
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Active membership and execution permissions required */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    UnifiedAgentExecutionController_cancelStream_v1: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                sessionId: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Active membership and execution permissions required */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    UnifiedAgentExecutionController_events_v1: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                sessionId: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Active membership and execution permissions required */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    AgentRuntimeController_list_v1: {
-        parameters: {
-            query?: {
-                page?: number;
-                limit?: number;
-                status?: "PREPARED" | "VALIDATED" | "REJECTED" | "SNAPSHOTTED";
-                agentId?: string;
-                conversationId?: string;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Active membership and endpoint-specific Agent Runtime permission are required */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Agent runtime resource was not found in the active workspace */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    AgentRuntimeController_prepare_v1: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["PrepareAgentRuntimeDto"];
-            };
-        };
-        responses: {
-            /** @description Agent, prompts, provider, profile, context, or variables are not runtime-ready */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Active membership and endpoint-specific Agent Runtime permission are required */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Agent runtime resource was not found in the active workspace */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    AgentRuntimeController_get_v1: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Active membership and endpoint-specific Agent Runtime permission are required */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Agent runtime resource was not found in the active workspace */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    AgentRuntimeController_validate_v1: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Active membership and endpoint-specific Agent Runtime permission are required */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Agent runtime resource was not found in the active workspace */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    AgentRuntimeController_resolve_v1: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Stored preparation can no longer be resolved */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Active membership and endpoint-specific Agent Runtime permission are required */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Agent runtime resource was not found in the active workspace */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    AgentRuntimeController_snapshot_v1: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Active membership and endpoint-specific Agent Runtime permission are required */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Agent runtime resource was not found in the active workspace */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Runtime already has an immutable snapshot */
-            409: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    AgentRuntimeController_getSnapshot_v1: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Active membership and endpoint-specific Agent Runtime permission are required */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Agent runtime resource was not found in the active workspace */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    PromptExecutionController_list_v1: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Active membership and Prompt Execution permission required */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Prompt package or execution payload was not found in the workspace */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    PromptExecutionController_render_v1: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["RenderPromptExecutionDto"];
-            };
-        };
-        responses: {
-            /** @description Prompt hash, variables, conditions, or references are invalid */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Active membership and Prompt Execution permission required */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Prompt package or execution payload was not found in the workspace */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    PromptExecutionController_validate_v1: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["RenderPromptExecutionDto"];
-            };
-        };
-        responses: {
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Active membership and Prompt Execution permission required */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Prompt package or execution payload was not found in the workspace */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    PromptExecutionController_get_v1: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Active membership and Prompt Execution permission required */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Prompt package or execution payload was not found in the workspace */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    ProviderRuntimeController_listRequests_v1: {
-        parameters: {
-            query?: {
-                page?: number;
-                limit?: number;
-                status?: "PREPARED" | "VALIDATED" | "REJECTED" | "SNAPSHOTTED";
-                providerId?: string;
-                modelId?: string;
-                executionRequestId?: string;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Active membership and endpoint-specific Provider Runtime permission are required */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Provider Runtime resource was not found in the active workspace */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    ProviderRuntimeController_prepare_v1: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["PrepareProviderRequestDto"];
-            };
-        };
-        responses: {
-            /** @description Provider sources or requested capabilities are invalid */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Active membership and endpoint-specific Provider Runtime permission are required */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Provider Runtime resource was not found in the active workspace */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    ProviderRuntimeController_validate_v1: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Active membership and endpoint-specific Provider Runtime permission are required */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Provider Runtime resource was not found in the active workspace */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    ProviderRuntimeController_createSnapshot_v1: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Active membership and endpoint-specific Provider Runtime permission are required */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Provider Runtime resource was not found in the active workspace */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    ProviderRuntimeController_getRequest_v1: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Active membership and endpoint-specific Provider Runtime permission are required */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Provider Runtime resource was not found in the active workspace */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    ProviderRuntimeController_compare_v1: {
-        parameters: {
-            query: {
-                leftId: string;
-                rightId: string;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Active membership and endpoint-specific Provider Runtime permission are required */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Provider Runtime resource was not found in the active workspace */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    ProviderRuntimeController_listSnapshots_v1: {
-        parameters: {
-            query?: {
-                page?: number;
-                limit?: number;
-                requestId?: string;
-                providerId?: string;
-                modelId?: string;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Active membership and endpoint-specific Provider Runtime permission are required */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Provider Runtime resource was not found in the active workspace */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    ProviderRuntimeController_getSnapshot_v1: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Active membership and endpoint-specific Provider Runtime permission are required */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Provider Runtime resource was not found in the active workspace */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    ConversationRuntimeController_list_v1: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Active membership and endpoint-specific Conversation Runtime permission required */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Conversation Runtime resource was not found in the active workspace */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    ConversationRuntimeController_prepare_v1: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["PrepareConversationRuntimeDto"];
-            };
-        };
-        responses: {
-            /** @description Conversation metadata or referenced resources are invalid */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Active membership and endpoint-specific Conversation Runtime permission required */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Conversation Runtime resource was not found in the active workspace */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    ConversationRuntimeController_validate_v1: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Active membership and endpoint-specific Conversation Runtime permission required */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Conversation Runtime resource was not found in the active workspace */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    ConversationRuntimeController_transition_v1: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["TransitionConversationStateDto"];
-            };
-        };
-        responses: {
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Active membership and endpoint-specific Conversation Runtime permission required */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Conversation Runtime resource was not found in the active workspace */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    ConversationRuntimeController_publish_v1: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Active membership and endpoint-specific Conversation Runtime permission required */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Conversation Runtime resource was not found in the active workspace */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    ConversationRuntimeController_rollback_v1: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["RollbackConversationRuntimeDto"];
-            };
-        };
-        responses: {
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Active membership and endpoint-specific Conversation Runtime permission required */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Conversation Runtime resource was not found in the active workspace */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    ConversationRuntimeController_clone_v1: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["CloneConversationRuntimeDto"];
-            };
-        };
-        responses: {
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Active membership and endpoint-specific Conversation Runtime permission required */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Conversation Runtime resource was not found in the active workspace */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    ConversationRuntimeController_archive_v1: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Active membership and endpoint-specific Conversation Runtime permission required */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Conversation Runtime resource was not found in the active workspace */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    ConversationRuntimeController_restore_v1: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Active membership and endpoint-specific Conversation Runtime permission required */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Conversation Runtime resource was not found in the active workspace */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    ConversationRuntimeController_get_v1: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Active membership and endpoint-specific Conversation Runtime permission required */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Conversation Runtime resource was not found in the active workspace */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    ConversationRuntimeController_softDelete_v1: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Active membership and endpoint-specific Conversation Runtime permission required */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Conversation Runtime resource was not found in the active workspace */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    ConversationRuntimeController_compare_v1: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Active membership and endpoint-specific Conversation Runtime permission required */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Conversation Runtime resource was not found in the active workspace */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    ConversationRuntimeController_listSnapshots_v1: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Active membership and endpoint-specific Conversation Runtime permission required */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Conversation Runtime resource was not found in the active workspace */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    ConversationRuntimeController_getSnapshot_v1: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Active membership and endpoint-specific Conversation Runtime permission required */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Conversation Runtime resource was not found in the active workspace */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    ExecutionPipelineController_list_v1: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Active membership and endpoint-specific Execution Pipeline permission required */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Execution Pipeline resource was not found in the active workspace */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    ExecutionPipelineController_create_v1: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["CreateExecutionPipelineDto"];
-            };
-        };
-        responses: {
-            /** @description Pipeline graph, variables, or immutable asset references are invalid */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Active membership and endpoint-specific Execution Pipeline permission required */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Execution Pipeline resource was not found in the active workspace */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    ExecutionPipelineController_get_v1: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Active membership and endpoint-specific Execution Pipeline permission required */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Execution Pipeline resource was not found in the active workspace */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    ExecutionPipelineController_softDelete_v1: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Active membership and endpoint-specific Execution Pipeline permission required */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Execution Pipeline resource was not found in the active workspace */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    ExecutionPipelineController_update_v1: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["UpdateExecutionPipelineDto"];
-            };
-        };
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Active membership and endpoint-specific Execution Pipeline permission required */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Execution Pipeline resource was not found in the active workspace */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    ExecutionPipelineController_validate_v1: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Active membership and endpoint-specific Execution Pipeline permission required */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Execution Pipeline resource was not found in the active workspace */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    ExecutionPipelineController_publish_v1: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Active membership and endpoint-specific Execution Pipeline permission required */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Execution Pipeline resource was not found in the active workspace */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    ExecutionPipelineController_rollback_v1: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["RollbackExecutionPipelineDto"];
-            };
-        };
-        responses: {
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Active membership and endpoint-specific Execution Pipeline permission required */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Execution Pipeline resource was not found in the active workspace */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    ExecutionPipelineController_clone_v1: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["CloneExecutionPipelineDto"];
-            };
-        };
-        responses: {
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Active membership and endpoint-specific Execution Pipeline permission required */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Execution Pipeline resource was not found in the active workspace */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    ExecutionPipelineController_archive_v1: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Active membership and endpoint-specific Execution Pipeline permission required */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Execution Pipeline resource was not found in the active workspace */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    ExecutionPipelineController_restore_v1: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Active membership and endpoint-specific Execution Pipeline permission required */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Execution Pipeline resource was not found in the active workspace */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    ExecutionPipelineController_compare_v1: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Active membership and endpoint-specific Execution Pipeline permission required */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Execution Pipeline resource was not found in the active workspace */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    ExecutionPipelineController_listSnapshots_v1: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Active membership and endpoint-specific Execution Pipeline permission required */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Execution Pipeline resource was not found in the active workspace */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    ExecutionPipelineController_getSnapshot_v1: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Active membership and endpoint-specific Execution Pipeline permission required */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Execution Pipeline resource was not found in the active workspace */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    StreamingRuntimeController_list_v1: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Streaming Runtime permission required */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    StreamingRuntimeController_create_v1: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["Function"];
-            };
-        };
-        responses: {
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Streaming Runtime permission required */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    StreamingRuntimeController_cancel_v1: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["Function"];
-            };
-        };
-        responses: {
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Streaming Runtime permission required */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    StreamingRuntimeController_get_v1: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Streaming Runtime permission required */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    StreamingRuntimeController_metrics_v1: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Streaming Runtime permission required */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    StreamingRuntimeController_diagnostics_v1: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Streaming Runtime permission required */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    StreamingRuntimeController_chunks_v1: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Streaming Runtime permission required */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    StreamingRuntimeController_compare_v1: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["Function"];
-            };
-        };
-        responses: {
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Streaming Runtime permission required */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    StreamingRuntimeController_events_v1: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Streaming Runtime permission required */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    WorkflowRuntimeController_list_v1: {
-        parameters: {
-            query?: {
-                page?: number;
-                limit?: number;
-                status?: "CREATED" | "QUEUED" | "PREPARING" | "RUNNING" | "WAITING" | "PAUSED" | "COMPLETED" | "CANCELLED" | "FAILED" | "TIMED_OUT" | "COMPENSATED";
-                workflowId?: string;
-                workflowVersionId?: string;
-                correlationId?: string;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Active workspace membership and workflow runtime permission are required */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Workflow execution or dependency was not found in the active workspace */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    WorkflowRuntimeController_execute_v1: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["ExecuteWorkflowDto"];
-            };
-        };
-        responses: {
-            /** @description Workflow graph, input, node configuration, or dependency is invalid */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Active workspace membership and workflow runtime permission are required */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Workflow execution or dependency was not found in the active workspace */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Workflow snapshot integrity or execution state changed */
-            409: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    WorkflowRuntimeController_cancel_v1: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["CancelWorkflowExecutionDto"];
-            };
-        };
-        responses: {
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Active workspace membership and workflow runtime permission are required */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Workflow execution or dependency was not found in the active workspace */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    WorkflowRuntimeController_approve_v1: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["ResolveApprovalDto"];
-            };
-        };
-        responses: {
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Active workspace membership and workflow runtime permission are required */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Workflow execution or dependency was not found in the active workspace */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    WorkflowRuntimeController_get_v1: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Active workspace membership and workflow runtime permission are required */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Workflow execution or dependency was not found in the active workspace */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    WorkflowRuntimeController_history_v1: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Active workspace membership and workflow runtime permission are required */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Workflow execution or dependency was not found in the active workspace */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    WorkflowRuntimeController_diagnostics_v1: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Active workspace membership and workflow runtime permission are required */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Workflow execution or dependency was not found in the active workspace */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    WorkflowRuntimeController_metrics_v1: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Active workspace membership and workflow runtime permission are required */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Workflow execution or dependency was not found in the active workspace */
             404: {
                 headers: {
                     [name: string]: unknown;
@@ -17038,556 +18510,6 @@ export interface operations {
             };
         };
     };
-    PromptCompilerController_compile_v1: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["CompilePromptDto"];
-            };
-        };
-        responses: {
-            /** @description Prompt sources, variables, templates, versions, or ownership are invalid */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Active membership and endpoint-specific Prompt Compiler permission are required */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Compiled prompt was not found in the active workspace */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    PromptCompilerController_preview_v1: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["CompilePromptDto"];
-            };
-        };
-        responses: {
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Active membership and endpoint-specific Prompt Compiler permission are required */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Compiled prompt was not found in the active workspace */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    PromptCompilerController_validate_v1: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["CompilePromptDto"];
-            };
-        };
-        responses: {
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Active membership and endpoint-specific Prompt Compiler permission are required */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Compiled prompt was not found in the active workspace */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    PromptCompilerController_list_v1: {
-        parameters: {
-            query?: {
-                page?: number;
-                limit?: number;
-                promptId?: string;
-                promptVersionId?: string;
-                agentVersionId?: string;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Active membership and endpoint-specific Prompt Compiler permission are required */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Compiled prompt was not found in the active workspace */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    PromptCompilerController_get_v1: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Active membership and endpoint-specific Prompt Compiler permission are required */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Compiled prompt was not found in the active workspace */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    PromptCompilerController_compare_v1: {
-        parameters: {
-            query: {
-                leftId: string;
-                rightId: string;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Active membership and endpoint-specific Prompt Compiler permission are required */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Compiled prompt was not found in the active workspace */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    RetrievalRuntimeController_list_v1: {
-        parameters: {
-            query?: {
-                page?: number;
-                limit?: number;
-                status?: "PREPARED" | "PUBLISHED" | "ARCHIVED" | "REJECTED";
-                knowledgeBaseId?: string;
-                search?: string;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Active membership and endpoint-specific Retrieval Runtime permission are required */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Retrieval Runtime resource was not found in the active workspace */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    RetrievalRuntimeController_prepare_v1: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["PrepareRetrievalRuntimeDto"];
-            };
-        };
-        responses: {
-            /** @description Knowledge references or retrieval metadata are invalid */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Active membership and endpoint-specific Retrieval Runtime permission are required */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Retrieval Runtime resource was not found in the active workspace */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    RetrievalRuntimeController_validate_v1: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Active membership and endpoint-specific Retrieval Runtime permission are required */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Retrieval Runtime resource was not found in the active workspace */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    RetrievalRuntimeController_publish_v1: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Active membership and endpoint-specific Retrieval Runtime permission are required */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Retrieval Runtime resource was not found in the active workspace */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    RetrievalRuntimeController_archive_v1: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Active membership and endpoint-specific Retrieval Runtime permission are required */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Retrieval Runtime resource was not found in the active workspace */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    RetrievalRuntimeController_restore_v1: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Active membership and endpoint-specific Retrieval Runtime permission are required */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Retrieval Runtime resource was not found in the active workspace */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    RetrievalRuntimeController_compare_v1: {
-        parameters: {
-            query: {
-                leftId: string;
-                rightId: string;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Active membership and endpoint-specific Retrieval Runtime permission are required */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Retrieval Runtime resource was not found in the active workspace */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    RetrievalRuntimeController_listSnapshots_v1: {
-        parameters: {
-            query?: {
-                page?: number;
-                limit?: number;
-                runtimeId?: string;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Active membership and endpoint-specific Retrieval Runtime permission are required */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Retrieval Runtime resource was not found in the active workspace */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    RetrievalRuntimeController_getSnapshot_v1: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Active membership and endpoint-specific Retrieval Runtime permission are required */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Retrieval Runtime resource was not found in the active workspace */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    RetrievalRuntimeController_get_v1: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Active membership and endpoint-specific Retrieval Runtime permission are required */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Retrieval Runtime resource was not found in the active workspace */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
     ChannelRuntimeController_list_v1: {
         parameters: {
             query?: never;
@@ -17879,6 +18801,110 @@ export interface operations {
             };
         };
     };
+    ChannelRuntimeController_connectionDiagnostics_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Active workspace membership and channel permission are required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    ChannelRuntimeController_reconnect_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Active workspace membership and channel permission are required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    ChannelRuntimeController_disconnect_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Active workspace membership and channel permission are required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    ChannelRuntimeController_newPairing_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Active workspace membership and channel permission are required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
     ChannelRuntimeController_configurations_v1: {
         parameters: {
             query?: never;
@@ -17889,6 +18915,36 @@ export interface operations {
             cookie?: never;
         };
         requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Active workspace membership and channel permission are required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    ChannelRuntimeController_updateConnection_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateChannelConnectionDto"];
+            };
+        };
         responses: {
             200: {
                 headers: {
@@ -18035,6 +19091,32 @@ export interface operations {
                 "application/json": components["schemas"]["CreateChannelBatchDto"];
             };
         };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Active workspace membership and channel permission are required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    ChannelRuntimeController_regenerateVerifyToken_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
         responses: {
             201: {
                 headers: {
@@ -18371,6 +19453,36 @@ export interface operations {
             cookie?: never;
         };
         requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Active workspace membership and channel permission are required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    ChannelRuntimeController_setConversationExecution_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SetConversationExecutionDto"];
+            };
+        };
         responses: {
             200: {
                 headers: {

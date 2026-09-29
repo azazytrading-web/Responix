@@ -388,7 +388,7 @@ describe("InvocationOrchestratorService", () => {
     harness.invoke
       .mockRejectedValueOnce(new AiContractError("CREDENTIAL_UNAVAILABLE", "No credential"))
       .mockResolvedValueOnce({ content: "Fallback response", usage: { inputTokens: 2, outputTokens: 2 } });
-    harness.providers.create.mockImplementation(async (_workspaceId: string, selectedProviderId: string) => ({
+    harness.providers.create.mockImplementation((_workspaceId: string, selectedProviderId: string) => ({
       provider: { apiBaseUrl: null, models: [{ modelId: selectedProviderId === "provider-id" ? "model-id" : "fallback-model", modelName: "model-name" }] },
       adapter: { providerName: "OpenAI", invoke: harness.invoke }
     }) as never);
@@ -413,9 +413,9 @@ describe("InvocationOrchestratorService", () => {
       providerId: "provider-id", modelId: "model-id", decisionFactors: {},
       fallbacks: [{ providerId: "fallback-provider", modelId: "fallback-model" }]
     });
-    const primaryStream = jest.fn(async () => {
-      throw new AiContractError("PROVIDER_UNAVAILABLE", "Stream disconnected");
-    });
+    const primaryStream = jest.fn().mockRejectedValue(
+      new AiContractError("PROVIDER_UNAVAILABLE", "Stream disconnected")
+    );
     const fallbackStream = jest.fn(async (
       _request: ProviderExecutionRequest,
       _credential: unknown,
@@ -424,7 +424,7 @@ describe("InvocationOrchestratorService", () => {
       await emit({ type: "delta", content: "Fallback stream" });
       await emit({ type: "completed" });
     });
-    harness.providers.create.mockImplementation(async (_workspaceId: string, selectedProviderId: string) => ({
+    harness.providers.create.mockImplementation((_workspaceId: string, selectedProviderId: string) => ({
       provider: {
         apiBaseUrl: null,
         models: [{ modelId: selectedProviderId === "provider-id" ? "model-id" : "fallback-model", modelName: "model-name" }]
@@ -456,7 +456,7 @@ describe("InvocationOrchestratorService", () => {
       await emit({ type: "delta", content: "Partial output" });
       throw new AiContractError("PROVIDER_UNAVAILABLE", "Stream disconnected");
     });
-    harness.providers.create.mockImplementation(async () => ({
+    harness.providers.create.mockImplementation(() => ({
       provider: { apiBaseUrl: null, models: [{ modelId: "model-id", modelName: "model-name" }] },
       adapter: { providerName: "OpenAI", stream: primaryStream }
     }) as never);

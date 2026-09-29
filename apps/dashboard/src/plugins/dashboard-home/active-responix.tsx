@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Badge, Button, Card, CardContent, CardDescription, CardHeader, CardTitle } from "@responix/ui";
 import { usePlatformBootstrap } from "../../platform";
-import { listAgents, updateAutomaticExecution, updateOperationalPersonality, type AgentRecord, type OperationalPersonality } from "../agent-management/agent-api";
+import { listAgents, updateAutomaticExecution, updateOperationalPersonality, type OperationalPersonality } from "../agent-management/agent-api";
 import { PersonalityConsole, personalityOrDefault } from "../agent-management/personality-console";
 import { listInboxConnections, listWorkspaceMessages } from "../conversation-inbox/inbox-api";
 

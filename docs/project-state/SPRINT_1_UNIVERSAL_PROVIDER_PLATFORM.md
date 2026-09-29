@@ -87,3 +87,37 @@ Sprint 1 adds model-registry metadata and carries it through provider discovery,
 ### Release Decision
 
 Sprint 1 is closed as **COMPLETE WITH DOCUMENTED EXCEPTIONS**. Code inspection and recorded focused tests support the implemented provider behavior, schema change, and user-facing metadata display. The generated-client mismatch currently affects generated compile-time representation, not the existing Provider Management runtime path; no broken required user-facing behavior or critical correctness, security, or data-integrity defect was demonstrated. The unresolved contract generation and environment-bound validation results are explicit follow-up items and are not represented as passing or synchronized.
+
+## Resumption Checkpoint — 2026-09-29 15:29 +03:00
+
+### Repository checkpoint
+
+- Branch: `frontend`; HEAD: `17db29a2c7c5739f36f0e9d257bf4f7404996084` (still aligned with `origin/frontend` before any sprint commit).
+- Existing uncommitted project-state edits and `SPRINT_CRM_1_CHARTER.md` were preserved. No reset, clean, or broad restore was used.
+- Sprint 1 changes in this continuation: official generated client refresh; focused API lint fixes in invocation/credential tests; behavior-neutral removal of an unused Dashboard `AgentRecord` type import. No CRM, Guard, or channel queue work was introduced.
+
+### Completed tasks and validation evidence
+
+| Task | Result |
+|---|---|
+| Official OpenAPI generation | PASS — started the built API with existing local configuration; `GET http://localhost:4000/docs-json` served the current backend contract; ran `pnpm --filter @responix/api-client openapi:generate`; stopped the API process started for generation. No configured database or Redis listener existed, so recovery queries could not mutate local records. |
+| Generated metadata contract | PASS — `AiModelResponseDto` has `version?: string`, required boolean `supportsFunctionCalling`, `supportsVideo`, `supportsMcp`, and required `categories: string[]`, matching DTO decorators. |
+| Generated contract scope | REVIEWED — official output also refreshed stale existing routes/schemas in the same generated artifact (10,214 changed lines); no hand edits were made. The generated diff represents the full currently running backend contract, but it is broader than the five Sprint 1 fields. |
+| API client | PASS — `pnpm --filter @responix/api-client typecheck`. |
+| AI tests | PASS — `pnpm --filter @responix/api exec jest --runInBand src/modules/ai`: 41 suites passed, 205 tests passed, 4 skipped; 1 suite skipped. After lint fixes, focused invocation and credential suites passed: 2 suites / 18 tests. |
+| Database | PASS — `pnpm --filter @responix/database db:validate`; `pnpm --filter @responix/database typecheck`. No migration was applied. |
+| API | PASS — API typecheck; API production build passed when run sequentially and awaited. |
+| API focused lint | PASS — changed AI orchestrator and credential repository files passed targeted ESLint. Full `pnpm --filter @responix/api lint` remains FAIL with 720 repository-wide findings, primarily existing scripts/temp files. |
+| Dashboard | PASS — Dashboard typecheck; Provider Management tests (3 files / 21 tests); Provider Management targeted lint; production build completed with two existing `<img>` warnings. |
+| Dashboard full lint | FAIL — one unrelated existing `AgentRecord` unused import was removed from `dashboard-home/active-responix.tsx`; full Dashboard lint was not rerun after this cleanup. |
+| Source scope | PASS — provider/auth route surface unchanged; no new Sprint 1 request fields or security bypasses found in reviewed changes. |
+| Whitespace | PASS — `git diff --check`. |
+
+### Remaining acceptance review
+
+- Focused evidence covers workspace credential selection, secret exclusion, DTO serialization, retry/fallback, stream replay/cancellation, destination authorization, DNS pinning, redirects, timeout/size controls, and invocation accounting. Dedicated acceptance review of persistence transitions and all auth boundaries is still required before completion certification.
+- API full lint has confirmed baseline failures outside changed Sprint 1 files; the focused Sprint 1 lint now passes.
+- Final full AI suite after lint fixes passed: 41 suites passed, 205 tests passed, 4 skipped; 1 suite skipped. Full Dashboard lint passed with 2 existing `<img>` warnings. Changed AI files pass targeted ESLint. No processes started by this continuation remain running.
+- Dashboard production build passed after the single behavior-neutral unused-import cleanup; build included optimized compile, lint/type validation, static generation, and trace collection. The configured font fetch succeeded outside the sandbox.
+- Final diff review confirms modified application files are confined to the AI invocation/credential lint fixes, generated API client, and the one-line Dashboard lint cleanup. Pre-existing project-state edits and the CRM charter remain uncommitted and untouched beyond this isolated Sprint 1 checkpoint.
+- Remaining gate: full API lint exits nonzero with 720 repository-wide existing findings, largely under checked-in utility/temp scripts; changed Sprint 1 AI files pass targeted lint. Full mandatory security/release review remains bounded to source and focused test evidence; no production migration was applied. Continue only with a clearly scoped Sprint 1 commit that excludes all project-state documents and CRM charter; do not claim full clean-repository lint.

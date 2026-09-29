@@ -109,15 +109,22 @@ Sprint 1 is closed as **COMPLETE WITH DOCUMENTED EXCEPTIONS**. Code inspection a
 | API | PASS — API typecheck; API production build passed when run sequentially and awaited. |
 | API focused lint | PASS — changed AI orchestrator and credential repository files passed targeted ESLint. Full `pnpm --filter @responix/api lint` remains FAIL with 720 repository-wide findings, primarily existing scripts/temp files. |
 | Dashboard | PASS — Dashboard typecheck; Provider Management tests (3 files / 21 tests); Provider Management targeted lint; production build completed with two existing `<img>` warnings. |
-| Dashboard full lint | FAIL — one unrelated existing `AgentRecord` unused import was removed from `dashboard-home/active-responix.tsx`; full Dashboard lint was not rerun after this cleanup. |
+| Dashboard full lint | PASS — `pnpm --filter @responix/dashboard lint`; 0 errors, 2 existing `<img>` warnings after removing the unused `AgentRecord` import. |
 | Source scope | PASS — provider/auth route surface unchanged; no new Sprint 1 request fields or security bypasses found in reviewed changes. |
 | Whitespace | PASS — `git diff --check`. |
 
 ### Remaining acceptance review
 
-- Focused evidence covers workspace credential selection, secret exclusion, DTO serialization, retry/fallback, stream replay/cancellation, destination authorization, DNS pinning, redirects, timeout/size controls, and invocation accounting. Dedicated acceptance review of persistence transitions and all auth boundaries is still required before completion certification.
-- API full lint has confirmed baseline failures outside changed Sprint 1 files; the focused Sprint 1 lint now passes.
+- Security acceptance review covered encrypted credential boundaries and workspace-scoped repository selection; safe provider discovery/DTO serialization and no secret exposure; authenticated/permission-guarded existing routes; destination host allowlisting, public DNS validation/pinning, disabled redirects, bounded response size/timeouts and cancellation; retry classification, ordered revalidated fallback, partial-stream replay suppression; invocation transitions, terminal outcome, and single usage/cost completion paths. Relevant focused suites passed. This is source-and-test evidence, not a penetration test or live deployment assessment.
+- API full lint has confirmed baseline failures outside changed Sprint 1 files (720 findings across repository utility/temp scripts and other pre-existing paths); all changed Sprint 1 AI files pass targeted ESLint. No lint failure remains in the Sprint 1 files.
 - Final full AI suite after lint fixes passed: 41 suites passed, 205 tests passed, 4 skipped; 1 suite skipped. Full Dashboard lint passed with 2 existing `<img>` warnings. Changed AI files pass targeted ESLint. No processes started by this continuation remain running.
 - Dashboard production build passed after the single behavior-neutral unused-import cleanup; build included optimized compile, lint/type validation, static generation, and trace collection. The configured font fetch succeeded outside the sandbox.
 - Final diff review confirms modified application files are confined to the AI invocation/credential lint fixes, generated API client, and the one-line Dashboard lint cleanup. Pre-existing project-state edits and the CRM charter remain uncommitted and untouched beyond this isolated Sprint 1 checkpoint.
-- Remaining gate: full API lint exits nonzero with 720 repository-wide existing findings, largely under checked-in utility/temp scripts; changed Sprint 1 AI files pass targeted lint. Full mandatory security/release review remains bounded to source and focused test evidence; no production migration was applied. Continue only with a clearly scoped Sprint 1 commit that excludes all project-state documents and CRM charter; do not claim full clean-repository lint.
+- Acceptance disposition: Sprint 1 implementation and contract checks pass. The repository-wide API lint command remains non-green because of unrelated baseline findings; this does not mask any finding in changed Sprint 1 AI files. No production migration was applied. Deployment, penetration testing, and production release remain outside this sprint's local completion evidence.
+
+## Push Verification Checkpoint — 2026-09-29 15:34 +03:00
+
+- Sprint 1 commit `ea5b82831e72efaca6efc178baac12f06ae43900` was pushed successfully to `origin/frontend`.
+- Local `frontend` and `origin/frontend` both resolved to that commit after push.
+- Sprint 1 changes are committed; the pre-existing edits in other project-state files and the untracked CRM charter remain preserved and uncommitted.
+- Next roadmap initiative remains CRM-1, which current project documentation marks as recommended and awaiting human scope review. No Sprint 2 code was started.

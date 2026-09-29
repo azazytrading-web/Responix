@@ -146,6 +146,45 @@ export class InvocationRepository {
     return { ...record };
   }
 
+  async recordProviderTransition(input: {
+    invocationId: string;
+    workspaceId: string;
+    fromProviderId: string;
+    fromModelId: string;
+    toProviderId: string;
+    toModelId: string;
+    fallbackIndex: number;
+  }): Promise<void> {
+    await this.prisma.$transaction(async (transaction) => {
+      const updated = await transaction.aiInvocationLog.updateMany({
+        where: { id: input.invocationId, workspaceId: input.workspaceId, status: "PENDING" },
+        data: {
+          providerId: input.toProviderId,
+          modelId: input.toModelId,
+          fallbackCount: { increment: 1 }
+        }
+      });
+      if (updated.count !== 1) throw new Error("Invocation transition persistence conflict");
+      await transaction.auditLog.create({
+        data: {
+          workspaceId: input.workspaceId,
+          action: "ai.provider.execution.fallback",
+          entityType: "AiInvocationLog",
+          entityId: input.invocationId,
+          oldValues: {
+            providerId: input.fromProviderId,
+            modelId: input.fromModelId
+          },
+          newValues: {
+            providerId: input.toProviderId,
+            modelId: input.toModelId,
+            fallbackIndex: input.fallbackIndex
+          }
+        }
+      });
+    });
+  }
+
   async complete(input: InvocationCompletionInput): Promise<void> {
     await this.prisma.$transaction(async (transaction) => {
       await transaction.$queryRaw`SELECT 1 AS locked FROM pg_advisory_xact_lock(hashtextextended(${input.workspaceId}, 0))`;
@@ -158,6 +197,8 @@ export class InvocationRepository {
         data: {
           status: "SUCCEEDED",
           completedAt: new Date(),
+          providerId: input.providerId,
+          modelId: input.modelId,
           outputMetadata: {
             ...(input.finishReason ? { finishReason: input.finishReason } : {}),
             ...(input.responseContent !== undefined ? { responseContent: input.responseContent } : {})
@@ -273,6 +314,8 @@ export class InvocationRepository {
         },
         data: {
           status: "SUCCEEDED", completedAt: new Date(),
+          providerId: input.providerId,
+          modelId: input.modelId,
           outputMetadata: {
             usageStatus: "UNKNOWN", responseContent: input.responseContent,
             pricing: {
@@ -377,6 +420,8 @@ export class InvocationRepository {
           status: input.error.status,
           errorCode: input.error.code,
           errorMessage: input.error.message,
+          providerId: input.runtime.providerId,
+          modelId: input.runtime.modelId,
           completedAt: new Date()
         }
       });

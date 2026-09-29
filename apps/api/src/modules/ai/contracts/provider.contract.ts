@@ -1,6 +1,7 @@
 export interface AiModelCapabilityContract {
   modelId: string;
   providerId: string;
+  version?: string;
   contextWindow: number;
   supportsVision: boolean;
   supportsAudio: boolean;
@@ -8,5 +9,9 @@ export interface AiModelCapabilityContract {
   supportsReasoning: boolean;
   supportsStreaming: boolean;
   supportsJson: boolean;
+  supportsFunctionCalling: boolean;
+  supportsVideo: boolean;
+  supportsMcp: boolean;
+  categories: string[];
   maxOutputTokens?: number;
 }

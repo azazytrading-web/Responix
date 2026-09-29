@@ -60,7 +60,9 @@ export async function streamOpenAiCompatible(input: {
     });
     if (response.status < 200 || response.status >= 300) normalizeHttpStatus(response.status);
   } catch (error: unknown) { return normalizeTransportError(error, input.request.signal); }
-  if (!terminal) throw new AiContractError("RESPONSE_INVALID", "Provider stream ended without a terminal event");
+  if (!terminal) throw new AiContractError(
+    "PROVIDER_UNAVAILABLE", "Provider stream disconnected before completion", { retryable: true }
+  );
   for (const call of calls.values()) {
     let args: unknown;
     try { args = JSON.parse(call.arguments) as unknown; } catch {

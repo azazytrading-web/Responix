@@ -42,6 +42,16 @@ export class RoutingService {
     };
   }
 
+  async isCandidateEligible(
+    requirements: RoutingRequirements,
+    candidate: { providerId: string; modelId: string }
+  ): Promise<boolean> {
+    const candidates = await this.repository.findCandidates(requirements.workspaceId);
+    return this.eligibility.filter(candidates, requirements).some(
+      (item) => item.providerId === candidate.providerId && item.modelId === candidate.modelId
+    );
+  }
+
   private candidateMetadata(candidates: readonly RoutingCandidate[]): Record<string, unknown>[] {
     return this.priority.order(candidates).map((candidate, index) => ({
       rank: index + 1,

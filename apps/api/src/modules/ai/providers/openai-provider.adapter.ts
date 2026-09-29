@@ -66,15 +66,18 @@ export class OpenAiProviderAdapter implements AiProviderAdapter {
     } catch (error: unknown) {
       if (request.signal.aborted) throw error;
       if (error instanceof ProviderDestinationRejectedError) {
-        throw new AiContractError("PROVIDER_UNAVAILABLE", "Provider destination rejected.");
+        throw new AiContractError("PROVIDER_UNAVAILABLE", "Provider destination rejected.", { retryable: false });
       }
       if (error instanceof ProviderResponseTooLargeError) {
         throw new AiContractError("RESPONSE_INVALID", "AI provider response exceeded size limit");
       }
       if (error instanceof ProviderNetworkTimeoutError) {
-        throw new AiContractError("PROVIDER_UNAVAILABLE", "AI provider request timed out");
+        throw new AiContractError("PROVIDER_UNAVAILABLE", "AI provider request timed out", { retryable: true });
       }
-      throw new AiContractError("PROVIDER_UNAVAILABLE", "AI provider request failed");
+      const code = error && typeof error === "object" && "code" in error && typeof error.code === "string"
+        ? error.code : "";
+      const retryable = ["ECONNRESET", "ECONNREFUSED", "ENOTFOUND", "EAI_AGAIN", "EPIPE", "ETIMEDOUT", "ECONNABORTED"].includes(code);
+      throw new AiContractError("PROVIDER_UNAVAILABLE", "AI provider request failed", { retryable });
     }
     if (response.status < 200 || response.status >= 300) throw this.httpError(response.status);
 
@@ -131,8 +134,8 @@ export class OpenAiProviderAdapter implements AiProviderAdapter {
       return new AiContractError("AUTHENTICATION_FAILED", "AI provider authentication failed");
     }
     if (status === 429) {
-      return new AiContractError("RATE_LIMITED", "AI provider rate limit exceeded");
+      return new AiContractError("RATE_LIMITED", "AI provider rate limit exceeded", { retryable: true });
     }
-    return new AiContractError("PROVIDER_UNAVAILABLE", "AI provider is unavailable");
+    return new AiContractError("PROVIDER_UNAVAILABLE", "AI provider is unavailable", { retryable: status === 408 || status >= 500 });
   }
 }

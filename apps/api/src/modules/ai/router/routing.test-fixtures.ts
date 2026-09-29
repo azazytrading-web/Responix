@@ -26,6 +26,10 @@ export function routingCandidate(overrides: Partial<RoutingCandidate> = {}): Rou
       supportsReasoning: false,
       supportsStreaming: true,
       supportsJson: false,
+      supportsFunctionCalling: false,
+      supportsVideo: false,
+      supportsMcp: false,
+      categories: [],
       maxOutputTokens: 4_096
     },
     latestHealth: {

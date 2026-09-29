@@ -21,6 +21,11 @@ const providerRecord = {
       modelName: "gpt-4.1-mini",
       displayName: "GPT-4.1 mini",
       contextWindow: 1_000_000,
+      version: "2026-02",
+      supportsFunctionCalling: true,
+      supportsVideo: true,
+      supportsMcp: false,
+      categories: ["chat", "multimodal"],
       supportsVision: true,
       supportsAudio: false,
       supportsTools: true,
@@ -63,7 +68,12 @@ describe("ProviderRepository", () => {
           expect.objectContaining({
             modelId: "model-id",
             providerId: "provider-id",
-            modelName: "gpt-4.1-mini"
+            modelName: "gpt-4.1-mini",
+            version: "2026-02",
+            supportsFunctionCalling: true,
+            supportsVideo: true,
+            supportsMcp: false,
+            categories: ["chat", "multimodal"]
           })
         ]
       })

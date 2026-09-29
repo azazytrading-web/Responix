@@ -32,6 +32,10 @@ type ProviderRecord = {
     supportsReasoning: boolean;
     supportsStreaming: boolean;
     supportsJson: boolean;
+    supportsFunctionCalling: boolean;
+    supportsVideo: boolean;
+    supportsMcp: boolean;
+    categories: string[];
     maxOutputTokens: number | null;
   }>;
 };
@@ -54,8 +58,18 @@ export class RoutingRepository {
           take: 1
         },
         credentials: {
-          where: { workspaceId, status: "ACTIVE", deletedAt: null },
-          orderBy: [{ priority: "desc" }, { id: "asc" }],
+          where: {
+            workspaceId, status: "ACTIVE", deletedAt: null,
+            AND: [
+              { OR: [{ dailyRequestLimit: null }, { dailyRequestLimit: { gt: 0 } }] },
+              { OR: [{ dailyTokenLimit: null }, { dailyTokenLimit: { gt: 0 } }] }
+            ]
+          },
+          orderBy: [
+            { priority: "desc" },
+            { lastUsedAt: { sort: "asc", nulls: "first" } },
+            { id: "asc" }
+          ],
           select: { id: true, workspaceId: true, priority: true },
           take: 1
         },
@@ -79,6 +93,10 @@ export class RoutingRepository {
             supportsReasoning: true,
             supportsStreaming: true,
             supportsJson: true,
+            supportsFunctionCalling: true,
+            supportsVideo: true,
+            supportsMcp: true,
+            categories: true,
             maxOutputTokens: true
           }
         }
@@ -148,6 +166,10 @@ export class RoutingRepository {
         supportsReasoning: model.supportsReasoning,
         supportsStreaming: model.supportsStreaming,
         supportsJson: model.supportsJson,
+        supportsFunctionCalling: model.supportsFunctionCalling,
+        supportsVideo: model.supportsVideo,
+        supportsMcp: model.supportsMcp,
+        categories: model.categories,
         ...(model.maxOutputTokens === null ? {} : { maxOutputTokens: model.maxOutputTokens })
       },
       latestHealth

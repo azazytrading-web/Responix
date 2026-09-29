@@ -32,13 +32,16 @@ describe("CredentialRepository", () => {
         }
       })
     );
+    const query = findMany.mock.calls[0]?.[0] as { select: Record<string, unknown> };
+    expect(query.select).not.toHaveProperty("encryptedSecret");
     expect(result[0]).not.toHaveProperty("encryptedSecret");
   });
 
   it("retrieves an active encrypted envelope only inside the workspace boundary", async () => {
     const findFirst = jest.fn().mockResolvedValue(credential);
+    const updateMany = jest.fn().mockResolvedValue({ count: 1 });
     const repository = new CredentialRepository({
-      aiProviderCredential: { findFirst }
+      aiProviderCredential: { findFirst, updateMany }
     } as never);
 
     await expect(repository.findActiveEnvelope("workspace-id", "provider-id")).resolves.toEqual(
@@ -51,9 +54,22 @@ describe("CredentialRepository", () => {
           providerId: "provider-id",
           status: "ACTIVE",
           deletedAt: null,
-          provider: { status: "ACTIVE" }
-        }
+          provider: { status: "ACTIVE" },
+          AND: [
+            { OR: [{ dailyRequestLimit: null }, { dailyRequestLimit: { gt: 0 } }] },
+            { OR: [{ dailyTokenLimit: null }, { dailyTokenLimit: { gt: 0 } }] }
+          ]
+        },
+        orderBy: [
+          { priority: "desc" },
+          { lastUsedAt: { sort: "asc", nulls: "first" } },
+          { id: "asc" }
+        ]
       })
     );
+    expect(updateMany).toHaveBeenCalledWith(expect.objectContaining({
+      where: { id: "credential-id", workspaceId: "workspace-id", providerId: "provider-id", status: "ACTIVE", deletedAt: null },
+      data: { lastUsedAt: expect.any(Date) }
+    }));
   });
 });

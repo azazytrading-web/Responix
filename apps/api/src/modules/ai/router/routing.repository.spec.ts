@@ -38,7 +38,11 @@ describe("RoutingRepository", () => {
     expect(providerSelection.select.credentials.where).toEqual({
       workspaceId: "workspace-id",
       status: "ACTIVE",
-      deletedAt: null
+      deletedAt: null,
+      AND: [
+        { OR: [{ dailyRequestLimit: null }, { dailyRequestLimit: { gt: 0 } }] },
+        { OR: [{ dailyTokenLimit: null }, { dailyTokenLimit: { gt: 0 } }] }
+      ]
     });
     expect(providerSelection.select.healthRecords.where).toEqual({
       workspaceId: "workspace-id"
@@ -81,6 +85,11 @@ describe("RoutingRepository", () => {
                 status: "ACTIVE",
                 priority: 8,
                 contextWindow: 1_000_000,
+                version: null,
+                supportsFunctionCalling: false,
+                supportsVideo: false,
+                supportsMcp: false,
+                categories: [],
                 supportsVision: true,
                 supportsAudio: false,
                 supportsTools: true,

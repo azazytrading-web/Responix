@@ -40,7 +40,11 @@ describe("CapabilityValidator", () => {
         supportsTools: false,
         supportsReasoning: false,
         supportsStreaming: false,
-        supportsJson: true
+        supportsJson: true,
+        supportsFunctionCalling: false,
+        supportsVideo: false,
+        supportsMcp: false,
+        categories: []
       })
     ).not.toThrow();
   });
@@ -75,7 +79,11 @@ describe("CapabilityValidator", () => {
       supportsTools: false,
       supportsReasoning: false,
       supportsStreaming: false,
-      supportsJson: false
+      supportsJson: false,
+      supportsFunctionCalling: false,
+      supportsVideo: false,
+      supportsMcp: false,
+      categories: []
     };
     expect(() => validator.validateModel(estimate, model)).toThrow(AiContractError);
   });

@@ -90,6 +90,8 @@ const providerFixture: ProviderOption = {
     modelId: "m1",
     modelName: "gpt-5.2",
     displayName: "GPT 5.2",
+    version: "2026-01",
+    categories: ["chat", "reasoning"],
     status: "ACTIVE",
     priority: 5,
     contextWindow: 128000,
@@ -97,6 +99,9 @@ const providerFixture: ProviderOption = {
     supportsVision: true,
     supportsAudio: false,
     supportsTools: true,
+    supportsFunctionCalling: true,
+    supportsVideo: false,
+    supportsMcp: true,
     supportsReasoning: false,
     supportsStreaming: true
   }]
@@ -135,6 +140,10 @@ describe("ProviderManagementPage", () => {
     expect(screen.getByText("1 model exposed by the backend")).toBeInTheDocument();
     expect(screen.getByText(/credentials are write-only and encrypted/i)).toBeInTheDocument();
     expect(screen.getByText("Vision: Yes")).toBeInTheDocument();
+    expect(screen.getByText("Function calling: Yes")).toBeInTheDocument();
+    expect(screen.getByText("MCP: Yes")).toBeInTheDocument();
+    expect(screen.getByText("Version: 2026-01")).toBeInTheDocument();
+    expect(screen.getByText("Categories: chat, reasoning")).toBeInTheDocument();
     expect(screen.getByText("Priority 10")).toBeInTheDocument();
     expect(screen.getByText("Priority: 5")).toBeInTheDocument();
     expect(screen.getByLabelText("API credential replacement")).toHaveAttribute("type", "password");

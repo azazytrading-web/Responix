@@ -7,6 +7,7 @@ export class AiModelResponseDto {
   @ApiProperty() modelId!: string;
   @ApiProperty() modelName!: string;
   @ApiProperty() displayName!: string;
+  @ApiPropertyOptional() version?: string;
   @ApiProperty({ enum: ["ACTIVE", "DISABLED", "DEPRECATED"] }) status!:
     "ACTIVE" | "DISABLED" | "DEPRECATED";
   @ApiProperty() priority!: number;
@@ -17,12 +18,17 @@ export class AiModelResponseDto {
   @ApiProperty() supportsTools!: boolean;
   @ApiProperty() supportsReasoning!: boolean;
   @ApiProperty() supportsStreaming!: boolean;
+  @ApiProperty() supportsFunctionCalling!: boolean;
+  @ApiProperty() supportsVideo!: boolean;
+  @ApiProperty() supportsMcp!: boolean;
+  @ApiProperty({ type: [String] }) categories!: string[];
 
   static from(model: WorkspaceProvider["models"][number]): AiModelResponseDto {
     return Object.assign(new AiModelResponseDto(), {
       modelId: model.modelId,
       modelName: model.modelName,
       displayName: model.displayName,
+      ...(model.version === undefined ? {} : { version: model.version }),
       status: model.status,
       priority: model.priority,
       contextWindow: model.contextWindow,
@@ -31,7 +37,11 @@ export class AiModelResponseDto {
       supportsAudio: model.supportsAudio,
       supportsTools: model.supportsTools,
       supportsReasoning: model.supportsReasoning,
-      supportsStreaming: model.supportsStreaming
+      supportsStreaming: model.supportsStreaming,
+      supportsFunctionCalling: model.supportsFunctionCalling,
+      supportsVideo: model.supportsVideo,
+      supportsMcp: model.supportsMcp,
+      categories: model.categories
     });
   }
 }

@@ -86,6 +86,11 @@ describe("AI module production integration", () => {
         status: "ACTIVE" as const,
         priority: 10,
         contextWindow: 32_000,
+        version: undefined,
+        supportsFunctionCalling: false,
+        supportsVideo: false,
+        supportsMcp: false,
+        categories: [],
         maxOutputTokens: 4_096,
         supportsVision: true,
         supportsAudio: false,
@@ -118,7 +123,11 @@ describe("AI module production integration", () => {
             supportsTools: false,
             supportsReasoning: false,
             supportsStreaming: false,
-            supportsJson: false
+            supportsJson: false,
+            supportsFunctionCalling: false,
+            supportsVideo: false,
+            supportsMcp: false,
+            categories: []
           }
         })
       ])

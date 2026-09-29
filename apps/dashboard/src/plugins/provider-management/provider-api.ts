@@ -1,6 +1,6 @@
 import { apiClient } from "@responix/api-client";
 
-export interface ProviderModel { modelId:string; modelName:string; displayName:string; status:"ACTIVE"|"DISABLED"|"DEPRECATED"; priority:number; contextWindow:number; maxOutputTokens?:number; supportsVision:boolean; supportsAudio:boolean; supportsTools:boolean; supportsReasoning:boolean; supportsStreaming:boolean }
+export interface ProviderModel { modelId:string; modelName:string; displayName:string; version?:string; status:"ACTIVE"|"DISABLED"|"DEPRECATED"; priority:number; contextWindow:number; maxOutputTokens?:number; categories:string[]; supportsVision:boolean; supportsAudio:boolean; supportsTools:boolean; supportsFunctionCalling:boolean; supportsVideo:boolean; supportsMcp:boolean; supportsReasoning:boolean; supportsStreaming:boolean }
 export interface ProviderOption { id:string; providerName:string; status:"ACTIVE"|"DISABLED"|"UNHEALTHY"; priority:number; configured:boolean; providerConfigurationId?:string; credentialConfigured?:boolean; enabled:boolean; models:ProviderModel[] }
 export interface ProviderConfiguration { providerId:string; providerName:string; configured:boolean; enabled:boolean; credentialConfigured:boolean; settings:Record<string,unknown>; updatedAt?:string; lastValidatedAt?:string; available?:boolean; errorCode?:string }
 export interface ProviderConfigurationInput { enabled:boolean; settings?:{apiBaseUrl?:string}; credential?:{name?:string;secret:string}; expectedUpdatedAt?:string }

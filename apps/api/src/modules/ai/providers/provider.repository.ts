@@ -15,6 +15,7 @@ const providerSelection = {
       id: true,
       modelName: true,
       displayName: true,
+      version: true,
       contextWindow: true,
       supportsVision: true,
       supportsAudio: true,
@@ -22,6 +23,10 @@ const providerSelection = {
       supportsReasoning: true,
       supportsStreaming: true,
       supportsJson: true,
+      supportsFunctionCalling: true,
+      supportsVideo: true,
+      supportsMcp: true,
+      categories: true,
       maxOutputTokens: true,
       status: true,
       priority: true
@@ -49,6 +54,7 @@ type ProviderRecord = {
     id: string;
     modelName: string;
     displayName: string;
+    version: string | null;
     contextWindow: number;
     supportsVision: boolean;
     supportsAudio: boolean;
@@ -56,6 +62,10 @@ type ProviderRecord = {
     supportsReasoning: boolean;
     supportsStreaming: boolean;
     supportsJson: boolean;
+    supportsFunctionCalling: boolean;
+    supportsVideo: boolean;
+    supportsMcp: boolean;
+    categories: string[];
     maxOutputTokens: number | null;
     status: WorkspaceProvider["models"][number]["status"];
     priority: number;
@@ -148,6 +158,7 @@ export class ProviderRepository {
         providerId: provider.id,
         modelName: model.modelName,
         displayName: model.displayName,
+        ...(model.version === null ? {} : { version: model.version }),
         contextWindow: model.contextWindow,
         supportsVision: model.supportsVision,
         supportsAudio: model.supportsAudio,
@@ -155,6 +166,10 @@ export class ProviderRepository {
         supportsReasoning: model.supportsReasoning,
         supportsStreaming: model.supportsStreaming,
         supportsJson: model.supportsJson,
+        supportsFunctionCalling: model.supportsFunctionCalling,
+        supportsVideo: model.supportsVideo,
+        supportsMcp: model.supportsMcp,
+        categories: model.categories,
         ...(model.maxOutputTokens === null ? {} : { maxOutputTokens: model.maxOutputTokens }),
         status: model.status,
         priority: model.priority

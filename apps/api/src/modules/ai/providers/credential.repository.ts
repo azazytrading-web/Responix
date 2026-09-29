@@ -6,18 +6,22 @@ interface EncryptedProviderCredential extends ProviderCredentialMetadata {
   encryptedSecret: string;
 }
 
-const credentialSelection = {
+const credentialMetadataSelection = {
   id: true,
   workspaceId: true,
   providerId: true,
   name: true,
-  encryptedSecret: true,
   keyFingerprint: true,
   status: true,
   priority: true,
   dailyRequestLimit: true,
   dailyTokenLimit: true,
   lastUsedAt: true
+} as const;
+
+const credentialSelection = {
+  ...credentialMetadataSelection,
+  encryptedSecret: true
 } as const;
 
 @Injectable()
@@ -30,8 +34,12 @@ export class CredentialRepository {
   ): Promise<ProviderCredentialMetadata[]> {
     const credentials = await this.prisma.aiProviderCredential.findMany({
       where: { workspaceId, providerId, deletedAt: null },
-      orderBy: [{ priority: "desc" }, { createdAt: "asc" }],
-      select: credentialSelection
+      orderBy: [
+        { priority: "desc" },
+        { lastUsedAt: { sort: "asc", nulls: "first" } },
+        { id: "asc" }
+      ],
+      select: credentialMetadataSelection
     });
     return credentials.map((credential) => ({
       id: credential.id,
@@ -57,13 +65,25 @@ export class CredentialRepository {
         providerId,
         status: "ACTIVE",
         deletedAt: null,
-        provider: { status: "ACTIVE" }
+        provider: { status: "ACTIVE" },
+        AND: [
+          { OR: [{ dailyRequestLimit: null }, { dailyRequestLimit: { gt: 0 } }] },
+          { OR: [{ dailyTokenLimit: null }, { dailyTokenLimit: { gt: 0 } }] }
+        ]
       },
-      orderBy: [{ priority: "desc" }, { createdAt: "asc" }],
+      orderBy: [
+        { priority: "desc" },
+        { lastUsedAt: { sort: "asc", nulls: "first" } },
+        { id: "asc" }
+      ],
       select: credentialSelection
     });
-    return credential
-      ? {
+    if (!credential) return null;
+    await this.prisma.aiProviderCredential.updateMany({
+      where: { id: credential.id, workspaceId, providerId, status: "ACTIVE", deletedAt: null },
+      data: { lastUsedAt: new Date() }
+    });
+    return {
           id: credential.id,
           workspaceId: credential.workspaceId,
           providerId: credential.providerId,
@@ -75,7 +95,6 @@ export class CredentialRepository {
           dailyRequestLimit: credential.dailyRequestLimit,
           dailyTokenLimit: credential.dailyTokenLimit,
           lastUsedAt: credential.lastUsedAt
-        }
-      : null;
+        };
   }
 }

@@ -2,7 +2,7 @@ import { Injectable, Logger } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { AiContractError } from "../contracts";
 import type {
-  AiCostContract, AiResponseContract, AiUsageContract, ProviderExecutionResult,
+  AiCostContract, AiResponseContract, AiToolCallContract, AiUsageContract, ProviderExecutionResult,
   ProviderStreamEvent
 } from "../contracts";
 import { ProviderCredentialService } from "../providers/provider-credential.service";
@@ -63,25 +63,13 @@ export class InvocationOrchestratorService {
     const executionStartedAt = Date.now();
     try {
       reservation = await this.runtime.begin(request);
-      const routing = await this.routing.route({
-        workspaceId: request.workspaceId, ...(request.tools?.length ? { tools: true } : {})
-      });
+      const requirements = {
+        workspaceId: request.workspaceId,
+        ...(request.tools?.length ? { tools: true } : {})
+      };
+      const routing = await this.routing.route(requirements);
       providerId = routing.providerId;
       modelId = routing.modelId;
-      const resolved = await this.providers.create(request.workspaceId, routing.providerId);
-      const model = resolved.provider.models.find(({ modelId }) => modelId === routing.modelId);
-      if (!model) {
-        throw new AiContractError("PROVIDER_UNAVAILABLE", "Routed model is unavailable");
-      }
-      this.runtime.validateModel(reservation, model);
-      const pricing = await this.repository.findModelPricing(
-        request.workspaceId,
-        routing.providerId,
-        routing.modelId
-      );
-      if (!pricing) {
-        throw new AiContractError("PROVIDER_UNAVAILABLE", "Routed model pricing is unavailable");
-      }
       const invocation = await this.repository.start({
         requestId: request.requestId,
         workspaceId: request.workspaceId,
@@ -93,46 +81,102 @@ export class InvocationOrchestratorService {
       invocationId = invocation.id;
 
       const providerStartedAt = Date.now();
-      let providerResult: ProviderExecutionResult;
+      let providerResult: ProviderExecutionResult | undefined;
+      let pricing: ModelPricing | undefined;
+      let resolvedProvider: Awaited<ReturnType<ProviderFactory["create"]>> | undefined;
+      let finalRouting = routing;
+      let lastCandidateError: unknown = new AiContractError(
+        "PROVIDER_UNAVAILABLE", "No eligible provider candidate completed the invocation"
+      );
       const activeReservation = reservation;
       try {
         const execution = await this.runtime.withLease(activeReservation, (leaseSignal) =>
-          this.executeProvider({
-            workspaceId: request.workspaceId,
-            providerId: routing.providerId,
-            routing,
-            modelName: model.modelName,
-            apiBaseUrl: resolved.provider.apiBaseUrl,
-            adapter: resolved.adapter,
-            request,
-            maxOutputTokens: activeReservation.estimate.outputTokens,
-            leaseSignal
-          })
+          (async () => {
+            const candidates = [
+              { providerId: routing.providerId, modelId: routing.modelId },
+              ...routing.fallbacks
+            ];
+            let previous = candidates[0]!;
+            for (let index = 0; index < candidates.length; index += 1) {
+              const candidate = candidates[index]!;
+              if (request.signal?.aborted || leaseSignal.aborted) {
+                throw new DOMException("AI invocation cancelled", "AbortError");
+              }
+              if (index > 0) {
+                const eligible = await this.routing.isCandidateEligible(requirements, candidate);
+                if (!eligible) {
+                  lastCandidateError = new AiContractError(
+                    "PROVIDER_UNAVAILABLE", "Fallback provider candidate is no longer eligible"
+                  );
+                  continue;
+                }
+                await this.repository.recordProviderTransition({
+                  invocationId: invocationId!, workspaceId: request.workspaceId,
+                  fromProviderId: previous.providerId, fromModelId: previous.modelId,
+                  toProviderId: candidate.providerId, toModelId: candidate.modelId,
+                  fallbackIndex: index
+                });
+              }
+              providerId = candidate.providerId;
+              modelId = candidate.modelId;
+              const candidateRouting = { ...routing, providerId, modelId };
+              try {
+                const resolved = await this.providers.create(request.workspaceId, providerId);
+                const model = resolved.provider.models.find(({ modelId: id }) => id === modelId);
+                if (!model) throw new AiContractError("PROVIDER_UNAVAILABLE", "Routed model is unavailable");
+                this.runtime.validateModel(activeReservation, model);
+                const candidatePricing = await this.repository.findModelPricing(
+                  request.workspaceId, providerId, modelId
+                );
+                if (!candidatePricing) throw new AiContractError("PROVIDER_UNAVAILABLE", "Routed model pricing is unavailable");
+                const execution = await this.executeProvider({
+                  workspaceId: request.workspaceId, providerId, routing: candidateRouting,
+                  modelName: model.modelName, apiBaseUrl: resolved.provider.apiBaseUrl,
+                  adapter: resolved.adapter, request,
+                  maxOutputTokens: activeReservation.estimate.outputTokens, leaseSignal,
+                  maxAttempts: index === 0 ? 3 : 1,
+                  onRetry: () => { providerRetryCount += 1; return providerRetryCount; }
+                });
+                providerResult = execution.result;
+                pricing = candidatePricing;
+                resolvedProvider = resolved;
+                finalRouting = candidateRouting;
+                return execution;
+              } catch (error: unknown) {
+                lastCandidateError = error;
+                if (this.isCancellation(error, leaseSignal, request.signal) || this.isTerminalResponseError(error)) throw error;
+                previous = candidate;
+              }
+            }
+            throw lastCandidateError;
+          })()
         );
-        providerResult = execution.result;
-        providerRetryCount = execution.retryCount;
+        providerRetryCount = Math.max(providerRetryCount, execution.retryCount);
       } finally {
         providerDurationMs = Date.now() - providerStartedAt;
+      }
+      if (!providerResult || !pricing || !resolvedProvider) {
+        throw new AiContractError("PROVIDER_UNAVAILABLE", "No provider candidate completed the invocation");
       }
       const usage = this.usage.normalize(providerResult.usage);
       const cost = this.costs.normalize(usage, pricing);
       const response = this.responses.normalize({
         requestId: request.requestId,
         providerResult,
-        routing,
+        routing: finalRouting,
         usage,
         cost,
         metadata: { providerDurationMs,
           promptCache: { packageId: request.promptCache?.packageId ?? null,
-            nativeSupported: resolved.adapter.promptCache?.supportsCaching() === true,
-            mode: resolved.adapter.promptCache?.mode ?? "NONE",
-            ttlSeconds: resolved.adapter.promptCache?.ttlSeconds ?? null } }
+            nativeSupported: resolvedProvider.adapter.promptCache?.supportsCaching() === true,
+            mode: resolvedProvider.adapter.promptCache?.mode ?? "NONE",
+            ttlSeconds: resolvedProvider.adapter.promptCache?.ttlSeconds ?? null } }
       });
       const runtimeCompletion = {
         reservation,
         invocationId,
-        providerId: routing.providerId,
-        modelId: routing.modelId,
+        providerId: finalRouting.providerId,
+        modelId: finalRouting.modelId,
         usage,
         cost,
         retryCount: providerRetryCount,
@@ -142,9 +186,9 @@ export class InvocationOrchestratorService {
       const completion = {
         invocationId,
         workspaceId: request.workspaceId,
-        providerId: routing.providerId,
-        modelId: routing.modelId,
-        routing,
+        providerId: finalRouting.providerId,
+        modelId: finalRouting.modelId,
+        routing: finalRouting,
         usage,
         cost,
         runtime: runtimeCompletion,
@@ -158,8 +202,8 @@ export class InvocationOrchestratorService {
         event: "ai.invocation.succeeded",
         requestId: request.requestId,
         workspaceId: request.workspaceId,
-        providerId: routing.providerId,
-        modelId: routing.modelId
+        providerId: finalRouting.providerId,
+        modelId: finalRouting.modelId
       });
       return response;
     } catch (error: unknown) {
@@ -249,19 +293,15 @@ export class InvocationOrchestratorService {
     let pricing: ModelPricing | undefined;
     let providerRetryCount = 0;
     let providerCompletedAt: Date | undefined;
+    let resolvedProvider: Awaited<ReturnType<ProviderFactory["create"]>> | undefined;
+    let finalRouting: RoutingDecision | undefined;
+    let outputEmitted = false;
     try {
       reservation = await this.runtime.begin(request);
       routing = await this.routing.route({ workspaceId: request.workspaceId, streaming: true,
         ...(request.tools?.length ? { tools: true } : {}) });
       providerId = routing.providerId; modelId = routing.modelId;
-      const resolved = await this.providers.create(request.workspaceId, routing.providerId);
-      const model = resolved.provider.models.find(({ modelId: id }) => id === routing!.modelId);
-      if (!model || !resolved.adapter.stream) {
-        throw new AiContractError("PROVIDER_UNAVAILABLE", "The selected provider does not support streaming");
-      }
-      this.runtime.validateModel(reservation, model);
-      pricing = await this.repository.findModelPricing(request.workspaceId, routing.providerId, routing.modelId) ?? undefined;
-      if (!pricing) throw new AiContractError("PROVIDER_UNAVAILABLE", "Routed model pricing is unavailable");
+      finalRouting = routing;
       const invocation = await this.repository.start({
         requestId: request.requestId, workspaceId: request.workspaceId,
         providerId: routing.providerId, modelId: routing.modelId,
@@ -269,51 +309,131 @@ export class InvocationOrchestratorService {
       });
       invocationId = invocation.id;
       const providerStartedAt = Date.now();
-      await this.runtime.withLease(reservation, async (leaseSignal) => {
-        const configuredAttempts = this.config.get?.<number>("ai.retry.maxAttempts") ?? 3;
-        const attempts = Math.max(1, Math.min(configuredAttempts, 5));
-        for (let attempt = 1; attempt <= attempts; attempt += 1) {
+      try {
+        await this.runtime.withLease(reservation, async (leaseSignal) => {
+        const candidates = [
+          { providerId: routing!.providerId, modelId: routing!.modelId },
+          ...routing!.fallbacks
+        ];
+        let previous = candidates[0]!;
+        let lastError: unknown = new AiContractError("PROVIDER_UNAVAILABLE", "No streaming provider candidate completed the invocation");
+        for (let candidateIndex = 0; candidateIndex < candidates.length; candidateIndex += 1) {
+          const candidate = candidates[candidateIndex]!;
+          if (request.signal?.aborted || leaseSignal.aborted) {
+            throw new DOMException("AI invocation cancelled", "AbortError");
+          }
+          if (candidateIndex > 0) {
+            const eligible = await this.routing.isCandidateEligible(
+              { workspaceId: request.workspaceId, streaming: true, ...(request.tools?.length ? { tools: true } : {}) }, candidate
+            );
+            if (!eligible) {
+              lastError = new AiContractError("PROVIDER_UNAVAILABLE", "Fallback provider candidate is no longer eligible");
+              continue;
+            }
+            await this.repository.recordProviderTransition({
+              invocationId: invocationId!, workspaceId: request.workspaceId,
+              fromProviderId: previous.providerId, fromModelId: previous.modelId,
+              toProviderId: candidate.providerId, toModelId: candidate.modelId,
+              fallbackIndex: candidateIndex
+            });
+          }
+          providerId = candidate.providerId;
+          modelId = candidate.modelId;
+          const candidateRouting = { ...routing!, providerId, modelId };
           try {
-            await this.withTimeout(async (signal) => {
-              await this.credentials.useCredential(
-                request.workspaceId, routing!.providerId, (credential) =>
-                  resolved.adapter.stream!({
-                    requestId: request.requestId, modelId: routing!.modelId,
-                    modelName: model.modelName, apiBaseUrl: resolved.provider.apiBaseUrl,
-                    messages: request.messages,
-                    maxOutputTokens: reservation!.estimate.outputTokens, signal,
-                    ...(request.tools ? { tools: request.tools } : {}),
-                    ...(request.promptCache ? { promptCache: request.promptCache } : {})
-                  }, credential, async (event) => {
-                    if (event.usage && event.usage.inputTokens !== undefined &&
-                        event.usage.outputTokens !== undefined) {
-                      finalUsage = {
-                        inputTokens: event.usage.inputTokens,
-                        outputTokens: event.usage.outputTokens,
-                        ...(event.usage.cachedTokens !== undefined
-                          ? { cachedTokens: event.usage.cachedTokens } : {})
-                      };
-                    }
-                    if (event.finishReason) finishReason = event.finishReason;
-                    if (event.content) responseContent += event.content;
-                    await emit(event);
-                  })
-              );
-            }, leaseSignal, request.signal);
+            const candidateProvider = await this.providers.create(request.workspaceId, providerId);
+            const model = candidateProvider.provider.models.find(({ modelId: id }) => id === modelId);
+            if (!model || !candidateProvider.adapter.stream) {
+              throw new AiContractError("PROVIDER_UNAVAILABLE", "The selected provider does not support streaming");
+            }
+            this.runtime.validateModel(reservation!, model);
+            const candidatePricing = await this.repository.findModelPricing(request.workspaceId, providerId, modelId);
+            if (!candidatePricing) throw new AiContractError("PROVIDER_UNAVAILABLE", "Routed model pricing is unavailable");
+            let attemptUsage: ProviderExecutionResult["usage"] | undefined;
+            let attemptFinishReason: string | undefined;
+            const maxAttempts = candidateIndex === 0 ? 3 : 1;
+            let candidateSuccess = false;
+            for (let attempt = 1; attempt <= maxAttempts; attempt += 1) {
+              try {
+                await this.withTimeout(async (signal) => {
+                  await this.credentials.useCredential(request.workspaceId, providerId!, (credential) =>
+                    candidateProvider.adapter.stream!({
+                      requestId: request.requestId, modelId: modelId!, modelName: model.modelName,
+                      apiBaseUrl: candidateProvider.provider.apiBaseUrl, messages: request.messages,
+                      maxOutputTokens: reservation!.estimate.outputTokens, signal,
+                      ...(request.tools ? { tools: request.tools } : {}),
+                      ...(request.promptCache ? { promptCache: request.promptCache } : {})
+                    }, credential, async (event) => {
+                      if (event.usage) {
+                        const { inputTokens, outputTokens, cachedTokens } = event.usage;
+                        if ((inputTokens !== undefined && (!Number.isInteger(inputTokens) || inputTokens < 0)) ||
+                            (outputTokens !== undefined && (!Number.isInteger(outputTokens) || outputTokens < 0 ||
+                              outputTokens > reservation!.estimate.outputTokens)) ||
+                            (cachedTokens !== undefined && (!Number.isInteger(cachedTokens) || cachedTokens < 0))) {
+                          throw new AiContractError("RESPONSE_INVALID", "AI provider returned invalid usage data");
+                        }
+                      }
+                      if (event.usage && event.usage.inputTokens !== undefined && event.usage.outputTokens !== undefined) {
+                        attemptUsage = {
+                          inputTokens: event.usage.inputTokens, outputTokens: event.usage.outputTokens,
+                          ...(event.usage.cachedTokens !== undefined ? { cachedTokens: event.usage.cachedTokens } : {})
+                        };
+                      }
+                      if (event.finishReason) attemptFinishReason = event.finishReason;
+                      if (event.content) responseContent += event.content;
+                      if (event.toolCall) this.validateToolCall(event.toolCall, request);
+                      if (event.content || event.toolCall) outputEmitted = true;
+                      await emit(event);
+                    })
+                  );
+                }, leaseSignal, request.signal);
+                candidateSuccess = true;
+                break;
+              } catch (error: unknown) {
+                lastError = error;
+                if (this.isCancellation(error, leaseSignal, request.signal)) throw error;
+                if (this.isTerminalResponseError(error)) throw error;
+                const mayRetry = attempt < maxAttempts && !outputEmitted && this.retryable(error);
+                if (mayRetry) {
+                  providerRetryCount += 1;
+                  await this.retryDelay(providerRetryCount, leaseSignal, request.signal);
+                  continue;
+                }
+                if (outputEmitted) throw error;
+                break;
+              }
+            }
+            if (!candidateSuccess) {
+              lastError = lastError ?? new AiContractError("PROVIDER_UNAVAILABLE", "Provider stream failed");
+              previous = candidate;
+              continue;
+            }
+            finalUsage = attemptUsage;
+            finishReason = attemptFinishReason;
+            pricing = candidatePricing;
+            resolvedProvider = candidateProvider;
+            finalRouting = candidateRouting;
             break;
-          } catch (error) {
-            const canRecover = responseContent.length === 0 && attempt < attempts &&
-              this.retryable(error) && !leaseSignal.aborted && !request.signal?.aborted;
-            if (!canRecover) throw error;
-            providerRetryCount += 1;
-            await this.retryDelay(providerRetryCount, leaseSignal, request.signal);
+          } catch (error: unknown) {
+            lastError = error;
+            if (this.isCancellation(error, leaseSignal, request.signal) ||
+                this.isTerminalResponseError(error) || outputEmitted) throw error;
+            previous = candidate;
           }
         }
-      });
-      providerDurationMs = Date.now() - providerStartedAt;
+        if (!resolvedProvider || !pricing) throw lastError;
+        });
+      } finally {
+        providerDurationMs = Date.now() - providerStartedAt;
+      }
       providerCompletedAt = new Date();
       const usage = finalUsage ? this.usage.normalize(finalUsage) : null;
-      const cost = usage ? this.costs.normalize(usage, pricing) : null;
+      const activePricing = pricing;
+      const activeProvider = resolvedProvider;
+      if (!activePricing || !activeProvider) {
+        throw new AiContractError("PROVIDER_UNAVAILABLE", "No streaming provider candidate completed the invocation");
+      }
+      const cost = usage ? this.costs.normalize(usage, activePricing) : null;
       const runtimeBase = {
         reservation, invocationId, providerId, modelId,
         retryCount: providerRetryCount,
@@ -321,22 +441,22 @@ export class InvocationOrchestratorService {
       };
       if (usage && cost) {
         await this.repository.complete({
-          invocationId, workspaceId: request.workspaceId, providerId, modelId, routing,
+          invocationId, workspaceId: request.workspaceId, providerId: providerId!, modelId: modelId!, routing: finalRouting!,
           usage, cost, ...(finishReason ? { finishReason } : {}), responseContent,
           runtime: { ...runtimeBase, usage, cost }
         });
       } else {
         await this.repository.completeUnknownUsage({
-          invocationId, workspaceId: request.workspaceId, providerId, modelId, routing,
-          responseContent, pricing, ...(finishReason ? { finishReason } : {}),
+          invocationId, workspaceId: request.workspaceId, providerId: providerId!, modelId: modelId!, routing: finalRouting!,
+          responseContent, pricing: activePricing, ...(finishReason ? { finishReason } : {}),
           runtime: runtimeBase
         });
       }
       return {
         invocationId, responseContent, ...(finishReason ? { finishReason } : {}),
-        usage, cost, pricing, providerCompletedAt, retryCount: providerRetryCount,
+        usage, cost, pricing: activePricing, providerCompletedAt, retryCount: providerRetryCount,
         providerId, modelId,
-        nativePromptCacheSupported: resolved.adapter.promptCache?.supportsCaching() === true
+        nativePromptCacheSupported: activeProvider.adapter.promptCache?.supportsCaching() === true
       };
     } catch (error: unknown) {
       if (reservation && invocationId) {
@@ -387,9 +507,10 @@ export class InvocationOrchestratorService {
     request: TrustedInvocationRequest;
     maxOutputTokens: number;
     leaseSignal: AbortSignal;
+    maxAttempts: number;
+    onRetry: () => number;
   }): Promise<{ result: ProviderExecutionResult; retryCount: number }> {
-    const configuredAttempts = this.config.get?.<number>("ai.retry.maxAttempts") ?? 3;
-    const attempts = Math.max(1, Math.min(configuredAttempts, 5));
+    const attempts = input.maxAttempts;
     let result: ProviderExecutionResult | undefined;
     let retryCount = 0;
     for (let attempt = 1; attempt <= attempts; attempt += 1) {
@@ -420,18 +541,46 @@ export class InvocationOrchestratorService {
       } catch (error: unknown) {
         if (attempt >= attempts || !this.retryable(error) ||
           input.leaseSignal.aborted || input.request.signal?.aborted) throw error;
-        retryCount += 1;
+        retryCount = input.onRetry();
         await this.retryDelay(retryCount, input.leaseSignal, input.request.signal);
       }
     }
     if (!result) throw new AiContractError("RESPONSE_INVALID", "Provider returned no response");
-    if (result.usage.outputTokens > input.maxOutputTokens) {
-      throw new AiContractError(
-        "RESPONSE_INVALID",
-        "AI provider output exceeded the reserved token limit"
-      );
-    }
+    this.validateProviderResult(result, input.request);
+    if (result.usage.outputTokens > input.maxOutputTokens) throw new AiContractError(
+      "RESPONSE_INVALID", "AI provider output exceeded the reserved token limit"
+    );
     return { result, retryCount };
+  }
+
+  private validateProviderResult(result: ProviderExecutionResult, request: TrustedInvocationRequest): void {
+    if (!result || typeof result !== "object" || typeof result.content !== "string" ||
+        !result.usage || !Number.isInteger(result.usage.inputTokens) || result.usage.inputTokens < 0 ||
+        !Number.isInteger(result.usage.outputTokens) || result.usage.outputTokens < 0 ||
+        (result.usage.cachedTokens !== undefined &&
+          (!Number.isInteger(result.usage.cachedTokens) || result.usage.cachedTokens < 0)) ||
+        (result.finishReason !== undefined && typeof result.finishReason !== "string") ||
+        (result.toolCalls !== undefined && !Array.isArray(result.toolCalls))) {
+      throw new AiContractError("RESPONSE_INVALID", "AI provider returned a malformed response");
+    }
+    for (const toolCall of result.toolCalls ?? []) this.validateToolCall(toolCall, request);
+  }
+
+  private validateToolCall(
+    toolCall: AiToolCallContract,
+    request: TrustedInvocationRequest
+  ): void {
+    if (!toolCall || typeof toolCall.id !== "string" || !toolCall.id.trim() ||
+        typeof toolCall.name !== "string" || !toolCall.name.trim() ||
+        !toolCall.arguments || typeof toolCall.arguments !== "object" || Array.isArray(toolCall.arguments) ||
+        !["pending", "completed", "failed", "rejected"].includes(toolCall.status) ||
+        (toolCall.result !== undefined &&
+          (!toolCall.result || typeof toolCall.result !== "object" || Array.isArray(toolCall.result)))) {
+      throw new AiContractError("RESPONSE_INVALID", "AI provider returned a malformed tool call");
+    }
+    if (request.tools?.length && !request.tools.some((tool) => tool.name === toolCall.name)) {
+      throw new AiContractError("RESPONSE_INVALID", "AI provider returned an undeclared tool call");
+    }
   }
 
   private async withTimeout(
@@ -469,16 +618,27 @@ export class InvocationOrchestratorService {
   }
 
   private retryable(error: unknown): boolean {
-    return error instanceof AiContractError &&
-      (error.code === "RATE_LIMITED" || error.code === "PROVIDER_UNAVAILABLE");
+    return error instanceof InvocationTimeoutError ||
+      (error instanceof AiContractError &&
+        (error.code === "RATE_LIMITED" || error.metadata?.retryable === true));
+  }
+
+  private isCancellation(
+    error: unknown, leaseSignal: AbortSignal, requestSignal?: AbortSignal
+  ): boolean {
+    return leaseSignal.aborted || requestSignal?.aborted === true ||
+      (error instanceof DOMException && error.name === "AbortError") ||
+      (error instanceof AiContractError && error.code === "CANCELLED");
+  }
+
+  private isTerminalResponseError(error: unknown): boolean {
+    return error instanceof AiContractError && error.code === "RESPONSE_INVALID";
   }
 
   private async retryDelay(
     retryCount: number, leaseSignal: AbortSignal, requestSignal?: AbortSignal
   ): Promise<void> {
-    const base = this.config.get?.<number>("ai.retry.baseDelayMs") ?? 100;
-    const maximum = this.config.get?.<number>("ai.retry.maxDelayMs") ?? 2_000;
-    const delay = Math.max(0, Math.min(maximum, base * (2 ** (retryCount - 1))));
+    const delay = retryCount <= 1 ? 1_000 : 3_000;
     if (!delay) return;
     await new Promise<void>((resolve, reject) => {
       const timer = setTimeout(done, delay);

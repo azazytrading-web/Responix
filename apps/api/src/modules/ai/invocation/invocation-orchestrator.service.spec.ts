@@ -46,7 +46,8 @@ function createHarness(options: {
       modelId: "model-id",
       decisionFactors: {},
       fallbacks: []
-    })
+    }),
+    isCandidateEligible: jest.fn().mockResolvedValue(true)
   };
   const providers = {
     create: jest.fn().mockResolvedValue({
@@ -80,6 +81,7 @@ function createHarness(options: {
     }),
     stageSuccess: jest.fn().mockResolvedValue("recovery-id"),
     stageFailure: jest.fn().mockResolvedValue("recovery-id"),
+    recordProviderTransition: jest.fn().mockResolvedValue(undefined),
     complete: jest.fn().mockResolvedValue(undefined),
     completeUnknownUsage: jest.fn().mockResolvedValue(undefined),
     failWithRuntime: jest.fn().mockResolvedValue(undefined),
@@ -273,6 +275,10 @@ describe("InvocationOrchestratorService", () => {
         usage: { inputTokens: 10, outputTokens: 11, cachedTokens: 0 }
       }
     });
+    harness.routing.route.mockResolvedValue({
+      providerId: "provider-id", modelId: "model-id", decisionFactors: {},
+      fallbacks: [{ providerId: "fallback-provider", modelId: "fallback-model" }]
+    });
 
     await expect(harness.service.invoke(command)).rejects.toThrow(
       "AI provider output exceeded the reserved token limit"
@@ -280,6 +286,8 @@ describe("InvocationOrchestratorService", () => {
 
     expect(harness.repository.failWithRuntime).toHaveBeenCalledTimes(1);
     expect(harness.repository.complete).not.toHaveBeenCalled();
+    expect(harness.routing.isCandidateEligible).not.toHaveBeenCalled();
+    expect(harness.invoke).toHaveBeenCalledTimes(1);
   });
 
   it("does not release or finalize the reservation before provider completion", async () => {
@@ -336,11 +344,129 @@ describe("InvocationOrchestratorService", () => {
     }));
   });
 
+  it("uses the locked one-second and three-second retry delays", async () => {
+    const harness = createHarness({});
+    const retryDelay = (harness.service as unknown as {
+      retryDelay: (count: number, lease: AbortSignal, request?: AbortSignal) => Promise<void>
+    }).retryDelay;
+    const lease = new AbortController().signal;
+    jest.useFakeTimers();
+    try {
+      let firstComplete = false;
+      const first = retryDelay.call(harness.service, 1, lease).then(() => { firstComplete = true; });
+      await jest.advanceTimersByTimeAsync(999);
+      expect(firstComplete).toBe(false);
+      await jest.advanceTimersByTimeAsync(1);
+      await first;
+      expect(firstComplete).toBe(true);
+
+      let secondComplete = false;
+      const second = retryDelay.call(harness.service, 2, lease).then(() => { secondComplete = true; });
+      await jest.advanceTimersByTimeAsync(2_999);
+      expect(secondComplete).toBe(false);
+      await jest.advanceTimersByTimeAsync(1);
+      await second;
+      expect(secondComplete).toBe(true);
+    } finally {
+      jest.useRealTimers();
+    }
+  });
+
   it("does not retry non-transient provider validation failures", async () => {
     const harness = createHarness({});
     harness.invoke.mockRejectedValue(new AiContractError("RESPONSE_INVALID", "Invalid"));
     await expect(harness.service.invoke(command)).rejects.toThrow("Invalid");
     expect(harness.invoke).toHaveBeenCalledTimes(1);
+  });
+
+  it("executes the ordered fallback candidate and persists the provider transition", async () => {
+    const harness = createHarness({});
+    harness.routing.route.mockResolvedValue({
+      providerId: "provider-id", modelId: "model-id", decisionFactors: {},
+      fallbacks: [{ providerId: "fallback-provider", modelId: "fallback-model" }]
+    });
+    harness.invoke
+      .mockRejectedValueOnce(new AiContractError("CREDENTIAL_UNAVAILABLE", "No credential"))
+      .mockResolvedValueOnce({ content: "Fallback response", usage: { inputTokens: 2, outputTokens: 2 } });
+    harness.providers.create.mockImplementation(async (_workspaceId: string, selectedProviderId: string) => ({
+      provider: { apiBaseUrl: null, models: [{ modelId: selectedProviderId === "provider-id" ? "model-id" : "fallback-model", modelName: "model-name" }] },
+      adapter: { providerName: "OpenAI", invoke: harness.invoke }
+    }) as never);
+
+    await expect(harness.service.invoke(command)).resolves.toMatchObject({
+      providerId: "fallback-provider", modelId: "fallback-model", content: "Fallback response"
+    });
+    expect(harness.routing.isCandidateEligible).toHaveBeenCalledWith(
+      { workspaceId: "workspace-id" }, { providerId: "fallback-provider", modelId: "fallback-model" }
+    );
+    expect(harness.repository.recordProviderTransition).toHaveBeenCalledWith(expect.objectContaining({
+      fromProviderId: "provider-id", toProviderId: "fallback-provider", fallbackIndex: 1
+    }));
+    expect(harness.repository.complete).toHaveBeenCalledWith(expect.objectContaining({
+      providerId: "fallback-provider", modelId: "fallback-model"
+    }));
+  });
+
+  it("falls back to the next provider when streaming fails before visible output", async () => {
+    const harness = createHarness({});
+    harness.routing.route.mockResolvedValue({
+      providerId: "provider-id", modelId: "model-id", decisionFactors: {},
+      fallbacks: [{ providerId: "fallback-provider", modelId: "fallback-model" }]
+    });
+    const primaryStream = jest.fn(async () => {
+      throw new AiContractError("PROVIDER_UNAVAILABLE", "Stream disconnected");
+    });
+    const fallbackStream = jest.fn(async (
+      _request: ProviderExecutionRequest,
+      _credential: unknown,
+      emit: (event: { type: "delta" | "completed"; content?: string }) => Promise<void>
+    ) => {
+      await emit({ type: "delta", content: "Fallback stream" });
+      await emit({ type: "completed" });
+    });
+    harness.providers.create.mockImplementation(async (_workspaceId: string, selectedProviderId: string) => ({
+      provider: {
+        apiBaseUrl: null,
+        models: [{ modelId: selectedProviderId === "provider-id" ? "model-id" : "fallback-model", modelName: "model-name" }]
+      },
+      adapter: { providerName: "OpenAI", stream: selectedProviderId === "provider-id" ? primaryStream : fallbackStream }
+    }) as never);
+    const streamed = new RequestNormalizerService().normalizeStream({ ...request, mode: "stream" }, {
+      workspace: { id: "workspace-id" }, membership: { id: "membership-id" }
+    } as never);
+
+    await expect(harness.service.stream(streamed, jest.fn())).resolves.toMatchObject({
+      providerId: "fallback-provider", modelId: "fallback-model", responseContent: "Fallback stream"
+    });
+    expect(harness.repository.recordProviderTransition).toHaveBeenCalledTimes(1);
+    expect(fallbackStream).toHaveBeenCalledTimes(1);
+  });
+
+  it("never replays a stream after user-visible output has been emitted", async () => {
+    const harness = createHarness({});
+    harness.routing.route.mockResolvedValue({
+      providerId: "provider-id", modelId: "model-id", decisionFactors: {},
+      fallbacks: [{ providerId: "fallback-provider", modelId: "fallback-model" }]
+    });
+    const primaryStream = jest.fn(async (
+      _request: ProviderExecutionRequest,
+      _credential: unknown,
+      emit: (event: { type: "delta" | "completed"; content?: string }) => Promise<void>
+    ) => {
+      await emit({ type: "delta", content: "Partial output" });
+      throw new AiContractError("PROVIDER_UNAVAILABLE", "Stream disconnected");
+    });
+    harness.providers.create.mockImplementation(async () => ({
+      provider: { apiBaseUrl: null, models: [{ modelId: "model-id", modelName: "model-name" }] },
+      adapter: { providerName: "OpenAI", stream: primaryStream }
+    }) as never);
+    const streamed = new RequestNormalizerService().normalizeStream({ ...request, mode: "stream" }, {
+      workspace: { id: "workspace-id" }, membership: { id: "membership-id" }
+    } as never);
+
+    await expect(harness.service.stream(streamed, jest.fn())).rejects.toThrow("Stream disconnected");
+    expect(harness.providers.create).toHaveBeenCalledTimes(1);
+    expect(harness.repository.recordProviderTransition).not.toHaveBeenCalled();
   });
 
   it("propagates request cancellation into provider execution and accounting", async () => {

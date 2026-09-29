@@ -1,6 +1,26 @@
 import { AiInvocationResponseDto, AiProviderResponseDto } from "./ai-response.dto";
 
 describe("AI response DTOs", () => {
+  it("serializes persisted model metadata without changing existing capability meanings", () => {
+    const response = AiProviderResponseDto.from({
+      id: "provider-id", providerName: "Provider", apiBaseUrl: null,
+      authenticationType: "api_key", status: "ACTIVE", priority: 1,
+      configuration: null,
+      models: [{
+        modelId: "model-id", providerId: "provider-id", modelName: "model", displayName: "Model",
+        version: "2026-01", status: "ACTIVE", priority: 1, contextWindow: 1000,
+        supportsVision: false, supportsAudio: false, supportsTools: true, supportsReasoning: false,
+        supportsStreaming: true, supportsJson: true, supportsFunctionCalling: true,
+        supportsVideo: false, supportsMcp: false, categories: ["chat"]
+      }]
+    });
+
+    expect(response.models[0]).toMatchObject({
+      version: "2026-01", supportsTools: true, supportsFunctionCalling: true,
+      supportsVideo: false, supportsMcp: false, categories: ["chat"]
+    });
+  });
+
   it("omits provider configuration, base URLs, and authentication metadata", () => {
     const response = AiProviderResponseDto.from({
       id: "provider-id",

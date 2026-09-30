@@ -3,7 +3,7 @@
 **Date:** 2026-10-01
 **Sprint:** OIC-3 Provider & Oi Model Fabric
 **Baseline:** `ba06bdc0a92128672c99f95d1138d406944250b2` (`oic`, matching `origin/oic` before OIC-3)
-**Status:** OIC-3 implementation and acceptance gates complete. Main feature commit `163fdf4bd989ade70cccc21b6c017ae57963e6e9` is pushed to `origin/oic`; final reproducibility cleanup is including the already-tested customer-boundary acceptance source in a follow-up commit.
+**Status:** OIC-3 implementation and acceptance gates complete. Feature commit `163fdf4bd989ade70cccc21b6c017ae57963e6e9` and acceptance/closeout commit `6a98b768751900038f96432fd800979f151cb703` are pushed to `origin/oic`; final verification found the worktree clean and local/remote HEAD equal.
 
 ## Authority and boundaries
 
@@ -24,7 +24,7 @@
 | 3E Provider transports | PASS | Bounded Chat Completions and OpenAI Responses provider adapters; fixture acceptance covers request/response mapping, stream, status normalization, cancellation, timeout, content-type/body bounds, malformed/truncated/error events, and redirect rejection. |
 | 3F Native Runtime integration | PASS | Real database resolver and binding graph connect to provider executor and local HTTP fixture. Streaming, raw usage evidence, and actual upstream fixture call-count idempotency are verified. |
 | 3G Compatibility and boundaries | PASS | Chat Completions and consumer Responses adapters execute through Native Runtime in provider-backed acceptance; customer identity spoofing, unauthorized OIC admin scopes, and application/tenant boundaries are rejected. |
-| 3H API, migration, security and closeout | PASS | Built API live smoke, official OIC OpenAPI generation, both database migration statuses, clean-schema migration deploy, package checks, security/dependency review, `git diff --check`; main feature commit/push verified. |
+| 3H API, migration, security and closeout | PASS | Built API live smoke, official OIC OpenAPI generation, both database migration statuses, clean-schema migration deploy, package checks, security/dependency review, `git diff --check`; both OIC-3 commits pushed and final worktree verified clean. |
 
 ## Implementation and validation log
 
@@ -41,6 +41,6 @@
 - Built API on isolated local port 4193: `/api/v1/health/live` PASS, `/api/v1/health/ready` PASS with database `ok`, `/docs-json` PASS with 38 paths and all 10 expected OIC admin/runtime/compatibility paths, unauthenticated provider admin request returned 401. The process was stopped after verification.
 - Dependency review found no Responix imports in OIC contracts/client/runtime/control-plane boundaries and no OpenAI compatibility DTOs in `@oic/contracts`. `git diff --check` PASS.
 
-## Remaining work
+## Completion
 
-The feature commit/push is complete. A final staged review will include `customer-boundary.acceptance.test.ts`, which was compiled and included in the passing API suite but was omitted from the first explicit staging set; then verify the follow-up push and clean worktree. Do not begin OIC-4.
+OIC-3 is complete, committed and pushed. The follow-up commit includes `customer-boundary.acceptance.test.ts`, which is referenced by the serialized API acceptance script. Final `HEAD` and `origin/oic` matched, and the worktree was clean. Do not begin OIC-4.

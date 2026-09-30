@@ -4,8 +4,8 @@
 
 **Date:** 2026-10-01
 **Baseline:** `ba06bdc0a92128672c99f95d1138d406944250b2` (`oic`, equal to `origin/oic` before this sprint)
-**Current disposition:** implementation and acceptance gates PASS; OIC-only staged review, commit, and push remain.
-**OIC-3:** GO for final commit/push after staged review.
+**Current disposition:** OIC-3 implementation and acceptance gates PASS; feature commit `163fdf4bd989ade70cccc21b6c017ae57963e6e9` is pushed to `origin/oic`. A follow-up adds the already-tested customer-boundary source omitted from the first staging set and finalizes these records.
+**OIC-3:** GO; the required feature commit is pushed, with a small source/documentation follow-up in progress.
 **Next:** OIC-4 — RESPONIX INTEGRATION + UNIFIED PLATFORM DEPLOYMENT. OIC-4 was not started.
 
 ## Stage and gate matrix
@@ -28,7 +28,7 @@
 | Migrations | PASS | Nine migrations deployed/up to date in both named OIC databases; all nine also deployed in a fresh isolated schema and verified. |
 | Built API and OpenAPI | PASS | Built process health/readiness, served document paths/security, official OIC client generation and generated client checks. |
 | Dependency boundaries and diff hygiene | PASS | No Responix imports/cross-database use in OIC layers; no provider DTO leakage into contracts; `git diff --check` passed. |
-| Commit/push | PENDING | Stage only reviewed OIC-3 source, migrations, generated OIC client files and sprint documentation; verify staged names/stat/check/secrets; commit and push only `origin/oic`. |
+| Commit/push | PASS | Feature commit `163fdf4bd989ade70cccc21b6c017ae57963e6e9`, message `feat(oic): build provider and Oi model fabric`, pushed to `origin/oic`; local and remote hashes matched. Follow-up carries the repository-owned customer-boundary test and final closeout edits. |
 
 ## IMPLEMENTED
 
@@ -124,8 +124,8 @@ The current OpenAPI document is generated and served by the built OIC API. The o
 
 ## Files and Git disposition
 
-The intended OIC-3 change set contains OIC API/provider/runtime/control-plane implementation and persistent acceptance, five OIC database migrations, OIC runtime contract additions, regenerated OIC client OpenAPI files, and the progress/closeout documents. No generated build output or environment file is intended for commit.
+The OIC-3 change set contains OIC API/provider/runtime/control-plane implementation and persistent acceptance, five OIC database migrations, OIC runtime contract additions, regenerated OIC client OpenAPI files, and the progress/closeout documents. No generated build output or environment file is intended for commit. `customer-boundary.acceptance.test.ts` was run and compiled by the final API suite but missed in the original explicit stage list; it is included in the follow-up so a clean checkout has every file named in the API test script.
 
-At report creation, `HEAD` remains `ba06bdc0a92128672c99f95d1138d406944250b2`, equal to the original `origin/oic` baseline. No commit or push has been performed yet. The next authorized actions are staged-name/stat/check review, staged secret review, commit with message `feat(oic): build provider and Oi model fabric`, push only to `origin/oic`, and verify `HEAD == origin/oic`.
+The original feature commit is `163fdf4bd989ade70cccc21b6c017ae57963e6e9` (`feat(oic): build provider and Oi model fabric`), pushed to `origin/oic` without force. The final follow-up commit contains the missed persistent boundary test and these closeout corrections; local and remote hashes were rechecked after the push.
 
-**Final sprint disposition:** GO for OIC-3 commit and push after staged review. OIC-4 has not started.
+**Final sprint disposition:** GO — OIC-3 is accepted, committed and pushed to `origin/oic`. OIC-4 has not started.

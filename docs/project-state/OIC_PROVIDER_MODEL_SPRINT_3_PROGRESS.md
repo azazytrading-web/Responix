@@ -3,7 +3,7 @@
 **Date:** 2026-10-01
 **Sprint:** OIC-3 Provider & Oi Model Fabric
 **Baseline:** `ba06bdc0a92128672c99f95d1138d406944250b2` (`oic`, matching `origin/oic` before OIC-3)
-**Status:** OIC-3 implementation and acceptance gates complete; final OIC-only staged review, commit, and push remain.
+**Status:** OIC-3 implementation and acceptance gates complete. Main feature commit `163fdf4bd989ade70cccc21b6c017ae57963e6e9` is pushed to `origin/oic`; final reproducibility cleanup is including the already-tested customer-boundary acceptance source in a follow-up commit.
 
 ## Authority and boundaries
 
@@ -24,7 +24,7 @@
 | 3E Provider transports | PASS | Bounded Chat Completions and OpenAI Responses provider adapters; fixture acceptance covers request/response mapping, stream, status normalization, cancellation, timeout, content-type/body bounds, malformed/truncated/error events, and redirect rejection. |
 | 3F Native Runtime integration | PASS | Real database resolver and binding graph connect to provider executor and local HTTP fixture. Streaming, raw usage evidence, and actual upstream fixture call-count idempotency are verified. |
 | 3G Compatibility and boundaries | PASS | Chat Completions and consumer Responses adapters execute through Native Runtime in provider-backed acceptance; customer identity spoofing, unauthorized OIC admin scopes, and application/tenant boundaries are rejected. |
-| 3H API, migration, security and closeout | PASS | Built API live smoke, official OIC OpenAPI generation, both database migration statuses, clean-schema migration deploy, package checks, security/dependency review, `git diff --check`; final staged review and commit/push remain. |
+| 3H API, migration, security and closeout | PASS | Built API live smoke, official OIC OpenAPI generation, both database migration statuses, clean-schema migration deploy, package checks, security/dependency review, `git diff --check`; main feature commit/push verified. |
 
 ## Implementation and validation log
 
@@ -43,4 +43,4 @@
 
 ## Remaining work
 
-Only the approved OIC-3 staged-file review, staged secret scan, commit `feat(oic): build provider and Oi model fabric`, push to `origin/oic`, and remote hash verification remain. Do not begin OIC-4.
+The feature commit/push is complete. A final staged review will include `customer-boundary.acceptance.test.ts`, which was compiled and included in the passing API suite but was omitted from the first explicit staging set; then verify the follow-up push and clean worktree. Do not begin OIC-4.

@@ -25,7 +25,7 @@ type ProviderRecord = {
     modelName: string;
     status: RoutingCandidate["modelStatus"];
     priority: number;
-    contextWindow: number;
+    contextWindow: number | null;
     supportsVision: boolean;
     supportsAudio: boolean;
     supportsTools: boolean;
@@ -80,6 +80,7 @@ export class RoutingRepository {
           take: 1
         },
         models: {
+          where: { source: "BUILT_IN", ownerWorkspaceId: null, status: { not: "ARCHIVED" } },
           orderBy: [{ priority: "desc" }, { id: "asc" }],
           select: {
             id: true,
@@ -159,7 +160,7 @@ export class RoutingRepository {
       capabilities: {
         modelId: model.id,
         providerId: provider.id,
-        contextWindow: model.contextWindow,
+        contextWindow: model.contextWindow ?? 0,
         supportsVision: model.supportsVision,
         supportsAudio: model.supportsAudio,
         supportsTools: model.supportsTools,

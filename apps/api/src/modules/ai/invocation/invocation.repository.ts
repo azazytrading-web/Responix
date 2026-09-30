@@ -86,6 +86,7 @@ export class InvocationRepository {
     const model = await this.prisma.aiModel.findFirst({
       where: {
         id: modelId,
+        source: "BUILT_IN", ownerWorkspaceId: null,
         providerId,
         status: "ACTIVE",
         provider: {

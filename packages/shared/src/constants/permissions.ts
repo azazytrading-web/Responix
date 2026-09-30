@@ -2,6 +2,7 @@ export const PERMISSIONS = {
   PLATFORM_READ: "platform.read",
   PLATFORM_CONFIGURE: "platform.configure",
   AI_CONFIGURE: "ai.configure",
+  AI_MODELS_WRITE: "ai.models.write",
   WORKFLOW_CONFIGURE: "workflow.configure",
   TOOL_CONFIGURE: "tool.configure",
   KNOWLEDGE_CONFIGURE: "knowledge.configure",

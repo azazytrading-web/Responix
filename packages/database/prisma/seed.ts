@@ -1,3 +1,4 @@
+import { seedBuiltInModel } from "./model-catalog.seed";
 import { PrismaClient } from "@prisma/client";
 import { hash } from "@node-rs/argon2";
 
@@ -244,7 +245,7 @@ async function seedDevelopmentWorkspaceManifestOnly(): Promise<void> {
 async function seedDevelopmentWorkspaceUpdatePermissionOnly(): Promise<void> {
   const permissionCodes = [
     "workspace.update", "workspace.members.read", "workspace.members.manage",
-    "ai.providers.read", "ai.providers.write", "ai.providers.validate",
+    "ai.providers.read", "ai.providers.write", "ai.providers.validate", "ai.models.write",
     "channel.runtime.read", "channel.runtime.write", "channel.runtime.admin",
     "whatsapp.connection.read", "whatsapp.connection.write", "whatsapp.connection.admin"
   ];
@@ -285,6 +286,7 @@ const permissions = [
   "ai.configure",
   "ai.providers.read",
   "ai.providers.write",
+  "ai.models.write",
   "ai.providers.validate",
   "ai.invoke",
   "ai.logs.read",
@@ -676,17 +678,9 @@ async function seed(): Promise<void> {
         authenticationType: "api_key"
       }
     });
-    await prisma.aiModel.upsert({
-      where: {
-        providerId_modelName: {
-          providerId: provider.id, modelName: definition.modelName
-        }
-      },
-      update: {},
-      create: {
-        providerId: provider.id, modelName: definition.modelName,
-        displayName: definition.displayName, contextWindow: definition.contextWindow
-      }
+    await seedBuiltInModel(prisma, {
+      providerId: provider.id, modelName: definition.modelName,
+      displayName: definition.displayName, contextWindow: definition.contextWindow
     });
   }
 

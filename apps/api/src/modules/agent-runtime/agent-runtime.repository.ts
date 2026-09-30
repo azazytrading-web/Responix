@@ -363,6 +363,7 @@ export class AgentRuntimeRepository {
     const model = await tx.aiModel.findFirst({
       where: {
         id: modelId,
+        source: "BUILT_IN", ownerWorkspaceId: null,
         providerId,
         status: "ACTIVE",
         provider: { status: "ACTIVE" }

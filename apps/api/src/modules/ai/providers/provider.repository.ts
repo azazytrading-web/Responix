@@ -55,7 +55,7 @@ type ProviderRecord = {
     modelName: string;
     displayName: string;
     version: string | null;
-    contextWindow: number;
+    contextWindow: number | null;
     supportsVision: boolean;
     supportsAudio: boolean;
     supportsTools: boolean;
@@ -97,7 +97,7 @@ export class ProviderRepository {
         },
         models: {
           ...providerSelection.models,
-          where: { status: "ACTIVE" }
+          where: { status: "ACTIVE", source: "BUILT_IN", ownerWorkspaceId: null }
         },
         credentials: { where: { workspaceId, status: "ACTIVE", deletedAt: null }, select: { id: true }, take: 1 }
       }
@@ -125,7 +125,7 @@ export class ProviderRepository {
         },
         models: {
           ...providerSelection.models,
-          where: { status: "ACTIVE" }
+          where: { status: "ACTIVE", source: "BUILT_IN", ownerWorkspaceId: null }
         },
         credentials: { where: { workspaceId, status: "ACTIVE", deletedAt: null }, select: { id: true }, take: 1 }
       }
@@ -159,7 +159,7 @@ export class ProviderRepository {
         modelName: model.modelName,
         displayName: model.displayName,
         ...(model.version === null ? {} : { version: model.version }),
-        contextWindow: model.contextWindow,
+        contextWindow: model.contextWindow ?? 0,
         supportsVision: model.supportsVision,
         supportsAudio: model.supportsAudio,
         supportsTools: model.supportsTools,

@@ -794,6 +794,70 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/ai/models": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["ModelCatalogController_list_v1"];
+        put?: never;
+        post: operations["ModelCatalogController_create_v1"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/ai/models/{modelId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["ModelCatalogController_get_v1"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch: operations["ModelCatalogController_update_v1"];
+        trace?: never;
+    };
+    "/api/v1/ai/models/{modelId}/archive": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["ModelCatalogController_archive_v1"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/ai/models/{modelId}/restore": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["ModelCatalogController_restore_v1"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/dashboard-runtime/bootstrap": {
         parameters: {
             query?: never;
@@ -5405,6 +5469,131 @@ export interface components {
             errorCode?: string;
             providerStatus?: number;
         };
+        ModelCapabilityEvidenceDto: {
+            /** @enum {string} */
+            source: "PLATFORM_CURATED" | "PROVIDER_SYNC" | "MODEL_VALIDATION" | "WORKSPACE_DECLARED";
+            /** @enum {string} */
+            state: "SUPPORTED" | "UNSUPPORTED" | "UNKNOWN";
+            /** Format: date-time */
+            observedAt: string;
+        };
+        ModelCapabilityResponseDto: {
+            /** @enum {string} */
+            key: "TEXT_CHAT" | "STREAMING" | "TOOLS" | "STRUCTURED_OUTPUT" | "REASONING" | "VISION_INPUT" | "IMAGE_GENERATION" | "AUDIO_INPUT" | "AUDIO_OUTPUT" | "VIDEO" | "EMBEDDINGS" | "AUDIO" | "FUNCTION_CALLING" | "MCP";
+            /** @enum {string} */
+            catalogState: "SUPPORTED" | "UNSUPPORTED" | "UNKNOWN";
+            evidence: components["schemas"]["ModelCapabilityEvidenceDto"][];
+        };
+        ModelPriceResponseDto: {
+            /** @enum {string} */
+            state: "KNOWN" | "UNKNOWN";
+            inputRate?: string;
+            outputRate?: string;
+            cachedInputRate?: string;
+            currency?: string;
+            /** @enum {string} */
+            unit?: "PER_MILLION_TOKENS";
+            /** @enum {string} */
+            source?: "PLATFORM_CURATED" | "PROVIDER_SYNC" | "MODEL_VALIDATION" | "WORKSPACE_DECLARED";
+            /** Format: date-time */
+            effectiveFrom?: string;
+            /** Format: date-time */
+            effectiveTo?: string;
+            /** Format: date-time */
+            observedAt?: string;
+        };
+        CatalogModelResponseDto: {
+            /** Format: uuid */
+            id: string;
+            providerModelId: string;
+            modelName: string;
+            displayName: string;
+            family?: string;
+            version?: string;
+            contextWindow?: number;
+            maxOutputTokens?: number;
+            categories: string[];
+            /** @enum {string} */
+            source: "BUILT_IN" | "PROVIDER_SYNCED" | "CUSTOM";
+            /** @enum {string} */
+            status: "ACTIVE" | "DISABLED" | "DEPRECATED" | "ARCHIVED";
+            /** Format: uuid */
+            ownerWorkspaceId?: string;
+            /** Format: uuid */
+            providerId?: string;
+            /** Format: uuid */
+            customProviderId?: string;
+            /**
+             * @description Catalog boundary only; does not certify configured credentials or production eligibility
+             * @enum {string}
+             */
+            productionIntegration: "LEGACY_BUILT_IN_PATH" | "SPRINT_C_REQUIRED" | "LIFECYCLE_BLOCKED";
+            warnings: string[];
+            capabilities: components["schemas"]["ModelCapabilityResponseDto"][];
+            pricing: components["schemas"]["ModelPriceResponseDto"];
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            updatedAt: string;
+            /** Format: date-time */
+            archivedAt?: string;
+        };
+        CatalogPageResponseDto: {
+            items: components["schemas"]["CatalogModelResponseDto"][];
+            total: number;
+            page: number;
+            limit: number;
+        };
+        ModelCapabilityInputDto: {
+            /** @enum {string} */
+            key: "TEXT_CHAT" | "STREAMING" | "TOOLS" | "STRUCTURED_OUTPUT" | "REASONING" | "VISION_INPUT" | "IMAGE_GENERATION" | "AUDIO_INPUT" | "AUDIO_OUTPUT" | "VIDEO" | "EMBEDDINGS" | "AUDIO" | "FUNCTION_CALLING";
+            /** @enum {string} */
+            state: "SUPPORTED" | "UNSUPPORTED" | "UNKNOWN";
+        };
+        ModelPriceInputDto: {
+            /** @enum {string} */
+            state: "KNOWN" | "UNKNOWN";
+            /** @enum {string} */
+            source: "WORKSPACE_DECLARED";
+            inputRate?: string;
+            outputRate?: string;
+            cachedInputRate?: string;
+            /** @enum {string} */
+            currency: "USD" | "EUR" | "GBP" | "JPY" | "CAD" | "AUD" | "CHF" | "CNY" | "INR";
+            /** @enum {string} */
+            unit: "PER_MILLION_TOKENS";
+            /** Format: date-time */
+            effectiveFrom: string;
+            /** Format: date-time */
+            effectiveTo?: string;
+        };
+        CreateCustomModelDto: {
+            displayName: string;
+            family?: string;
+            version?: string;
+            contextWindow?: number;
+            maxOutputTokens?: number;
+            categories?: ("TEXT" | "CHAT" | "CODE" | "REASONING" | "VISION" | "IMAGE" | "AUDIO" | "VIDEO" | "EMBEDDING")[];
+            capabilities?: components["schemas"]["ModelCapabilityInputDto"][];
+            pricing?: components["schemas"]["ModelPriceInputDto"];
+            /** Format: uuid */
+            providerId?: string;
+            /** Format: uuid */
+            customProviderId?: string;
+            providerModelId: string;
+        };
+        UpdateCustomModelDto: {
+            displayName?: string;
+            family?: string;
+            version?: string;
+            contextWindow?: number;
+            maxOutputTokens?: number;
+            categories?: ("TEXT" | "CHAT" | "CODE" | "REASONING" | "VISION" | "IMAGE" | "AUDIO" | "VIDEO" | "EMBEDDING")[];
+            capabilities?: components["schemas"]["ModelCapabilityInputDto"][];
+            pricing?: components["schemas"]["ModelPriceInputDto"];
+            /** @enum {string} */
+            status?: "ACTIVE" | "DISABLED" | "DEPRECATED";
+        };
         DashboardRuntimeBootstrapDto: {
             version: string;
             compatibilityVersion: string;
@@ -9477,6 +9666,145 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["CustomProviderValidationResponseDto"];
+                };
+            };
+        };
+    };
+    ModelCatalogController_list_v1: {
+        parameters: {
+            query?: {
+                page?: number;
+                limit?: number;
+                source?: "BUILT_IN" | "PROVIDER_SYNCED" | "CUSTOM";
+                status?: "ACTIVE" | "DISABLED" | "DEPRECATED" | "ARCHIVED";
+                providerId?: string;
+                customProviderId?: string;
+                /** @description Require trusted upstream catalog SUPPORTED evidence; not a final runtime eligibility decision */
+                capability?: "TEXT_CHAT" | "STREAMING" | "TOOLS" | "STRUCTURED_OUTPUT" | "REASONING" | "VISION_INPUT" | "IMAGE_GENERATION" | "AUDIO_INPUT" | "AUDIO_OUTPUT" | "VIDEO" | "EMBEDDINGS" | "AUDIO" | "FUNCTION_CALLING";
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CatalogPageResponseDto"];
+                };
+            };
+        };
+    };
+    ModelCatalogController_create_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateCustomModelDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CatalogModelResponseDto"];
+                };
+            };
+        };
+    };
+    ModelCatalogController_get_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                modelId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CatalogModelResponseDto"];
+                };
+            };
+        };
+    };
+    ModelCatalogController_update_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                modelId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateCustomModelDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CatalogModelResponseDto"];
+                };
+            };
+        };
+    };
+    ModelCatalogController_archive_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                modelId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CatalogModelResponseDto"];
+                };
+            };
+        };
+    };
+    ModelCatalogController_restore_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                modelId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CatalogModelResponseDto"];
                 };
             };
         };

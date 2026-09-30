@@ -1,3 +1,6 @@
+import { ModelCatalogController } from "./catalog/model-catalog.controller";
+import { ModelCatalogRepository } from "./catalog/model-catalog.repository";
+import { ModelCatalogService } from "./catalog/model-catalog.service";
 import { Module } from "@nestjs/common";
 import { TenantModule } from "../tenant/tenant.module";
 import { AiController } from "./ai.controller";
@@ -60,8 +63,9 @@ import { RuntimeRecoveryService } from "./runtime/runtime-recovery.service";
 
 @Module({
   imports: [TenantModule],
-  controllers: [AiController, CustomProviderController],
+  controllers: [AiController, CustomProviderController, ModelCatalogController],
   providers: [
+    ModelCatalogRepository, ModelCatalogService,
     OpenAiProviderAdapter,
     AnthropicProviderAdapter,
     GeminiProviderAdapter,

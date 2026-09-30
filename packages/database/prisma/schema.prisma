@@ -101,6 +101,7 @@ enum ModelStatus {
   ACTIVE
   DISABLED
   DEPRECATED
+  ARCHIVED
 }
 
 enum KnowledgeStatus {
@@ -608,6 +609,7 @@ enum FeatureFlagState {
 }
 
 model Workspace {
+  catalogModels AiModel[]
   id                  String          @id @default(uuid()) @db.Uuid
   name                String
   slug                String          @unique
@@ -1059,11 +1061,21 @@ model AiProvider {
 
 model AiModel {
   id                      String      @id @default(uuid()) @db.Uuid
-  providerId              String      @map("provider_id") @db.Uuid
+  providerId              String?     @map("provider_id") @db.Uuid
+  providerModelId         String      @map("provider_model_id") @db.VarChar(200)
+  source                  ModelSource @default(BUILT_IN)
+  ownerWorkspaceId        String?     @map("owner_workspace_id") @db.Uuid
+  customProviderId        String?     @map("custom_provider_id") @db.Uuid
+  family                  String?     @db.VarChar(100)
+  archivedAt              DateTime?   @map("archived_at")
+  ownerWorkspace          Workspace?  @relation(fields: [ownerWorkspaceId], references: [id], onDelete: Restrict)
+  customProvider          CustomAiProvider? @relation(fields: [customProviderId, ownerWorkspaceId], references: [id, workspaceId], onDelete: Restrict)
+  capabilityEvidence      AiModelCapability[]
+  pricingRecords          AiModelPrice[]
   modelName               String      @map("model_name")
   displayName             String      @map("display_name")
   version                 String?
-  contextWindow           Int         @map("context_window")
+  contextWindow           Int?        @map("context_window")
   inputCost               Decimal     @default(0) @map("input_cost") @db.Decimal(14, 6)
   outputCost              Decimal     @default(0) @map("output_cost") @db.Decimal(14, 6)
   supportsVision          Boolean     @default(false) @map("supports_vision")
@@ -1082,7 +1094,7 @@ model AiModel {
   createdAt               DateTime    @default(now()) @map("created_at")
   updatedAt               DateTime    @updatedAt @map("updated_at")
 
-  provider                            AiProvider                           @relation(fields: [providerId], references: [id], onDelete: Restrict)
+  provider                            AiProvider?                          @relation(fields: [providerId], references: [id], onDelete: Restrict)
   agents                              AiAgent[]
   invocations                         AiInvocationLog[]
   usageRecords                        AiUsageRecord[]
@@ -1092,7 +1104,9 @@ model AiModel {
   runtimeAccounting                   AiRuntimeAccounting[]
   runtimeOptimizationProviderOutcomes RuntimeOptimizationProviderOutcome[]
 
-  @@unique([providerId, modelName])
+  // Scoped identity is enforced by three SQL partial unique indexes.
+  @@index([ownerWorkspaceId, source, status])
+  @@index([customProviderId, ownerWorkspaceId])
   @@index([providerId, status])
   @@map("ai_models")
 }
@@ -1392,6 +1406,7 @@ model AiProviderHealthRecord {
 }
 
 model CustomAiProvider {
+  models AiModel[]
   id                 String                 @id @default(uuid()) @db.Uuid
   workspaceId        String                 @map("workspace_id") @db.Uuid
   displayName        String                 @map("display_name")
@@ -5380,4 +5395,73 @@ model ChannelPresence {
   @@unique([channelId, externalId], map: "channel_presence_channel_external_key")
   @@index([workspaceId, observedAt], map: "channel_presence_workspace_observed_idx")
   @@map("channel_presence")
+}
+
+// Sprint A catalog vocabulary includes legacy AUDIO/FUNCTION_CALLING/MCP evidence
+// without introducing execution support for those metadata keys.
+enum ModelSource {
+  BUILT_IN
+  PROVIDER_SYNCED
+  CUSTOM
+}
+enum ModelCapabilityKey {
+  TEXT_CHAT
+  STREAMING
+  TOOLS
+  STRUCTURED_OUTPUT
+  REASONING
+  VISION_INPUT
+  IMAGE_GENERATION
+  AUDIO_INPUT
+  AUDIO_OUTPUT
+  VIDEO
+  EMBEDDINGS
+  AUDIO
+  FUNCTION_CALLING
+  MCP
+}
+enum ModelCapabilityState {
+  SUPPORTED
+  UNSUPPORTED
+  UNKNOWN
+}
+enum ModelEvidenceSource {
+  PLATFORM_CURATED
+  PROVIDER_SYNC
+  MODEL_VALIDATION
+  WORKSPACE_DECLARED
+}
+enum ModelPriceState {
+  KNOWN
+  UNKNOWN
+}
+enum ModelPriceUnit {
+  PER_MILLION_TOKENS
+}
+model AiModelCapability {
+  modelId String @map("model_id") @db.Uuid
+  key ModelCapabilityKey
+  source ModelEvidenceSource
+  state ModelCapabilityState @default(UNKNOWN)
+  observedAt DateTime @default(now()) @map("observed_at")
+  model AiModel @relation(fields: [modelId], references: [id], onDelete: Restrict)
+  @@id([modelId, key, source])
+  @@map("ai_model_capabilities")
+}
+model AiModelPrice {
+  id String @id @default(uuid()) @db.Uuid
+  modelId String @map("model_id") @db.Uuid
+  state ModelPriceState @default(UNKNOWN)
+  inputRate Decimal? @map("input_rate") @db.Decimal(18, 6)
+  outputRate Decimal? @map("output_rate") @db.Decimal(18, 6)
+  cachedInputRate Decimal? @map("cached_input_rate") @db.Decimal(18, 6)
+  currency String @default("USD") @db.VarChar(3)
+  unit ModelPriceUnit @default(PER_MILLION_TOKENS)
+  source ModelEvidenceSource
+  effectiveFrom DateTime @map("effective_from")
+  effectiveTo DateTime? @map("effective_to")
+  observedAt DateTime @default(now()) @map("observed_at")
+  model AiModel @relation(fields: [modelId], references: [id], onDelete: Restrict)
+  @@index([modelId, effectiveFrom])
+  @@map("ai_model_prices")
 }

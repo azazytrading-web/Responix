@@ -361,7 +361,7 @@ export class ProviderRuntimeRepository {
         }
       }),
       tx.aiModel.findFirst({
-        where: { id: runtime.modelId, providerId: runtime.providerId, status: "ACTIVE" },
+        where: { id: runtime.modelId, providerId: runtime.providerId, status: "ACTIVE", source: "BUILT_IN", ownerWorkspaceId: null },
         select: {
           id: true, providerId: true, modelName: true, displayName: true,
           contextWindow: true, maxOutputTokens: true, supportsVision: true,

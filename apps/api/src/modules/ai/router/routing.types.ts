@@ -19,7 +19,7 @@ export interface RoutingCandidate {
   providerPriority: number;
   modelId: string;
   modelName: string;
-  modelStatus: "ACTIVE" | "DISABLED" | "DEPRECATED";
+  modelStatus: "ACTIVE" | "DISABLED" | "DEPRECATED" | "ARCHIVED";
   modelPriority: number;
   credentialId: string | null;
   credentialPriority: number;

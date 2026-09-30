@@ -241,7 +241,7 @@ export class RuntimeOptimizationRepository {
       const cache = await tx.runtimeOptimizationPackage.findFirst({ where: { id: input.packageId,
         workspaceId, status: RuntimeOptimizationPackageStatus.ACTIVE } });
       if (!cache) throw new NotFoundException("Active optimization package was not found");
-      const model = await tx.aiModel.findFirst({ where: { id: input.modelId,
+      const model = await tx.aiModel.findFirst({ where: { id: input.modelId, source: "BUILT_IN", ownerWorkspaceId: null,
         providerId: input.providerId, status: "ACTIVE", provider: { status: "ACTIVE",
           configurations: { some: { workspaceId, enabled: true } } } }, select: { id: true } });
       if (!model) throw new NotFoundException("Active workspace provider model was not found");

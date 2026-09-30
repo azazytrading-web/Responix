@@ -4,7 +4,7 @@ import type { AiProviderAdapter } from "./provider-adapter.interface";
 export interface ProviderModel extends AiModelCapabilityContract {
   modelName: string;
   displayName: string;
-  status: "ACTIVE" | "DISABLED" | "DEPRECATED";
+  status: "ACTIVE" | "DISABLED" | "DEPRECATED" | "ARCHIVED";
   priority: number;
 }
 

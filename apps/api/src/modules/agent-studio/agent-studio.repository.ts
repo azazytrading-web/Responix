@@ -983,8 +983,9 @@ export class AgentStudioRepository {
     const model = await tx.aiModel.findFirst({
       where: {
         id: configuration.modelId,
+        source: "BUILT_IN", ownerWorkspaceId: null,
         providerId: configuration.providerId,
-        status: { not: "DEPRECATED" },
+        status: "ACTIVE",
         provider: { status: { not: "DISABLED" } }
       },
       select: {
@@ -1028,7 +1029,7 @@ export class AgentStudioRepository {
     capabilities: AgentCapabilitiesDto
   ) {
     const model = await tx.aiModel.findFirst({
-      where: { id: modelId },
+      where: { id: modelId, source: "BUILT_IN", ownerWorkspaceId: null },
       select: {
         maxOutputTokens: true,
         supportsVision: true,

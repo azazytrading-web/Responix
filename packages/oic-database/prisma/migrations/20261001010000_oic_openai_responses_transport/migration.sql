@@ -1,0 +1,1 @@
+UPDATE "OicProviderDefinition" SET "transportProfiles" = array_append("transportProfiles", 'openai-responses-v1'), "updatedAt" = CURRENT_TIMESTAMP WHERE "key" = 'openai' AND NOT ('openai-responses-v1' = ANY("transportProfiles"));

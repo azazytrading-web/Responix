@@ -4,11 +4,11 @@ import { createHash } from "node:crypto";
 import { OicDatabaseService } from "@oic/database";
 import { AuthenticatedPrincipal } from "./auth.guard";
 import { issueCredential } from "./credential.crypto";
-import { OIC_FOUNDATION_ADMIN_SCOPES } from "./foundation-policy";
+import { OIC_FOUNDATION_ADMIN_SCOPES, OIC_PROVIDER_MODEL_ADMIN_SCOPES } from "./foundation-policy";
 import { OIC_RUNTIME_SCOPES } from "../runtime-plane/runtime-scopes";
 import { FoundationAuditWriter, OIC_FOUNDATION_AUDIT_WRITER } from "./foundation-audit-writer";
 
-export const OIC_SCOPES = [...OIC_FOUNDATION_ADMIN_SCOPES, ...OIC_RUNTIME_SCOPES] as const;
+export const OIC_SCOPES = [...OIC_FOUNDATION_ADMIN_SCOPES, ...OIC_PROVIDER_MODEL_ADMIN_SCOPES, ...OIC_RUNTIME_SCOPES] as const;
 export type AuditContext = { requestId?: string; traceId?: string };
 type IdempotencyResult<T> = { value: T; replayed: boolean };
 type MakeResult<T> = { value: T; resultRef: string };

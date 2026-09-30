@@ -26,6 +26,87 @@ enum OicIdempotencyStatus {
   IN_PROGRESS
 }
 
+enum OicProviderConnectionScope {
+  PLATFORM
+  APPLICATION
+  TENANT
+}
+
+enum OicProviderAuthStrategy {
+  NONE
+  BEARER
+  API_KEY_HEADER
+}
+
+enum OicProviderHealthStatus {
+  UNKNOWN
+  HEALTHY
+  UNHEALTHY
+}
+
+enum OicUpstreamModelSource {
+  MANUAL
+  DISCOVERY
+}
+
+enum OicCatalogLifecycle {
+  ACTIVE
+  DISABLED
+  DEPRECATED
+  ARCHIVED
+}
+
+enum OicCapabilityEvidenceStatus {
+  SUPPORTED
+  UNSUPPORTED
+  UNKNOWN
+}
+
+enum OicCapabilityEvidenceSource {
+  PROVIDER_DECLARED
+  PLATFORM_CURATED
+  OBSERVED
+}
+
+enum OicPricingEvidenceStatus {
+  KNOWN
+  UNKNOWN
+}
+
+enum OicModelLifecycle {
+  DRAFT
+  EXPERIMENTAL
+  CANDIDATE
+  CANARY
+  PRODUCTION
+  MAINTENANCE
+  DEPRECATED
+  RETIRED
+}
+
+enum OicModelVariantKind {
+  EXTERNAL_PROVIDER
+}
+
+enum OicRuntimeBindingScope {
+  PLATFORM
+  APPLICATION
+  TENANT
+}
+
+enum OicRuntimeBindingStatus {
+  DRAFT
+  ACTIVE
+  DISABLED
+}
+
+enum OicProviderSyncStatus {
+  RUNNING
+  SUCCEEDED
+  PARTIAL
+  FAILED
+}
+
 model OicApplication {
   id                 String                     @id @default(uuid()) @db.Uuid
   key                String                     @unique @db.VarChar(64)
@@ -37,6 +118,9 @@ model OicApplication {
   externalReferences OicTenantExternalReference[]
   principals         OicServicePrincipal[]
   adminRecoveryRecords OicAdminRecoveryRecord[]
+  providerConnections OicProviderConnection[]
+  runtimeBindings    OicRuntimeBinding[]
+  modelVisibility    OicApplicationModelVisibility[]
   @@index([status, key])
 }
 
@@ -51,6 +135,8 @@ model OicTenant {
   application OicApplication            @relation(fields: [applicationId], references: [id], onDelete: Restrict)
   references  OicTenantExternalReference[]
   grants      OicPrincipalTenantGrant[]
+  providerConnections OicProviderConnection[]
+  runtimeBindings OicRuntimeBinding[]
   @@unique([id, applicationId])
   @@unique([applicationId, key])
   @@index([applicationId, status, createdAt])
@@ -181,4 +267,234 @@ model OicAdminRecoveryRecord {
   principal             OicServicePrincipal @relation(fields: [principalId, applicationId], references: [id, applicationId], onDelete: Restrict)
   credential            OicMachineCredential @relation(fields: [credentialId], references: [id], onDelete: Restrict)
   @@index([principalId, createdAt])
+}
+
+model OicProviderDefinition {
+  id                    String                   @id @default(uuid()) @db.Uuid
+  key                   String                   @unique @db.VarChar(64)
+  displayName           String                   @db.VarChar(160)
+  authStrategy          OicProviderAuthStrategy
+  transportProfiles     String[]                 @default([])
+  defaultEndpoint       String?                  @db.VarChar(2048)
+  status                OicLifecycleStatus       @default(ACTIVE)
+  createdAt             DateTime                 @default(now()) @db.Timestamptz(6)
+  updatedAt             DateTime                 @updatedAt @db.Timestamptz(6)
+  connections           OicProviderConnection[]
+  upstreamModels        OicUpstreamModel[]
+  variants              OicModelVariant[]
+  syncRuns              OicProviderSyncRun[]
+  @@index([status, key])
+}
+
+model OicProviderConnection {
+  id                   String                       @id @default(uuid()) @db.Uuid
+  providerDefinitionId String                       @db.Uuid
+  scope                OicProviderConnectionScope
+  applicationId        String?                      @db.Uuid
+  tenantId             String?                      @db.Uuid
+  displayName          String                       @db.VarChar(160)
+  endpointUrl          String                       @db.VarChar(2048)
+  transportProfile     String                       @db.VarChar(128)
+  status               OicLifecycleStatus           @default(SUSPENDED)
+  healthStatus         OicProviderHealthStatus      @default(UNKNOWN)
+  lastValidatedAt      DateTime?                    @db.Timestamptz(6)
+  createdAt            DateTime                     @default(now()) @db.Timestamptz(6)
+  updatedAt            DateTime                     @updatedAt @db.Timestamptz(6)
+  providerDefinition   OicProviderDefinition        @relation(fields: [providerDefinitionId], references: [id], onDelete: Restrict)
+  application          OicApplication?              @relation(fields: [applicationId], references: [id], onDelete: Restrict)
+  tenant               OicTenant?                   @relation(fields: [tenantId, applicationId], references: [id, applicationId], onDelete: Restrict)
+  credentials          OicProviderCredential[]
+  healthChecks         OicProviderHealthCheck[]
+  upstreamModels       OicUpstreamModel[]
+  bindings             OicRuntimeBinding[]
+  syncRuns             OicProviderSyncRun[]
+  @@index([providerDefinitionId, status, scope])
+  @@index([applicationId, tenantId, status])
+}
+
+model OicProviderCredential {
+  id            String             @id @default(uuid()) @db.Uuid
+  connectionId  String             @db.Uuid
+  version       Int
+  status        OicCredentialStatus @default(ACTIVE)
+  ciphertext    String             @db.Text
+  nonce         String             @db.VarChar(32)
+  authTag       String             @db.VarChar(32)
+  keyVersion    Int
+  createdAt     DateTime           @default(now()) @db.Timestamptz(6)
+  revokedAt     DateTime?          @db.Timestamptz(6)
+  connection    OicProviderConnection @relation(fields: [connectionId], references: [id], onDelete: Restrict)
+  @@unique([connectionId, version])
+  @@index([connectionId, status, createdAt])
+}
+
+model OicProviderHealthCheck {
+  id             String                    @id @default(uuid()) @db.Uuid
+  connectionId   String                    @db.Uuid
+  status         OicProviderHealthStatus
+  diagnosticCode String                    @db.VarChar(64)
+  latencyMs      Int?
+  endpointHost   String?                   @db.VarChar(253)
+  testedAt       DateTime                  @default(now()) @db.Timestamptz(6)
+  connection     OicProviderConnection    @relation(fields: [connectionId], references: [id], onDelete: Restrict)
+  @@index([connectionId, testedAt])
+}
+
+model OicProviderSyncRun {
+  id                 String               @id @default(uuid()) @db.Uuid
+  providerDefinitionId String              @db.Uuid
+  connectionId       String?              @db.Uuid
+  status             OicProviderSyncStatus @default(RUNNING)
+  discoveredCount    Int                  @default(0)
+  createdCount       Int                  @default(0)
+  updatedCount       Int                  @default(0)
+  rejectedCount      Int                  @default(0)
+  diagnosticCode     String?              @db.VarChar(64)
+  startedAt          DateTime             @default(now()) @db.Timestamptz(6)
+  completedAt        DateTime?            @db.Timestamptz(6)
+  providerDefinition OicProviderDefinition @relation(fields: [providerDefinitionId], references: [id], onDelete: Restrict)
+  connection         OicProviderConnection? @relation(fields: [connectionId], references: [id], onDelete: Restrict)
+  @@index([providerDefinitionId, startedAt])
+}
+
+model OicUpstreamModel {
+  id                   String                     @id @default(uuid()) @db.Uuid
+  providerDefinitionId String                     @db.Uuid
+  connectionId         String                     @db.Uuid
+  upstreamModelId      String                     @db.VarChar(256)
+  displayName          String                     @db.VarChar(160)
+  family               String?                    @db.VarChar(128)
+  source               OicUpstreamModelSource     @default(MANUAL)
+  lifecycle            OicCatalogLifecycle        @default(ACTIVE)
+  contextLimit         Int?
+  outputLimit          Int?
+  lastDiscoveredAt     DateTime?                  @db.Timestamptz(6)
+  createdAt            DateTime                   @default(now()) @db.Timestamptz(6)
+  updatedAt            DateTime                   @updatedAt @db.Timestamptz(6)
+  providerDefinition   OicProviderDefinition      @relation(fields: [providerDefinitionId], references: [id], onDelete: Restrict)
+  connection           OicProviderConnection      @relation(fields: [connectionId], references: [id], onDelete: Restrict)
+  capabilityEvidence   OicUpstreamCapabilityEvidence[]
+  pricingEvidence      OicUpstreamPricingEvidence[]
+  variants             OicModelVariant[]
+  @@unique([connectionId, upstreamModelId])
+  @@index([providerDefinitionId, connectionId, lifecycle, displayName])
+}
+
+model OicUpstreamCapabilityEvidence {
+  id             String                       @id @default(uuid()) @db.Uuid
+  upstreamModelId String                      @db.Uuid
+  capability     String                       @db.VarChar(64)
+  status         OicCapabilityEvidenceStatus
+  source         OicCapabilityEvidenceSource
+  sourceRef      String?                      @db.VarChar(256)
+  observedAt     DateTime                     @default(now()) @db.Timestamptz(6)
+  upstreamModel  OicUpstreamModel             @relation(fields: [upstreamModelId], references: [id], onDelete: Restrict)
+  @@index([upstreamModelId, capability, observedAt])
+}
+
+model OicUpstreamPricingEvidence {
+  id               String                    @id @default(uuid()) @db.Uuid
+  upstreamModelId  String                    @db.Uuid
+  status           OicPricingEvidenceStatus
+  inputRate        Decimal?                  @db.Decimal(20, 10)
+  outputRate       Decimal?                  @db.Decimal(20, 10)
+  cachedInputRate  Decimal?                  @db.Decimal(20, 10)
+  currency         String?                   @db.VarChar(3)
+  unit             String                    @default("USD_PER_MILLION_TOKENS") @db.VarChar(64)
+  sourceRef        String?                   @db.VarChar(256)
+  effectiveAt      DateTime?                 @db.Timestamptz(6)
+  observedAt       DateTime                  @default(now()) @db.Timestamptz(6)
+  upstreamModel    OicUpstreamModel          @relation(fields: [upstreamModelId], references: [id], onDelete: Restrict)
+  @@index([upstreamModelId, observedAt])
+}
+
+model OicModelFamily {
+  id          String             @id @default(uuid()) @db.Uuid
+  familyKey   String             @unique @db.VarChar(64)
+  displayName String             @db.VarChar(160)
+  lifecycle   OicModelLifecycle  @default(DRAFT)
+  createdAt   DateTime           @default(now()) @db.Timestamptz(6)
+  updatedAt   DateTime           @updatedAt @db.Timestamptz(6)
+  editions    OicModelEdition[]
+  @@index([lifecycle, familyKey])
+}
+
+model OicModelEdition {
+  id          String             @id @default(uuid()) @db.Uuid
+  familyId    String             @db.Uuid
+  publicId    String             @unique @db.VarChar(64)
+  editionKey  String             @db.VarChar(64)
+  displayName String             @db.VarChar(160)
+  domain      String?            @db.VarChar(128)
+  lifecycle   OicModelLifecycle  @default(DRAFT)
+  createdAt   DateTime           @default(now()) @db.Timestamptz(6)
+  updatedAt   DateTime           @updatedAt @db.Timestamptz(6)
+  family      OicModelFamily     @relation(fields: [familyId], references: [id], onDelete: Restrict)
+  revisions   OicModelRevision[]
+  visibility  OicApplicationModelVisibility[]
+  bindings    OicRuntimeBinding[]
+  @@unique([familyId, editionKey])
+  @@index([familyId, lifecycle])
+}
+
+model OicModelRevision {
+  id             String             @id @default(uuid()) @db.Uuid
+  editionId      String             @db.Uuid
+  revision       Int
+  instructions   String?            @db.Text
+  specification  String?            @db.Text
+  createdAt      DateTime           @default(now()) @db.Timestamptz(6)
+  edition        OicModelEdition    @relation(fields: [editionId], references: [id], onDelete: Restrict)
+  variants       OicModelVariant[]
+  @@unique([editionId, revision])
+  @@index([editionId, revision])
+}
+
+model OicModelVariant {
+  id                   String                  @id @default(uuid()) @db.Uuid
+  revisionId           String                  @db.Uuid
+  variantKey           String                  @db.VarChar(64)
+  kind                 OicModelVariantKind
+  providerDefinitionId String?                 @db.Uuid
+  upstreamModelId      String?                 @db.Uuid
+  transportProfile     String?                 @db.VarChar(128)
+  createdAt            DateTime                @default(now()) @db.Timestamptz(6)
+  revision             OicModelRevision       @relation(fields: [revisionId], references: [id], onDelete: Restrict)
+  providerDefinition   OicProviderDefinition? @relation(fields: [providerDefinitionId], references: [id], onDelete: Restrict)
+  upstreamModel        OicUpstreamModel?       @relation(fields: [upstreamModelId], references: [id], onDelete: Restrict)
+  bindings             OicRuntimeBinding[]
+  @@unique([revisionId, variantKey])
+  @@index([providerDefinitionId, upstreamModelId])
+}
+
+model OicRuntimeBinding {
+  id            String                    @id @default(uuid()) @db.Uuid
+  editionId     String                    @db.Uuid
+  variantId     String                    @db.Uuid
+  connectionId  String                    @db.Uuid
+  scope         OicRuntimeBindingScope
+  applicationId String?                   @db.Uuid
+  tenantId      String?                   @db.Uuid
+  environment   String                    @default("production") @db.VarChar(64)
+  status        OicRuntimeBindingStatus   @default(DRAFT)
+  createdAt     DateTime                  @default(now()) @db.Timestamptz(6)
+  updatedAt     DateTime                  @updatedAt @db.Timestamptz(6)
+  edition       OicModelEdition           @relation(fields: [editionId], references: [id], onDelete: Restrict)
+  variant       OicModelVariant           @relation(fields: [variantId], references: [id], onDelete: Restrict)
+  connection    OicProviderConnection    @relation(fields: [connectionId], references: [id], onDelete: Restrict)
+  application   OicApplication?           @relation(fields: [applicationId], references: [id], onDelete: Restrict)
+  tenant        OicTenant?                @relation(fields: [tenantId, applicationId], references: [id, applicationId], onDelete: Restrict)
+  @@index([editionId, environment, scope, status])
+  @@index([applicationId, tenantId, environment, status])
+}
+
+model OicApplicationModelVisibility {
+  id            String          @id @default(uuid()) @db.Uuid
+  applicationId String          @db.Uuid
+  editionId     String          @db.Uuid
+  createdAt     DateTime        @default(now()) @db.Timestamptz(6)
+  application   OicApplication @relation(fields: [applicationId], references: [id], onDelete: Restrict)
+  edition       OicModelEdition @relation(fields: [editionId], references: [id], onDelete: Restrict)
+  @@unique([applicationId, editionId])
+  @@index([applicationId, createdAt])
 }

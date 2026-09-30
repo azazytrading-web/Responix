@@ -170,6 +170,42 @@
         ]
       }
     },
+    "/api/v1/admin/applications/{applicationId}/models/{editionId}/visibility": {
+      "post": {
+        "operationId": "ModelFabricController_setVisibility_v1",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "applicationId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "editionId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "OIC Provider and Oi Model Administration"
+        ]
+      }
+    },
     "/api/v1/admin/applications/{applicationId}/service-principals": {
       "post": {
         "operationId": "FoundationController_createPrincipal_v1",
@@ -567,6 +603,452 @@
         ],
         "tags": [
           "OIC Foundation Administration"
+        ]
+      }
+    },
+    "/api/v1/admin/model-editions/{editionId}/lifecycle": {
+      "patch": {
+        "operationId": "ModelFabricController_changeEditionLifecycle_v1",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "editionId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "OIC Provider and Oi Model Administration"
+        ]
+      }
+    },
+    "/api/v1/admin/model-editions/{editionId}/revisions": {
+      "post": {
+        "operationId": "ModelFabricController_createRevision_v1",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "editionId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "OIC Provider and Oi Model Administration"
+        ]
+      }
+    },
+    "/api/v1/admin/model-editions/{editionId}/runtime-bindings": {
+      "post": {
+        "operationId": "ModelFabricController_createBinding_v1",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "editionId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "OIC Provider and Oi Model Administration"
+        ]
+      }
+    },
+    "/api/v1/admin/model-families": {
+      "post": {
+        "operationId": "ModelFabricController_createFamily_v1",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "OIC Provider and Oi Model Administration"
+        ]
+      }
+    },
+    "/api/v1/admin/model-families/{familyId}/editions": {
+      "post": {
+        "operationId": "ModelFabricController_createEdition_v1",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "familyId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "OIC Provider and Oi Model Administration"
+        ]
+      }
+    },
+    "/api/v1/admin/model-revisions/{revisionId}/variants": {
+      "post": {
+        "operationId": "ModelFabricController_createVariant_v1",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "revisionId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "OIC Provider and Oi Model Administration"
+        ]
+      }
+    },
+    "/api/v1/admin/provider-connections": {
+      "get": {
+        "operationId": "ProviderControlController_listConnections_v1",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "OIC Provider Administration"
+        ]
+      },
+      "post": {
+        "operationId": "ProviderControlController_createConnection_v1",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "OIC Provider Administration"
+        ]
+      }
+    },
+    "/api/v1/admin/provider-connections/{connectionId}/catalog/sync": {
+      "post": {
+        "operationId": "ModelFabricController_syncManualCatalog_v1",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "connectionId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "OIC Provider and Oi Model Administration"
+        ]
+      }
+    },
+    "/api/v1/admin/provider-connections/{connectionId}/upstream-models": {
+      "get": {
+        "operationId": "ModelFabricController_listUpstreamModels_v1",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "connectionId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "OIC Provider and Oi Model Administration"
+        ]
+      }
+    },
+    "/api/v1/admin/provider-connections/{id}": {
+      "get": {
+        "operationId": "ProviderControlController_getConnection_v1",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "OIC Provider Administration"
+        ]
+      }
+    },
+    "/api/v1/admin/provider-connections/{id}/credentials": {
+      "put": {
+        "operationId": "ProviderControlController_setCredential_v1",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "OIC Provider Administration"
+        ]
+      }
+    },
+    "/api/v1/admin/provider-connections/{id}/credentials/{credentialId}": {
+      "delete": {
+        "operationId": "ProviderControlController_revokeCredential_v1",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "credentialId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "OIC Provider Administration"
+        ]
+      }
+    },
+    "/api/v1/admin/provider-connections/{id}/status": {
+      "patch": {
+        "operationId": "ProviderControlController_changeConnectionStatus_v1",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "OIC Provider Administration"
+        ]
+      }
+    },
+    "/api/v1/admin/provider-connections/{id}/test": {
+      "post": {
+        "operationId": "ProviderControlController_testConnection_v1",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "OIC Provider Administration"
+        ]
+      }
+    },
+    "/api/v1/admin/providers": {
+      "get": {
+        "operationId": "ProviderControlController_listDefinitions_v1",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "OIC Provider Administration"
+        ]
+      }
+    },
+    "/api/v1/admin/runtime-bindings/{bindingId}/status": {
+      "patch": {
+        "operationId": "ModelFabricController_changeBindingStatus_v1",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "bindingId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "OIC Provider and Oi Model Administration"
         ]
       }
     },

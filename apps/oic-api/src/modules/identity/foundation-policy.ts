@@ -8,3 +8,8 @@ export const OIC_FOUNDATION_ADMIN_SCOPES = [
   "oic:principals:read", "oic:principals:manage", "oic:credentials:rotate", "oic:credentials:revoke",
   "oic:audit:read", "oic:foundation:admin"
 ] as const;
+
+export const OIC_PROVIDER_MODEL_ADMIN_SCOPES = [
+  "oic:providers:read", "oic:providers:manage", "oic:connections:manage",
+  "oic:catalog:read", "oic:catalog:manage", "oic:models:read", "oic:models:manage"
+] as const;

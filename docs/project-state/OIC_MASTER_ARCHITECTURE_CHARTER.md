@@ -190,6 +190,22 @@ OIC owns its persistence, schema and migrations. Preferred initial production-de
 
 Keep OIC and Responix logically separate in the same repository initially. Progress from logical ownership → stable contracts → independent deployability → optional physical extraction. No second repository or big-bang rewrite is approved.
 
+### 5.1 Unified-by-default deployment clarification (APPROVED / LOCKED, 2026-09-30)
+
+OIC and Responix are independently designed services/products, but they are not required to run on separate physical servers. The default Oi deployment topology is a unified/co-hosted platform deployment: one Oi platform server or deployment stack may contain shared ingress/reverse proxy and frontend/control surfaces, Responix API/runtime, OIC API/runtime, product workers, and appropriate shared infrastructure.
+
+Co-hosting does not change service or data ownership. Responix and OIC retain separate application/service boundaries, database ownership, and security identities. Neither product owns the other's tables; communication crosses approved APIs and contracts. Responix consumes OIC through the OIC contract/API boundary. OIC's database is never merged into the Responix database, and OIC runtime code is not merged into the Responix API.
+
+The locked principle is **independent by design, unified by default deployment, separable when scale requires**. Independent deployability remains a capability; future scaling may place OIC, Responix, databases, or workers on separate machines or clusters without redesigning product boundaries. The normal operator experience should ultimately start/deploy the Oi platform as one stack. A future Platform Deployment / Integration gate owns orchestration; this clarification does not add deployment implementation to OIC-2.
+
+### 5.2 Customer exposure boundary (APPROVED / LOCKED, 2026-09-30)
+
+OIC is an internal Oi Smart Solutions platform capability and is never a customer-facing product surface under the current approved architecture. Normal Responix customers do not log into OIC, receive OIC or Service Principal credentials, call OIC administration or Native Runtime APIs, or call the OIC OpenAI Compatibility Gateway. They do not see OIC provider connections, upstream provider identities, Oi Model implementation details, or OIC memory/factory/evaluation internals.
+
+Oi operates the central platform and its internal control dashboard. A future standalone Responix customer application is a separate product deliverable; it connects only to the product-facing Responix API over HTTPS, and Responix calls OIC internally when needed. Customer-visible pages, features, permissions, and data are server-authorized for the customer/workspace; hiding frontend code is not authorization. Customers never receive OIC credentials.
+
+If Oi sells API access later, the customer-facing edge remains an Oi/Responix product API or another explicitly approved public API product. A commercial API offering does not grant direct OIC access. No customer-facing OIC product is approved by this lock; changing that requires a new explicit owner decision.
+
 Responix invokes OIC and receives intelligence results, then continues its own Agent/conversation/product and channel lifecycle. OIC does not own Responix channels, customer experience or delivery.
 
 ## 6. Reuse of completed MOD work

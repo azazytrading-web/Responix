@@ -23,6 +23,7 @@ enum OicCredentialStatus {
 enum OicIdempotencyStatus {
   COMPLETED
   FAILED
+  IN_PROGRESS
 }
 
 model OicApplication {
@@ -159,11 +160,13 @@ model OicIdempotencyRecord {
   key            String                @db.VarChar(128)
   requestHash    String                @db.Char(64)
   resultRef      String?               @db.VarChar(128)
+  result         Json?                 @db.JsonB
   status         OicIdempotencyStatus  @default(COMPLETED)
   createdAt      DateTime              @default(now()) @db.Timestamptz(6)
   expiresAt      DateTime              @db.Timestamptz(6)
   @@unique([principalId, scope, operation, key])
   @@index([expiresAt])
+  @@index([status, createdAt])
 }
 model OicAdminRecoveryRecord {
   id                    String              @id @default(uuid()) @db.Uuid

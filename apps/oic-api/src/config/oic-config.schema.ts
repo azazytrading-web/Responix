@@ -1,4 +1,4 @@
-import { z } from "zod";
+﻿import { z } from "zod";
 
 function isOicDatabaseUrl(value: string): boolean {
   try {
@@ -17,6 +17,12 @@ export const oicEnvironmentSchema = z.object({
   NODE_ENV: z.enum(["development", "test", "production"]).default("development"),
   OIC_PORT: z.coerce.number().int().min(1).max(65535).default(4100),
   OIC_AUTH_REQUESTS_PER_MINUTE: z.coerce.number().int().min(1).max(10000).default(120),
+  OIC_HTTP_MAX_BODY_BYTES: z.coerce.number().int().min(32768).max(5_000_000).default(1_000_000),
+  OIC_RUNTIME_MAX_MESSAGES: z.coerce.number().int().min(1).max(1000).default(100),
+  OIC_RUNTIME_MAX_INPUT_CHARACTERS: z.coerce.number().int().min(1024).max(1_000_000).default(200_000),
+  OIC_RUNTIME_MAX_OUTPUT_UNITS: z.coerce.number().int().min(1).max(65_536).default(16_384),
+  OIC_RUNTIME_MAX_EXECUTION_MS: z.coerce.number().int().min(1000).max(300_000).default(60_000),
+  OIC_RUNTIME_IDEMPOTENCY_TTL_SECONDS: z.coerce.number().int().min(60).max(604_800).default(86_400),
   OIC_DATABASE_URL: z.string().url().refine(isOicDatabaseUrl, {
     message: "OIC_DATABASE_URL must identify a dedicated OIC database and role"
   }),

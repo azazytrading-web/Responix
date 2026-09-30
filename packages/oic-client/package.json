@@ -1,0 +1,27 @@
+{
+    "name":  "@oic/client",
+    "version":  "0.0.0",
+    "private":  true,
+    "main":  "./dist/index.js",
+    "types":  "./dist/index.d.ts",
+    "exports":  {
+                    ".":  {
+                              "types":  "./dist/index.d.ts",
+                              "require":  "./dist/index.js",
+                              "default":  "./dist/index.js"
+                          }
+                },
+    "scripts":  {
+                    "build":  "tsc -p tsconfig.build.json",
+                    "typecheck":  "tsc -p tsconfig.json --noEmit",
+                    "test":  "node --test dist/client.acceptance.test.js",
+                    "openapi:generate":  "node ./scripts/generate-openapi.mjs"
+                },
+    "dependencies":  {
+                         "@oic/contracts":  "workspace:*"
+                     },
+    "devDependencies":  {
+                            "@types/node":  "^22.10.7",
+                            "typescript":  "^5.7.3"
+                        }
+}

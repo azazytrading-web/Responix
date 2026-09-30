@@ -1,0 +1,1137 @@
+{
+  "components": {
+    "schemas": {},
+    "securitySchemes": {
+      "bearer": {
+        "bearerFormat": "JWT",
+        "scheme": "bearer",
+        "type": "http"
+      }
+    }
+  },
+  "info": {
+    "contact": {},
+    "description": "Oi Intelligence Core native and compatibility API",
+    "title": "OIC API",
+    "version": "1.0.0"
+  },
+  "openapi": "3.0.0",
+  "paths": {
+    "/api/v1/admin/applications": {
+      "post": {
+        "operationId": "FoundationController_createApplication_v1",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "OIC Foundation Administration"
+        ]
+      }
+    },
+    "/api/v1/admin/applications/{applicationId}": {
+      "get": {
+        "operationId": "FoundationController_getApplication_v1",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "applicationId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "OIC Foundation Administration"
+        ]
+      }
+    },
+    "/api/v1/admin/applications/{applicationId}/credentials/{credentialId}": {
+      "delete": {
+        "operationId": "FoundationController_revokeCredential_v1",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "applicationId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "credentialId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "OIC Foundation Administration"
+        ]
+      }
+    },
+    "/api/v1/admin/applications/{applicationId}/external-references/{referenceId}": {
+      "delete": {
+        "operationId": "FoundationController_revokeExternalReference_v1",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "applicationId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "referenceId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "OIC Foundation Administration"
+        ]
+      },
+      "patch": {
+        "operationId": "FoundationController_remapExternalReference_v1",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "applicationId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "referenceId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "OIC Foundation Administration"
+        ]
+      }
+    },
+    "/api/v1/admin/applications/{applicationId}/service-principals": {
+      "post": {
+        "operationId": "FoundationController_createPrincipal_v1",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "applicationId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "OIC Foundation Administration"
+        ]
+      }
+    },
+    "/api/v1/admin/applications/{applicationId}/service-principals/{principalId}": {
+      "get": {
+        "operationId": "FoundationController_getPrincipal_v1",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "applicationId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "principalId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "OIC Foundation Administration"
+        ]
+      }
+    },
+    "/api/v1/admin/applications/{applicationId}/service-principals/{principalId}/credentials": {
+      "post": {
+        "operationId": "FoundationController_issueCredential_v1",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "applicationId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "principalId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "OIC Foundation Administration"
+        ]
+      }
+    },
+    "/api/v1/admin/applications/{applicationId}/service-principals/{principalId}/scopes": {
+      "delete": {
+        "operationId": "FoundationController_revokeScope_v1",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "applicationId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "principalId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "OIC Foundation Administration"
+        ]
+      },
+      "post": {
+        "operationId": "FoundationController_grantScope_v1",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "applicationId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "principalId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "OIC Foundation Administration"
+        ]
+      }
+    },
+    "/api/v1/admin/applications/{applicationId}/service-principals/{principalId}/tenants/{tenantId}/grant": {
+      "delete": {
+        "operationId": "FoundationController_revokeTenant_v1",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "applicationId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "principalId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "tenantId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "OIC Foundation Administration"
+        ]
+      },
+      "post": {
+        "operationId": "FoundationController_grantTenant_v1",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "applicationId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "principalId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "tenantId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "OIC Foundation Administration"
+        ]
+      }
+    },
+    "/api/v1/admin/applications/{applicationId}/tenants": {
+      "post": {
+        "operationId": "FoundationController_createTenant_v1",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "applicationId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "OIC Foundation Administration"
+        ]
+      }
+    },
+    "/api/v1/admin/applications/{applicationId}/tenants/{tenantId}/external-references": {
+      "post": {
+        "operationId": "FoundationController_createExternalReference_v1",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "applicationId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "tenantId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "OIC Foundation Administration"
+        ]
+      }
+    },
+    "/api/v1/admin/applications/{applicationId}/{kind}/{id}/status": {
+      "post": {
+        "operationId": "FoundationController_changeLifecycle_v1",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "applicationId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "kind",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "OIC Foundation Administration"
+        ]
+      }
+    },
+    "/api/v1/admin/audit": {
+      "get": {
+        "operationId": "FoundationController_readAudit_v1",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "applicationId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "OIC Foundation Administration"
+        ]
+      }
+    },
+    "/api/v1/admin/tenants/{tenantId}": {
+      "get": {
+        "operationId": "FoundationController_getTenant_v1",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "tenantId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "OIC Foundation Administration"
+        ]
+      }
+    },
+    "/api/v1/health/live": {
+      "get": {
+        "operationId": "HealthController_live_v1",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OIC process is alive"
+          }
+        },
+        "tags": [
+          "Health"
+        ]
+      }
+    },
+    "/api/v1/health/ready": {
+      "get": {
+        "operationId": "HealthController_ready_v1",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OIC is ready"
+          },
+          "503": {
+            "description": "A required OIC dependency is unavailable"
+          }
+        },
+        "tags": [
+          "Health"
+        ]
+      }
+    },
+    "/api/v1/runtime/invocations": {
+      "post": {
+        "description": "Canonical provider-neutral Native Runtime request. Model identifiers are Oi Model references. If no approved Oi Model runtime binding is published, returns MODEL_NOT_AVAILABLE. Application and Principal are derived from the bearer credential; optional Tenant selection is checked against active grants.",
+        "operationId": "OicRuntimeController_invoke_v1",
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "additionalProperties": false,
+                "properties": {
+                  "input": {
+                    "items": {
+                      "additionalProperties": false,
+                      "properties": {
+                        "content": {
+                          "items": {
+                            "additionalProperties": false,
+                            "properties": {
+                              "text": {
+                                "maxLength": 1000000,
+                                "type": "string"
+                              },
+                              "type": {
+                                "enum": [
+                                  "text"
+                                ],
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "type",
+                              "text"
+                            ],
+                            "type": "object"
+                          },
+                          "maxItems": 100,
+                          "minItems": 1,
+                          "type": "array"
+                        },
+                        "speaker": {
+                          "enum": [
+                            "instruction",
+                            "user",
+                            "assistant",
+                            "context"
+                          ],
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "speaker",
+                        "content"
+                      ],
+                      "type": "object"
+                    },
+                    "maxItems": 1000,
+                    "minItems": 1,
+                    "type": "array"
+                  },
+                  "maxOutputUnits": {
+                    "maximum": 65536,
+                    "minimum": 1,
+                    "type": "integer"
+                  },
+                  "model": {
+                    "maxLength": 64,
+                    "pattern": "^oi-[a-z0-9]+(?:[._-][a-z0-9]+)*$",
+                    "type": "string"
+                  },
+                  "tenant": {
+                    "oneOf": [
+                      {
+                        "additionalProperties": false,
+                        "properties": {
+                          "kind": {
+                            "enum": [
+                              "id"
+                            ],
+                            "type": "string"
+                          },
+                          "tenantId": {
+                            "format": "uuid",
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "kind",
+                          "tenantId"
+                        ],
+                        "type": "object"
+                      },
+                      {
+                        "additionalProperties": false,
+                        "properties": {
+                          "externalId": {
+                            "maxLength": 256,
+                            "type": "string"
+                          },
+                          "kind": {
+                            "enum": [
+                              "external-reference"
+                            ],
+                            "type": "string"
+                          },
+                          "sourceType": {
+                            "maxLength": 64,
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "kind",
+                          "sourceType",
+                          "externalId"
+                        ],
+                        "type": "object"
+                      }
+                    ]
+                  }
+                },
+                "required": [
+                  "model",
+                  "input"
+                ],
+                "type": "object"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Unified OIC Runtime result; usage is null when no raw evidence is known"
+          },
+          "400": {
+            "description": "INVALID_REQUEST or CAPABILITY_NOT_SUPPORTED"
+          },
+          "401": {
+            "description": "AUTHENTICATION_FAILED"
+          },
+          "403": {
+            "description": "AUTHORIZATION_DENIED"
+          },
+          "404": {
+            "description": "TENANT_NOT_ALLOWED or MODEL_NOT_FOUND"
+          },
+          "409": {
+            "description": "IDEMPOTENCY_CONFLICT or IDEMPOTENCY_IN_PROGRESS"
+          },
+          "503": {
+            "description": "MODEL_NOT_AVAILABLE or RUNTIME_UNAVAILABLE"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Run a native OIC Runtime invocation",
+        "tags": [
+          "OIC Native Runtime"
+        ]
+      }
+    },
+    "/api/v1/runtime/stream": {
+      "post": {
+        "description": "Emits OIC-owned response.started, content.delta, usage.updated and one terminal response.completed or response.error event. Streaming replay with Idempotency-Key is explicitly unsupported. Client disconnect cancels execution where supported.",
+        "operationId": "OicRuntimeController_stream_v1",
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "additionalProperties": false,
+                "properties": {
+                  "input": {
+                    "items": {
+                      "type": "object"
+                    },
+                    "type": "array"
+                  },
+                  "maxOutputUnits": {
+                    "type": "integer"
+                  },
+                  "model": {
+                    "pattern": "^oi-[a-z0-9]+(?:[._-][a-z0-9]+)*$",
+                    "type": "string"
+                  },
+                  "tenant": {
+                    "type": "object"
+                  }
+                },
+                "required": [
+                  "model",
+                  "input"
+                ],
+                "type": "object"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "text/event-stream": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "description": "Server-sent OIC Runtime stream events"
+          },
+          "400": {
+            "description": "INVALID_REQUEST or STREAMING_IDEMPOTENCY_UNSUPPORTED"
+          },
+          "401": {
+            "description": "AUTHENTICATION_FAILED"
+          },
+          "403": {
+            "description": "AUTHORIZATION_DENIED"
+          },
+          "503": {
+            "description": "MODEL_NOT_AVAILABLE or RUNTIME_UNAVAILABLE"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Stream a native OIC Runtime invocation",
+        "tags": [
+          "OIC Native Runtime"
+        ]
+      }
+    },
+    "/v1/chat/completions": {
+      "post": {
+        "description": "Translates text-only system/developer/user/assistant messages to Native OIC Runtime. Supports only model, messages, stream and tenant_id. Rejects tools, vision/image, audio, response_format, logprobs, reasoning fields, max_tokens and all unrecognized parameters with CAPABILITY_NOT_SUPPORTED. Streaming uses OpenAI chat chunks above the Native OIC stream.",
+        "operationId": "OpenAICompatibilityController_chatCompletions",
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "additionalProperties": false,
+                "properties": {
+                  "messages": {
+                    "items": {
+                      "additionalProperties": false,
+                      "properties": {
+                        "content": {
+                          "oneOf": [
+                            {
+                              "type": "string"
+                            },
+                            {
+                              "items": {
+                                "properties": {
+                                  "text": {
+                                    "type": "string"
+                                  },
+                                  "type": {
+                                    "enum": [
+                                      "text"
+                                    ],
+                                    "type": "string"
+                                  }
+                                },
+                                "required": [
+                                  "type",
+                                  "text"
+                                ],
+                                "type": "object"
+                              },
+                              "type": "array"
+                            }
+                          ]
+                        },
+                        "role": {
+                          "enum": [
+                            "system",
+                            "developer",
+                            "user",
+                            "assistant"
+                          ],
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "role",
+                        "content"
+                      ],
+                      "type": "object"
+                    },
+                    "maxItems": 1000,
+                    "minItems": 1,
+                    "type": "array"
+                  },
+                  "model": {
+                    "pattern": "^oi-",
+                    "type": "string"
+                  },
+                  "stream": {
+                    "type": "boolean"
+                  },
+                  "tenant_id": {
+                    "format": "uuid",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "model",
+                  "messages"
+                ],
+                "type": "object"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Chat completion response or text/event-stream chunks"
+          },
+          "400": {
+            "description": "INVALID_REQUEST or CAPABILITY_NOT_SUPPORTED"
+          },
+          "401": {
+            "description": "AUTHENTICATION_FAILED"
+          },
+          "403": {
+            "description": "AUTHORIZATION_DENIED"
+          },
+          "503": {
+            "description": "MODEL_NOT_AVAILABLE"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "OpenAI Chat Completions compatibility adapter",
+        "tags": [
+          "OpenAI Compatibility"
+        ]
+      }
+    },
+    "/v1/models": {
+      "get": {
+        "description": "Returns only Oi Model identities visible to the authenticated Application and selected Tenant. OIC-2 has no production catalog, so the list is empty until OIC-3 publishes models. Upstream/provider model IDs are never listed.",
+        "operationId": "OpenAICompatibilityController_listModels",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "data": {
+                      "items": {
+                        "properties": {
+                          "id": {
+                            "pattern": "^oi-",
+                            "type": "string"
+                          },
+                          "object": {
+                            "enum": [
+                              "model"
+                            ],
+                            "type": "string"
+                          },
+                          "owned_by": {
+                            "enum": [
+                              "oi"
+                            ],
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "object",
+                          "owned_by"
+                        ],
+                        "type": "object"
+                      },
+                      "type": "array"
+                    },
+                    "object": {
+                      "enum": [
+                        "list"
+                      ],
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "object",
+                    "data"
+                  ],
+                  "type": "object"
+                }
+              }
+            },
+            "description": "OpenAI-compatible model list containing Oi IDs only"
+          },
+          "401": {
+            "description": "AUTHENTICATION_FAILED"
+          },
+          "403": {
+            "description": "AUTHORIZATION_DENIED"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "List Application-visible Oi Models",
+        "tags": [
+          "OpenAI Compatibility"
+        ]
+      }
+    },
+    "/v1/responses": {
+      "post": {
+        "description": "Translates text input, text message items and optional instructions to Native OIC Runtime. Supports only model, input, instructions, stream and tenant_id. Rejects tools, images, audio, function calls, stored conversations and unrecognized fields. Streaming emits response.created, response.output_text.delta and a terminal response event.",
+        "operationId": "OpenAICompatibilityController_responses",
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "additionalProperties": false,
+                "properties": {
+                  "input": {
+                    "oneOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "items": {
+                          "type": "object"
+                        },
+                        "type": "array"
+                      }
+                    ]
+                  },
+                  "instructions": {
+                    "type": "string"
+                  },
+                  "model": {
+                    "pattern": "^oi-",
+                    "type": "string"
+                  },
+                  "stream": {
+                    "type": "boolean"
+                  },
+                  "tenant_id": {
+                    "format": "uuid",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "model",
+                  "input"
+                ],
+                "type": "object"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Responses-compatible response or text/event-stream events"
+          },
+          "400": {
+            "description": "INVALID_REQUEST or CAPABILITY_NOT_SUPPORTED"
+          },
+          "401": {
+            "description": "AUTHENTICATION_FAILED"
+          },
+          "403": {
+            "description": "AUTHORIZATION_DENIED"
+          },
+          "503": {
+            "description": "MODEL_NOT_AVAILABLE"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "OpenAI Responses compatibility adapter",
+        "tags": [
+          "OpenAI Compatibility"
+        ]
+      }
+    }
+  },
+  "servers": [],
+  "tags": []
+}

@@ -5,9 +5,10 @@ import { OicDatabaseService } from "@oic/database";
 import { AuthenticatedPrincipal } from "./auth.guard";
 import { issueCredential } from "./credential.crypto";
 import { OIC_FOUNDATION_ADMIN_SCOPES } from "./foundation-policy";
+import { OIC_RUNTIME_SCOPES } from "../runtime-plane/runtime-scopes";
 import { FoundationAuditWriter, OIC_FOUNDATION_AUDIT_WRITER } from "./foundation-audit-writer";
 
-export const OIC_SCOPES = OIC_FOUNDATION_ADMIN_SCOPES;
+export const OIC_SCOPES = [...OIC_FOUNDATION_ADMIN_SCOPES, ...OIC_RUNTIME_SCOPES] as const;
 export type AuditContext = { requestId?: string; traceId?: string };
 type IdempotencyResult<T> = { value: T; replayed: boolean };
 type MakeResult<T> = { value: T; resultRef: string };
@@ -18,6 +19,7 @@ function canonical(value: unknown): string {
     return `{${Object.entries(value as Record<string, unknown>).sort(([a],[b]) => a.localeCompare(b)).map(([k,v]) => `${JSON.stringify(k)}:${canonical(v)}`).join(",")}}`;
   }
   return JSON.stringify(value);
+
 }
 function isUniqueConflict(error: unknown): boolean { return error instanceof Prisma.PrismaClientKnownRequestError && error.code === "P2002"; }
 function safeMeta(request: AuditContext) {

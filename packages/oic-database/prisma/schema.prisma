@@ -1,0 +1,181 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("OIC_DATABASE_URL")
+  shadowDatabaseUrl = env("OIC_SHADOW_DATABASE_URL")
+}
+
+enum OicLifecycleStatus {
+  ACTIVE
+  SUSPENDED
+  ARCHIVED
+}
+
+enum OicCredentialStatus {
+  ACTIVE
+  REVOKED
+  EXPIRED
+}
+
+enum OicIdempotencyStatus {
+  COMPLETED
+  FAILED
+}
+
+model OicApplication {
+  id                 String                     @id @default(uuid()) @db.Uuid
+  key                String                     @unique @db.VarChar(64)
+  displayName        String                     @db.VarChar(160)
+  status             OicLifecycleStatus         @default(ACTIVE)
+  createdAt          DateTime                   @default(now()) @db.Timestamptz(6)
+  updatedAt          DateTime                   @updatedAt @db.Timestamptz(6)
+  tenants            OicTenant[]
+  externalReferences OicTenantExternalReference[]
+  principals         OicServicePrincipal[]
+  adminRecoveryRecords OicAdminRecoveryRecord[]
+  @@index([status, key])
+}
+
+model OicTenant {
+  id          String                     @id @default(uuid()) @db.Uuid
+  applicationId String                   @db.Uuid
+  key         String?                    @db.VarChar(64)
+  displayName String                    @db.VarChar(160)
+  status      OicLifecycleStatus        @default(ACTIVE)
+  createdAt   DateTime                  @default(now()) @db.Timestamptz(6)
+  updatedAt   DateTime                  @updatedAt @db.Timestamptz(6)
+  application OicApplication            @relation(fields: [applicationId], references: [id], onDelete: Restrict)
+  references  OicTenantExternalReference[]
+  grants      OicPrincipalTenantGrant[]
+  @@unique([id, applicationId])
+  @@unique([applicationId, key])
+  @@index([applicationId, status, createdAt])
+}
+
+model OicTenantExternalReference {
+  id             String        @id @default(uuid()) @db.Uuid
+  applicationId  String        @db.Uuid
+  tenantId       String        @db.Uuid
+  sourceType     String        @db.VarChar(64)
+  externalId     String        @db.VarChar(256)
+  createdAt      DateTime      @default(now()) @db.Timestamptz(6)
+  revokedAt      DateTime?     @db.Timestamptz(6)
+  application    OicApplication @relation(fields: [applicationId], references: [id], onDelete: Restrict)
+  tenant         OicTenant     @relation(fields: [tenantId, applicationId], references: [id, applicationId], onDelete: Restrict)
+  @@unique([applicationId, sourceType, externalId])
+  @@index([tenantId, createdAt])
+}
+
+model OicServicePrincipal {
+  id             String                     @id @default(uuid()) @db.Uuid
+  applicationId  String                     @db.Uuid
+  key            String                     @db.VarChar(64)
+  displayName    String                     @db.VarChar(160)
+  status         OicLifecycleStatus         @default(ACTIVE)
+  createdAt      DateTime                   @default(now()) @db.Timestamptz(6)
+  updatedAt      DateTime                   @updatedAt @db.Timestamptz(6)
+  application    OicApplication             @relation(fields: [applicationId], references: [id], onDelete: Restrict)
+  scopes         OicPrincipalScopeGrant[]
+  tenantGrants   OicPrincipalTenantGrant[]
+  credentials    OicMachineCredential[]
+  adminRecoveryRecords OicAdminRecoveryRecord[]
+  @@unique([id, applicationId])
+  @@unique([applicationId, key])
+  @@index([applicationId, status])
+}
+
+model OicPrincipalScopeGrant {
+  id             String            @id @default(uuid()) @db.Uuid
+  applicationId  String            @db.Uuid
+  principalId    String            @db.Uuid
+  scope          String            @db.VarChar(128)
+  grantedBy      String?           @db.Uuid
+  grantedAt      DateTime          @default(now()) @db.Timestamptz(6)
+  revokedAt      DateTime?         @db.Timestamptz(6)
+  principal      OicServicePrincipal @relation(fields: [principalId, applicationId], references: [id, applicationId], onDelete: Restrict)
+  @@unique([principalId, scope])
+  @@index([applicationId, scope, revokedAt])
+}
+
+model OicPrincipalTenantGrant {
+  id                 String              @id @default(uuid()) @db.Uuid
+  applicationId      String              @db.Uuid
+  principalId        String              @db.Uuid
+  tenantId           String              @db.Uuid
+  grantedBy          String?             @db.Uuid
+  grantedAt          DateTime            @default(now()) @db.Timestamptz(6)
+  revokedAt          DateTime?           @db.Timestamptz(6)
+  principal          OicServicePrincipal @relation(fields: [principalId, applicationId], references: [id, applicationId], onDelete: Restrict)
+  tenant             OicTenant           @relation(fields: [tenantId, applicationId], references: [id, applicationId], onDelete: Restrict)
+  @@unique([principalId, tenantId])
+  @@index([applicationId, tenantId, revokedAt])
+}
+
+model OicMachineCredential {
+  id              String                @id @default(uuid()) @db.Uuid
+  principalId     String                @db.Uuid
+  selector        String                @unique @db.VarChar(32)
+  verifier        String                @db.VarChar(256)
+  verifierVersion Int                   @default(1)
+  status          OicCredentialStatus   @default(ACTIVE)
+  createdAt       DateTime              @default(now()) @db.Timestamptz(6)
+  expiresAt       DateTime?             @db.Timestamptz(6)
+  revokedAt       DateTime?             @db.Timestamptz(6)
+  lastUsedAt      DateTime?             @db.Timestamptz(6)
+  replacedById    String?               @unique @db.Uuid
+  principal       OicServicePrincipal   @relation(fields: [principalId], references: [id], onDelete: Restrict)
+  replacedBy      OicMachineCredential? @relation("CredentialReplacement", fields: [replacedById], references: [id], onDelete: Restrict)
+  replaces        OicMachineCredential? @relation("CredentialReplacement")
+  adminRecoveryRecord OicAdminRecoveryRecord?
+  @@index([principalId, status, expiresAt])
+}
+
+model OicAuditEvent {
+  id             String   @id @default(uuid()) @db.Uuid
+  occurredAt     DateTime @default(now()) @db.Timestamptz(6)
+  actorPrincipalId String? @db.Uuid
+  applicationId  String?  @db.Uuid
+  tenantId       String?  @db.Uuid
+  action         String   @db.VarChar(96)
+  targetType     String   @db.VarChar(64)
+  targetId       String?  @db.VarChar(128)
+  requestId      String?  @db.VarChar(128)
+  traceId        String?  @db.VarChar(128)
+  metadata       Json     @default("{}") @db.JsonB
+  @@index([applicationId, occurredAt])
+  @@index([tenantId, occurredAt])
+  @@index([actorPrincipalId, occurredAt])
+  @@index([targetType, targetId, occurredAt])
+}
+
+model OicIdempotencyRecord {
+  id             String                @id @default(uuid()) @db.Uuid
+  principalId    String                @db.Uuid
+  scope          String                @db.VarChar(128)
+  operation      String                @db.VarChar(128)
+  key            String                @db.VarChar(128)
+  requestHash    String                @db.Char(64)
+  resultRef      String?               @db.VarChar(128)
+  status         OicIdempotencyStatus  @default(COMPLETED)
+  createdAt      DateTime              @default(now()) @db.Timestamptz(6)
+  expiresAt      DateTime              @db.Timestamptz(6)
+  @@unique([principalId, scope, operation, key])
+  @@index([expiresAt])
+}
+model OicAdminRecoveryRecord {
+  id                    String              @id @default(uuid()) @db.Uuid
+  operationId           String              @unique @db.VarChar(128)
+  requestHash           String              @db.Char(64)
+  applicationId         String              @db.Uuid
+  principalId           String              @db.Uuid
+  credentialId          String              @unique @db.Uuid
+  revokedCredentialCount Int
+  createdAt             DateTime            @default(now()) @db.Timestamptz(6)
+  application           OicApplication      @relation(fields: [applicationId], references: [id], onDelete: Restrict)
+  principal             OicServicePrincipal @relation(fields: [principalId, applicationId], references: [id, applicationId], onDelete: Restrict)
+  credential            OicMachineCredential @relation(fields: [credentialId], references: [id], onDelete: Restrict)
+  @@index([principalId, createdAt])
+}

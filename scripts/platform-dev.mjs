@@ -1,6 +1,13 @@
 import { readFileSync } from "node:fs";
+import { connect as connectTcp } from "node:net";
 import { resolve } from "node:path";
 import { spawn } from "node:child_process";
+
+const targetIndex = process.argv.indexOf("--target");
+const target = targetIndex === -1 ? "all" : process.argv[targetIndex + 1];
+if (!["all", "backend", "dashboard"].includes(target)) {
+  throw new Error("--target must be one of: all, backend, dashboard");
+}
 
 function localSetting(key, file, fallback) {
   if (process.env[key]) return process.env[key];
@@ -41,6 +48,7 @@ if (!Number.isInteger(startupTimeoutMs) || startupTimeoutMs < 5000 || startupTim
 const root = process.cwd();
 const services = [
   {
+    group: "backend",
     label: "OIC API",
     cwd: resolve(root, "apps/oic-api"),
     args: [resolve(root, "apps/oic-api/dist/main.js")],
@@ -49,6 +57,7 @@ const services = [
     env: { OIC_HOST: "127.0.0.1", OIC_PORT: oicPort }
   },
   {
+    group: "backend",
     label: "Responix API",
     cwd: resolve(root, "apps/api"),
     args: [resolve(root, "apps/api/dist/main.js")],
@@ -62,6 +71,7 @@ const services = [
     }
   },
   {
+    group: "dashboard",
     label: "Platform Portal",
     cwd: resolve(root, "apps/platform-portal"),
     args: [
@@ -74,13 +84,16 @@ const services = [
     ],
     url: `http://127.0.0.1:${portalPort}`,
     readyUrl: `http://127.0.0.1:${portalPort}/`,
+    expectedContent: "Oi Smart Solutions",
     env: {
+      NODE_ENV: "production",
       PORT: portalPort,
       OIC_API_INTERNAL_URL: `http://127.0.0.1:${oicPort}`,
       NEXT_PUBLIC_RESPONIX_URL: `http://127.0.0.1:${responixPort}`
     }
   },
   {
+    group: "dashboard",
     label: "Responix",
     cwd: resolve(root, "apps/dashboard"),
     args: [
@@ -93,9 +106,14 @@ const services = [
     ],
     url: `http://127.0.0.1:${responixPort}`,
     readyUrl: `http://127.0.0.1:${responixPort}/`,
-    env: { PORT: responixPort, NEXT_PUBLIC_API_URL: `http://127.0.0.1:${apiPort}` }
+    env: {
+      NODE_ENV: "production",
+      PORT: responixPort,
+      NEXT_PUBLIC_API_URL: `http://127.0.0.1:${apiPort}`
+    }
   }
 ];
+const selectedServices = services.filter((service) => target === "all" || service.group === target);
 const children = [];
 let stopping = false;
 
@@ -218,6 +236,32 @@ async function waitUntilReady(service, processState, timeoutMs = startupTimeoutM
   if (!stopping) throw new Error(`[${service.label}] did not become ready within ${timeoutMs}ms`);
 }
 
+function portIsOpen(url) {
+  const { hostname, port } = new URL(url);
+  return new Promise((resolvePort) => {
+    const socket = connectTcp({ host: hostname, port: Number(port) });
+    const finish = (isOpen) => {
+      socket.destroy();
+      resolvePort(isOpen);
+    };
+    socket.setTimeout(1000);
+    socket.once("connect", () => finish(true));
+    socket.once("timeout", () => finish(false));
+    socket.once("error", () => finish(false));
+  });
+}
+
+async function isReady(service) {
+  try {
+    const response = await fetch(service.readyUrl, { signal: AbortSignal.timeout(1500) });
+    if (!response.ok) return false;
+    if (!service.expectedContent) return true;
+    return (await response.text()).includes(service.expectedContent);
+  } catch {
+    return false;
+  }
+}
+
 async function main() {
   process.stdout.write(
     "Oi Mega Platform starting. Required PostgreSQL and Redis services must already be running.\n"
@@ -226,43 +270,63 @@ async function main() {
   process.env.NEXT_PUBLIC_RESPONIX_URL = `http://localhost:${responixPort}`;
   const builds = [
     {
+      group: "backend",
       label: "@oic/api",
       cwd: resolve(root, "apps/oic-api"),
       args: ["node_modules/@nestjs/cli/bin/nest.js", "build"]
     },
     {
+      group: "backend",
       label: "@responix/api",
       cwd: resolve(root, "apps/api"),
       args: ["node_modules/@nestjs/cli/bin/nest.js", "build"]
     },
     {
+      group: "dashboard",
       label: "@oi/platform-portal",
       cwd: resolve(root, "apps/platform-portal"),
       args: ["node_modules/next/dist/bin/next", "build"],
-      nodeOptions: "--max-old-space-size=4096"
+      nodeOptions: "--max-old-space-size=4096",
+      nodeEnv: "production"
     },
     {
+      group: "dashboard",
       label: "@responix/dashboard",
       cwd: resolve(root, "apps/dashboard"),
       args: ["node_modules/next/dist/bin/next", "build"],
-      nodeOptions: "--max-old-space-size=8192"
+      nodeOptions: "--max-old-space-size=8192",
+      nodeEnv: "production"
     }
   ];
-  for (const build of builds) {
+  for (const build of builds.filter((entry) => target === "all" || entry.group === target)) {
     await runBuild(build);
   }
-  process.stdout.write("Starting local platform processes.\n");
-  for (const service of services) {
+  process.stdout.write(`Starting local ${target === "all" ? "platform" : target} processes.\n`);
+  for (const service of selectedServices) {
+    if (await isReady(service)) {
+      process.stdout.write(`[${service.label}] already ready at ${service.url}; reusing it.\n`);
+      continue;
+    }
+    if (await portIsOpen(service.url)) {
+      throw new Error(
+        `[${service.label}] port is occupied but its health check failed at ${service.readyUrl}; leaving the existing process untouched.`
+      );
+    }
     const processState = start(service);
     await waitUntilReady(service, processState);
     if (stopping) break;
   }
   if (!stopping) {
-    process.stdout.write("Oi Mega Platform started\n");
-    process.stdout.write(`Platform Portal: http://localhost:${portalPort}\n`);
-    process.stdout.write(`Responix: http://localhost:${responixPort}\n`);
-    process.stdout.write(`OIC API: http://127.0.0.1:${oicPort}\n`);
-    process.stdout.write("OIC Console: NOT INSTALLED (Portal placeholder)\n");
+    if (target !== "backend") {
+      process.stdout.write(`Platform Portal: http://localhost:${portalPort}\n`);
+      process.stdout.write(`Responix: http://localhost:${responixPort}\n`);
+      process.stdout.write("OIC Console: NOT INSTALLED (Portal placeholder)\n");
+    }
+    if (target !== "dashboard") {
+      process.stdout.write(`Responix API: http://127.0.0.1:${apiPort}\n`);
+      process.stdout.write(`OIC API: http://127.0.0.1:${oicPort}\n`);
+    }
+    if (target === "all") process.stdout.write("Oi Mega Platform started\n");
   }
   await Promise.all(
     children.map((child) =>
@@ -273,12 +337,13 @@ async function main() {
   );
 }
 
-function runBuild({ label, cwd, args, nodeOptions }) {
+function runBuild({ label, cwd, args, nodeOptions, nodeEnv }) {
   return new Promise((resolveBuild, rejectBuild) => {
     const child = spawn(process.execPath, args, {
       cwd,
       env: {
         ...process.env,
+        ...(nodeEnv ? { NODE_ENV: nodeEnv } : {}),
         NODE_OPTIONS: nodeOptions ?? process.env.NODE_OPTIONS ?? "--max-old-space-size=4096"
       },
       stdio: ["inherit", "pipe", "pipe"],

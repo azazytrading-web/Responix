@@ -11,6 +11,7 @@ $root = Split-Path -Parent $PSScriptRoot
 $stateDirectory = Join-Path $root ".dev-runtime"
 $logDirectory = Join-Path $stateDirectory "logs"
 $minimumNode = [version]"20.11.0"
+$launcherVersion = "mp1-platform-runner-v1"
 
 # ---------------------------------------------------------------------------
 # Output helpers
@@ -323,8 +324,19 @@ function Start-Terminal([string]$Name, [string]$Service) {
       $oldProcess = Get-Process -Id ([int]$tracked.pid) -ErrorAction SilentlyContinue
       if ($oldProcess -and $oldProcess.ProcessName -eq "powershell" -and
           $oldProcess.StartTime.ToUniversalTime().Ticks -eq [long]$tracked.startedAtUtcTicks) {
-        Write-Warn "$Name is already running (PID $($tracked.pid))."
-        return
+        if ($tracked.launcherVersion -eq $launcherVersion) {
+          Write-Warn "$Name is already running (PID $($tracked.pid))."
+          return
+        }
+
+        Write-Warn "$Name is running from the legacy launcher. Stopping its tracked process tree before switching to the MP-1 topology..."
+        $trackedPid = [int]$tracked.pid
+        & taskkill.exe /PID $trackedPid /T /F | Out-Host
+        try { Wait-Process -Id $trackedPid -Timeout 10 -ErrorAction SilentlyContinue } catch { }
+        $remaining = Get-Process -Id $trackedPid -ErrorAction SilentlyContinue
+        if ($remaining -and $remaining.StartTime.ToUniversalTime().Ticks -eq [long]$tracked.startedAtUtcTicks) {
+          Fail "Could not stop the legacy $Name process tree; refusing to start a duplicate."
+        }
       }
     }
     Remove-Item $pidFile -Force
@@ -340,7 +352,11 @@ function Start-Terminal([string]$Name, [string]$Service) {
   )
   $process = Start-Process powershell.exe -ArgumentList $arguments -WorkingDirectory $root -PassThru
 
-  $identity = @{ pid = $process.Id; startedAtUtcTicks = $process.StartTime.ToUniversalTime().Ticks } | ConvertTo-Json -Compress
+  $identity = @{
+    pid = $process.Id
+    startedAtUtcTicks = $process.StartTime.ToUniversalTime().Ticks
+    launcherVersion = $launcherVersion
+  } | ConvertTo-Json -Compress
   [IO.File]::WriteAllText($pidFile, $identity)
   Write-Ok "Started $Name in its own terminal (PID $($process.Id))."
 }
@@ -350,12 +366,12 @@ function Invoke-Service([string]$Service) {
   Load-DotEnv
   switch ($Service) {
     "backend" {
-      $host.UI.RawUI.WindowTitle = "Responix Backend"
-      Invoke-Checked "pnpm" @("--filter", "@responix/api", "dev")
+      $host.UI.RawUI.WindowTitle = "Oi Mega Platform Backend APIs"
+      Invoke-Checked "pnpm" @("platform:dev", "--", "--target", "backend")
     }
     "dashboard" {
-      $host.UI.RawUI.WindowTitle = "Responix Dashboard"
-      Invoke-Checked "pnpm" @("--filter", "@responix/dashboard", "dev")
+      $host.UI.RawUI.WindowTitle = "Oi Mega Platform Frontends"
+      Invoke-Checked "pnpm" @("platform:dev", "--", "--target", "dashboard")
     }
     "client" {
       $host.UI.RawUI.WindowTitle = "Responix Client Portal"
@@ -410,7 +426,20 @@ function Stop-Services {
 # Main entrypoint
 # ---------------------------------------------------------------------------
 try {
-  if ($InternalRun) { Invoke-Service $Target; return }
+  if ($InternalRun) {
+    try {
+      Invoke-Service $Target
+    } finally {
+      $pidFile = Join-Path $stateDirectory "$Target.pid"
+      if (Test-Path $pidFile) {
+        try {
+          $tracked = Get-Content $pidFile -Raw | ConvertFrom-Json
+          if ([int]$tracked.pid -eq $PID) { Remove-Item $pidFile -Force }
+        } catch { }
+      }
+    }
+    return
+  }
 
   Set-Location $root
 
@@ -435,7 +464,8 @@ try {
     # Optionally wait for backend health before continuing
     if ($Target -eq "all") {
       Write-Step "Waiting for Backend API to be ready..."
-      Wait-ForHealth -Url "http://localhost:4000/api/v1/health" -ServiceName "Backend API" -TimeoutSeconds 120
+      $apiPort = if ([string]::IsNullOrWhiteSpace($env:API_PORT)) { "4000" } else { $env:API_PORT }
+      Wait-ForHealth -Url "http://127.0.0.1:$apiPort/api/v1/health" -ServiceName "Backend API" -TimeoutSeconds 120
     }
   }
 

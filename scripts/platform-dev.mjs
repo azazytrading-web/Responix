@@ -37,15 +37,37 @@ function localPort(key, file, fallback) {
   return String(port);
 }
 
+const root = process.cwd();
 const apiPort = localPort("API_PORT", ".env", "4000");
 const oicPort = localPort("OIC_PORT", ".env.oic.local", "4100");
 const portalPort = localPort("PORTAL_PORT", ".env", "3000");
 const responixPort = localPort("RESPONIX_PORT", ".env", "3001");
+const oicConsolePackage = JSON.parse(readFileSync(resolve(root, "apps/oic-console/package.json"), "utf8"));
+const oicConsolePort = oicConsolePackage.scripts?.start?.match(/--port\s+(\d+)/)?.[1] ?? "3002";
+if (!Number.isInteger(Number(oicConsolePort)) || Number(oicConsolePort) < 1 || Number(oicConsolePort) > 65535) {
+  throw new Error("@oic/console start script must define a valid port");
+}
+const configuredConsoleUrl = localSetting("OIC_CONSOLE_URL", ".env", `http://localhost:${oicConsolePort}`);
+let parsedConsoleUrl;
+try {
+  parsedConsoleUrl = new URL(configuredConsoleUrl);
+} catch {
+  throw new Error("OIC_CONSOLE_URL must be an absolute HTTP or HTTPS URL");
+}
+if (
+  !["http:", "https:"].includes(parsedConsoleUrl.protocol) ||
+  parsedConsoleUrl.username ||
+  parsedConsoleUrl.password ||
+  parsedConsoleUrl.search ||
+  parsedConsoleUrl.hash
+) {
+  throw new Error("OIC_CONSOLE_URL must be an HTTP or HTTPS URL without credentials or query values");
+}
+const oicConsoleUrl = parsedConsoleUrl.toString().replace(/\/$/, "");
 const startupTimeoutMs = Number(process.env.PLATFORM_STARTUP_TIMEOUT_MS ?? 120_000);
 if (!Number.isInteger(startupTimeoutMs) || startupTimeoutMs < 5000 || startupTimeoutMs > 600_000) {
   throw new Error("PLATFORM_STARTUP_TIMEOUT_MS must be an integer between 5000 and 600000");
 }
-const root = process.cwd();
 const services = [
   {
     group: "backend",
@@ -63,6 +85,7 @@ const services = [
     args: [resolve(root, "apps/api/dist/main.js")],
     url: `http://127.0.0.1:${apiPort}`,
     readyUrl: `http://127.0.0.1:${apiPort}/api/v1/health`,
+    expectedContent: undefined,
     env: {
       API_HOST: "127.0.0.1",
       API_PORT: apiPort,
@@ -84,6 +107,7 @@ const services = [
     ],
     url: `http://127.0.0.1:${portalPort}`,
     readyUrl: `http://127.0.0.1:${portalPort}/`,
+    buildLabel: "@oi/platform-portal",
     expectedContent: "Oi Smart Solutions",
     env: {
       NODE_ENV: "production",
@@ -106,11 +130,27 @@ const services = [
     ],
     url: `http://127.0.0.1:${responixPort}`,
     readyUrl: `http://127.0.0.1:${responixPort}/`,
+    buildLabel: "@responix/dashboard",
+    expectedContent: "Responix",
     env: {
       NODE_ENV: "production",
       PORT: responixPort,
       NEXT_PUBLIC_API_URL: `http://127.0.0.1:${apiPort}`
     }
+  },
+  {
+    group: "dashboard",
+    label: "OIC Console",
+    cwd: root,
+    command: process.platform === "win32" ? "pnpm.cmd" : "pnpm",
+    shell: process.platform === "win32",
+    args: ["--filter", "@oic/console", "start"],
+    url: `http://127.0.0.1:${oicConsolePort}`,
+    publicUrl: oicConsoleUrl,
+    readyUrl: `http://127.0.0.1:${oicConsolePort}/`,
+    buildLabel: "@oic/console",
+    expectedContent: "Oi Intelligence Core",
+    env: { NODE_ENV: "production" }
   }
 ];
 const selectedServices = services.filter((service) => target === "all" || service.group === target);
@@ -168,12 +208,13 @@ process.on("SIGBREAK", () => {
   void stop("SIGTERM");
 });
 
-function start({ label, cwd, url, env: serviceEnv, args = [] }) {
+function start({ label, cwd, url, command = process.execPath, shell = false, env: serviceEnv, args = [] }) {
   let child;
   try {
-    child = spawn(process.execPath, args, {
+    child = spawn(command, args, {
       cwd,
       env: { ...process.env, ...serviceEnv },
+      shell,
       stdio: ["inherit", "pipe", "pipe"],
       windowsHide: true
     });
@@ -268,21 +309,36 @@ async function main() {
   );
   process.env.NEXT_PUBLIC_API_URL = `http://127.0.0.1:${apiPort}`;
   process.env.NEXT_PUBLIC_RESPONIX_URL = `http://localhost:${responixPort}`;
+  process.env.NEXT_PUBLIC_OIC_CONSOLE_URL = oicConsoleUrl;
+  const readyServices = new Set();
+  for (const service of selectedServices) {
+    if (await isReady(service)) {
+      readyServices.add(service.label);
+      process.stdout.write(`[${service.label}] already ready at ${service.url}; reusing it.\n`);
+    } else if (await portIsOpen(service.url)) {
+      throw new Error(
+        `[${service.label}] port is occupied but its health check failed at ${service.readyUrl}; leaving the existing process untouched.`
+      );
+    }
+  }
   const builds = [
     {
       group: "backend",
+      serviceLabel: "OIC API",
       label: "@oic/api",
       cwd: resolve(root, "apps/oic-api"),
       args: ["node_modules/@nestjs/cli/bin/nest.js", "build"]
     },
     {
       group: "backend",
+      serviceLabel: "Responix API",
       label: "@responix/api",
       cwd: resolve(root, "apps/api"),
       args: ["node_modules/@nestjs/cli/bin/nest.js", "build"]
     },
     {
       group: "dashboard",
+      serviceLabel: "Platform Portal",
       label: "@oi/platform-portal",
       cwd: resolve(root, "apps/platform-portal"),
       args: ["node_modules/next/dist/bin/next", "build"],
@@ -291,27 +347,33 @@ async function main() {
     },
     {
       group: "dashboard",
+      serviceLabel: "Responix",
       label: "@responix/dashboard",
       cwd: resolve(root, "apps/dashboard"),
       args: ["node_modules/next/dist/bin/next", "build"],
       nodeOptions: "--max-old-space-size=8192",
       nodeEnv: "production"
+    },
+    {
+      group: "dashboard",
+      serviceLabel: "OIC Console",
+      label: "@oic/console",
+      cwd: root,
+      command: process.platform === "win32" ? "pnpm.cmd" : "pnpm",
+      shell: process.platform === "win32",
+      args: ["--filter", "@oic/console", "build"],
+      nodeOptions: "--max-old-space-size=4096",
+      nodeEnv: "production"
     }
   ];
-  for (const build of builds.filter((entry) => target === "all" || entry.group === target)) {
+  for (const build of builds.filter((entry) =>
+    (target === "all" || entry.group === target) && !readyServices.has(entry.serviceLabel)
+  )) {
     await runBuild(build);
   }
   process.stdout.write(`Starting local ${target === "all" ? "platform" : target} processes.\n`);
   for (const service of selectedServices) {
-    if (await isReady(service)) {
-      process.stdout.write(`[${service.label}] already ready at ${service.url}; reusing it.\n`);
-      continue;
-    }
-    if (await portIsOpen(service.url)) {
-      throw new Error(
-        `[${service.label}] port is occupied but its health check failed at ${service.readyUrl}; leaving the existing process untouched.`
-      );
-    }
+    if (readyServices.has(service.label)) continue;
     const processState = start(service);
     await waitUntilReady(service, processState);
     if (stopping) break;
@@ -320,7 +382,7 @@ async function main() {
     if (target !== "backend") {
       process.stdout.write(`Platform Portal: http://localhost:${portalPort}\n`);
       process.stdout.write(`Responix: http://localhost:${responixPort}\n`);
-      process.stdout.write("OIC Console: NOT INSTALLED (Portal placeholder)\n");
+      process.stdout.write(`OIC Console: ${oicConsoleUrl}\n`);
     }
     if (target !== "dashboard") {
       process.stdout.write(`Responix API: http://127.0.0.1:${apiPort}\n`);
@@ -337,15 +399,16 @@ async function main() {
   );
 }
 
-function runBuild({ label, cwd, args, nodeOptions, nodeEnv }) {
+function runBuild({ label, cwd, args, command = process.execPath, shell = false, nodeOptions, nodeEnv }) {
   return new Promise((resolveBuild, rejectBuild) => {
-    const child = spawn(process.execPath, args, {
+    const child = spawn(command, args, {
       cwd,
       env: {
         ...process.env,
         ...(nodeEnv ? { NODE_ENV: nodeEnv } : {}),
         NODE_OPTIONS: nodeOptions ?? process.env.NODE_OPTIONS ?? "--max-old-space-size=4096"
       },
+      shell,
       stdio: ["inherit", "pipe", "pipe"],
       windowsHide: true
     });

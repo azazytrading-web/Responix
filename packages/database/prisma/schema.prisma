@@ -1247,8 +1247,9 @@ model AiAgent {
   iconMetadata            Json            @default("{}") @map("icon_metadata")
   personality             String?
   prompt                  String
-  modelId                 String          @map("model_id") @db.Uuid
-  providerId              String          @map("provider_id") @db.Uuid
+  // Required by LEGACY mode; null only for explicit OIC mode.
+  modelId                 String?         @map("model_id") @db.Uuid
+  providerId              String?         @map("provider_id") @db.Uuid
   temperature             Decimal         @default(0.7) @db.Decimal(3, 2)
   maxTokens               Int             @map("max_tokens")
   topP                    Decimal?        @map("top_p") @db.Decimal(3, 2)
@@ -1283,8 +1284,8 @@ model AiAgent {
   deletedAt               DateTime?       @map("deleted_at")
 
   workspace                      Workspace                @relation(fields: [workspaceId], references: [id], onDelete: Restrict)
-  model                          AiModel                  @relation(fields: [modelId], references: [id], onDelete: Restrict)
-  provider                       AiProvider               @relation(fields: [providerId], references: [id], onDelete: Restrict)
+  model                          AiModel?                 @relation(fields: [modelId], references: [id], onDelete: Restrict)
+  provider                       AiProvider?              @relation(fields: [providerId], references: [id], onDelete: Restrict)
   workspaceProviderConfiguration AiProviderConfiguration? @relation(fields: [providerConfigurationId], references: [id], onDelete: SetNull)
   promptBindings                 AgentPromptBinding[]
   versions                       AiAgentVersion[]
@@ -3369,9 +3370,9 @@ model AgentRuntimePreparation {
   actorId                   String             @map("actor_id") @db.Uuid
   agentId                   String             @map("agent_id") @db.Uuid
   agentVersionId            String             @map("agent_version_id") @db.Uuid
-  providerId                String             @map("provider_id") @db.Uuid
-  modelId                   String             @map("model_id") @db.Uuid
-  providerConfigurationId   String             @map("provider_configuration_id") @db.Uuid
+  providerId                String?            @map("provider_id") @db.Uuid
+  modelId                   String?            @map("model_id") @db.Uuid
+  providerConfigurationId   String?            @map("provider_configuration_id") @db.Uuid
   executionProfileId        String             @map("execution_profile_id") @db.Uuid
   executionProfileVersionId String             @map("execution_profile_version_id") @db.Uuid
   executionRequestId        String             @map("execution_request_id") @db.Uuid
@@ -3433,9 +3434,9 @@ model AgentRuntimeSnapshot {
   createdById               String   @map("created_by") @db.Uuid
   agentId                   String   @map("agent_id") @db.Uuid
   agentVersionId            String   @map("agent_version_id") @db.Uuid
-  providerId                String   @map("provider_id") @db.Uuid
-  modelId                   String   @map("model_id") @db.Uuid
-  providerConfigurationId   String   @map("provider_configuration_id") @db.Uuid
+  providerId                String?  @map("provider_id") @db.Uuid
+  modelId                   String?  @map("model_id") @db.Uuid
+  providerConfigurationId   String?  @map("provider_configuration_id") @db.Uuid
   executionProfileId        String   @map("execution_profile_id") @db.Uuid
   executionProfileVersionId String   @map("execution_profile_version_id") @db.Uuid
   executionRequestId        String   @map("execution_request_id") @db.Uuid
@@ -3549,7 +3550,7 @@ model AgentExecutionOrchestration {
   executionRunId                String                            @unique @map("execution_run_id") @db.Uuid
   agentRuntimeSnapshotId        String                            @map("agent_runtime_snapshot_id") @db.Uuid
   promptExecutionPayloadId      String                            @map("prompt_execution_payload_id") @db.Uuid
-  providerRuntimeSnapshotId     String                            @map("provider_runtime_snapshot_id") @db.Uuid
+  providerRuntimeSnapshotId     String?                           @map("provider_runtime_snapshot_id") @db.Uuid
   conversationRuntimeSnapshotId String?                           @map("conversation_runtime_snapshot_id") @db.Uuid
   executionPipelineSnapshotId   String                            @map("execution_pipeline_snapshot_id") @db.Uuid
   status                        AgentExecutionOrchestrationStatus @default(PREPARING)

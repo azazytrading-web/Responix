@@ -36,6 +36,34 @@
         ]
       }
     },
+    "/api/v1/admin/applications/by-key/{key}": {
+      "get": {
+        "operationId": "FoundationController_getApplicationByKey_v1",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "key",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "OIC Foundation Administration"
+        ]
+      }
+    },
     "/api/v1/admin/applications/{applicationId}": {
       "get": {
         "operationId": "FoundationController_getApplication_v1",
@@ -477,6 +505,50 @@
         ],
         "responses": {
           "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "OIC Foundation Administration"
+        ]
+      }
+    },
+    "/api/v1/admin/applications/{applicationId}/tenants/by-external-reference/{sourceType}/{externalId}": {
+      "get": {
+        "operationId": "FoundationController_getTenantByExternalReference_v1",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "applicationId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "sourceType",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "externalId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
             "description": ""
           }
         },

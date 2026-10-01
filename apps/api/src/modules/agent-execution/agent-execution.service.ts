@@ -21,6 +21,7 @@ import type {
   PrepareAgentExecutionDto, StreamAgentExecutionDto
 } from "./dto/agent-execution.dto";
 import { AgentExecutionRepository } from "./agent-execution.repository";
+import { OicRuntimeService } from "../oic-integration/oic-runtime.service";
 import {
   AgentExecutionValidator, type AgentExecutionAssetSet
 } from "./agent-execution.validator";
@@ -57,7 +58,8 @@ export class AgentExecutionService {
     private readonly streaming: StreamingRuntimeService,
     private readonly memory: MemoryRuntimeService,
     private readonly retrievalExecution: RetrievalExecutionService,
-    @Inject(forwardRef(() => ToolRuntimeService)) private readonly tools: ToolRuntimeService
+    @Inject(forwardRef(() => ToolRuntimeService)) private readonly tools: ToolRuntimeService,
+    private readonly oicRuntime: OicRuntimeService
   ) {}
 
   async prepare(workspaceId: string, actorId: string, dto: PrepareAgentExecutionDto) {
@@ -78,17 +80,21 @@ export class AgentExecutionService {
     });
     let assets: AgentExecutionAssetSet;
     try {
-      const [agent, prompt, provider, conversation, pipeline] = await Promise.all([
-        this.agentRuntime.getSnapshot(workspaceId, dto.agentRuntimeSnapshotId),
+      const agent = await this.agentRuntime.getSnapshot(workspaceId, dto.agentRuntimeSnapshotId);
+      const oicMode = this.snapshotExecutionMode(agent) === "OIC";
+      if (!oicMode && !dto.providerRuntimeSnapshotId) {
+        throw new BadRequestException({ code: "PROVIDER_RUNTIME_REQUIRED", message: "LEGACY Agent execution requires a Provider Runtime snapshot." });
+      }
+      const [prompt, provider, conversation, pipeline] = await Promise.all([
         this.promptExecution.get(workspaceId, dto.promptExecutionPayloadId),
-        this.providerRuntime.getSnapshot(workspaceId, dto.providerRuntimeSnapshotId),
+        oicMode ? Promise.resolve({}) : this.providerRuntime.getSnapshot(workspaceId, dto.providerRuntimeSnapshotId!),
         dto.conversationRuntimeSnapshotId
           ? this.conversationRuntime.getSnapshot(workspaceId, dto.conversationRuntimeSnapshotId)
           : Promise.resolve(undefined),
         this.executionPipeline.getSnapshot(workspaceId, dto.executionPipelineSnapshotId)
       ]);
       assets = {
-        agent: agent,
+        agent,
         prompt: prompt,
         provider: provider,
         conversation: conversation,
@@ -164,6 +170,8 @@ export class AgentExecutionService {
       // Single Context Assembly boundary: a context source is only resolved
       // and assembled into the LLM request when the policy enables it.
       const contextPolicy = this.resolveContextPolicy(agentSnapshot, dto);
+      const executionMode = this.snapshotExecutionMode(agentSnapshot);
+      if (executionMode === "OIC") this.assertOicCapabilities(agentSnapshot, dto);
       const memory = contextPolicy.memory
         ? await this.resolveMemory(workspaceId, actorId, dto,
             orchestration.executionRequestId, orchestration.executionRunId)
@@ -181,6 +189,40 @@ export class AgentExecutionService {
       const agentIdentity = this.resolveAgentIdentity(agentSnapshot, dto);
       const messages = this.messages(payload.messages, dto.userMessage, conversationHistory,
         memory, retrieval, toolOutputs, personality, agentIdentity);
+      if (executionMode === "OIC") {
+        const agentConfiguration = this.executionAgentConfiguration(agentSnapshot);
+        const oiModelKey = this.oiModelKey(agentSnapshot);
+        if (typeof oiModelKey !== "string") throw new BadRequestException({ code: "OIC_MODEL_REQUIRED", message: "OIC mode requires an Oi Model assignment." });
+        const context = agentSnapshot.runtimeContext && typeof agentSnapshot.runtimeContext === "object"
+          ? agentSnapshot.runtimeContext as Record<string, unknown> : {};
+        const conversation = context.conversation && typeof context.conversation === "object"
+          ? context.conversation as Record<string, unknown> : {};
+        const result = await this.oicRuntime.invoke({
+          workspaceId, conversationId: typeof conversation.id === "string" ? conversation.id : null,
+          requestId: orchestration.executionRequestId,
+          traceId: typeof context.traceId === "string" ? context.traceId : orchestration.executionRunId,
+          oiModelKey, messages, timeoutMs: typeof agentConfiguration.timeoutMs === "number" ? agentConfiguration.timeoutMs : undefined
+        });
+        const rawUsage = result.response.usage ?? undefined;
+        const completed = await this.kernel.transition(workspaceId, actorId, run.id, {
+          status: ExecutionKernelStatus.SUCCEEDED, expectedStateVersion: running.stateVersion,
+          message: "OIC runtime invocation completed",
+          metadata: { oicRequestId: result.response.requestId, traceId: result.response.traceId,
+            oiModelKey: result.response.model, rawUsage }
+        });
+        await this.kernel.appendEvent(workspaceId, actorId, run.id, {
+          eventType: "agent.execution.completed", message: "OIC agent execution completed",
+          metadata: { orchestrationId: orchestration.id, oicRequestId: result.response.requestId,
+            traceId: result.response.traceId, oiModelKey: result.response.model }
+        });
+        await this.commitMemoryWrites(workspaceId, actorId, dto, run.id);
+        return {
+          executionId: orchestration.id, answer: result.answer, model: result.response.model,
+          finishReason: result.response.finishReason, rawUsage,
+          latency: result.response.execution.durationMs, executionTime: completed.durationMs ?? null,
+          diagnostics: orchestration.runtimeDiagnostics
+        };
+      }
       const providerTools = contextPolicy.tools && dto.availableToolVersionIds?.length ?
         await this.tools.providerContracts(workspaceId, dto.availableToolVersionIds) : undefined;
       const promptCache = await this.prepareOptimization(workspaceId, actorId, dto, orchestration,
@@ -229,6 +271,9 @@ export class AgentExecutionService {
     const orchestration = await this.prepare(workspaceId, actorId, dto);
     if (orchestration.status !== "READY") throw new BadRequestException("Agent execution dependencies are invalid");
     const agentSnapshot = await this.agentRuntime.getSnapshot(workspaceId, dto.agentRuntimeSnapshotId);
+    if (this.snapshotExecutionMode(agentSnapshot) === "OIC") {
+      throw new BadRequestException({ code: "OIC_STREAM_UNSUPPORTED", message: "Streaming Agent executions are not enabled for OIC mode yet." });
+    }
     // Single Context Assembly boundary: a context source is only resolved
     // and assembled into the LLM request when the policy enables it.
     const contextPolicy = this.resolveContextPolicy(agentSnapshot, dto);
@@ -243,6 +288,7 @@ export class AgentExecutionService {
     const toolOutputs = contextPolicy.tools
       ? await this.executeTools(workspaceId, actorId, dto, orchestration.executionRunId)
       : [];
+    if (!dto.providerRuntimeSnapshotId) throw new BadRequestException({ code: "PROVIDER_RUNTIME_REQUIRED", message: "LEGACY Agent execution requires a Provider Runtime snapshot." });
     const provider = await this.providerRuntime.getSnapshot(workspaceId, dto.providerRuntimeSnapshotId);
     const payload = await this.promptExecution.get(workspaceId, dto.promptExecutionPayloadId);
     const personality = await this.resolveOperationalPersonality(workspaceId, dto.agentRuntimeSnapshotId);
@@ -423,6 +469,49 @@ export class AgentExecutionService {
       knowledge: flags.knowledgeEnabled === true,
       tools: flags.toolsEnabled === true
     };
+  }
+
+  private executionAgentConfiguration(snapshot: Record<string, unknown>): Record<string, unknown> {
+    const execution = snapshot.executionConfiguration;
+    const agent = execution && typeof execution === "object"
+      ? (execution as Record<string, unknown>).agent : undefined;
+    return agent && typeof agent === "object" ? agent as Record<string, unknown> : {};
+  }
+
+  private snapshotExecutionMode(snapshot: Record<string, unknown>): string {
+    const configuration = this.record(snapshot.executionConfiguration);
+    const agent = this.record(configuration.agent);
+    const runtime = this.record(agent.runtimeConfiguration);
+    const integration = this.record(runtime.oicIntegration);
+    return integration.executionMode === "OIC" ? "OIC" : "LEGACY";
+  }
+
+  private oiModelKey(snapshot: Record<string, unknown>): string | undefined {
+    const runtime = this.executionAgentConfiguration(snapshot).runtimeConfiguration;
+    const integration = runtime && typeof runtime === "object"
+      ? (runtime as Record<string, unknown>).oicIntegration : undefined;
+    const key = integration && typeof integration === "object"
+      ? (integration as Record<string, unknown>).oiModelKey : undefined;
+    return typeof key === "string" ? key : undefined;
+  }
+
+  private assertOicCapabilities(snapshot: Record<string, unknown>, input: ExecuteAgentExecutionDto): void {
+    const configuration = this.executionAgentConfiguration(snapshot);
+    const capabilities = this.record(configuration.capabilities);
+    const metadata = this.record(capabilities.metadata);
+    const unsupported = capabilities.toolsEnabled === true || capabilities.visionEnabled === true ||
+      capabilities.voiceEnabled === true || capabilities.imageEnabled === true ||
+      capabilities.reasoningEnabled === true || configuration.streamingEnabled === true ||
+      metadata.structuredOutputEnabled === true || (input.availableToolVersionIds?.length ?? 0) > 0 ||
+      (input.toolCalls?.length ?? 0) > 0;
+    if (unsupported) {
+      throw new BadRequestException({ code: "OIC_CAPABILITY_UNSUPPORTED", message: "This Agent requires capabilities that are not supported in OIC mode." });
+    }
+  }
+
+  private record(value: unknown): Record<string, unknown> {
+    return value && typeof value === "object" && !Array.isArray(value)
+      ? value as Record<string, unknown> : {};
   }
 
   private messages(value: unknown, userMessage?: string,

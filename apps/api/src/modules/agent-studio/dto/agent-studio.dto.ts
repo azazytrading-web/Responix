@@ -5,6 +5,7 @@ import {
   IsArray,
   IsBoolean,
   IsEnum,
+  IsIn,
   IsInt,
   IsNumber,
   IsObject,
@@ -15,6 +16,7 @@ import {
   Max,
   MaxLength,
   Min,
+  ValidateIf,
   ValidateNested
 } from "class-validator";
 import { ApiProperty, ApiPropertyOptional, PartialType } from "@nestjs/swagger";
@@ -152,13 +154,26 @@ export class AgentRetryPolicyDto {
 }
 
 export class AgentConfigurationDto {
-  @ApiProperty({ format: "uuid" })
-  @IsUUID()
-  providerId!: string;
+  @ApiPropertyOptional({ enum: ["LEGACY", "OIC"], description: "Selects the Responix legacy runtime or OIC Native Runtime; omitted means LEGACY" })
+  @IsOptional()
+  @IsIn(["LEGACY", "OIC"])
+  executionMode?: "LEGACY" | "OIC";
 
-  @ApiProperty({ format: "uuid" })
+  @ApiPropertyOptional({ pattern: "^oi-[a-zA-Z0-9._:-]{1,120}$", description: "Stable Oi Model identity; required when executionMode is OIC" })
+  @ValidateIf((value: AgentConfigurationDto) => value.executionMode === "OIC")
+  @IsString()
+  @Matches(/^oi-[a-zA-Z0-9._:-]{1,120}$/)
+  oiModelKey?: string;
+
+  @ApiPropertyOptional({ format: "uuid", description: "Required in LEGACY mode; omitted for OIC mode" })
+  @ValidateIf((value: AgentConfigurationDto) => value.executionMode !== "OIC")
   @IsUUID()
-  modelId!: string;
+  providerId?: string;
+
+  @ApiPropertyOptional({ format: "uuid", description: "Required in LEGACY mode; omitted for OIC mode" })
+  @ValidateIf((value: AgentConfigurationDto) => value.executionMode !== "OIC")
+  @IsUUID()
+  modelId?: string;
 
   @ApiPropertyOptional({ format: "uuid" })
   @IsOptional()

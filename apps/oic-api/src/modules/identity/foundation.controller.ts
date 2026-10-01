@@ -46,10 +46,24 @@ export class FoundationController {
   getApplication(@CurrentPrincipal() actor: AuthenticatedPrincipal, @Param("applicationId", ParseUUIDPipe) id: string) { return this.foundation.getApplication(actor, id); }
 
   @Version("1")
+  @Get("applications/by-key/:key")
+  @RequireScopes("oic:applications:read")
+  getApplicationByKey(@CurrentPrincipal() actor: AuthenticatedPrincipal, @Param("key") key: string) {
+    return this.foundation.getApplicationByKey(actor, key);
+  }
+
+  @Version("1")
   @Post("applications/:applicationId/tenants")
   @RequireScopes("oic:tenants:manage")
   createTenant(@CurrentPrincipal() actor: AuthenticatedPrincipal, @Param("applicationId", ParseUUIDPipe) appId: string, @Body() body: unknown, @Headers() headers: RequestWithIds["headers"], @Req() req: RequestWithIds) {
     return this.foundation.createTenant(actor, appId, parse(tenantDto, body), idempotencyKey(headers), auditContext(req));
+  }
+
+  @Version("1")
+  @Get("applications/:applicationId/tenants/by-external-reference/:sourceType/:externalId")
+  @RequireScopes("oic:tenants:read")
+  getTenantByExternalReference(@CurrentPrincipal() actor: AuthenticatedPrincipal, @Param("applicationId", ParseUUIDPipe) appId: string, @Param("sourceType") sourceType: string, @Param("externalId") externalId: string) {
+    return this.foundation.getTenantByExternalReference(actor, appId, sourceType, externalId);
   }
 
   @Version("1")

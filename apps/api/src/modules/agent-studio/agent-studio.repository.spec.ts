@@ -107,6 +107,51 @@ describe("AgentStudioRepository", () => {
   };
   const repository = new AgentStudioRepository(prisma as never);
 
+  it("persists explicit Oi Model selection without Responix provider assets", () => {
+    const data = (repository as unknown as { configurationData: (value: typeof configuration & { executionMode?: "LEGACY" | "OIC"; oiModelKey?: string }) => Record<string, unknown> })
+      .configurationData({ ...configuration, executionMode: "OIC", oiModelKey: "oi-support-v1" });
+    expect(data.providerId).toBeNull();
+    expect(data.modelId).toBeNull();
+    expect(data.runtimeConfiguration).toEqual({
+      oicIntegration: { executionMode: "OIC", oiModelKey: "oi-support-v1" }
+    });
+  });
+
+  it("rejects switching a capability-dependent LEGACY Agent to OIC without silently dropping features", async () => {
+    prisma.aiAgent.findFirst.mockResolvedValueOnce(agent({ toolsEnabled: true }));
+    await expect(repository.updateDraft({ workspaceId: "workspace", actorId: "actor", agentId: "agent",
+      draft: { configuration: { ...configuration, executionMode: "OIC", oiModelKey: "oi-support-v1", streaming: false } } as never
+    })).rejects.toBeInstanceOf(BadRequestException);
+    expect(prisma.aiAgent.update).not.toHaveBeenCalled();
+  });
+
+  it("preserves legacy provider configuration privately and restores it on an explicit OIC-to-LEGACY switch", async () => {
+    const legacy = agent({ toolsEnabled: false, reasoningEnabled: false, streamingEnabled: false });
+    prisma.aiAgent.findFirst.mockResolvedValueOnce(legacy);
+    const oicConfiguration = { ...configuration, streaming: false, executionMode: "OIC" as const, oiModelKey: "oi-support-v1",
+      capabilities: { toolsEnabled: false, reasoningEnabled: false, streamingEnabled: false } };
+    await repository.updateDraft({ workspaceId: "workspace", actorId: "actor", agentId: "agent",
+      draft: { configuration: oicConfiguration } as never });
+    const oicData = prisma.aiAgent.update.mock.calls[0]![0].data;
+    expect(oicData.providerId).toBeNull();
+    expect(oicData.modelId).toBeNull();
+    expect(oicData.runtimeConfiguration.oicIntegration.legacyRollback).toMatchObject({ providerId: "provider", modelId: "model" });
+
+    prisma.aiAgent.findFirst.mockResolvedValueOnce({
+      ...legacy, providerId: null, modelId: null, providerConfigurationId: null,
+      runtimeConfiguration: { oicIntegration: { executionMode: "OIC", oiModelKey: "oi-support-v1",
+        legacyRollback: { providerId: "provider", modelId: "model", providerConfigurationId: "provider-configuration",
+          providerConfiguration: { temperature: 0.3 }, modelConfiguration: { mode: "safe" } } } }
+    });
+    await repository.updateDraft({ workspaceId: "workspace", actorId: "actor", agentId: "agent",
+      draft: { configuration: { ...configuration, streaming: false, executionMode: "LEGACY" },
+        capabilities: { toolsEnabled: false, reasoningEnabled: false, streamingEnabled: false } } as never });
+    expect(prisma.aiAgent.update.mock.calls[1]![0].data).toMatchObject({
+      providerId: "provider", modelId: "model", providerConfigurationId: "provider-configuration",
+      providerConfiguration: { temperature: 0.3 }, modelConfiguration: { mode: "safe" }
+    });
+  });
+
   beforeEach(() => {
     jest.clearAllMocks();
     prisma.$transaction.mockImplementation(async (input: unknown) => {
@@ -209,7 +254,9 @@ describe("AgentStudioRepository", () => {
     });
 
     const written = (prisma.aiAgent.create as jest.Mock).mock.calls[0]![0]!.data;
-    expect(written.runtimeConfiguration).toEqual({ conversationHistory: { enabled: false } });
+    expect(written.runtimeConfiguration).toEqual({
+      oicIntegration: { executionMode: "LEGACY" }, conversationHistory: { enabled: false }
+    });
   });
 
   it("persists an enabled conversation-history working-context flag on create", async () => {
@@ -223,7 +270,9 @@ describe("AgentStudioRepository", () => {
     });
 
     const written = (prisma.aiAgent.create as jest.Mock).mock.calls[0]![0]!.data;
-    expect(written.runtimeConfiguration).toEqual({ conversationHistory: { enabled: true } });
+    expect(written.runtimeConfiguration).toEqual({
+      oicIntegration: { executionMode: "LEGACY" }, conversationHistory: { enabled: true }
+    });
   });
 
   it("rejects cross-workspace provider configurations", async () => {

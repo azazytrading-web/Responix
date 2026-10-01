@@ -336,6 +336,31 @@ describe("BaileysWhatsappIncomingProcessor", () => {
     expect(repository.diagnostic).not.toHaveBeenCalled();
   });
 
+  it("keeps OIC response processing behind Responix channel protection and outbound queue", async () => {
+    const processor = new BaileysWhatsappIncomingProcessor(repository as never, conversationsRuntime as never,
+      workflows as never, agents as never, memory as never, runtimeService as never, diagnostics as never);
+    repository.latestConfiguration.mockResolvedValue({ configuration: { agentExecution: {
+      agentRuntimeSnapshotId: "agent-snapshot", promptExecutionPayloadId: "prompt-snapshot",
+      executionMode: "OIC", oiModelKey: "oi-support-v1" } } });
+    const order: string[] = [];
+    agents.execute.mockImplementation(async () => { order.push("oic-agent-response"); return { answer: "Guarded response" }; });
+    (runtimeService.send as jest.Mock).mockImplementation(async (_workspace: string, _actor: string, _channel: string, dto: { text: string }) => {
+      order.push("channel-protection-and-queue");
+      expect(dto.text).toBe("Guarded response");
+      return { id: "guarded-outgoing" };
+    });
+    const connection = { id: "conn", workspaceId: "workspace", channelId: "channel", providerKey: "baileys",
+      createdById: "actor", configuration: {}, credentials: {} as never, transport: {} as never } as ChannelProviderConnection;
+    const message: NormalizedChannelMessage = { providerMessageId: "oic-inbound", externalUserId: "1555",
+      externalConversationId: "1555", direction: "INCOMING", type: ChannelMessageType.TEXT, text: "hello",
+      timestamp: new Date(), attachments: [], content: {}, metadata: {} };
+    await processor.processIncoming(connection, [message]);
+    expect(order).toEqual(["oic-agent-response", "channel-protection-and-queue"]);
+    expect(runtimeService.send).toHaveBeenCalledTimes(1);
+    expect(conversationsRuntime.appendChannelMessage).toHaveBeenLastCalledWith("workspace", "actor", "runtime",
+      expect.objectContaining({ role: "ASSISTANT", messageIdentifier: "guarded-outgoing" }));
+  });
+
 
   it("blocks a disabled conversation without affecting an enabled conversation on the same channel", async () => {
     const processor = new BaileysWhatsappIncomingProcessor(repository as any, conversationsRuntime as any,

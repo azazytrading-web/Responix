@@ -15,6 +15,7 @@ function isOicDatabaseUrl(value: string): boolean {
 
 export const oicEnvironmentSchema = z.object({
   NODE_ENV: z.enum(["development", "test", "production"]).default("development"),
+  OIC_HOST: z.string().min(1).default("0.0.0.0"),
   OIC_PORT: z.coerce.number().int().min(1).max(65535).default(4100),
   OIC_AUTH_REQUESTS_PER_MINUTE: z.coerce.number().int().min(1).max(10000).default(120),
   OIC_HTTP_MAX_BODY_BYTES: z.coerce.number().int().min(32768).max(5_000_000).default(1_000_000),

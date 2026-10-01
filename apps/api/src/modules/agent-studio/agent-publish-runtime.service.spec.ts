@@ -178,4 +178,40 @@ describe("AgentPublishRuntimeService", () => {
       }) });
     expect(kernel.createRequest).not.toHaveBeenCalled();
   });
+
+  it("does not build or require Provider Runtime assets for an OIC Agent", async () => {
+    const prisma = {
+      agentRuntimeSnapshot: { findMany: jest.fn().mockResolvedValue([]) },
+      agentExecutionOrchestration: { findFirst: jest.fn().mockResolvedValue(null) },
+      aiAgentVersion: { findFirst: jest.fn().mockResolvedValue({ snapshot: {
+        runtimeConfiguration: { executionMode: "OIC", executionPipelineId: "pipeline", executionProfileId: "profile",
+          oicIntegration: { executionMode: "OIC", oiModelKey: "oi-support-v1" } },
+        promptBindings: [{ role: "SYSTEM", promptId: "prompt", promptVersionId: "prompt-version" }],
+        maxTokens: 1000, temperature: 0.2, topP: null, stopSequences: [], streamingEnabled: false,
+        capabilities: { memoryEnabled: false }
+      } }) },
+      executionPipeline: { findFirst: jest.fn().mockResolvedValue({ id: "pipeline" }) },
+      executionProfile: { findFirst: jest.fn().mockResolvedValue({ id: "profile", versions: [{ id: "profile-version" }] }) },
+      promptLibraryVersion: { findFirst: jest.fn().mockResolvedValue({ id: "prompt-version", snapshot: {
+        draft: { sections: { systemPrompt: "System", userPrompt: "User" } }
+      } }) }
+    };
+    const providers = { prepare: jest.fn(), createSnapshot: jest.fn() };
+    const agents = { prepare: jest.fn().mockResolvedValue({ id: "runtime" }), createSnapshot: jest.fn().mockResolvedValue({ id: "agent-snapshot" }) };
+    const pipelines = { get: jest.fn().mockResolvedValue({ id: "pipeline", name: "Pipeline", compatibilityVersion: "1.0",
+      plan: { nodes: [{ nodeKey: "agent", stage: "agent", ordinal: 0, assetType: "AGENT_RUNTIME", assetId: "other" }] } }),
+      create: jest.fn().mockResolvedValue({ id: "pipeline-copy" }), publish: jest.fn().mockResolvedValue({ id: "pipeline-snapshot" }) };
+    const executions = { prepare: jest.fn().mockResolvedValue({ id: "orchestration", status: "READY" }) };
+    const service = new AgentPublishRuntimeService(prisma as never,
+      { createRequest: jest.fn().mockResolvedValue({ id: "request" }) } as never,
+      agents as never, { compile: jest.fn().mockResolvedValue({ id: "compiled" }) } as never,
+      { render: jest.fn().mockResolvedValue({ id: "payload" }) } as never, providers as never,
+      pipelines as never, executions as never, {} as never);
+    await service.prepare("workspace", "actor", "agent", "version");
+    expect(providers.prepare).not.toHaveBeenCalled();
+    expect(providers.createSnapshot).not.toHaveBeenCalled();
+    expect(executions.prepare).toHaveBeenCalledWith("workspace", "actor", expect.not.objectContaining({
+      providerRuntimeSnapshotId: expect.anything()
+    }));
+  });
 });

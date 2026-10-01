@@ -39,7 +39,7 @@ async function bootstrap(): Promise<void> {
       .build()
   );
   SwaggerModule.setup("docs", app, document);
-  await app.listen(port, "0.0.0.0");
+  await app.listen(port, config.getOrThrow<string>("OIC_HOST"));
 }
 
 void bootstrap();

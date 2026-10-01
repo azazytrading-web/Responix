@@ -53,6 +53,12 @@ importers:
       '@node-rs/argon2':
         specifier: ^2.0.2
         version: 2.0.2
+      '@oic/client':
+        specifier: workspace:*
+        version: link:../../packages/oic-client
+      '@oic/contracts':
+        specifier: workspace:*
+        version: link:../../packages/oic-contracts
       '@prisma/client':
         specifier: ^6.19.3
         version: 6.19.3(prisma@6.19.3(typescript@5.9.3))(typescript@5.9.3)

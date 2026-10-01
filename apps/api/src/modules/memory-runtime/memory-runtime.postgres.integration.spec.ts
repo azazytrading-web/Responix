@@ -143,7 +143,8 @@ describeDb("Memory runtime PostgreSQL integration", () => {
       invocation as never,
       { cacheMemory: jest.fn(), cacheCompiled: jest.fn().mockResolvedValue({ id: "cache", keyHash: "cache" }),
         cacheImmutable: jest.fn().mockResolvedValue({ id: "cache", keyHash: "cache" }), recordProviderOutcome: jest.fn() } as never,
-      {} as never, memory, { execute: jest.fn() } as never, { execute: jest.fn(), providerContracts: jest.fn() } as never
+      {} as never, memory, { execute: jest.fn() } as never, { execute: jest.fn(), providerContracts: jest.fn() } as never,
+      { invoke: jest.fn() } as never
     );
     await execution.execute(owner.workspaceId, owner.createdById, {
       agentRuntimeSnapshotId: randomUUID(), promptExecutionPayloadId: randomUUID(), providerRuntimeSnapshotId: randomUUID(),

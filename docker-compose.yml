@@ -1,4 +1,20 @@
 services:
+  oic-postgres:
+    image: pgvector/pgvector:pg16
+    container_name: oic-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${OIC_POSTGRES_DB:-oic}
+      POSTGRES_USER: ${OIC_POSTGRES_USER:-oic}
+      POSTGRES_PASSWORD: ${OIC_POSTGRES_PASSWORD:?Set a dedicated OIC database password}
+    volumes:
+      - oic_postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
   postgres:
     image: pgvector/pgvector:pg16
     container_name: responix-postgres
@@ -43,10 +59,15 @@ services:
       - .env
     ports:
       - "4000:4000"
+    environment:
+      API_HOST: 0.0.0.0
+      OIC_BASE_URL: http://oic-api:4100
     depends_on:
       postgres:
         condition: service_healthy
       redis:
+        condition: service_healthy
+      oic-api:
         condition: service_healthy
     healthcheck:
       test:
@@ -58,6 +79,50 @@ services:
       timeout: 10s
       retries: 3
       start_period: 10s
+
+  oic-api:
+    build:
+      context: .
+      dockerfile: apps/oic-api/Dockerfile
+    container_name: oic-api
+    restart: unless-stopped
+    environment:
+      NODE_ENV: ${NODE_ENV:-development}
+      OIC_PORT: 4100
+      OIC_POSTGRES_USER: ${OIC_POSTGRES_USER:-oic}
+      OIC_POSTGRES_PASSWORD: ${OIC_POSTGRES_PASSWORD:?Set a dedicated OIC database password}
+      OIC_POSTGRES_DB: ${OIC_POSTGRES_DB:-oic}
+      OIC_DATABASE_URL: postgresql://${OIC_POSTGRES_USER:-oic}:${OIC_POSTGRES_PASSWORD:?Set a dedicated OIC database password}@oic-postgres:5432/${OIC_POSTGRES_DB:-oic}?schema=public
+    depends_on:
+      oic-migrate:
+        condition: service_completed_successfully
+    expose:
+      - "4100"
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          'node -e "fetch(''http://localhost:4100/api/v1/health/ready'').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"'
+        ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 20s
+
+  oic-migrate:
+    build:
+      context: .
+      dockerfile: apps/oic-api/Dockerfile
+      target: migrate
+    environment:
+      OIC_POSTGRES_USER: ${OIC_POSTGRES_USER:-oic}
+      OIC_POSTGRES_PASSWORD: ${OIC_POSTGRES_PASSWORD:?Set a dedicated OIC database password}
+      OIC_POSTGRES_DB: ${OIC_POSTGRES_DB:-oic}
+      OIC_DATABASE_URL: postgresql://${OIC_POSTGRES_USER:-oic}:${OIC_POSTGRES_PASSWORD:?Set a dedicated OIC database password}@oic-postgres:5432/${OIC_POSTGRES_DB:-oic}?schema=public
+    depends_on:
+      oic-postgres:
+        condition: service_healthy
+    restart: "no"
 
   dashboard:
     build:
@@ -85,4 +150,5 @@ services:
 
 volumes:
   postgres_data:
+  oic_postgres_data:
   redis_data:

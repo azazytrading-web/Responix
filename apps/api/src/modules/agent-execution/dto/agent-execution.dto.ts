@@ -13,8 +13,9 @@ export class PrepareAgentExecutionDto {
   agentRuntimeSnapshotId!: string;
   @ApiProperty({ format: "uuid" }) @IsUUID()
   promptExecutionPayloadId!: string;
-  @ApiProperty({ format: "uuid" }) @IsUUID()
-  providerRuntimeSnapshotId!: string;
+  @ApiPropertyOptional({ format: "uuid", description: "Required for LEGACY Agents; optional for explicitly assigned OIC Agents" })
+  @IsOptional() @IsUUID()
+  providerRuntimeSnapshotId?: string;
   @ApiPropertyOptional({ format: "uuid" }) @IsOptional() @IsUUID()
   conversationRuntimeSnapshotId?: string;
   @ApiProperty({ format: "uuid" }) @IsUUID()

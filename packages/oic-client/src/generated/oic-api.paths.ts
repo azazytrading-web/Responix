@@ -4,6 +4,9 @@ export type OicApiPaths = {
   "/api/v1/admin/applications": {
     "post": { operationId: "FoundationController_createApplication_v1" };
   };
+  "/api/v1/admin/applications/by-key/{key}": {
+    "get": { operationId: "FoundationController_getApplicationByKey_v1" };
+  };
   "/api/v1/admin/applications/{applicationId}": {
     "get": { operationId: "FoundationController_getApplication_v1" };
   };
@@ -36,6 +39,9 @@ export type OicApiPaths = {
   };
   "/api/v1/admin/applications/{applicationId}/tenants": {
     "post": { operationId: "FoundationController_createTenant_v1" };
+  };
+  "/api/v1/admin/applications/{applicationId}/tenants/by-external-reference/{sourceType}/{externalId}": {
+    "get": { operationId: "FoundationController_getTenantByExternalReference_v1" };
   };
   "/api/v1/admin/applications/{applicationId}/tenants/{tenantId}/external-references": {
     "post": { operationId: "FoundationController_createExternalReference_v1" };

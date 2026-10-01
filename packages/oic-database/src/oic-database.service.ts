@@ -1,4 +1,4 @@
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient } from "../generated/oic-client/index.js";
 
 export class OicDatabaseService extends PrismaClient {
   async onModuleDestroy(): Promise<void> {

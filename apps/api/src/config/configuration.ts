@@ -1,6 +1,7 @@
 export function configuration() {
   return {
     api: {
+      host: process.env.API_HOST ?? "0.0.0.0",
       port: Number.parseInt(process.env.API_PORT ?? "4000", 10),
       trustProxy: process.env.TRUST_PROXY === "true",
       compressionEnabled: process.env.COMPRESSION_ENABLED !== "false",
@@ -17,6 +18,13 @@ export function configuration() {
     },
     redis: {
       url: process.env.REDIS_URL
+    },
+    oic: {
+      baseUrl: process.env.OIC_BASE_URL,
+      serviceCredential: process.env.OIC_SERVICE_CREDENTIAL,
+      provisioningCredential: process.env.OIC_PROVISIONING_CREDENTIAL,
+      runtimePrincipalId: process.env.OIC_RUNTIME_PRINCIPAL_ID,
+      timeoutMs: Number.parseInt(process.env.OIC_TIMEOUT_MS ?? "60000", 10)
     },
     storage: {
       r2AccountId: process.env.R2_ACCOUNT_ID,

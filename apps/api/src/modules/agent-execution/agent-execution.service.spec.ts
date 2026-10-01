@@ -1,4 +1,5 @@
 import { ExecutionKernelStatus, ExecutionSourceType } from "@prisma/client";
+import { ServiceUnavailableException } from "@nestjs/common";
 import { AgentExecutionService } from "./agent-execution.service";
 
 describe("AgentExecutionService", () => {
@@ -65,7 +66,8 @@ describe("AgentExecutionService", () => {
       { create: jest.fn(), connect: jest.fn(), start: jest.fn(), append: jest.fn(), complete: jest.fn(), cancel: jest.fn(), fail: jest.fn(), get: jest.fn() } as never,
       memory as never,
       { execute: jest.fn().mockResolvedValue({ documents: [] }) } as never,
-      { execute: jest.fn(), providerContracts: jest.fn().mockResolvedValue([]) } as never
+      { execute: jest.fn(), providerContracts: jest.fn().mockResolvedValue([]) } as never,
+      { invoke: jest.fn() } as never
     );
     return { service, repository, kernel, validator, memory };
   };
@@ -148,6 +150,132 @@ describe("AgentExecutionService", () => {
     expect(invocation.invocations.invoke).toHaveBeenCalledWith(expect.objectContaining({
       requestId: "request", mode: "sync", messages: [{ role: "system", content: "Hello" }]
     }));
+  });
+
+  it("routes an explicitly assigned text Agent through OIC and returns without calling the legacy provider", async () => {
+    const state = setup();
+    const internals = state.service as unknown as {
+      agentRuntime: { getSnapshot: jest.Mock };
+      invocations: { invoke: jest.Mock };
+      promptExecution: { get: jest.Mock };
+      oicRuntime: { invoke: jest.Mock };
+    };
+    internals.agentRuntime.getSnapshot.mockResolvedValue({
+      ...assets.agent,
+      runtimeContext: { traceId: "trace-oic", conversation: { id: "conversation" } },
+      executionConfiguration: { agent: {
+        runtimeConfiguration: { oicIntegration: { executionMode: "OIC", oiModelKey: "oi-support-v1" } },
+        capabilities: { memoryEnabled: false, knowledgeEnabled: false, toolsEnabled: false,
+          visionEnabled: false, voiceEnabled: false, imageEnabled: false }
+      } }
+    });
+    internals.promptExecution.get.mockResolvedValue({
+      compiledPromptId: "compiled", messages: [{ role: "system", content: "Support instructions" }]
+    });
+    internals.oicRuntime.invoke.mockResolvedValue({
+      answer: "OIC response", response: { requestId: "oic-request", traceId: "trace-oic",
+        model: "oi-support-v1", finishReason: "completed", usage: { inputTokens: 12 },
+        execution: { durationMs: 18 } }
+    });
+    await expect(state.service.execute("workspace", "actor", {
+      ...dto, taskType: "completion", userMessage: "Help"
+    })).resolves.toMatchObject({ answer: "OIC response", model: "oi-support-v1", rawUsage: { inputTokens: 12 } });
+    expect(internals.oicRuntime.invoke).toHaveBeenCalledWith(expect.objectContaining({
+      workspaceId: "workspace", oiModelKey: "oi-support-v1", requestId: "request", traceId: "trace-oic",
+      messages: [{ role: "system", content: "Support instructions" }, { role: "user", content: "Help" }]
+    }));
+    expect(internals.invocations.invoke).not.toHaveBeenCalled();
+  });
+
+  it("keeps Memory and Knowledge Responix-owned and excludes them from OIC when disabled", async () => {
+    const state = setup();
+    const internals = state.service as unknown as {
+      agentRuntime: { getSnapshot: jest.Mock }; promptExecution: { get: jest.Mock };
+      memory: { resolve: jest.Mock }; retrievalExecution: { execute: jest.Mock };
+      oicRuntime: { invoke: jest.Mock };
+    };
+    internals.agentRuntime.getSnapshot.mockResolvedValue({ ...assets.agent, runtimeContext: {}, executionConfiguration: { agent: {
+      runtimeConfiguration: { oicIntegration: { executionMode: "OIC", oiModelKey: "oi-support-v1" } },
+      capabilities: { memoryEnabled: false, knowledgeEnabled: false, toolsEnabled: false, visionEnabled: false,
+        voiceEnabled: false, imageEnabled: false, reasoningEnabled: false, streamingEnabled: false }
+    } } });
+    internals.promptExecution.get.mockResolvedValue({ compiledPromptId: "compiled", messages: [{ role: "system", content: "System" }] });
+    internals.oicRuntime.invoke.mockResolvedValue({ answer: "ok", response: {
+      requestId: "oic-request", traceId: "trace", model: "oi-support-v1", execution: {}
+    } });
+    await state.service.execute("workspace", "actor", {
+      ...dto, taskType: "completion", userMessage: "question",
+      memoryRuntimeSnapshotIds: ["66666666-6666-4666-8666-666666666666"],
+      retrievalRuntimeSnapshotId: "88888888-8888-4888-8888-888888888888"
+    });
+    expect(state.memory.resolve).not.toHaveBeenCalled();
+    expect(internals.retrievalExecution.execute).not.toHaveBeenCalled();
+    expect(internals.oicRuntime.invoke).toHaveBeenCalledWith(expect.objectContaining({
+      messages: [{ role: "system", content: "System" }, { role: "user", content: "question" }]
+    }));
+  });
+
+  it("does not resolve or persist a Provider Runtime snapshot for OIC execution", async () => {
+    const state = setup();
+    const internals = state.service as unknown as {
+      agentRuntime: { getSnapshot: jest.Mock };
+      providerRuntime: { getSnapshot: jest.Mock };
+      repository: { persist: jest.Mock };
+    };
+    internals.agentRuntime.getSnapshot.mockResolvedValue({ ...assets.agent,
+      runtimeContext: {}, executionConfiguration: { agent: {
+        runtimeConfiguration: { oicIntegration: { executionMode: "OIC", oiModelKey: "oi-support-v1" } },
+        capabilities: { memoryEnabled: false, knowledgeEnabled: false, toolsEnabled: false,
+          visionEnabled: false, voiceEnabled: false, imageEnabled: false }
+      } }
+    });
+    const oic = state.service as unknown as { oicRuntime: { invoke: jest.Mock } };
+    oic.oicRuntime.invoke.mockResolvedValue({ answer: "ok", response: {
+      requestId: "oic-request", traceId: "trace", model: "oi-support-v1", execution: {}
+    } });
+    await state.service.prepare("workspace", "actor", { ...dto, providerRuntimeSnapshotId: undefined });
+    expect(internals.providerRuntime.getSnapshot).not.toHaveBeenCalled();
+    expect(internals.repository.persist).toHaveBeenCalledWith("workspace", "actor", "request", "run",
+      expect.objectContaining({ providerRuntimeSnapshotId: undefined }), expect.any(Object), []);
+  });
+
+  it("fails an OIC Agent safely during an OIC outage without falling back to the legacy provider", async () => {
+    const state = setup();
+    const internals = state.service as unknown as {
+      agentRuntime: { getSnapshot: jest.Mock };
+      invocations: { invoke: jest.Mock };
+      promptExecution: { get: jest.Mock };
+      oicRuntime: { invoke: jest.Mock };
+    };
+    internals.agentRuntime.getSnapshot.mockResolvedValue({ ...assets.agent, runtimeContext: {}, executionConfiguration: { agent: {
+      runtimeConfiguration: { oicIntegration: { executionMode: "OIC", oiModelKey: "oi-support-v1" } },
+      capabilities: { toolsEnabled: false, visionEnabled: false, voiceEnabled: false, imageEnabled: false,
+        reasoningEnabled: false, streamingEnabled: false }
+    } } });
+    internals.promptExecution.get.mockResolvedValue({ compiledPromptId: "compiled", messages: [{ role: "system", content: "Support" }] });
+    internals.oicRuntime.invoke.mockRejectedValue(new ServiceUnavailableException({
+      code: "OIC_UNAVAILABLE", message: "The intelligence service is temporarily unavailable."
+    }));
+    await expect(state.service.execute("workspace", "actor", { ...dto, taskType: "completion", userMessage: "Help" }))
+      .rejects.toMatchObject({ status: 503, response: { code: "OIC_UNAVAILABLE" } });
+    expect(internals.invocations.invoke).not.toHaveBeenCalled();
+  });
+
+  it("rejects unsupported OIC capabilities before executing product tools", async () => {
+    const state = setup();
+    const internals = state.service as unknown as {
+      agentRuntime: { getSnapshot: jest.Mock };
+      tools: { execute: jest.Mock };
+      oicRuntime: { invoke: jest.Mock };
+    };
+    internals.agentRuntime.getSnapshot.mockResolvedValue({ ...assets.agent, executionConfiguration: { agent: {
+      runtimeConfiguration: { oicIntegration: { executionMode: "OIC", oiModelKey: "oi-support-v1" } },
+      capabilities: { toolsEnabled: true }
+    } } });
+    await expect(state.service.execute("workspace", "actor", { ...dto, taskType: "completion" }))
+      .rejects.toMatchObject({ response: { code: "OIC_CAPABILITY_UNSUPPORTED" } });
+    expect(internals.tools.execute).not.toHaveBeenCalled();
+    expect(internals.oicRuntime.invoke).not.toHaveBeenCalled();
   });
 
   it("injects persisted operational personality into the provider context", async () => {

@@ -11,6 +11,7 @@ import { StreamingRuntimeModule } from "../streaming-runtime/streaming-runtime.m
 import { MemoryRuntimeModule } from "../memory-runtime/memory-runtime.module";
 import { RetrievalExecutionModule } from "../retrieval-execution/retrieval-execution.module";
 import { ToolRuntimeModule } from "../tool-runtime/tool-runtime.module";
+import { OicIntegrationModule } from "../oic-integration/oic-integration.module";
 import { AgentExecutionController, UnifiedAgentExecutionController } from "./agent-execution.controller";
 import { AgentExecutionRepository } from "./agent-execution.repository";
 import { AgentExecutionService } from "./agent-execution.service";
@@ -21,7 +22,7 @@ import { AgentExecutionValidator } from "./agent-execution.validator";
     ExecutionKernelModule, AgentRuntimeModule, PromptExecutionModule,
     ProviderRuntimeModule, ConversationRuntimeModule, ExecutionPipelineModule,
     AiModule, RuntimeOptimizationModule, StreamingRuntimeModule,
-    MemoryRuntimeModule, RetrievalExecutionModule, forwardRef(() => ToolRuntimeModule)
+    MemoryRuntimeModule, RetrievalExecutionModule, OicIntegrationModule, forwardRef(() => ToolRuntimeModule)
   ],
   controllers: [AgentExecutionController, UnifiedAgentExecutionController],
   providers: [AgentExecutionValidator, AgentExecutionRepository, AgentExecutionService],

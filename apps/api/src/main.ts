@@ -15,6 +15,7 @@ async function bootstrap(): Promise<void> {
   });
   const configService = app.get(ConfigService);
   const logger = app.get(Logger);
+  const host = configService.getOrThrow<string>("api.host");
   const port = configService.getOrThrow<number>("api.port");
   const trustProxy = configService.getOrThrow<boolean>("api.trustProxy");
   const compressionEnabled = configService.getOrThrow<boolean>("api.compressionEnabled");
@@ -70,8 +71,8 @@ async function bootstrap(): Promise<void> {
   );
   SwaggerModule.setup("docs", app, document);
 
-  await app.listen(port);
-  logger.log(`API listening on port ${port}`);
+  await app.listen(port, host);
+  logger.log(`API listening on ${host}:${port}`);
 }
 
 void bootstrap();

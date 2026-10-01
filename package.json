@@ -10,6 +10,8 @@
   "scripts": {
     "build": "turbo run build --concurrency=1",
     "dev": "turbo run dev --parallel",
+    "platform:dev": "node scripts/platform-dev.mjs",
+    "platform:down": "docker compose down",
     "lint": "pnpm -r --workspace-concurrency=1 --if-present run lint",
     "format": "prettier --check .",
     "format:write": "prettier --write .",

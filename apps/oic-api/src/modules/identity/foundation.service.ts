@@ -40,7 +40,14 @@ export class FoundationService {
     this.requireApp(actor, tenant.applicationId);
     if (!actor.scopes.includes("oic:foundation:admin") && !actor.tenantIds.includes(tenant.id)) throw new NotFoundException();
     return { id: tenant.id, applicationId: tenant.applicationId };
-  }  private audit(tx: Prisma.TransactionClient, actor: AuthenticatedPrincipal, action: string, targetType: string, targetId: string, applicationId: string | null, tenantId: string | null, request: AuditContext, metadata: Prisma.InputJsonObject = {}) {
+  }
+  private async requireManagedTenant(actor: AuthenticatedPrincipal, tenantId: string): Promise<{ id: string; applicationId: string }> {
+    const tenant = await this.db.oicTenant.findUnique({ where: { id: tenantId }, select: { id: true, applicationId: true, status: true } });
+    if (!tenant || tenant.status !== "ACTIVE") throw new NotFoundException();
+    this.requireApp(actor, tenant.applicationId);
+    return { id: tenant.id, applicationId: tenant.applicationId };
+  }
+  private audit(tx: Prisma.TransactionClient, actor: AuthenticatedPrincipal, action: string, targetType: string, targetId: string, applicationId: string | null, tenantId: string | null, request: AuditContext, metadata: Prisma.InputJsonObject = {}) {
     const ids = safeMeta(request);
     return this.auditWriter.write(tx, {
       actorPrincipalId: actor.id, applicationId, tenantId, action, targetType, targetId,
@@ -95,6 +102,12 @@ export class FoundationService {
     if (!value) throw new NotFoundException();
     return value;
   }
+  async getApplicationByKey(actor: AuthenticatedPrincipal, key: string) {
+    const value = await this.db.oicApplication.findFirst({ where: { key, status: "ACTIVE" } });
+    if (!value) throw new NotFoundException();
+    this.requireApp(actor, value.id);
+    return value;
+  }
   async createTenant(actor: AuthenticatedPrincipal, applicationId: string, input: { key?: string; displayName: string }, key: string, request: AuditContext) {
     this.requireApp(actor, applicationId);
     const application = await this.db.oicApplication.findFirst({ where: { id: applicationId, status: "ACTIVE" }, select: { id: true } });
@@ -110,9 +123,22 @@ export class FoundationService {
     await this.requireTenant(actor, id);
     return this.db.oicTenant.findUniqueOrThrow({ where: { id }, include: { references: { where: { revokedAt: null }, select: { id: true, sourceType: true, externalId: true, createdAt: true } } } });
   }
+  async getTenantByExternalReference(actor: AuthenticatedPrincipal, applicationId: string, sourceType: string, externalId: string) {
+    this.requireApp(actor, applicationId);
+    const reference = await this.db.oicTenantExternalReference.findFirst({
+      where: { applicationId, sourceType, externalId, revokedAt: null, tenant: { status: "ACTIVE" } },
+      select: { tenantId: true }
+    });
+    if (!reference) throw new NotFoundException();
+    if (!actor.scopes.includes("oic:foundation:admin") && !actor.scopes.includes("oic:tenants:manage") && !actor.tenantIds.includes(reference.tenantId)) throw new NotFoundException();
+    if (actor.scopes.includes("oic:tenants:manage")) {
+      return this.db.oicTenant.findFirstOrThrow({ where: { id: reference.tenantId, applicationId, status: "ACTIVE" }, include: { references: { where: { revokedAt: null }, select: { id: true, sourceType: true, externalId: true, createdAt: true } } } });
+    }
+    return this.getTenant(actor, reference.tenantId);
+  }
   async createExternalReference(actor: AuthenticatedPrincipal, applicationId: string, tenantId: string, input: { sourceType: string; externalId: string }, key: string, request: AuditContext) {
     this.requireApp(actor, applicationId);
-    const tenant = await this.requireTenant(actor, tenantId);
+    const tenant = await this.requireManagedTenant(actor, tenantId);
     if (tenant.applicationId !== applicationId) throw new NotFoundException();
     return this.idempotent(actor, "oic:tenants:manage", "tenant.external-reference.create", key, { applicationId, tenantId, ...input },
       async (tx) => {
@@ -157,7 +183,7 @@ export class FoundationService {
   async grantTenant(actor: AuthenticatedPrincipal, applicationId: string, principalId: string, tenantId: string, key: string, request: AuditContext) {
     this.requireApp(actor, applicationId);
     if (!actor.scopes.includes("oic:foundation:admin") && !actor.scopes.includes("oic:tenants:manage")) throw new ForbiddenException();
-    const targetTenant = await this.requireTenant(actor, tenantId);
+    const targetTenant = await this.requireManagedTenant(actor, tenantId);
     if (targetTenant.applicationId !== applicationId) throw new NotFoundException();
     const [principal, tenant] = await Promise.all([
       this.db.oicServicePrincipal.findFirst({ where: { id: principalId, applicationId }, select: { id: true } }),
@@ -242,8 +268,8 @@ export class FoundationService {
     this.requireApp(actor, applicationId);
     const reference = await this.db.oicTenantExternalReference.findFirst({ where: { id: referenceId, applicationId }, select: { id: true, tenantId: true, sourceType: true, revokedAt: true } });
     if (!reference || !reference.revokedAt) throw new NotFoundException();
-    await this.requireTenant(actor, reference.tenantId);
-    const destination = await this.requireTenant(actor, tenantId);
+    await this.requireManagedTenant(actor, reference.tenantId);
+    const destination = await this.requireManagedTenant(actor, tenantId);
     if (destination.applicationId !== applicationId) throw new NotFoundException();
     return this.idempotent(actor, "oic:tenants:manage", "tenant.external-reference.remap", key, { applicationId, referenceId, tenantId },
       async (tx) => {
@@ -259,7 +285,7 @@ export class FoundationService {
     this.requireApp(actor, applicationId);
     const reference = await this.db.oicTenantExternalReference.findFirst({ where: { id: referenceId, applicationId }, select: { id: true, tenantId: true, revokedAt: true } });
     if (!reference) throw new NotFoundException();
-    await this.requireTenant(actor, reference.tenantId);
+    await this.requireManagedTenant(actor, reference.tenantId);
     if (reference.revokedAt) return { revoked: true };
     await this.db.$transaction(async (tx) => {
       await tx.oicTenantExternalReference.update({ where: { id: reference.id }, data: { revokedAt: new Date() } });

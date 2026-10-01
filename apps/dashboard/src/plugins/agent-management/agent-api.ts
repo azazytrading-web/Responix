@@ -26,8 +26,10 @@ export interface AgentCapabilities {
 }
 
 export interface AgentConfiguration {
-  providerId: string;
-  modelId: string;
+  executionMode?: "LEGACY" | "OIC";
+  oiModelKey?: string;
+  providerId?: string;
+  modelId?: string;
   providerConfigurationId?: string;
   runtimeConfiguration?: {
     executionPipelineId?: string;
@@ -77,9 +79,10 @@ export interface AgentRecord {
   category: string | null;
   status: AgentStatus;
   visibility: AgentVisibility;
-  providerId: string;
-  modelId: string;
+  providerId: string | null;
+  modelId: string | null;
   runtimeConfiguration: {
+    oicIntegration?: { executionMode?: "LEGACY" | "OIC"; oiModelKey?: string };
     executionPipelineId?: string;
     executionProfileId?: string;
     personality?: OperationalPersonality;
@@ -141,6 +144,10 @@ export function listExecutionProfiles(): Promise<RuntimeOptionPage> {
   return apiClient.get<RuntimeOptionPage>("/api/v1/runtime-orchestration/profiles", {
     ...config, query: { page: 1, limit: 100, status: "PUBLISHED" }
   });
+}
+
+export function listOiModels(): Promise<Array<{ id: string; object: "model"; owned_by: "oi" }>> {
+  return apiClient.get<Array<{ id: string; object: "model"; owned_by: "oi" }>>("/api/v1/internal/oic/models", config);
 }
 
 export function listAgents(page: number, search?: string, status?: AgentStatus): Promise<AgentPage> {

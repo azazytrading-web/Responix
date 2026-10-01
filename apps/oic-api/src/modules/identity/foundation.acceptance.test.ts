@@ -113,6 +113,16 @@ void test("OIC Foundation database acceptance suite", { skip: !hasDedicatedDatab
       await assert.rejects(service.getTenant(reader, foreignTenant.id));
       await assert.rejects(service.getApplication(reader, otherApp.id));
 
+      const managerPrincipal = await db.oicServicePrincipal.create({ data: { applicationId: app.id, key: `m${suffix}`, displayName: "Tenant manager" } });
+      const manager: AuthenticatedPrincipal = { id: managerPrincipal.id, applicationId: app.id, scopes: ["oic:applications:read", "oic:tenants:read", "oic:tenants:manage"], tenantIds: [] };
+      const managedTenant = await db.oicTenant.create({ data: { applicationId: app.id, key: `m${suffix}`, displayName: "Newly provisioned tenant" } });
+      const managedReference = { sourceType: "acceptance", externalId: `managed-${suffix}` };
+      await service.createExternalReference(manager, app.id, managedTenant.id, managedReference, `managed-ext-${suffix}`, {});
+      assert.equal((await service.getTenantByExternalReference(manager, app.id, managedReference.sourceType, managedReference.externalId)).id, managedTenant.id);
+      await assert.rejects(service.getTenant(manager, managedTenant.id));
+      await service.grantTenant(manager, app.id, managerPrincipal.id, managedTenant.id, `managed-grant-${suffix}`, {});
+      assert.equal((await db.oicPrincipalTenantGrant.findUniqueOrThrow({ where: { principalId_tenantId: { principalId: managerPrincipal.id, tenantId: managedTenant.id } } })).revokedAt, null);
+
       const extInput = { sourceType: "acceptance", externalId: `opaque-${suffix}` };
       await service.createExternalReference(actor, app.id, tenantA.id, extInput, `ext-${suffix}`, {});
       await assert.rejects(service.createExternalReference(actor, app.id, tenantB.id, extInput, `extdup-${suffix}`, {}));

@@ -31,9 +31,9 @@ const json = (value: unknown): Prisma.InputJsonValue => value as Prisma.InputJso
 type ResolvedRuntime = {
   agentId: string;
   agentVersionId: string;
-  providerId: string;
-  modelId: string;
-  providerConfigurationId: string;
+  providerId: string | null;
+  modelId: string | null;
+  providerConfigurationId: string | null;
   executionProfileId: string;
   executionProfileVersionId: string;
   executionRequestId: string;
@@ -341,30 +341,51 @@ export class AgentRuntimeRepository {
     if (!agentVersion) this.fail("AGENT_VERSION_MISSING", "agentVersionId", "Published agent version was not found");
     const agentSnapshot = this.agentSnapshot(agentVersion.snapshot);
 
+    const runtimeConfiguration = this.record(agentSnapshot.runtimeConfiguration);
+    const oicIntegration = this.record(runtimeConfiguration.oicIntegration);
+    const oicMode = oicIntegration.executionMode === "OIC";
     const providerConfigId = this.string(agentSnapshot.providerConfigurationId);
-    if (!providerConfigId) {
-      this.fail("PROVIDER_CONFIGURATION_MISSING", "agentVersion.providerConfigurationId", "Published agent must select a workspace provider configuration");
+    let providerId = this.string(agentSnapshot.providerId);
+    let modelId = this.string(agentSnapshot.modelId);
+    if (oicMode) {
+      const key = oicIntegration.oiModelKey;
+      if (typeof key !== "string" || !/^oi-[a-zA-Z0-9._:-]{1,120}$/.test(key)) {
+        this.fail("OIC_MODEL_REQUIRED", "agentVersion.runtimeConfiguration.oicIntegration.oiModelKey", "OIC execution requires a valid Oi Model identity");
+      }
+      if (providerId || modelId || providerConfigId) {
+        this.fail("OIC_LEGACY_ASSET_CONFLICT", "agentVersion", "OIC execution cannot bind Responix provider or model assets");
+      }
+      const capabilities = this.record(agentSnapshot.capabilities);
+      if (capabilities.toolsEnabled || capabilities.visionEnabled || capabilities.voiceEnabled ||
+        capabilities.imageEnabled || capabilities.reasoningEnabled || agentSnapshot.streamingEnabled) {
+        this.fail("OIC_CAPABILITY_UNSUPPORTED", "agentVersion.capabilities", "OIC execution currently supports text-only non-streaming Agents");
+      }
+    } else {
+      if (typeof oicIntegration.oiModelKey === "string") {
+        this.fail("OIC_LEGACY_ASSET_CONFLICT", "agentVersion.runtimeConfiguration.oicIntegration.oiModelKey", "LEGACY execution cannot retain an Oi Model assignment");
+      }
+      if (!providerConfigId) this.fail("PROVIDER_CONFIGURATION_MISSING", "agentVersion.providerConfigurationId", "LEGACY Agent must select a workspace provider configuration");
+      if (!providerId) this.fail("PROVIDER_REQUIRED", "agentVersion.providerId", "LEGACY Agent requires a provider");
+      if (!modelId) this.fail("MODEL_REQUIRED", "agentVersion.modelId", "LEGACY Agent requires a model");
     }
-    const providerId = this.requiredString(agentSnapshot.providerId, "agentVersion.providerId");
-    const modelId = this.requiredString(agentSnapshot.modelId, "agentVersion.modelId");
-    const providerConfiguration = await tx.aiProviderConfiguration.findFirst({
+    const providerConfiguration = oicMode ? null : await tx.aiProviderConfiguration.findFirst({
       where: {
-        id: providerConfigId,
+        id: providerConfigId!,
         workspaceId,
-        providerId,
+        providerId: providerId!,
         enabled: true,
         deletedAt: null
       },
       select: { id: true, settings: true }
     });
-    if (!providerConfiguration) {
+    if (!oicMode && !providerConfiguration) {
       this.fail("PROVIDER_CONFIGURATION_INVALID", "agentVersion.providerConfigurationId", "Provider configuration is disabled, deleted, or belongs to another workspace");
     }
-    const model = await tx.aiModel.findFirst({
+    const model = oicMode ? null : await tx.aiModel.findFirst({
       where: {
-        id: modelId,
+        id: modelId!,
         source: "BUILT_IN", ownerWorkspaceId: null,
-        providerId,
+        providerId: providerId!,
         status: "ACTIVE",
         provider: { status: "ACTIVE" }
       },
@@ -378,8 +399,8 @@ export class AgentRuntimeRepository {
         supportsStreaming: true
       }
     });
-    if (!model) this.fail("MODEL_NOT_READY", "agentVersion.modelId", "Provider and model must be active");
-    this.assertAgentConfiguration(agentSnapshot, model);
+    if (!oicMode && !model) this.fail("MODEL_NOT_READY", "agentVersion.modelId", "Provider and model must be active");
+    if (model) this.assertAgentConfiguration(agentSnapshot, model);
 
     const profile = await tx.executionProfile.findFirst({
       where: {
@@ -456,11 +477,11 @@ export class AgentRuntimeRepository {
         fallbackStrategy: this.record(agentSnapshot.fallbackStrategy),
         capabilities: this.record(agentSnapshot.capabilities)
       },
-      provider: {
+      provider: oicMode ? null : {
         providerId,
         modelId,
         providerConfigurationId: providerConfigId,
-        settings: providerConfiguration.settings,
+        settings: providerConfiguration?.settings,
         providerConfiguration: this.record(agentSnapshot.providerConfiguration),
         modelConfiguration: this.record(agentSnapshot.modelConfiguration)
       },
@@ -474,8 +495,8 @@ export class AgentRuntimeRepository {
     return {
       agentId: agent.id,
       agentVersionId: agentVersion.id,
-      providerId,
-      modelId,
+      providerId: oicMode ? null : providerId,
+      modelId: oicMode ? null : modelId,
       providerConfigurationId: providerConfigId,
       executionProfileId: profile.id,
       executionProfileVersionId: profileVersion.id,

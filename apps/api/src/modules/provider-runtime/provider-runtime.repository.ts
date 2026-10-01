@@ -299,6 +299,10 @@ export class ProviderRuntimeRepository {
     });
     if (!runtime) this.sourceError("RUNTIME_SNAPSHOT_NOT_FOUND", "agentRuntimeSnapshotId",
       "Agent Runtime snapshot was not found in the active workspace");
+    if (!runtime.providerId || !runtime.providerConfigurationId || !runtime.modelId) {
+      this.sourceError("PROVIDER_RUNTIME_NOT_READY", "agentRuntimeSnapshotId",
+        "Provider Runtime snapshot is missing its legacy provider or model selection");
+    }
 
     const compiled = await tx.compiledPrompt.findFirst({
       where: { id: dto.compiledPromptId, workspaceId },
@@ -400,6 +404,9 @@ export class ProviderRuntimeRepository {
       "Enabled workspace provider configuration is required");
     if (!provider) this.sourceError("PROVIDER_NOT_READY", "provider", "Provider must be active");
     if (!model) this.sourceError("MODEL_NOT_READY", "model", "Model must be active and belong to the provider");
+    const contextWindow = model.contextWindow;
+    if (contextWindow === null) this.sourceError("MODEL_NOT_READY", "model",
+      "Model must have a configured context window");
     if (!executionProfile || !executionProfileVersion) {
       this.sourceError("EXECUTION_PROFILE_NOT_READY", "executionProfile",
         "Published execution profile and immutable version are required");
@@ -435,7 +442,7 @@ export class ProviderRuntimeRepository {
       this.firstString(settings, ["providerVersion", "version"]) ?? "1";
     const modelVersion = dto.modelVersion ??
       this.firstString(modelConfiguration, ["modelVersion", "version"]) ?? model.modelName;
-    const capabilities = this.capabilities(model, settings, modelConfiguration);
+    const capabilities = this.capabilities({ ...model, contextWindow }, settings, modelConfiguration);
     const validation = this.validator.validate({
       options: dto,
       capabilities,

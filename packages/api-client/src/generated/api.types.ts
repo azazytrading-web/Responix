@@ -3096,6 +3096,22 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/internal/oic/models": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["OicCatalogController_models_v1"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/tool-runtime/executions": {
         parameters: {
             query?: never;
@@ -5707,10 +5723,23 @@ export interface components {
             backoffMultiplier?: number;
         };
         AgentConfigurationDto: {
-            /** Format: uuid */
-            providerId: string;
-            /** Format: uuid */
-            modelId: string;
+            /**
+             * @description Selects the Responix legacy runtime or OIC Native Runtime; omitted means LEGACY
+             * @enum {string}
+             */
+            executionMode?: "LEGACY" | "OIC";
+            /** @description Stable Oi Model identity; required when executionMode is OIC */
+            oiModelKey?: string;
+            /**
+             * Format: uuid
+             * @description Required in LEGACY mode; omitted for OIC mode
+             */
+            providerId?: string;
+            /**
+             * Format: uuid
+             * @description Required in LEGACY mode; omitted for OIC mode
+             */
+            modelId?: string;
             /** Format: uuid */
             providerConfigurationId?: string;
             providerConfiguration?: {
@@ -6244,8 +6273,11 @@ export interface components {
             agentRuntimeSnapshotId: string;
             /** Format: uuid */
             promptExecutionPayloadId: string;
-            /** Format: uuid */
-            providerRuntimeSnapshotId: string;
+            /**
+             * Format: uuid
+             * @description Required for LEGACY Agents; optional for explicitly assigned OIC Agents
+             */
+            providerRuntimeSnapshotId?: string;
             /** Format: uuid */
             conversationRuntimeSnapshotId?: string;
             /** Format: uuid */
@@ -6304,8 +6336,11 @@ export interface components {
             agentRuntimeSnapshotId: string;
             /** Format: uuid */
             promptExecutionPayloadId: string;
-            /** Format: uuid */
-            providerRuntimeSnapshotId: string;
+            /**
+             * Format: uuid
+             * @description Required for LEGACY Agents; optional for explicitly assigned OIC Agents
+             */
+            providerRuntimeSnapshotId?: string;
             /** Format: uuid */
             conversationRuntimeSnapshotId?: string;
             /** Format: uuid */
@@ -6346,8 +6381,11 @@ export interface components {
             agentRuntimeSnapshotId: string;
             /** Format: uuid */
             promptExecutionPayloadId: string;
-            /** Format: uuid */
-            providerRuntimeSnapshotId: string;
+            /**
+             * Format: uuid
+             * @description Required for LEGACY Agents; optional for explicitly assigned OIC Agents
+             */
+            providerRuntimeSnapshotId?: string;
             /** Format: uuid */
             conversationRuntimeSnapshotId?: string;
             /** Format: uuid */
@@ -6576,6 +6614,7 @@ export interface components {
         InvalidateOptimizationPackageDto: {
             reason: string;
         };
+        Function: Record<string, never>;
         MemoryReferenceDto: {
             referenceKey: string;
             /** Format: uuid */
@@ -14121,7 +14160,11 @@ export interface operations {
             path?: never;
             cookie?: never;
         };
-        requestBody?: never;
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["Function"];
+            };
+        };
         responses: {
             201: {
                 headers: {
@@ -14147,7 +14190,11 @@ export interface operations {
             };
             cookie?: never;
         };
-        requestBody?: never;
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["Function"];
+            };
+        };
         responses: {
             201: {
                 headers: {
@@ -14275,7 +14322,11 @@ export interface operations {
             path?: never;
             cookie?: never;
         };
-        requestBody?: never;
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["Function"];
+            };
+        };
         responses: {
             201: {
                 headers: {
@@ -15003,6 +15054,38 @@ export interface operations {
             };
             /** @description Retrieval dependency was not found in the active workspace */
             404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    OicCatalogController_models_v1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Oi Model references visible to the Responix OIC runtime principal */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description A valid workspace-bound internal operator token is required */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description The internal OIC catalog permission is required */
+            403: {
                 headers: {
                     [name: string]: unknown;
                 };

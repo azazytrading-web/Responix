@@ -47,8 +47,7 @@ export class AgentExecutionRepository {
         },
         dependencies: [
           ["agentRuntime", "promptExecution"],
-          ["promptExecution", "providerRuntime"],
-          ["executionPipeline", "providerRuntime"]
+          ...(dto.providerRuntimeSnapshotId ? [["promptExecution", "providerRuntime"]] : [])
         ],
         hashes: {
           agent: assets.agent.contentHash ?? null,
@@ -67,7 +66,7 @@ export class AgentExecutionRepository {
           workspaceId, createdById: actorId, executionRequestId: requestId,
           executionRunId: runId, agentRuntimeSnapshotId: dto.agentRuntimeSnapshotId,
           promptExecutionPayloadId: dto.promptExecutionPayloadId,
-          providerRuntimeSnapshotId: dto.providerRuntimeSnapshotId,
+          providerRuntimeSnapshotId: dto.providerRuntimeSnapshotId ?? null,
           conversationRuntimeSnapshotId: dto.conversationRuntimeSnapshotId,
           executionPipelineSnapshotId: dto.executionPipelineSnapshotId,
           status, correlationId: dto.correlationId, orchestrationPlan: json(plan),

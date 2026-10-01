@@ -10,6 +10,7 @@ const environmentSchema = z.object({
     "production",
     "disaster-recovery"
   ]),
+  API_HOST: z.string().ip({ version: "v4" }).default("0.0.0.0"),
   API_PORT: z.coerce.number().int().positive().default(4000),
   DASHBOARD_URL: z.string().url(),
   TRUST_PROXY: z.enum(["true", "false"]).default("false"),
@@ -69,8 +70,25 @@ const environmentSchema = z.object({
   AI_PROVIDER_CONNECTION_TIMEOUT_MS: z.coerce.number().int().positive().default(5000),
   AI_PROVIDER_READ_TIMEOUT_MS: z.coerce.number().int().positive().default(15000),
   AI_PROVIDER_MAX_RESPONSE_BYTES: z.coerce.number().int().positive().default(1048576),
+  OIC_BASE_URL: z.string().url().optional(),
+  OIC_SERVICE_CREDENTIAL: z.string().min(1).max(256).optional(),
+  OIC_PROVISIONING_CREDENTIAL: z.string().min(1).max(256).optional(),
+  OIC_RUNTIME_PRINCIPAL_ID: z.string().uuid().optional(),
+  OIC_TIMEOUT_MS: z.coerce.number().int().min(1000).max(120000).default(60000),
   OTEL_SERVICE_NAME: z.string().min(1).default("responix-api"),
   LOG_LEVEL: z.enum(["fatal", "error", "warn", "info", "debug", "trace", "silent"]).default("info")
+}).superRefine((value, context) => {
+  if (Boolean(value.OIC_BASE_URL) !== Boolean(value.OIC_SERVICE_CREDENTIAL)) {
+    context.addIssue({ code: "custom", path: ["OIC_SERVICE_CREDENTIAL"],
+      message: "OIC_BASE_URL and OIC_SERVICE_CREDENTIAL must be configured together" });
+  }
+  if (value.OIC_PROVISIONING_CREDENTIAL && !value.OIC_BASE_URL) {
+    context.addIssue({ code: "custom", path: ["OIC_PROVISIONING_CREDENTIAL"],
+      message: "OIC_BASE_URL and OIC_PROVISIONING_CREDENTIAL must be configured together" });
+  }
+  if (value.OIC_RUNTIME_PRINCIPAL_ID && !value.OIC_PROVISIONING_CREDENTIAL) {
+    context.addIssue({ code: "custom", path: ["OIC_RUNTIME_PRINCIPAL_ID"], message: "OIC_RUNTIME_PRINCIPAL_ID requires OIC_PROVISIONING_CREDENTIAL" });
+  }
 });
 
 export function validateEnvironment(config: Record<string, unknown>) {

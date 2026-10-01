@@ -69,7 +69,13 @@ export class AgentPublishRuntimeService {
       agentRuntimeSnapshotId: agentSnapshot.id,
       executionRequestId: request.id
     });
-    const providerRequest = await this.providers.prepare(workspaceId, actorId, {
+    const pipelineSource = await this.pipelines.get(workspaceId, source.pipelineId);
+    const plan = record(pipelineSource.plan);
+    if (source.executionMode === "OIC" && Array.isArray(plan.nodes) && plan.nodes.some((raw) =>
+      record(raw).assetType === PipelineAssetType.PROVIDER_RUNTIME)) {
+      throw new BadRequestException("OIC execution pipelines cannot require a Provider Runtime asset");
+    }
+    const providerRequest = source.executionMode === "OIC" ? null : await this.providers.prepare(workspaceId, actorId, {
       compiledPromptId: compiled.id,
       agentRuntimeSnapshotId: agentSnapshot.id,
       estimatedInputTokens: 0,
@@ -83,19 +89,17 @@ export class AgentPublishRuntimeService {
       streaming: source.streamingEnabled,
       reasoning: source.reasoningEnabled === true
     });
-    const providerSnapshot = await this.providers.createSnapshot(
+    const providerSnapshot = providerRequest ? await this.providers.createSnapshot(
       workspaceId, actorId, providerRequest.id
-    );
+    ) : null;
 
-    const pipelineSource = await this.pipelines.get(workspaceId, source.pipelineId);
-    const plan = record(pipelineSource.plan);
     const nodes = Array.isArray(plan.nodes) ? plan.nodes.map((raw) => {
       const node = record(raw);
       const replacements: Partial<Record<PipelineAssetType, string>> = {
         [PipelineAssetType.EXECUTION_REQUEST]: request.id,
         [PipelineAssetType.AGENT_RUNTIME]: agentSnapshot.id,
         [PipelineAssetType.COMPILED_PROMPT]: compiled.id,
-        [PipelineAssetType.PROVIDER_RUNTIME]: providerSnapshot.id,
+        ...(providerSnapshot ? { [PipelineAssetType.PROVIDER_RUNTIME]: providerSnapshot.id } : {}),
         [PipelineAssetType.EXECUTION_PROFILE]: source.profileVersionId
       };
       const assetType = node.assetType as PipelineAssetType | undefined;
@@ -112,14 +116,14 @@ export class AgentPublishRuntimeService {
     const promptPayload = await this.prompts.render(workspaceId, actorId, {
       compiledPromptId: compiled.id,
       agentRuntimeSnapshotId: agentSnapshot.id,
-      providerRuntimeSnapshotId: providerSnapshot.id,
+      ...(providerSnapshot ? { providerRuntimeSnapshotId: providerSnapshot.id } : {}),
       executionPipelineSnapshotId: pipelineSnapshot.id,
       executionRequestId: request.id
     });
     const orchestration = await this.executions.prepare(workspaceId, actorId, {
       agentRuntimeSnapshotId: agentSnapshot.id,
       promptExecutionPayloadId: promptPayload.id,
-      providerRuntimeSnapshotId: providerSnapshot.id,
+      providerRuntimeSnapshotId: providerSnapshot?.id,
       executionPipelineSnapshotId: pipelineSnapshot.id,
       ...(memorySnapshotIds.length ? {
         memoryRuntimeSnapshotIds: memorySnapshotIds,
@@ -147,6 +151,7 @@ export class AgentPublishRuntimeService {
     if (!version) throw new BadRequestException("Published agent version was not found");
     const snapshot = record(version.snapshot);
     const runtime = record(snapshot.runtimeConfiguration);
+    const oicIntegration = record(runtime.oicIntegration);
     const pipelineId = runtime.executionPipelineId;
     if (typeof pipelineId !== "string") {
       throw new BadRequestException("A published execution pipeline must be selected before publishing the Agent");
@@ -210,6 +215,8 @@ export class AgentPublishRuntimeService {
     }
     return {
       profileId: profile.id, profileVersionId: profile.versions[0].id, pipelineId,
+      executionMode: oicIntegration.executionMode === "OIC" ? "OIC" : "LEGACY",
+      oiModelKey: typeof oicIntegration.oiModelKey === "string" ? oicIntegration.oiModelKey : undefined,
       promptId: primary.promptId, promptVersionId: promptVersion.id,
       promptSections: resolvedPromptSections,
       maxTokens: Number(snapshot.maxTokens), temperature: Number(snapshot.temperature),

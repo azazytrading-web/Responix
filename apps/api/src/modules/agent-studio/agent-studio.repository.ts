@@ -44,8 +44,8 @@ type AgentSnapshot = {
   colorMetadata: JsonRecord;
   iconMetadata: JsonRecord;
   visibility: AgentVisibility;
-  providerId: string;
-  modelId: string;
+  providerId: string | null;
+  modelId: string | null;
   providerConfigurationId: string | null;
   providerConfiguration: JsonRecord;
   modelConfiguration: JsonRecord;
@@ -134,6 +134,9 @@ export class AgentStudioRepository {
             // architecture; the user can enable it from Agent Studio.
             runtimeConfiguration: json({
               ...record(input.configuration.runtimeConfiguration),
+              ...(input.configuration.executionMode === "OIC" ? { oicIntegration: {
+                executionMode: "OIC", oiModelKey: input.configuration.oiModelKey
+              } } : { oicIntegration: { executionMode: "LEGACY" } }),
               conversationHistory: input.conversationHistory ?? { enabled: false }
             }),
             ...this.capabilityData(input.capabilities),
@@ -171,8 +174,56 @@ export class AgentStudioRepository {
       this.prisma.$transaction(async (tx) => {
         const current = await this.requireAgent(tx, input.workspaceId, input.agentId);
         this.assertDraft(current.status);
+        let legacyRollbackForWrite: JsonRecord | undefined;
+        let restoredLegacyConfigurationForWrite: JsonRecord | undefined;
         if (input.draft.configuration) {
-          await this.validateConfiguration(
+          const nextMode = input.draft.configuration.executionMode ?? "LEGACY";
+          const currentMode = record(record(current.runtimeConfiguration).oicIntegration).executionMode;
+          let runtimeConfiguration = record(input.draft.configuration.runtimeConfiguration);
+          let legacyRollback: JsonRecord | undefined;
+          if (nextMode === "OIC" && currentMode !== "OIC") {
+            const capabilities = input.draft.capabilities;
+            if (current.toolsEnabled || current.visionEnabled || current.voiceEnabled || current.imageEnabled ||
+              current.reasoningEnabled || current.streamingEnabled || capabilities?.toolsEnabled ||
+              capabilities?.visionEnabled || capabilities?.voiceEnabled || capabilities?.imageEnabled ||
+              capabilities?.reasoningEnabled || capabilities?.streamingEnabled || input.draft.configuration.streaming) {
+              throw new BadRequestException("The Agent requires capabilities unavailable in the selected OIC execution path");
+            }
+            legacyRollback = {
+                providerId: current.providerId,
+                modelId: current.modelId,
+                providerConfigurationId: current.providerConfigurationId,
+                providerConfiguration: record(current.providerConfiguration),
+                modelConfiguration: record(current.modelConfiguration)
+            };
+            legacyRollbackForWrite = legacyRollback;
+            runtimeConfiguration = { ...runtimeConfiguration, oicIntegration: {
+              executionMode: "OIC", oiModelKey: input.draft.configuration.oiModelKey, legacyRollback
+            } };
+            input.draft.configuration.providerId = undefined;
+            input.draft.configuration.modelId = undefined;
+            input.draft.configuration.providerConfigurationId = undefined;
+            input.draft.configuration.providerConfiguration = {};
+            input.draft.configuration.modelConfiguration = {};
+            input.draft.configuration.runtimeConfiguration = runtimeConfiguration;
+          } else if (nextMode === "LEGACY" && currentMode === "OIC") {
+            const rollback = record(record(record(current.runtimeConfiguration).oicIntegration).legacyRollback);
+            restoredLegacyConfigurationForWrite = rollback;
+            input.draft.configuration.providerId = typeof rollback.providerId === "string" ? rollback.providerId : undefined;
+            input.draft.configuration.modelId = typeof rollback.modelId === "string" ? rollback.modelId : undefined;
+            input.draft.configuration.providerConfigurationId = typeof rollback.providerConfigurationId === "string" ? rollback.providerConfigurationId : undefined;
+            input.draft.configuration.providerConfiguration = {};
+            input.draft.configuration.modelConfiguration = {};
+            input.draft.configuration.runtimeConfiguration = { ...runtimeConfiguration, oicIntegration: { executionMode: "LEGACY" } };
+          }
+          const restoringLegacy = nextMode === "LEGACY" && currentMode === "OIC";
+          if (restoringLegacy) {
+            const capabilities = input.draft.capabilities;
+            if (capabilities?.toolsEnabled || capabilities?.visionEnabled || capabilities?.voiceEnabled ||
+              capabilities?.imageEnabled || capabilities?.reasoningEnabled || input.draft.configuration.streaming) {
+              throw new BadRequestException("The restored LEGACY configuration is incompatible with the selected capabilities");
+            }
+          } else if (!restoringLegacy) await this.validateConfiguration(
             tx,
             input.workspaceId,
             input.draft.configuration,
@@ -190,15 +241,24 @@ export class AgentStudioRepository {
             }
           );
         } else if (input.draft.capabilities) {
-          await this.validateCapabilitiesAgainstModel(
-            tx,
-            current.modelId,
-            current.maxTokens,
-            input.draft.capabilities
+          const isOic = record(record(current.runtimeConfiguration).oicIntegration).executionMode === "OIC";
+          if (isOic && (input.draft.capabilities.toolsEnabled || input.draft.capabilities.visionEnabled ||
+            input.draft.capabilities.voiceEnabled || input.draft.capabilities.imageEnabled ||
+            input.draft.capabilities.reasoningEnabled || input.draft.capabilities.streamingEnabled)) {
+            throw new BadRequestException("The selected OIC execution path supports text-only non-streaming Agents");
+          }
+          if (!isOic && current.modelId) await this.validateCapabilitiesAgainstModel(
+            tx, current.modelId, current.maxTokens, input.draft.capabilities
           );
         }
         if (input.draft.promptBindings) {
           await this.validateBindings(tx, input.workspaceId, input.draft.promptBindings);
+        }
+        const mode = record(record(input.draft.configuration?.runtimeConfiguration ?? current.runtimeConfiguration).oicIntegration).executionMode;
+        if (mode === "OIC" && (input.draft.capabilities?.toolsEnabled || input.draft.capabilities?.visionEnabled ||
+          input.draft.capabilities?.voiceEnabled || input.draft.capabilities?.imageEnabled ||
+          input.draft.capabilities?.reasoningEnabled || input.draft.capabilities?.streamingEnabled)) {
+          throw new BadRequestException("The selected OIC execution path supports text-only non-streaming Agents");
         }
         const agent = await tx.aiAgent.update({
           where: { id: current.id },
@@ -217,7 +277,10 @@ export class AgentStudioRepository {
               input.draft.iconMetadata === undefined ? undefined : json(input.draft.iconMetadata),
             visibility: input.draft.visibility,
             ...(input.draft.configuration
-              ? this.configurationData(input.draft.configuration)
+              ? this.configurationData(input.draft.configuration,
+                input.draft.configuration.executionMode === "OIC"
+                  ? legacyRollbackForWrite
+                  : restoredLegacyConfigurationForWrite)
               : {}),
             ...(input.draft.capabilities ? this.capabilityData(input.draft.capabilities) : {}),
             updatedById: input.actorId,
@@ -254,6 +317,14 @@ export class AgentStudioRepository {
     return this.prisma.$transaction(async (tx) => {
       const current = await this.requireAgent(tx, input.workspaceId, input.agentId);
       this.assertDraft(current.status);
+      const mode = record(record(current.runtimeConfiguration).oicIntegration);
+      if (mode.executionMode !== "OIC" && (!current.providerId || !current.modelId)) {
+        throw new BadRequestException("LEGACY Agent requires a provider and model before publish");
+      }
+      if (mode.executionMode === "OIC" && (typeof mode.oiModelKey !== "string" ||
+        current.providerId !== null || current.modelId !== null || current.providerConfigurationId !== null)) {
+        throw new BadRequestException("OIC Agent requires an Oi Model and cannot contain legacy provider assets");
+      }
       const revision = current.version + 1;
       const snapshot = this.snapshot(current);
       const version = await tx.aiAgentVersion.create({
@@ -980,6 +1051,29 @@ export class AgentStudioRepository {
     configuration: AgentConfigurationDto,
     capabilities?: AgentCapabilitiesDto
   ) {
+    if (configuration.executionMode === "OIC") {
+      if (!configuration.oiModelKey || !/^oi-[a-zA-Z0-9._:-]{1,120}$/.test(configuration.oiModelKey)) {
+        throw new BadRequestException("OIC execution requires a valid Oi Model identity");
+      }
+      if (configuration.providerId || configuration.modelId || configuration.providerConfigurationId) {
+        throw new BadRequestException("OIC execution cannot select Responix provider or upstream model assets");
+      }
+      if (configuration.providerConfiguration && Object.keys(configuration.providerConfiguration).length > 0 ||
+        configuration.modelConfiguration && Object.keys(configuration.modelConfiguration).length > 0) {
+        throw new BadRequestException("OIC execution cannot set Responix provider or upstream model configuration");
+      }
+      if (capabilities?.toolsEnabled || capabilities?.visionEnabled || capabilities?.voiceEnabled ||
+        capabilities?.imageEnabled || capabilities?.reasoningEnabled || configuration.streaming) {
+        throw new BadRequestException("The selected OIC execution path supports text-only non-streaming Agents");
+      }
+      return;
+    }
+    if (!configuration.providerId || !configuration.modelId) {
+      throw new BadRequestException("LEGACY execution requires a Responix provider and model");
+    }
+    if (configuration.oiModelKey) {
+      throw new BadRequestException("LEGACY execution cannot retain an Oi Model assignment");
+    }
     const model = await tx.aiModel.findFirst({
       where: {
         id: configuration.modelId,
@@ -1239,13 +1333,15 @@ export class AgentStudioRepository {
     workspaceId: string,
     snapshot: AgentSnapshot
   ) {
+    const integration = record(record(snapshot.runtimeConfiguration).oicIntegration);
+    const oicMode = integration.executionMode === "OIC";
     return Promise.all([
-      this.validateConfiguration(
+      ...(oicMode ? [] : [this.validateConfiguration(
         tx,
         workspaceId,
         {
-          providerId: snapshot.providerId,
-          modelId: snapshot.modelId,
+          providerId: snapshot.providerId!,
+          modelId: snapshot.modelId!,
           providerConfigurationId: snapshot.providerConfigurationId ?? undefined,
           providerConfiguration: snapshot.providerConfiguration,
           modelConfiguration: snapshot.modelConfiguration,
@@ -1264,7 +1360,7 @@ export class AgentStudioRepository {
           streamingEnabled: snapshot.streamingEnabled,
           metadata: snapshot.capabilities.metadata
         }
-      ),
+      )]),
       this.validateBindings(
         tx,
         workspaceId,
@@ -1278,14 +1374,28 @@ export class AgentStudioRepository {
     ]);
   }
 
-  private configurationData(configuration: AgentConfigurationDto) {
+  private configurationData(configuration: AgentConfigurationDto, legacyRollback?: JsonRecord) {
+    const runtimeConfiguration = { ...(configuration.runtimeConfiguration ?? {}) };
+    if (configuration.executionMode === "OIC") {
+      runtimeConfiguration.oicIntegration = {
+        executionMode: "OIC",
+        oiModelKey: configuration.oiModelKey,
+        ...(legacyRollback ? { legacyRollback } : {})
+      };
+    } else if (configuration.executionMode === "LEGACY") {
+      runtimeConfiguration.oicIntegration = { executionMode: "LEGACY" };
+    }
+    const oicMode = configuration.executionMode === "OIC";
+    if (!oicMode && configuration.executionMode !== "LEGACY") {
+      runtimeConfiguration.oicIntegration = { executionMode: "LEGACY" };
+    }
     return {
-      providerId: configuration.providerId,
-      modelId: configuration.modelId,
-      providerConfigurationId: configuration.providerConfigurationId,
-      providerConfiguration: json(configuration.providerConfiguration ?? {}),
-      modelConfiguration: json(configuration.modelConfiguration ?? {}),
-      runtimeConfiguration: json(configuration.runtimeConfiguration ?? {}),
+      providerId: configuration.executionMode === "OIC" ? null : configuration.providerId,
+      modelId: configuration.executionMode === "OIC" ? null : configuration.modelId,
+      providerConfigurationId: configuration.executionMode === "OIC" ? null : configuration.providerConfigurationId,
+      providerConfiguration: json(configuration.executionMode === "OIC" ? {} : legacyRollback?.providerConfiguration ?? configuration.providerConfiguration ?? {}),
+      modelConfiguration: json(configuration.executionMode === "OIC" ? {} : legacyRollback?.modelConfiguration ?? configuration.modelConfiguration ?? {}),
+      runtimeConfiguration: json(runtimeConfiguration),
       temperature: configuration.temperature,
       topP: configuration.topP,
       maxTokens: configuration.maxTokens,
@@ -1424,7 +1534,8 @@ export class AgentStudioRepository {
       throw new ConflictException("Published agent version has an invalid snapshot");
     }
     const snapshot = value as Record<string, unknown>;
-    const requiredStrings = ["name", "providerId", "modelId"];
+    const oicMode = record(record(snapshot.runtimeConfiguration).oicIntegration).executionMode === "OIC";
+    const requiredStrings = oicMode ? ["name"] : ["name", "providerId", "modelId"];
     const valid =
       requiredStrings.every((key) => typeof snapshot[key] === "string") &&
       typeof snapshot.maxTokens === "number" &&

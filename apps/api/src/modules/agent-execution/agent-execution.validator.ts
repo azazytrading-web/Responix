@@ -18,9 +18,18 @@ export interface AgentExecutionDiagnostic {
 export class AgentExecutionValidator {
   validate(assets: AgentExecutionAssetSet): AgentExecutionDiagnostic[] {
     const diagnostics: AgentExecutionDiagnostic[] = [];
+    const agentConfiguration = assets.agent.executionConfiguration && typeof assets.agent.executionConfiguration === "object"
+      ? (assets.agent.executionConfiguration as Record<string, unknown>).agent : undefined;
+    const runtimeConfiguration = agentConfiguration && typeof agentConfiguration === "object"
+      ? (agentConfiguration as Record<string, unknown>).runtimeConfiguration : undefined;
+    const integration = runtimeConfiguration && typeof runtimeConfiguration === "object"
+      ? (runtimeConfiguration as Record<string, unknown>).oicIntegration : undefined;
+    const oicMode = integration && typeof integration === "object" &&
+      (integration as Record<string, unknown>).executionMode === "OIC";
     const runtimeAssets: Array<[string, Record<string, unknown> | undefined]> = [
       ["agent", assets.agent], ["prompt", assets.prompt],
-      ["provider", assets.provider], ["conversation", assets.conversation],
+      ...(!oicMode ? [["provider", assets.provider] as [string, Record<string, unknown> | undefined]] : []),
+      ["conversation", assets.conversation],
       ["pipeline", assets.pipeline]
     ];
     for (const [assetName, asset] of runtimeAssets) {
@@ -47,9 +56,9 @@ export class AgentExecutionValidator {
     const compiledPromptId = assets.prompt.compiledPromptId;
     same(assets.prompt.agentRuntimeSnapshotId, agentId,
       "promptExecutionPayload.agentRuntimeSnapshotId", "AGENT_RUNTIME_MISMATCH");
-    same(assets.provider.agentRuntimeSnapshotId, agentId,
+    if (!oicMode) same(assets.provider.agentRuntimeSnapshotId, agentId,
       "providerRuntimeSnapshot.agentRuntimeSnapshotId", "PROVIDER_RUNTIME_MISMATCH");
-    same(assets.provider.compiledPromptId, compiledPromptId,
+    if (!oicMode) same(assets.provider.compiledPromptId, compiledPromptId,
       "providerRuntimeSnapshot.compiledPromptId", "PROMPT_PROVIDER_MISMATCH");
     if (assets.conversation) {
       same(assets.prompt.conversationRuntimeSnapshotId, assets.conversation.id,

@@ -195,6 +195,21 @@ describe("AgentRuntimeRepository", () => {
     }));
   });
 
+  it("resolves OIC runtime snapshots without reading Provider Runtime source tables", async () => {
+    prisma.aiAgentVersion.findFirst.mockResolvedValue({ id: "agent-version", revision: 3,
+      snapshot: agentSnapshot({ providerId: null, modelId: null, providerConfigurationId: null,
+        runtimeConfiguration: { oicIntegration: { executionMode: "OIC", oiModelKey: "oi-support-v1" } },
+        capabilities: { toolsEnabled: false, visionEnabled: false, voiceEnabled: false,
+          imageEnabled: false, reasoningEnabled: false } }), publishedAt: now });
+    await expect(repository.prepare("workspace", "actor", dto())).resolves.toMatchObject({ id: "runtime" });
+    expect(prisma.aiProviderConfiguration.findFirst).not.toHaveBeenCalled();
+    expect(prisma.aiModel.findFirst).not.toHaveBeenCalled();
+    expect(prisma.agentRuntimePreparation.create).toHaveBeenCalledWith(expect.objectContaining({
+      data: expect.objectContaining({ providerId: null, modelId: null, providerConfigurationId: null,
+        executionConfiguration: expect.objectContaining({ provider: null }) })
+    }));
+  });
+
   it("rejects archived, deleted, or wrong-workspace agents and audits rejection", async () => {
     prisma.aiAgent.findFirst.mockResolvedValue(null);
     await expect(repository.prepare("workspace", "actor", dto()))

@@ -32,7 +32,8 @@ function localPort(key, file, fallback) {
 
 const apiPort = localPort("API_PORT", ".env", "4000");
 const oicPort = localPort("OIC_PORT", ".env.oic.local", "4100");
-const dashboardPort = localPort("DASHBOARD_PORT", ".env", "3000");
+const portalPort = localPort("PORTAL_PORT", ".env", "3000");
+const responixPort = localPort("RESPONIX_PORT", ".env", "3001");
 const startupTimeoutMs = Number(process.env.PLATFORM_STARTUP_TIMEOUT_MS ?? 120_000);
 if (!Number.isInteger(startupTimeoutMs) || startupTimeoutMs < 5000 || startupTimeoutMs > 600_000) {
   throw new Error("PLATFORM_STARTUP_TIMEOUT_MS must be an integer between 5000 and 600000");
@@ -53,10 +54,34 @@ const services = [
     args: [resolve(root, "apps/api/dist/main.js")],
     url: `http://127.0.0.1:${apiPort}`,
     readyUrl: `http://127.0.0.1:${apiPort}/api/v1/health`,
-    env: { API_HOST: "127.0.0.1", API_PORT: apiPort, OIC_BASE_URL: `http://127.0.0.1:${oicPort}` }
+    env: {
+      API_HOST: "127.0.0.1",
+      API_PORT: apiPort,
+      DASHBOARD_URL: `http://localhost:${responixPort}`,
+      OIC_BASE_URL: `http://127.0.0.1:${oicPort}`
+    }
   },
   {
-    label: "Dashboard",
+    label: "Platform Portal",
+    cwd: resolve(root, "apps/platform-portal"),
+    args: [
+      resolve(root, "apps/platform-portal/node_modules/next/dist/bin/next"),
+      "start",
+      "--hostname",
+      "127.0.0.1",
+      "--port",
+      portalPort
+    ],
+    url: `http://127.0.0.1:${portalPort}`,
+    readyUrl: `http://127.0.0.1:${portalPort}/`,
+    env: {
+      PORT: portalPort,
+      OIC_API_INTERNAL_URL: `http://127.0.0.1:${oicPort}`,
+      NEXT_PUBLIC_RESPONIX_URL: `http://127.0.0.1:${responixPort}`
+    }
+  },
+  {
+    label: "Responix",
     cwd: resolve(root, "apps/dashboard"),
     args: [
       resolve(root, "apps/dashboard/node_modules/next/dist/bin/next"),
@@ -64,11 +89,11 @@ const services = [
       "--hostname",
       "127.0.0.1",
       "--port",
-      dashboardPort
+      responixPort
     ],
-    url: `http://127.0.0.1:${dashboardPort}`,
-    readyUrl: `http://127.0.0.1:${dashboardPort}/`,
-    env: { PORT: dashboardPort, NEXT_PUBLIC_API_URL: `http://127.0.0.1:${apiPort}` }
+    url: `http://127.0.0.1:${responixPort}`,
+    readyUrl: `http://127.0.0.1:${responixPort}/`,
+    env: { PORT: responixPort, NEXT_PUBLIC_API_URL: `http://127.0.0.1:${apiPort}` }
   }
 ];
 const children = [];
@@ -195,9 +220,10 @@ async function waitUntilReady(service, processState, timeoutMs = startupTimeoutM
 
 async function main() {
   process.stdout.write(
-    "Building the local APIs and Dashboard. Required PostgreSQL and Redis services must already be running.\n"
+    "Oi Mega Platform starting. Required PostgreSQL and Redis services must already be running.\n"
   );
   process.env.NEXT_PUBLIC_API_URL = `http://127.0.0.1:${apiPort}`;
+  process.env.NEXT_PUBLIC_RESPONIX_URL = `http://localhost:${responixPort}`;
   const builds = [
     {
       label: "@oic/api",
@@ -208,6 +234,12 @@ async function main() {
       label: "@responix/api",
       cwd: resolve(root, "apps/api"),
       args: ["node_modules/@nestjs/cli/bin/nest.js", "build"]
+    },
+    {
+      label: "@oi/platform-portal",
+      cwd: resolve(root, "apps/platform-portal"),
+      args: ["node_modules/next/dist/bin/next", "build"],
+      nodeOptions: "--max-old-space-size=4096"
     },
     {
       label: "@responix/dashboard",
@@ -224,6 +256,13 @@ async function main() {
     const processState = start(service);
     await waitUntilReady(service, processState);
     if (stopping) break;
+  }
+  if (!stopping) {
+    process.stdout.write("Oi Mega Platform started\n");
+    process.stdout.write(`Platform Portal: http://localhost:${portalPort}\n`);
+    process.stdout.write(`Responix: http://localhost:${responixPort}\n`);
+    process.stdout.write(`OIC API: http://127.0.0.1:${oicPort}\n`);
+    process.stdout.write("OIC Console: NOT INSTALLED (Portal placeholder)\n");
   }
   await Promise.all(
     children.map((child) =>

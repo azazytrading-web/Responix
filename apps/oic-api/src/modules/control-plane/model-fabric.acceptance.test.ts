@@ -106,6 +106,29 @@ void test("OIC Model Fabric resolver and catalog history acceptance rolls back a
       assert.equal(await tx.oicUpstreamCapabilityEvidence.count({ where: { upstreamModelId: graph.upstreamId } }), 2);
       assert.equal(await tx.oicUpstreamPricingEvidence.count({ where: { upstreamModelId: graph.upstreamId } }), 2);
 
+      const runsBeforePreview = await tx.oicProviderSyncRun.count({ where: { connectionId: graph.connectionId } });
+      const preview = await catalogService.previewManualCatalog(actor, graph.connectionId, [
+        {
+          upstreamModelId: "Vendor.Model-ExactCase", displayName: "Updated fixture",
+          capabilities: [
+            { capability: "text.generate", status: "SUPPORTED", sourceRef: "verified-source" },
+            { capability: "vision.image", status: "UNKNOWN" },
+            { capability: "audio.output", status: "UNSUPPORTED" }
+          ],
+          pricing: { status: "KNOWN", inputRate: 0, currency: "USD", effectiveAt: "2025-01-03T00:00:00.000Z", sourceRef: "verified-zero" }
+        },
+        { upstreamModelId: "New.Model-ExactCase", displayName: "New fixture", pricing: { status: "UNKNOWN" } }
+      ]);
+      assert.equal(preview.createdCount, 1);
+      assert.equal(preview.updatedCount, 1);
+      assert.equal(preview.supportedCapabilityCount, 1);
+      assert.equal(preview.unsupportedCapabilityCount, 1);
+      assert.equal(preview.unknownCapabilityCount, 1);
+      assert.equal(preview.knownZeroPricingCount, 1);
+      assert.equal(preview.unknownPricingCount, 1);
+      assert.equal(await tx.oicProviderSyncRun.count({ where: { connectionId: graph.connectionId } }), runsBeforePreview);
+      assert.equal(await tx.oicUpstreamModel.count({ where: { connectionId: graph.connectionId } }), 1);
+
       const unknownSync = await catalogService.syncManualCatalog(actor, graph.connectionId, [{
         upstreamModelId: "Vendor.Model-ExactCase", displayName: "Updated fixture", capabilities: [{ capability: "text.generate", status: "UNKNOWN", sourceRef: "unverified" }],
         pricing: { status: "UNKNOWN", sourceRef: "awaiting-source" }
@@ -133,7 +156,7 @@ void test("OIC Model Fabric resolver and catalog history acceptance rolls back a
       assert.equal(await tx.oicAuditEvent.count({ where: { action: "provider.catalog.manual-sync", targetId: graph.connectionId } }), 2);
 
       throw rollback;
-    }), (error: unknown) => error === rollback);
+    }, { timeout: 15_000 }), (error: unknown) => error === rollback);
   } finally { await db.$disconnect(); }
 });
 

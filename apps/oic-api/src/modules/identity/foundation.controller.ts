@@ -35,7 +35,7 @@ export class FoundationController {
 
   @Version("1")
   @Post("applications")
-  @RequireScopes("oic:foundation:admin")
+  @RequireScopes("oic:applications:manage")
   createApplication(@CurrentPrincipal() actor: AuthenticatedPrincipal, @Body() body: unknown, @Headers() headers: RequestWithIds["headers"], @Req() req: RequestWithIds) {
     return this.foundation.createApplication(actor, parse(appDto, body), idempotencyKey(headers), auditContext(req));
   }
@@ -151,7 +151,6 @@ export class FoundationController {
 
   @Version("1")
   @Post("applications/:applicationId/:kind/:id/status")
-  @RequireScopes("oic:foundation:admin")
   changeLifecycle(@CurrentPrincipal() actor: AuthenticatedPrincipal, @Param("applicationId", ParseUUIDPipe) appId: string, @Param("kind") kind: string, @Param("id", ParseUUIDPipe) id: string, @Body() body: unknown, @Req() req: RequestWithIds) {
     const parsedKind = z.enum(["application", "tenant", "principal"]).safeParse(kind);
     const parsedBody = z.object({ status: z.enum(["ACTIVE", "SUSPENDED", "ARCHIVED"]) }).strict().safeParse(body);

@@ -7,6 +7,7 @@ import { decryptProviderCredential } from "../control-plane/provider-credential.
 import { resolvePublicHttpsEndpoint } from "../control-plane/provider-endpoint";
 import type { ResolvedProviderEndpoint } from "../control-plane/provider-endpoint";
 import { registeredProvider } from "../control-plane/provider-registry";
+import { isLocalFixtureConnection, LOCAL_PROVIDER_FIXTURE_ENDPOINT, LOCAL_PROVIDER_FIXTURE_KEY, localProviderFixtureEnabled } from "../control-plane/local-provider-fixture";
 import { OicRuntimeException } from "./runtime-errors";
 
 const MAX_RESPONSE_BYTES = 2 * 1024 * 1024;
@@ -82,6 +83,11 @@ export class ProviderRuntimeExecutor implements OicRuntimeExecutor {
 
   async execute(model: OicResolvedModel, request: OicRuntimeRequest, context: OicRuntimeContext, signal?: AbortSignal): Promise<OicRuntimeExecutionResult> {
     const prepared = await this.prepare(model, request, context);
+    if (prepared.localFixture) {
+      if (signal?.aborted) throw new OicRuntimeException("RUNTIME_UNAVAILABLE");
+      const inputText = request.input.flatMap((message) => message.content.map((part) => part.text)).join(" ").trim();
+      return { outputText: `OIC local fixture accepted: ${inputText || "empty input"}`, usage: { inputTokens: Math.max(1, Math.ceil(inputText.length / 4)), outputTokens: 5 }, finishReason: "completed", executorVersion: "oic-local-fixture-v1" };
+    }
     if (prepared.transportProfile === "openai-responses-v1") {
       const data = await this.sendJson(prepared, { model: prepared.upstreamModelId, input: responsesInput(request), stream: false, ...(request.maxOutputUnits ? { max_output_tokens: request.maxOutputUnits } : {}) }, signal) as unknown as ResponsesProviderResponse;
       if (data.error || (data.type === "response.failed")) throw new OicRuntimeException("PROVIDER_UNAVAILABLE");
@@ -102,6 +108,14 @@ export class ProviderRuntimeExecutor implements OicRuntimeExecutor {
 
   async *stream(model: OicResolvedModel, request: OicRuntimeRequest, context: OicRuntimeContext, signal?: AbortSignal): AsyncIterable<OicRuntimeExecutionStreamChunk> {
     const prepared = await this.prepare(model, request, context);
+    if (prepared.localFixture) {
+      if (signal?.aborted) throw new OicRuntimeException("RUNTIME_UNAVAILABLE");
+      const inputText = request.input.flatMap((message) => message.content.map((part) => part.text)).join(" ").trim();
+      const text = `OIC local fixture accepted: ${inputText || "empty input"}`;
+      yield { type: "content.delta", text };
+      yield { type: "usage.updated", usage: { inputTokens: Math.max(1, Math.ceil(inputText.length / 4)), outputTokens: 5 } };
+      return;
+    }
     const responsesTransport = prepared.transportProfile === "openai-responses-v1";
     const response = await this.sendStream(prepared, {
       model: prepared.upstreamModelId,
@@ -164,7 +178,11 @@ export class ProviderRuntimeExecutor implements OicRuntimeExecutor {
     const profile = binding.connection.transportProfile;
     const provider = registeredProvider(binding.connection.providerDefinition.key);
     if ((profile !== "openai-chat-completions-v1" && profile !== "openai-responses-v1") || binding.variant.transportProfile !== profile || !provider?.transportProfiles.includes(profile) || (profile === "openai-responses-v1" && binding.connection.providerDefinition.key !== "openai")) throw new OicRuntimeException("CAPABILITY_NOT_SUPPORTED");
-    const endpoint = await (this.testNetwork ? this.testNetwork.resolveEndpoint(binding.connection.endpointUrl ?? "") : resolvePublicHttpsEndpoint(binding.connection.endpointUrl ?? "")).catch(() => { throw new OicRuntimeException("RUNTIME_UNAVAILABLE"); });
+    const localFixture = binding.connection.providerDefinition.key === LOCAL_PROVIDER_FIXTURE_KEY;
+    if (localFixture && (!localProviderFixtureEnabled() || !isLocalFixtureConnection(binding.connection))) throw new OicRuntimeException("RUNTIME_UNAVAILABLE");
+    const endpoint = localFixture
+      ? { url: new URL(LOCAL_PROVIDER_FIXTURE_ENDPOINT), hostname: "local-fixture.oic.invalid", addresses: [] }
+      : await (this.testNetwork ? this.testNetwork.resolveEndpoint(binding.connection.endpointUrl ?? "") : resolvePublicHttpsEndpoint(binding.connection.endpointUrl ?? "")).catch(() => { throw new OicRuntimeException("RUNTIME_UNAVAILABLE"); });
     const credential = binding.connection.providerDefinition.authStrategy === "NONE" ? null : binding.connection.credentials[0];
     if (binding.connection.providerDefinition.authStrategy !== "NONE" && binding.connection.providerDefinition.authStrategy !== "BEARER") throw new OicRuntimeException("CAPABILITY_NOT_SUPPORTED");
     if (binding.connection.providerDefinition.authStrategy !== "NONE" && !credential) throw new OicRuntimeException("RUNTIME_UNAVAILABLE");
@@ -174,7 +192,7 @@ export class ProviderRuntimeExecutor implements OicRuntimeExecutor {
       catch { throw new OicRuntimeException("RUNTIME_UNAVAILABLE"); }
     }
     const route = profile === "openai-responses-v1" ? "responses" : "chat/completions";
-    return { transportProfile: profile, endpoint: new URL(route, endpoint.url.toString().replace(/\/?$/, "/")), address: endpoint.addresses[0]!, upstreamModelId: binding.variant.upstreamModel.upstreamModelId, token };
+    return { transportProfile: profile, endpoint: new URL(route, endpoint.url.toString().replace(/\/?$/, "/")), address: endpoint.addresses[0]!, upstreamModelId: binding.variant.upstreamModel.upstreamModelId, token, localFixture };
   }
 
   private sendJson(prepared: Awaited<ReturnType<ProviderRuntimeExecutor["prepare"]>>, payload: unknown, signal?: AbortSignal): Promise<ProviderResponse> {

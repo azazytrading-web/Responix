@@ -5,10 +5,11 @@ import { ProviderControlController } from "./provider-control.controller";
 import { ProviderControlService } from "./provider-control.service";
 import { ModelFabricController } from "./model-fabric.controller";
 import { ModelFabricService } from "./model-fabric.service";
+import { ConsoleSnapshotController } from "./console-snapshot.controller";
 
 @Module({
   imports: [OicDatabaseModule],
-  controllers: [ProviderControlController, ModelFabricController],
+  controllers: [ProviderControlController, ModelFabricController, ConsoleSnapshotController],
   providers: [ProviderControlService, ModelFabricService, OicAuthenticationGuard, OicScopeGuard]
 })
 export class ControlPlaneModule {}

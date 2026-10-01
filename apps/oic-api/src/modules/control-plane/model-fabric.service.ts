@@ -2,6 +2,7 @@ import { ConflictException, ForbiddenException, Injectable, NotFoundException } 
 import { OicDatabaseService, Prisma } from "@oic/database";
 import type { AuthenticatedPrincipal } from "../identity/auth.guard";
 import { ProviderControlService } from "./provider-control.service";
+import { hasOicConsoleManage } from "../identity/foundation-policy";
 import { registeredProvider } from "./provider-registry";
 
 export const OIC_UPSTREAM_CAPABILITIES = ["text.generate", "text.stream", "json.mode", "tool.use", "vision.image", "audio.input", "audio.output", "embedding.create", "reasoning"] as const;
@@ -38,6 +39,16 @@ const EDITION_TRANSITIONS: Record<ModelLifecycle, readonly ModelLifecycle[]> = {
   DEPRECATED: ["RETIRED"],
   RETIRED: []
 };
+type CatalogLifecycle = "ACTIVE" | "DISABLED" | "DEPRECATED" | "ARCHIVED";
+const CATALOG_TRANSITIONS: Record<CatalogLifecycle, readonly CatalogLifecycle[]> = {
+  ACTIVE: ["DISABLED", "DEPRECATED", "ARCHIVED"],
+  DISABLED: ["ACTIVE", "DEPRECATED", "ARCHIVED"],
+  DEPRECATED: ["ARCHIVED"],
+  ARCHIVED: []
+};
+export function canTransitionUpstreamCatalogLifecycle(current: CatalogLifecycle, next: CatalogLifecycle): boolean {
+  return CATALOG_TRANSITIONS[current].includes(next);
+}
 const hasControlCharacters = (value: string) => [...value].some((character) => {
   const code = character.charCodeAt(0);
   return code < 32 || code === 127;
@@ -55,9 +66,7 @@ export class ModelFabricService {
     return this.providers.requireConnectionAccess(actor, connectionId, write ? "oic:catalog:manage" : "oic:catalog:read");
   }
 
-  async syncManualCatalog(actor: AuthenticatedPrincipal, connectionId: string, models: ManualModelInput[], requestId?: string, traceId?: string) {
-    const connection = await this.authorizedConnection(actor, connectionId, true);
-    if (connection.status === "ARCHIVED") throw new ConflictException("Archived provider connections cannot update catalog entries");
+  private validateManualCatalog(models: ManualModelInput[]): void {
     if (models.length > 500) throw new ConflictException("Catalog sync is too large");
     const seen = new Set<string>();
     for (const model of models) {
@@ -67,6 +76,59 @@ export class ModelFabricService {
       if ((model.contextLimit !== undefined && model.contextLimit <= 0) || (model.outputLimit !== undefined && model.outputLimit <= 0)) throw new ConflictException("Model limits must be positive");
       if (model.pricing) this.validatePricing(model.pricing);
     }
+  }
+
+  async previewManualCatalog(actor: AuthenticatedPrincipal, connectionId: string, models: ManualModelInput[]) {
+    const connection = await this.authorizedConnection(actor, connectionId, true);
+    if (connection.status === "ARCHIVED") throw new ConflictException("Archived provider connections cannot update catalog entries");
+    this.validateManualCatalog(models);
+    const existing = models.length
+      ? await this.db.oicUpstreamModel.findMany({
+          where: { connectionId, upstreamModelId: { in: models.map((model) => model.upstreamModelId) } },
+          select: { upstreamModelId: true }
+        })
+      : [];
+    const existingIds = new Set(existing.map((model) => model.upstreamModelId));
+    const preview = models.map((model) => ({
+      upstreamModelId: model.upstreamModelId,
+      displayName: model.displayName,
+      operation: existingIds.has(model.upstreamModelId) ? "UPDATE" : "CREATE",
+      capabilities: model.capabilities?.map(({ capability, status, sourceRef }) => ({ capability, status, sourceRef })) ?? [],
+      pricing: model.pricing
+        ? {
+            status: model.pricing.status,
+            inputRate: model.pricing.status === "KNOWN" ? model.pricing.inputRate ?? null : null,
+            outputRate: model.pricing.status === "KNOWN" ? model.pricing.outputRate ?? null : null,
+            cachedInputRate: model.pricing.status === "KNOWN" ? model.pricing.cachedInputRate ?? null : null,
+            currency: model.pricing.status === "KNOWN" ? model.pricing.currency ?? "USD" : null,
+            sourceRef: model.pricing.sourceRef ?? null,
+            effectiveAt: model.pricing.status === "KNOWN" ? model.pricing.effectiveAt ?? null : null
+          }
+        : null
+    }));
+    const allCapabilities = preview.flatMap((model) => model.capabilities);
+    const knownPricing = preview.filter((model) => model.pricing?.status === "KNOWN");
+    return {
+      connectionId,
+      total: preview.length,
+      createdCount: preview.filter((model) => model.operation === "CREATE").length,
+      updatedCount: preview.filter((model) => model.operation === "UPDATE").length,
+      supportedCapabilityCount: allCapabilities.filter((item) => item.status === "SUPPORTED").length,
+      unsupportedCapabilityCount: allCapabilities.filter((item) => item.status === "UNSUPPORTED").length,
+      unknownCapabilityCount: allCapabilities.filter((item) => item.status === "UNKNOWN").length,
+      knownZeroPricingCount: knownPricing.filter((model) => {
+        const rates = [model.pricing?.inputRate, model.pricing?.outputRate, model.pricing?.cachedInputRate];
+        return rates.some((rate) => rate === 0) && rates.every((rate) => rate === null || rate === 0);
+      }).length,
+      unknownPricingCount: preview.filter((model) => model.pricing?.status === "UNKNOWN").length,
+      models: preview
+    };
+  }
+
+  async syncManualCatalog(actor: AuthenticatedPrincipal, connectionId: string, models: ManualModelInput[], requestId?: string, traceId?: string) {
+    const connection = await this.authorizedConnection(actor, connectionId, true);
+    if (connection.status === "ARCHIVED") throw new ConflictException("Archived provider connections cannot update catalog entries");
+    this.validateManualCatalog(models);
     const result = await this.db.$transaction(async (tx) => {
       const run = await tx.oicProviderSyncRun.create({ data: { providerDefinitionId: connection.providerDefinitionId, connectionId, status: "RUNNING" } });
       let createdCount = 0;
@@ -118,6 +180,16 @@ export class ModelFabricService {
     return result;
   }
 
+  async previewFixtureCatalog(actor: AuthenticatedPrincipal, connectionId: string) {
+    const models = await this.providers.localFixtureCatalog(actor, connectionId);
+    return this.previewManualCatalog(actor, connectionId, models);
+  }
+
+  async syncFixtureCatalog(actor: AuthenticatedPrincipal, connectionId: string, requestId?: string, traceId?: string) {
+    const models = await this.providers.localFixtureCatalog(actor, connectionId);
+    return this.syncManualCatalog(actor, connectionId, models, requestId, traceId);
+  }
+
   private validatePricing(pricing: PricingEvidenceInput): void {
     const rates = [pricing.inputRate, pricing.outputRate, pricing.cachedInputRate];
     if (rates.some((rate) => rate != null && (!Number.isFinite(rate) || rate < 0))) throw new ConflictException("Pricing rates must be finite and non-negative");
@@ -145,6 +217,27 @@ export class ModelFabricService {
         capabilities: [...latest.values()].map(({ capability, status, source, observedAt }) => ({ capability, status, source, observedAt })),
         pricing: model.pricingEvidence[0] ?? { status: "UNKNOWN", inputRate: null, outputRate: null, cachedInputRate: null, currency: null, effectiveAt: null }
       };
+    });
+  }
+
+  async changeUpstreamModelLifecycle(actor: AuthenticatedPrincipal, upstreamModelId: string, lifecycle: CatalogLifecycle, requestId?: string, traceId?: string) {
+    this.requireScope(actor, "oic:catalog:manage");
+    const model = await this.db.oicUpstreamModel.findUnique({ where: { id: upstreamModelId }, select: { id: true, connectionId: true, lifecycle: true } });
+    if (!model) throw new NotFoundException();
+    const connection = await this.providers.requireConnectionAccess(actor, model.connectionId, "oic:catalog:manage");
+    if (!canTransitionUpstreamCatalogLifecycle(model.lifecycle, lifecycle)) throw new ConflictException("Upstream catalog lifecycle transition is not allowed");
+    if (lifecycle !== "ACTIVE") {
+      const activeBinding = await this.db.oicModelVariant.findFirst({ where: { upstreamModelId, bindings: { some: { status: "ACTIVE", edition: { lifecycle: { not: "RETIRED" } }, connection: { status: { not: "ARCHIVED" } } } } }, select: { id: true } });
+      if (activeBinding) throw new ConflictException("Disable active runtime bindings before changing upstream model lifecycle");
+    }
+    return this.db.$transaction(async (tx) => {
+      const updated = await tx.oicUpstreamModel.update({ where: { id: upstreamModelId }, data: { lifecycle } });
+      await tx.oicAuditEvent.create({ data: {
+        actorPrincipalId: actor.id, applicationId: connection.applicationId, tenantId: connection.tenantId,
+        action: "provider.upstream-model.lifecycle.changed", targetType: "upstream-model", targetId: upstreamModelId,
+        requestId, traceId, metadata: { from: model.lifecycle, to: lifecycle, connectionId: model.connectionId } satisfies Prisma.InputJsonObject
+      } });
+      return updated;
     });
   }
 
@@ -252,8 +345,8 @@ export class ModelFabricService {
     return this.db.$transaction(async (tx) => {
       const binding = await tx.oicRuntimeBinding.findUnique({ where: { id: bindingId }, include: { edition: true, connection: { include: { providerDefinition: true } } } });
       if (!binding) throw new NotFoundException();
-      if (!actor.scopes.includes("oic:foundation:admin") && (binding.scope === "PLATFORM" || binding.applicationId !== actor.applicationId || (binding.scope === "TENANT" && !actor.tenantIds.includes(binding.tenantId ?? "")))) throw new NotFoundException();
-      if (binding.edition.lifecycle === "RETIRED" || binding.connection.status === "ARCHIVED") throw new ConflictException("Retired models and archived connections cannot be activated");
+      if (!hasOicConsoleManage(actor.scopes) && (binding.scope === "PLATFORM" || binding.applicationId !== actor.applicationId || (binding.scope === "TENANT" && !actor.tenantIds.includes(binding.tenantId ?? "")))) throw new NotFoundException();
+      if (status === "ACTIVE" && (binding.edition.lifecycle === "RETIRED" || binding.connection.status === "ARCHIVED")) throw new ConflictException("Retired models and archived connections cannot be activated");
       if (status === "ACTIVE") {
         if (!["CANDIDATE", "CANARY", "PRODUCTION"].includes(binding.edition.lifecycle)) throw new ConflictException("Model binding requires a candidate or published edition");
         if (binding.connection.status !== "ACTIVE" || binding.connection.healthStatus !== "HEALTHY" || !binding.connection.lastValidatedAt) throw new ConflictException("Provider connection must pass a connection test before activation");
@@ -271,7 +364,7 @@ export class ModelFabricService {
 
   async setVisibility(actor: AuthenticatedPrincipal, applicationId: string, editionId: string, visible: boolean, requestId?: string, traceId?: string) {
     this.requireScope(actor, "oic:models:manage");
-    if (!actor.scopes.includes("oic:foundation:admin") && actor.applicationId !== applicationId) throw new NotFoundException();
+    if (!hasOicConsoleManage(actor.scopes) && actor.applicationId !== applicationId) throw new NotFoundException();
     const edition = await this.db.oicModelEdition.findUnique({ where: { id: editionId }, select: { id: true } });
     if (!edition) throw new NotFoundException();
     return this.db.$transaction(async (tx) => {

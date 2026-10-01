@@ -1,3 +1,5 @@
+import { LOCAL_PROVIDER_FIXTURE_ENDPOINT, LOCAL_PROVIDER_FIXTURE_KEY, localProviderFixtureEnabled } from "./local-provider-fixture";
+
 export type OicProviderRegistration = {
   key: string;
   displayName: string;
@@ -6,7 +8,7 @@ export type OicProviderRegistration = {
   defaultEndpoint: string | null;
 };
 
-/** Only capabilities backed by a statically registered adapter may be published. */
+/** Production capabilities are static; the separate local fixture is gated by explicit development config. */
 export const OIC_PROVIDER_REGISTRY: readonly OicProviderRegistration[] = [
   {
     key: "openai",
@@ -25,5 +27,12 @@ export const OIC_PROVIDER_REGISTRY: readonly OicProviderRegistration[] = [
 ];
 
 export function registeredProvider(key: string): OicProviderRegistration | undefined {
+  if (key === LOCAL_PROVIDER_FIXTURE_KEY && localProviderFixtureEnabled()) return {
+    key: LOCAL_PROVIDER_FIXTURE_KEY,
+    displayName: "OIC Local Acceptance Fixture (development only)",
+    authStrategy: "BEARER",
+    transportProfiles: ["openai-chat-completions-v1"],
+    defaultEndpoint: LOCAL_PROVIDER_FIXTURE_ENDPOINT
+  };
   return OIC_PROVIDER_REGISTRY.find((provider) => provider.key === key);
 }

@@ -4,11 +4,11 @@ import { createHash } from "node:crypto";
 import { OicDatabaseService } from "@oic/database";
 import { AuthenticatedPrincipal } from "./auth.guard";
 import { issueCredential } from "./credential.crypto";
-import { OIC_FOUNDATION_ADMIN_SCOPES, OIC_PROVIDER_MODEL_ADMIN_SCOPES } from "./foundation-policy";
+import { hasOicConsoleManage, hasOicConsoleRead, OIC_CONSOLE_SCOPES, OIC_FOUNDATION_ADMIN_SCOPES, OIC_PROVIDER_MODEL_ADMIN_SCOPES } from "./foundation-policy";
 import { OIC_RUNTIME_SCOPES } from "../runtime-plane/runtime-scopes";
 import { FoundationAuditWriter, OIC_FOUNDATION_AUDIT_WRITER } from "./foundation-audit-writer";
 
-export const OIC_SCOPES = [...OIC_FOUNDATION_ADMIN_SCOPES, ...OIC_PROVIDER_MODEL_ADMIN_SCOPES, ...OIC_RUNTIME_SCOPES] as const;
+export const OIC_SCOPES = [...OIC_FOUNDATION_ADMIN_SCOPES, ...OIC_PROVIDER_MODEL_ADMIN_SCOPES, ...OIC_RUNTIME_SCOPES, ...OIC_CONSOLE_SCOPES] as const;
 export type AuditContext = { requestId?: string; traceId?: string };
 type IdempotencyResult<T> = { value: T; replayed: boolean };
 type MakeResult<T> = { value: T; resultRef: string };
@@ -32,13 +32,13 @@ export class FoundationService {
   constructor(private readonly db: OicDatabaseService, @Inject(OIC_FOUNDATION_AUDIT_WRITER) private readonly auditWriter: FoundationAuditWriter) {}
 
   private requireApp(actor: AuthenticatedPrincipal, applicationId: string): void {
-    if (!actor.scopes.includes("oic:foundation:admin") && actor.applicationId !== applicationId) throw new NotFoundException();
+    if (!hasOicConsoleManage(actor.scopes) && actor.applicationId !== applicationId) throw new NotFoundException();
   }
   private async requireTenant(actor: AuthenticatedPrincipal, tenantId: string): Promise<{ id: string; applicationId: string }> {
     const tenant = await this.db.oicTenant.findUnique({ where: { id: tenantId }, select: { id: true, applicationId: true, status: true } });
     if (!tenant || tenant.status !== "ACTIVE") throw new NotFoundException();
     this.requireApp(actor, tenant.applicationId);
-    if (!actor.scopes.includes("oic:foundation:admin") && !actor.tenantIds.includes(tenant.id)) throw new NotFoundException();
+    if (!hasOicConsoleManage(actor.scopes) && !actor.tenantIds.includes(tenant.id)) throw new NotFoundException();
     return { id: tenant.id, applicationId: tenant.applicationId };
   }
   private async requireManagedTenant(actor: AuthenticatedPrincipal, tenantId: string): Promise<{ id: string; applicationId: string }> {
@@ -84,11 +84,12 @@ export class FoundationService {
   }
   private assertGrantAuthority(actor: AuthenticatedPrincipal, scope: string): void {
     if (!OIC_SCOPES.includes(scope as typeof OIC_SCOPES[number])) throw new ForbiddenException();
+    if ((OIC_CONSOLE_SCOPES as readonly string[]).includes(scope) && !actor.scopes.includes("oic:foundation:admin")) throw new ForbiddenException();
     if (!actor.scopes.includes("oic:foundation:admin") && !actor.scopes.includes(scope)) throw new ForbiddenException();
   }
 
   async createApplication(actor: AuthenticatedPrincipal, input: { key: string; displayName: string }, key: string, request: AuditContext) {
-    if (!actor.scopes.includes("oic:foundation:admin")) throw new ForbiddenException();
+    if (!actor.scopes.includes("oic:foundation:admin") && (!hasOicConsoleManage(actor.scopes) || !actor.scopes.includes("oic:applications:manage"))) throw new ForbiddenException();
     return this.idempotent(actor, "oic:applications:manage", "application.create", key, input,
       async (tx) => {
         const value = await tx.oicApplication.create({ data: input });
@@ -163,7 +164,7 @@ export class FoundationService {
   }
   async grantScope(actor: AuthenticatedPrincipal, applicationId: string, principalId: string, scope: string, key: string, request: AuditContext) {
     this.requireApp(actor, applicationId); this.assertGrantAuthority(actor, scope);
-    if (scope === "oic:foundation:admin" && !actor.scopes.includes("oic:foundation:admin")) throw new ForbiddenException();
+    if ((scope === "oic:foundation:admin" || (OIC_CONSOLE_SCOPES as readonly string[]).includes(scope)) && !actor.scopes.includes("oic:foundation:admin")) throw new ForbiddenException();
     const principal = await this.db.oicServicePrincipal.findFirst({ where: { id: principalId, applicationId }, select: { id: true } });
     if (!principal) throw new NotFoundException();
     return this.idempotent(actor, "oic:principals:manage", "principal.scope.grant", key, { applicationId, principalId, scope },
@@ -254,7 +255,7 @@ export class FoundationService {
   async revokeScope(actor: AuthenticatedPrincipal, applicationId: string, principalId: string, scope: string, request: AuditContext) {
     this.requireApp(actor, applicationId);
     this.assertGrantAuthority(actor, scope);
-    if (scope === "oic:foundation:admin" && (!actor.scopes.includes("oic:foundation:admin") || actor.id === principalId)) throw new ForbiddenException();
+    if ((scope === "oic:foundation:admin" || (OIC_CONSOLE_SCOPES as readonly string[]).includes(scope)) && (!actor.scopes.includes("oic:foundation:admin") || actor.id === principalId)) throw new ForbiddenException();
     return this.db.$transaction(async (tx) => {
       const grant = await tx.oicPrincipalScopeGrant.findFirst({ where: { applicationId, principalId, scope, revokedAt: null } });
       if (!grant) return { revoked: true };
@@ -310,7 +311,8 @@ export class FoundationService {
 
   async changeLifecycle(actor: AuthenticatedPrincipal, kind: "application" | "tenant" | "principal", applicationId: string, id: string, status: "ACTIVE" | "SUSPENDED" | "ARCHIVED", request: AuditContext) {
     this.requireApp(actor, applicationId);
-    if (!actor.scopes.includes("oic:foundation:admin")) throw new ForbiddenException();
+    const requiredScope = kind === "application" ? "oic:applications:manage" : kind === "tenant" ? "oic:tenants:manage" : "oic:principals:manage";
+    if (!actor.scopes.includes("oic:foundation:admin") && !actor.scopes.includes(requiredScope)) throw new ForbiddenException();
     return this.db.$transaction(async (tx) => {
       if (kind === "application") {
         if (id !== applicationId) throw new NotFoundException();
@@ -338,12 +340,12 @@ export class FoundationService {
     });
   }
   async readAudit(actor: AuthenticatedPrincipal, applicationId: string | undefined, limit: number) {
-    if (!actor.scopes.includes("oic:foundation:admin")) {
+    if (!hasOicConsoleRead(actor.scopes)) {
       if (applicationId && applicationId !== actor.applicationId) throw new NotFoundException();
       applicationId = actor.applicationId;
     }
     const where: Prisma.OicAuditEventWhereInput = applicationId ? { applicationId } : {};
-    if (!actor.scopes.includes("oic:foundation:admin")) where.OR = [{ tenantId: null }, { tenantId: { in: actor.tenantIds } }];
+    if (!hasOicConsoleRead(actor.scopes)) where.OR = [{ tenantId: null }, { tenantId: { in: actor.tenantIds } }];
     return this.db.oicAuditEvent.findMany({ where, orderBy: { occurredAt: "desc" }, take: Math.min(100, Math.max(1, limit)) });
   }
 }

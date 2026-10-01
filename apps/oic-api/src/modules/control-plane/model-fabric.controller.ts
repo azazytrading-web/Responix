@@ -36,6 +36,7 @@ const syncDto = z.object({ models: z.array(z.object({
   contextLimit: z.number().int().positive().max(10_000_000).optional(), outputLimit: z.number().int().positive().max(10_000_000).optional(),
   capabilities: z.array(evidenceDto).max(32).optional(), pricing: pricingDto.optional()
 }).strict()).max(500) }).strict();
+const catalogRequestDto = z.union([syncDto, z.object({ source: z.literal("provider") }).strict()]);
 const familyDto = z.object({ familyKey: z.string().regex(/^[a-z0-9][a-z0-9._-]{0,63}$/), displayName: z.string().trim().min(1).max(160) }).strict();
 const editionDto = z.object({
   publicId: z.string().regex(/^oi-[a-z0-9]+(?:[._-][a-z0-9]+)*$/).max(64),
@@ -50,6 +51,7 @@ const bindingDto = z.object({
 const visibilityDto = z.object({ visible: z.boolean() }).strict();
 const lifecycleDto = z.object({ lifecycle: z.enum(["DRAFT", "EXPERIMENTAL", "CANDIDATE", "CANARY", "PRODUCTION", "MAINTENANCE", "DEPRECATED", "RETIRED"]) }).strict();
 const bindingStatusDto = z.object({ status: z.enum(["DRAFT", "ACTIVE", "DISABLED"]) }).strict();
+const catalogLifecycleDto = z.object({ lifecycle: z.enum(["ACTIVE", "DISABLED", "DEPRECATED", "ARCHIVED"]) }).strict();
 
 @ApiTags("OIC Provider and Oi Model Administration")
 @ApiBearerAuth()
@@ -64,10 +66,30 @@ export class ModelFabricController {
   listUpstreamModels(@CurrentPrincipal() actor: AuthenticatedPrincipal, @Param("connectionId", ParseUUIDPipe) connectionId: string) { return this.models.listUpstreamModels(actor, connectionId); }
 
   @Version("1")
+  @Patch("upstream-models/:upstreamModelId/lifecycle")
+  @RequireScopes("oic:catalog:manage")
+  changeUpstreamModelLifecycle(@CurrentPrincipal() actor: AuthenticatedPrincipal, @Param("upstreamModelId", ParseUUIDPipe) upstreamModelId: string, @Body() body: unknown, @Req() request: RequestWithIds) {
+    return this.models.changeUpstreamModelLifecycle(actor, upstreamModelId, parse(catalogLifecycleDto, body).lifecycle, request.requestId, traceHeader(request));
+  }
+
+  @Version("1")
   @Post("provider-connections/:connectionId/catalog/sync")
   @RequireScopes("oic:catalog:manage")
   syncManualCatalog(@CurrentPrincipal() actor: AuthenticatedPrincipal, @Param("connectionId", ParseUUIDPipe) connectionId: string, @Body() body: unknown, @Req() request: RequestWithIds) {
-    return this.models.syncManualCatalog(actor, connectionId, parse(syncDto, body).models, request.requestId, traceHeader(request));
+    const input = parse(catalogRequestDto, body);
+    return "source" in input
+      ? this.models.syncFixtureCatalog(actor, connectionId, request.requestId, traceHeader(request))
+      : this.models.syncManualCatalog(actor, connectionId, input.models, request.requestId, traceHeader(request));
+  }
+
+  @Version("1")
+  @Post("provider-connections/:connectionId/catalog/preview")
+  @RequireScopes("oic:catalog:manage")
+  previewManualCatalog(@CurrentPrincipal() actor: AuthenticatedPrincipal, @Param("connectionId", ParseUUIDPipe) connectionId: string, @Body() body: unknown) {
+    const input = parse(catalogRequestDto, body);
+    return "source" in input
+      ? this.models.previewFixtureCatalog(actor, connectionId)
+      : this.models.previewManualCatalog(actor, connectionId, input.models);
   }
 
   @Version("1")

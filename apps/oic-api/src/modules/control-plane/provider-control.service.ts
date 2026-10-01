@@ -4,10 +4,12 @@ import { randomUUID } from "node:crypto";
 import type { IncomingMessage } from "node:http";
 import { request as httpsRequest } from "node:https";
 import type { AuthenticatedPrincipal } from "../identity/auth.guard";
+import { hasOicConsoleManage, hasOicConsoleRead } from "../identity/foundation-policy";
 import { decryptProviderCredential, encryptProviderCredential } from "./provider-credential.crypto";
 import { resolvePublicHttpsEndpoint } from "./provider-endpoint";
 import type { ResolvedProviderEndpoint } from "./provider-endpoint";
 import { registeredProvider } from "./provider-registry";
+import { isLocalFixtureConnection, LOCAL_PROVIDER_FIXTURE_CATALOG, LOCAL_PROVIDER_FIXTURE_ENDPOINT, LOCAL_PROVIDER_FIXTURE_KEY, localProviderFixtureEnabled } from "./local-provider-fixture";
 
 export type ProviderConnectionInput = {
   providerKey: string;
@@ -42,13 +44,13 @@ export class ProviderControlService {
   }
 
   private canManageScope(actor: AuthenticatedPrincipal, scope: ProviderConnectionInput["scope"], applicationId?: string, tenantId?: string): void {
-    if (actor.scopes.includes("oic:foundation:admin")) return;
+    if (hasOicConsoleManage(actor.scopes)) return;
     if (scope === "PLATFORM" || applicationId !== actor.applicationId) throw new ForbiddenException();
     if (scope === "TENANT" && (!tenantId || !actor.tenantIds.includes(tenantId))) throw new ForbiddenException();
   }
 
   private canReadConnection(actor: AuthenticatedPrincipal, connection: { scope: string; applicationId: string | null; tenantId: string | null }): boolean {
-    if (actor.scopes.includes("oic:foundation:admin")) return true;
+    if (hasOicConsoleRead(actor.scopes)) return true;
     if (connection.scope === "PLATFORM") return false;
     if (connection.applicationId !== actor.applicationId) return false;
     return connection.scope !== "TENANT" || (!!connection.tenantId && actor.tenantIds.includes(connection.tenantId));
@@ -56,16 +58,21 @@ export class ProviderControlService {
 
   async listDefinitions(actor: AuthenticatedPrincipal) {
     this.requireScope(actor, "oic:providers:read");
-    return this.db.oicProviderDefinition.findMany({
+    const definitions = await this.db.oicProviderDefinition.findMany({
       where: { status: "ACTIVE" }, orderBy: { key: "asc" },
       select: { id: true, key: true, displayName: true, authStrategy: true, transportProfiles: true, defaultEndpoint: true, status: true }
     });
+    if (!localProviderFixtureEnabled()) return definitions.filter(({ key }) => key !== LOCAL_PROVIDER_FIXTURE_KEY);
+    const registration = registeredProvider(LOCAL_PROVIDER_FIXTURE_KEY)!;
+    return [...definitions.filter(({ key }) => key !== LOCAL_PROVIDER_FIXTURE_KEY), {
+      id: `development:${LOCAL_PROVIDER_FIXTURE_KEY}`, ...registration, status: "DEVELOPMENT"
+    }].sort((left, right) => left.key.localeCompare(right.key));
   }
 
   async listConnections(actor: AuthenticatedPrincipal) {
     this.requireScope(actor, "oic:providers:read");
     return this.db.oicProviderConnection.findMany({
-      where: actor.scopes.includes("oic:foundation:admin") ? {} : { applicationId: actor.applicationId, OR: [{ scope: "APPLICATION" }, { scope: "TENANT", tenantId: { in: actor.tenantIds } }] },
+      where: hasOicConsoleRead(actor.scopes) ? {} : { applicationId: actor.applicationId, OR: [{ scope: "APPLICATION" }, { scope: "TENANT", tenantId: { in: actor.tenantIds } }] },
       orderBy: [{ createdAt: "desc" }, { id: "asc" }],
       select: { id: true, providerDefinitionId: true, scope: true, applicationId: true, tenantId: true, displayName: true, endpointUrl: true, transportProfile: true, status: true, healthStatus: true, lastValidatedAt: true, createdAt: true, credentials: { select: { id: true, version: true, status: true, createdAt: true, revokedAt: true }, orderBy: { version: "desc" }, take: 1 } }
     });
@@ -83,9 +90,15 @@ export class ProviderControlService {
 
   async requireConnectionAccess(actor: AuthenticatedPrincipal, id: string, requiredScope: "oic:catalog:read" | "oic:catalog:manage" | "oic:models:manage") {
     this.requireScope(actor, requiredScope);
-    const connection = await this.db.oicProviderConnection.findUnique({ where: { id } });
+    const connection = await this.db.oicProviderConnection.findUnique({ where: { id }, include: { providerDefinition: { select: { key: true } } } });
     if (!connection || !this.canReadConnection(actor, connection)) throw new NotFoundException();
     return connection;
+  }
+
+  async localFixtureCatalog(actor: AuthenticatedPrincipal, id: string) {
+    const connection = await this.requireConnectionAccess(actor, id, "oic:catalog:manage");
+    if (!localProviderFixtureEnabled() || !isLocalFixtureConnection(connection)) throw new NotFoundException();
+    return LOCAL_PROVIDER_FIXTURE_CATALOG;
   }
 
   async createConnection(actor: AuthenticatedPrincipal, input: ProviderConnectionInput, requestId?: string, traceId?: string) {
@@ -96,7 +109,15 @@ export class ProviderControlService {
       (input.scope === "TENANT" && (!input.applicationId || !input.tenantId))) throw new ConflictException("Provider connection scope and owner do not match");
     const registration = registeredProvider(input.providerKey);
     if (!registration) throw new NotFoundException();
-    const definition = await this.db.oicProviderDefinition.findFirst({ where: { key: input.providerKey, status: "ACTIVE" } });
+    const isFixture = input.providerKey === LOCAL_PROVIDER_FIXTURE_KEY;
+    let definition = await this.db.oicProviderDefinition.findFirst({ where: { key: input.providerKey, status: "ACTIVE" } });
+    if (isFixture && localProviderFixtureEnabled()) {
+      definition = await this.db.oicProviderDefinition.upsert({
+        where: { key: LOCAL_PROVIDER_FIXTURE_KEY },
+        create: { key: LOCAL_PROVIDER_FIXTURE_KEY, displayName: registration.displayName, authStrategy: "BEARER", transportProfiles: ["openai-chat-completions-v1"], defaultEndpoint: LOCAL_PROVIDER_FIXTURE_ENDPOINT },
+        update: { displayName: registration.displayName, authStrategy: "BEARER", transportProfiles: ["openai-chat-completions-v1"], defaultEndpoint: LOCAL_PROVIDER_FIXTURE_ENDPOINT, status: "ACTIVE" }
+      });
+    }
     if (!definition || !registration.transportProfiles.includes(input.transportProfile) || !definition.transportProfiles.includes(input.transportProfile)) throw new ConflictException("Provider transport is not registered");
     if (input.scope !== "PLATFORM") {
       const app = await this.db.oicApplication.findFirst({ where: { id: input.applicationId, status: "ACTIVE" }, select: { id: true } });
@@ -106,7 +127,9 @@ export class ProviderControlService {
       const tenant = await this.db.oicTenant.findFirst({ where: { id: input.tenantId, applicationId: input.applicationId, status: "ACTIVE" }, select: { id: true } });
       if (!tenant) throw new NotFoundException();
     }
-    const endpoint = await resolvePublicHttpsEndpoint(input.endpointUrl ?? registration.defaultEndpoint ?? "").catch(() => { throw new ConflictException("Provider endpoint is not allowed"); });
+    const endpointUrl = input.endpointUrl ?? registration.defaultEndpoint ?? "";
+    if (isFixture && endpointUrl !== LOCAL_PROVIDER_FIXTURE_ENDPOINT) throw new ConflictException("Local fixture endpoint identity is invalid");
+    const endpoint = isFixture ? { url: new URL(LOCAL_PROVIDER_FIXTURE_ENDPOINT), hostname: "local-fixture.oic.invalid", addresses: [] } : await resolvePublicHttpsEndpoint(endpointUrl).catch(() => { throw new ConflictException("Provider endpoint is not allowed"); });
     const id = randomUUID();
     const result = await this.db.$transaction(async (tx) => {
       const connection = await tx.oicProviderConnection.create({ data: {
@@ -175,8 +198,12 @@ export class ProviderControlService {
     const connection = await this.db.oicProviderConnection.findUnique({ where: { id }, include: { providerDefinition: true } });
     if (!connection || !this.canReadConnection(actor, connection)) throw new NotFoundException();
     if (connection.status === "ARCHIVED") throw new ConflictException("Archived provider connections cannot be tested");
+    if (connection.providerDefinition.key === LOCAL_PROVIDER_FIXTURE_KEY && (!localProviderFixtureEnabled() || !isLocalFixtureConnection(connection))) throw new ConflictException("Local provider fixture is unavailable or has an invalid endpoint identity");
     if (connection.transportProfile !== "openai-chat-completions-v1" || connection.providerDefinition.authStrategy === "API_KEY_HEADER") throw new ConflictException("No connection test is registered for this provider transport");
-    const endpoint = await (this.testNetwork ? this.testNetwork.resolveEndpoint(connection.endpointUrl ?? "") : resolvePublicHttpsEndpoint(connection.endpointUrl ?? "")).catch(() => { throw new ConflictException("Provider endpoint is not allowed"); });
+    const fixture = localProviderFixtureEnabled() && isLocalFixtureConnection(connection);
+    const endpoint = fixture
+      ? { url: new URL(LOCAL_PROVIDER_FIXTURE_ENDPOINT), hostname: "local-fixture.oic.invalid", addresses: [] }
+      : await (this.testNetwork ? this.testNetwork.resolveEndpoint(connection.endpointUrl ?? "") : resolvePublicHttpsEndpoint(connection.endpointUrl ?? "")).catch(() => { throw new ConflictException("Provider endpoint is not allowed"); });
     const credentialRecord = await this.db.oicProviderCredential.findFirst({ where: { connectionId: id, status: "ACTIVE" }, orderBy: { version: "desc" } });
     let token: string | null = null;
     if (connection.providerDefinition.authStrategy === "BEARER") {
@@ -192,7 +219,9 @@ export class ProviderControlService {
       const headers: Record<string, string> = { accept: "application/json" };
       if (token) headers.authorization = `Bearer ${token}`;
       const path = new URL("models", endpoint.url.toString().replace(/\/?$/, "/"));
-      const result = this.testNetwork
+      const result = fixture
+        ? { statusCode: 200, contentType: "application/json", body: Buffer.from(JSON.stringify({ data: LOCAL_PROVIDER_FIXTURE_CATALOG.map(({ upstreamModelId }) => ({ id: upstreamModelId })) })) }
+        : this.testNetwork
         ? await this.testNetwork.request(path, headers, this.testNetwork.timeoutMs ?? 5_000)
         : await this.requestModels(endpoint, path, headers);
       statusCode = result.statusCode;
@@ -249,8 +278,9 @@ export class ProviderControlService {
 
   async changeConnectionStatus(actor: AuthenticatedPrincipal, id: string, status: "ACTIVE" | "SUSPENDED" | "ARCHIVED", requestId?: string, traceId?: string) {
     this.requireScope(actor, "oic:connections:manage");
-    const connection = await this.db.oicProviderConnection.findUnique({ where: { id } });
+    const connection = await this.db.oicProviderConnection.findUnique({ where: { id }, include: { providerDefinition: { select: { key: true } } } });
     if (!connection || !this.canReadConnection(actor, connection)) throw new NotFoundException();
+    if (connection.providerDefinition.key === LOCAL_PROVIDER_FIXTURE_KEY && (!localProviderFixtureEnabled() || !isLocalFixtureConnection(connection))) throw new ConflictException("Local provider fixture is unavailable or has an invalid endpoint identity");
     if (connection.status === "ARCHIVED" && status !== "ARCHIVED") throw new ConflictException("Archived provider connections cannot be reactivated");
     if (status === "ACTIVE") {
       if (connection.healthStatus !== "HEALTHY" || !connection.lastValidatedAt) throw new ConflictException("Provider connection must pass a connection test before activation");

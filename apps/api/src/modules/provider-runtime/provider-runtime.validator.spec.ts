@@ -76,6 +76,19 @@ describe("ProviderRuntimeValidator", () => {
     ]));
   });
 
+  it("does not apply a context-window limit when the catalog value is unknown", () => {
+    const result = validator.validate({
+      options: { estimatedInputTokens: 8000, maxOutputTokens: 2000 },
+      capabilities: capabilities({
+        maxInputTokens: null,
+        maxOutputTokens: null,
+        contextWindow: null
+      }),
+      promptSizeBytes: 1000
+    });
+    expect(result).toMatchObject({ valid: true, diagnostics: [] });
+  });
+
   it("rejects oversized prompt metadata", () => {
     const result = validator.validate({
       options: { estimatedInputTokens: 1 },

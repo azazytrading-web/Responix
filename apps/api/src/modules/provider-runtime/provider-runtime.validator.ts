@@ -11,9 +11,9 @@ export interface ProviderRuntimeDiagnostic {
 }
 
 export interface ProviderCapabilityMetadata {
-  maxInputTokens: number;
-  maxOutputTokens: number;
-  contextWindow: number;
+  maxInputTokens: number | null;
+  maxOutputTokens: number | null;
+  contextWindow: number | null;
   maxPromptBytes: number;
   temperature: { min: number; max: number };
   topP: { min: number; max: number };
@@ -54,8 +54,10 @@ export class ProviderRuntimeValidator {
       "INPUT_TOKEN_LIMIT_EXCEEDED", "options.estimatedInputTokens", "Estimated input exceeds the provider limit");
     this.maximum(diagnostics, outputTokens, capabilities.maxOutputTokens,
       "OUTPUT_TOKEN_LIMIT_EXCEEDED", "options.maxOutputTokens", "Requested output exceeds the model limit");
-    this.maximum(diagnostics, options.estimatedInputTokens + outputTokens, capabilities.contextWindow,
-      "CONTEXT_WINDOW_EXCEEDED", "options", "Estimated input and output exceed the model context window");
+    if (outputTokens !== null && capabilities.contextWindow !== null) {
+      this.maximum(diagnostics, options.estimatedInputTokens + outputTokens, capabilities.contextWindow,
+        "CONTEXT_WINDOW_EXCEEDED", "options", "Estimated input and output exceed the model context window");
+    }
     this.range(diagnostics, options.temperature, capabilities.temperature,
       "TEMPERATURE_OUT_OF_RANGE", "options.temperature");
     this.range(diagnostics, options.topP, capabilities.topP,
@@ -84,13 +86,15 @@ export class ProviderRuntimeValidator {
 
   private maximum(
     diagnostics: ProviderRuntimeDiagnostic[],
-    value: number,
-    maximum: number,
+    value: number | null,
+    maximum: number | null,
     code: string,
     path: string,
     message: string
   ) {
-    if (value > maximum) diagnostics.push(this.error(code, path, `${message} (${value} > ${maximum})`));
+    if (value !== null && maximum !== null && value > maximum) {
+      diagnostics.push(this.error(code, path, `${message} (${value} > ${maximum})`));
+    }
   }
 
   private range(

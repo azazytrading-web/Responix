@@ -206,6 +206,7 @@ describe("ProviderRuntimeRepository", () => {
       modelId: "model",
       status: "PREPARED"
     });
+    expect(result.capabilityMetadata).toEqual(expect.objectContaining({ contextWindow: 10000 }));
     expect(result.requestHash).toMatch(/^[a-f0-9]{64}$/);
     expect(prisma.providerRuntimeRequest.create).toHaveBeenCalledWith(expect.objectContaining({
       data: expect.objectContaining({
@@ -217,6 +218,74 @@ describe("ProviderRuntimeRepository", () => {
     expect(prisma.auditLog.create).toHaveBeenCalledWith(expect.objectContaining({
       data: expect.objectContaining({ action: "provider.runtime.request_prepared" })
     }));
+  });
+
+  it("preserves an unknown catalog context window without rejecting the model", async () => {
+    prisma.aiModel.findFirst.mockResolvedValueOnce({
+      id: "model",
+      providerId: "provider",
+      modelName: "model-1",
+      displayName: "Model 1",
+      contextWindow: null,
+      maxOutputTokens: 2000,
+      supportsVision: true,
+      supportsTools: true,
+      supportsReasoning: false,
+      supportsStreaming: false,
+      supportsJson: true,
+      status: "ACTIVE",
+      updatedAt: now
+    });
+
+    const result = await repository.prepare("workspace", "actor", dto());
+    expect(result.capabilityMetadata).toEqual(expect.objectContaining({ contextWindow: null }));
+  });
+
+  it("uses an explicit runtime context-window override when the catalog value is unknown", async () => {
+    prisma.agentRuntimeSnapshot.findFirst.mockResolvedValueOnce({
+      id: "runtime",
+      workspaceId: "workspace",
+      agentId: "agent",
+      agentVersionId: "agent-version",
+      providerId: "provider",
+      modelId: "model",
+      providerConfigurationId: "provider-configuration",
+      executionProfileId: "profile",
+      executionProfileVersionId: "profile-version",
+      executionRequestId: "execution-request",
+      executionRunId: "execution-run",
+      conversationId: "conversation",
+      correlationId: "correlation",
+      executionId: "execution",
+      traceId: "trace",
+      runtimeContext: {},
+      promptReferences: [],
+      runtimeVariables: [],
+      runtimeMetadata: {},
+      executionConfiguration: { modelConfiguration: { capabilities: { contextWindow: 9000 } } },
+      contentHash: "runtime-hash",
+      createdAt: now
+    });
+    prisma.aiModel.findFirst.mockResolvedValueOnce({
+      id: "model",
+      providerId: "provider",
+      modelName: "model-1",
+      displayName: "Model 1",
+      contextWindow: null,
+      maxOutputTokens: 2000,
+      supportsVision: true,
+      supportsTools: true,
+      supportsReasoning: false,
+      supportsStreaming: false,
+      supportsJson: true,
+      status: "ACTIVE",
+      updatedAt: now
+    });
+
+    await expect(repository.prepare("workspace", "actor", dto({
+      estimatedInputTokens: 8000,
+      maxOutputTokens: 2000
+    }))).rejects.toBeInstanceOf(BadRequestException);
   });
 
   it("validates a stable prepared request and records a transactional audit", async () => {

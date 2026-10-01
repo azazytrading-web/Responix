@@ -404,9 +404,6 @@ export class ProviderRuntimeRepository {
       "Enabled workspace provider configuration is required");
     if (!provider) this.sourceError("PROVIDER_NOT_READY", "provider", "Provider must be active");
     if (!model) this.sourceError("MODEL_NOT_READY", "model", "Model must be active and belong to the provider");
-    const contextWindow = model.contextWindow;
-    if (contextWindow === null) this.sourceError("MODEL_NOT_READY", "model",
-      "Model must have a configured context window");
     if (!executionProfile || !executionProfileVersion) {
       this.sourceError("EXECUTION_PROFILE_NOT_READY", "executionProfile",
         "Published execution profile and immutable version are required");
@@ -442,7 +439,7 @@ export class ProviderRuntimeRepository {
       this.firstString(settings, ["providerVersion", "version"]) ?? "1";
     const modelVersion = dto.modelVersion ??
       this.firstString(modelConfiguration, ["modelVersion", "version"]) ?? model.modelName;
-    const capabilities = this.capabilities({ ...model, contextWindow }, settings, modelConfiguration);
+    const capabilities = this.capabilities(model, settings, modelConfiguration);
     const validation = this.validator.validate({
       options: dto,
       capabilities,
@@ -554,7 +551,7 @@ export class ProviderRuntimeRepository {
 
   private capabilities(
     model: {
-      contextWindow: number;
+      contextWindow: number | null;
       maxOutputTokens: number | null;
       supportsVision: boolean;
       supportsTools: boolean;
@@ -569,13 +566,17 @@ export class ProviderRuntimeRepository {
       ...this.record(settings.capabilities),
       ...this.record(modelConfiguration.capabilities)
     };
+    const contextWindow = this.positiveInteger(configured.contextWindow) ?? model.contextWindow;
     const maxOutputTokens = this.positiveInteger(configured.maxOutputTokens) ??
-      model.maxOutputTokens ?? model.contextWindow;
+      model.maxOutputTokens ?? contextWindow;
+    const maxInputTokens = this.positiveInteger(configured.maxInputTokens) ??
+      (contextWindow !== null && maxOutputTokens !== null
+        ? Math.max(0, contextWindow - maxOutputTokens)
+        : null);
     return {
-      maxInputTokens: this.positiveInteger(configured.maxInputTokens) ??
-        Math.max(0, model.contextWindow - maxOutputTokens),
+      maxInputTokens,
       maxOutputTokens,
-      contextWindow: this.positiveInteger(configured.contextWindow) ?? model.contextWindow,
+      contextWindow,
       maxPromptBytes: this.positiveInteger(configured.maxPromptBytes) ?? 1000000,
       temperature: {
         min: this.number(configured.temperatureMin) ?? 0,

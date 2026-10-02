@@ -281,6 +281,9 @@ export async function POST(request: Request) {
   ) {
     path = "/api/v1/admin/model-families";
     payload = { familyKey: body.familyKey, displayName: body.displayName.trim() };
+  } else if (!path && action === "model.family.retire" && uuid(id)) {
+    path = `/api/v1/admin/model-families/${id}/lifecycle`;
+    method = "PATCH";
   } else if (
     !path &&
     action === "model.edition.create" &&

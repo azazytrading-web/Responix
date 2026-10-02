@@ -1,6 +1,7 @@
 "use client";
 
 import type { ReactNode } from "react";
+import { useState } from "react";
 import type { Locale, Messages, View } from "../../i18n";
 import { dateValue, getString, safeText } from "../../format";
 import type { Row, Snapshot } from "../../types";
@@ -27,6 +28,9 @@ type Props = {
 };
 
 export function ModelFabricViews({ view, data, locale, t, literal, filter, setFilter, filtered, table, badge, mono, appLabel, tenantLabel, actionButton, perform }: Props) {
+  const [showArchived, setShowArchived] = useState(false);
+  const visibleRows = (rows: Row[]) => filtered(showArchived ? rows : rows.filter((row) => row.status !== "ARCHIVED" && row.lifecycle !== "ARCHIVED"));
+  const archiveToggle = <label className="archive-toggle"><input type="checkbox" checked={showArchived} onChange={(event) => setShowArchived(event.target.checked)} />{t.showArchived}</label>;
   return <>          {view === "providers" && data && (
             <section className="panel">
               <div className="panel-heading">
@@ -109,7 +113,7 @@ export function ModelFabricViews({ view, data, locale, t, literal, filter, setFi
                   </div>
                 ))}
               </div>
-              <FilterBox value={filter} onChange={setFilter} placeholder={t.search} />
+              {archiveToggle}<FilterBox value={filter} onChange={setFilter} placeholder={t.search} />
               {table(
                 [
                   t.provider,
@@ -123,7 +127,7 @@ export function ModelFabricViews({ view, data, locale, t, literal, filter, setFi
                   t.state,
                   ""
                 ],
-                filtered(data.connections).map((connection) => {
+                visibleRows(data.connections).map((connection) => {
                   const credential = connection.credential as Row | null;
                   return [
                     getString((connection.providerDefinition as Row) ?? {}, "displayName"),
@@ -147,19 +151,20 @@ export function ModelFabricViews({ view, data, locale, t, literal, filter, setFi
                     getString((connection._count as Row) ?? {}, "upstreamModels"),
                     <>
                       {badge(connection.status)}{" "}
-                      {actionButton(t.changeStatus, "connection.status", {
+                      {connection.status !== "ARCHIVED" && actionButton(t.changeStatus, "connection.status", {
                         id: connection.id,
                         status: connection.status === "ACTIVE" ? "SUSPENDED" : "ACTIVE"
                       })}
+                      {connection.status !== "ARCHIVED" && actionButton(t.archive, "connection.status", { id: connection.id, status: "ARCHIVED" }, "button subtle small-button danger-button")}
                     </>,
                     <div className="stacked-values">
-                      {actionButton(
+                      {connection.status !== "ARCHIVED" && actionButton(
                         t.testConnection,
                         "connection.test",
                         { id: connection.id },
                         "button primary small-button"
                       )}
-                      {(connection.providerDefinition as Row)?.authStrategy !== "NONE" && (
+                      {connection.status !== "ARCHIVED" && (connection.providerDefinition as Row)?.authStrategy !== "NONE" && (
                         <SecretAction
                           title={t.setCredential}
                           label={t.credentialField}
@@ -196,7 +201,7 @@ export function ModelFabricViews({ view, data, locale, t, literal, filter, setFi
                 </div>
                 <CatalogSyncPanel connections={data.connections} t={t} perform={perform} />
               </div>
-              <FilterBox value={filter} onChange={setFilter} placeholder={t.search} />
+              {archiveToggle}<FilterBox value={filter} onChange={setFilter} placeholder={t.search} />
               {table(
                 [
                   t.provider,
@@ -209,7 +214,7 @@ export function ModelFabricViews({ view, data, locale, t, literal, filter, setFi
                   t.pricing,
                   t.lifecycle
                 ],
-                filtered(data.upstreamModels).map((model) => {
+                visibleRows(data.upstreamModels).map((model) => {
                   const pricing = model.pricing as Row;
                   const capabilities = (model.capabilities as Row[]) ?? [];
                   return [
@@ -269,8 +274,9 @@ export function ModelFabricViews({ view, data, locale, t, literal, filter, setFi
                   onSubmit={(values) => perform("model.family.create", values)}
                 />
               </div>
+              {archiveToggle}
               <ModelHierarchy
-                families={filtered(data.modelFamilies)}
+                families={filtered(showArchived ? data.modelFamilies : data.modelFamilies.filter((family) => family.lifecycle !== "RETIRED"))}
                 applications={data.applications}
                 tenants={data.tenants}
                 upstreamModels={data.upstreamModels}
@@ -284,6 +290,7 @@ export function ModelFabricViews({ view, data, locale, t, literal, filter, setFi
                 mono={mono}
                 actionButton={actionButton}
                 perform={perform}
+                showArchived={showArchived}
               />
             </section>
           )}

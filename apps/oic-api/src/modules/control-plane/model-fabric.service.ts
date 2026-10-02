@@ -252,6 +252,19 @@ export class ModelFabricService {
     } catch (error) { if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === "P2002") throw new ConflictException("Model family key is already in use"); throw error; }
   }
 
+  async retireFamily(actor: AuthenticatedPrincipal, familyId: string, requestId?: string, traceId?: string) {
+    this.requireScope(actor, "oic:models:manage");
+    return this.db.$transaction(async (tx) => {
+      const family = await tx.oicModelFamily.findUnique({ where: { id: familyId }, include: { editions: { select: { id: true, lifecycle: true } } } });
+      if (!family) throw new NotFoundException();
+      if (family.lifecycle === "RETIRED") throw new ConflictException("Model family is already retired");
+      if (family.editions.some((edition) => edition.lifecycle !== "RETIRED")) throw new ConflictException("Retire all model editions before retiring their family");
+      const updated = await tx.oicModelFamily.update({ where: { id: familyId }, data: { lifecycle: "RETIRED" } });
+      await tx.oicAuditEvent.create({ data: { actorPrincipalId: actor.id, action: "model-family.lifecycle.changed", targetType: "model-family", targetId: familyId, requestId, traceId, metadata: { from: family.lifecycle, to: "RETIRED" } } });
+      return updated;
+    });
+  }
+
   async createEdition(actor: AuthenticatedPrincipal, familyId: string, input: { publicId: string; editionKey: string; displayName: string; domain?: string }, requestId?: string, traceId?: string) {
     this.requireScope(actor, "oic:models:manage");
     const family = await this.db.oicModelFamily.findUnique({ where: { id: familyId }, select: { id: true, lifecycle: true } });
@@ -279,7 +292,11 @@ export class ModelFabricService {
 
   async createVariant(actor: AuthenticatedPrincipal, revisionId: string, input: { variantKey: string; upstreamModelId: string; transportProfile: string }, requestId?: string, traceId?: string) {
     this.requireScope(actor, "oic:models:manage");
-    const upstream = await this.db.oicUpstreamModel.findUnique({ where: { id: input.upstreamModelId }, include: { providerDefinition: true } });
+    const [upstream, revision] = await Promise.all([
+      this.db.oicUpstreamModel.findUnique({ where: { id: input.upstreamModelId }, include: { providerDefinition: true } }),
+      this.db.oicModelRevision.findUnique({ where: { id: revisionId }, include: { edition: { select: { lifecycle: true } } } })
+    ]);
+    if (!revision || revision.edition.lifecycle === "RETIRED") throw new NotFoundException();
     if (!upstream || upstream.lifecycle !== "ACTIVE") throw new NotFoundException();
     const registration = registeredProvider(upstream.providerDefinition.key);
     if (!registration || !registration.transportProfiles.includes(input.transportProfile) || !upstream.providerDefinition.transportProfiles.includes(input.transportProfile)) throw new ConflictException("Provider transport is not registered");
@@ -301,11 +318,11 @@ export class ModelFabricService {
   }, requestId?: string, traceId?: string) {
     this.requireScope(actor, "oic:models:manage");
     const [edition, variant, connection] = await Promise.all([
-      this.db.oicModelEdition.findUnique({ where: { id: editionId }, select: { id: true } }),
+      this.db.oicModelEdition.findUnique({ where: { id: editionId }, select: { id: true, lifecycle: true } }),
       this.db.oicModelVariant.findUnique({ where: { id: input.variantId }, include: { revision: { select: { editionId: true } } } }),
       this.providers.requireConnectionAccess(actor, input.connectionId, "oic:models:manage")
     ]);
-    if (!edition || !variant || variant.revision.editionId !== editionId || variant.kind !== "EXTERNAL_PROVIDER") throw new NotFoundException();
+    if (!edition || edition.lifecycle === "RETIRED" || !variant || variant.revision.editionId !== editionId || variant.kind !== "EXTERNAL_PROVIDER") throw new NotFoundException();
     if (connection.providerDefinitionId !== variant.providerDefinitionId) throw new ConflictException("Runtime binding provider does not match the model variant");
     if ((input.scope === "PLATFORM" && (input.applicationId || input.tenantId || connection.scope !== "PLATFORM")) ||
       (input.scope === "APPLICATION" && (!input.applicationId || input.tenantId || (connection.scope !== "PLATFORM" && connection.applicationId !== input.applicationId))) ||
@@ -384,6 +401,7 @@ export class ModelFabricService {
       const current = await tx.oicModelEdition.findUnique({ where: { id: editionId }, select: { id: true, lifecycle: true } });
       if (!current) throw new NotFoundException();
       if (!EDITION_TRANSITIONS[current.lifecycle].includes(lifecycle)) throw new ConflictException("Model edition lifecycle transition is not allowed");
+      if (lifecycle === "RETIRED" && await tx.oicRuntimeBinding.findFirst({ where: { editionId, status: "ACTIVE" }, select: { id: true } })) throw new ConflictException("Disable active runtime bindings before retiring the model edition");
       if (lifecycle === "CANARY" || lifecycle === "PRODUCTION") {
         const activeBinding = await tx.oicRuntimeBinding.findFirst({ where: { editionId, status: "ACTIVE", environment: "production" }, select: { id: true } });
         if (!activeBinding) throw new ConflictException("A model cannot be published without an active production binding");

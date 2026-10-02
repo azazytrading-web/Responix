@@ -256,6 +256,10 @@ export default function ConsoleApp({ platformUrl }: { platformUrl: string }) {
       onClick={() => {
         const confirmation = action === "provider.credential.revoke"
           ? t.confirmProviderCredentialRevoke
+          : values.status === "ARCHIVED" || values.lifecycle === "ARCHIVED"
+            ? t.confirmArchive
+          : action === "model.family.retire" || values.lifecycle === "RETIRED"
+            ? t.confirmRetire
           : action === "model.visibility.revoke"
             ? t.confirmVisibilityRevoke
           : action.endsWith(".revoke")

@@ -100,6 +100,13 @@ export class ModelFabricController {
   }
 
   @Version("1")
+  @Patch("model-families/:familyId/lifecycle")
+  @RequireScopes("oic:models:manage")
+  retireFamily(@CurrentPrincipal() actor: AuthenticatedPrincipal, @Param("familyId", ParseUUIDPipe) familyId: string, @Req() request: RequestWithIds) {
+    return this.models.retireFamily(actor, familyId, request.requestId, traceHeader(request));
+  }
+
+  @Version("1")
   @Post("model-families/:familyId/editions")
   @RequireScopes("oic:models:manage")
   createEdition(@CurrentPrincipal() actor: AuthenticatedPrincipal, @Param("familyId", ParseUUIDPipe) familyId: string, @Body() body: unknown, @Req() request: RequestWithIds) {

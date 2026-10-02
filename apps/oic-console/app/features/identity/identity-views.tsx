@@ -1,6 +1,7 @@
 "use client";
 
 import type { ReactNode } from "react";
+import { useState } from "react";
 import type { Locale, Messages, View } from "../../i18n";
 import { dateValue, getString, safeText } from "../../format";
 import type { Row, Snapshot } from "../../types";
@@ -26,6 +27,9 @@ type Props = {
 };
 
 export function IdentityViews({ view, data, locale, t, literal, filter, setFilter, filtered, table, badge, mono, appLabel, tenantLabel, actionButton, perform, issueCredential }: Props) {
+  const [showArchived, setShowArchived] = useState(false);
+  const visibleRows = (rows: Row[]) => filtered(showArchived ? rows : rows.filter((row) => row.status !== "ARCHIVED"));
+  const archiveToggle = <label className="archive-toggle"><input type="checkbox" checked={showArchived} onChange={(event) => setShowArchived(event.target.checked)} />{t.showArchived}</label>;
   return <>          {view === "applications" && data && (
             <section className="panel">
               <div className="panel-heading">
@@ -44,10 +48,10 @@ export function IdentityViews({ view, data, locale, t, literal, filter, setFilte
                   onSubmit={(values) => perform("application.create", values)}
                 />
               </div>
-              <FilterBox value={filter} onChange={setFilter} placeholder={t.search} />
+              {archiveToggle}<FilterBox value={filter} onChange={setFilter} placeholder={t.search} />
               {table(
                 [t.key, t.name, t.id, t.tenantCount, t.principalsCount, t.state],
-                filtered(data.applications).map((app) => [
+                visibleRows(data.applications).map((app) => [
                   mono(app.key),
                   getString(app, "displayName"),
                   mono(app.id, true),
@@ -55,12 +59,13 @@ export function IdentityViews({ view, data, locale, t, literal, filter, setFilte
                   getString((app._count as Row) ?? {}, "principals"),
                   <>
                     {badge(app.status)}{" "}
-                    {actionButton(t.changeStatus, "identity.status", {
+                    {app.status !== "ARCHIVED" && actionButton(t.changeStatus, "identity.status", {
                       kind: "application",
                       applicationId: app.id,
                       id: app.id,
                       status: app.status === "ACTIVE" ? "SUSPENDED" : "ACTIVE"
                     })}
+                    {app.status !== "ARCHIVED" && actionButton(t.archive, "identity.status", { kind: "application", applicationId: app.id, id: app.id, status: "ARCHIVED" }, "button subtle small-button danger-button")}
                   </>
                 ])
               )}
@@ -93,10 +98,10 @@ export function IdentityViews({ view, data, locale, t, literal, filter, setFilte
                   onSubmit={(values) => perform("tenant.create", values)}
                 />
               </div>
-              <FilterBox value={filter} onChange={setFilter} placeholder={t.search} />
+              {archiveToggle}<FilterBox value={filter} onChange={setFilter} placeholder={t.search} />
               {table(
                 [t.key, t.name, t.application, t.externalReferences, t.id, t.state, ""],
-                filtered(data.tenants).map((tenant) => {
+                visibleRows(data.tenants).map((tenant) => {
                   const refs = (tenant.references as Row[]) ?? [];
                   return [
                     mono(tenant.key ?? tenant.id),
@@ -160,12 +165,15 @@ export function IdentityViews({ view, data, locale, t, literal, filter, setFilte
                     </div>,
                     mono(tenant.id, true),
                     badge(tenant.status),
-                    actionButton(t.changeStatus, "identity.status", {
-                      kind: "tenant",
-                      applicationId: tenant.applicationId,
-                      id: tenant.id,
-                      status: tenant.status === "ACTIVE" ? "SUSPENDED" : "ACTIVE"
-                    })
+                    <div className="stacked-values">
+                      {tenant.status !== "ARCHIVED" && actionButton(t.changeStatus, "identity.status", {
+                        kind: "tenant",
+                        applicationId: tenant.applicationId,
+                        id: tenant.id,
+                        status: tenant.status === "ACTIVE" ? "SUSPENDED" : "ACTIVE"
+                      })}
+                      {tenant.status !== "ARCHIVED" && actionButton(t.archive, "identity.status", { kind: "tenant", applicationId: tenant.applicationId, id: tenant.id, status: "ARCHIVED" }, "button subtle small-button danger-button")}
+                    </div>
                   ];
                 })
               )}
@@ -198,7 +206,7 @@ export function IdentityViews({ view, data, locale, t, literal, filter, setFilte
                   onSubmit={(values) => perform("principal.create", values)}
                 />
               </div>
-              <FilterBox value={filter} onChange={setFilter} placeholder={t.search} />
+              {archiveToggle}<FilterBox value={filter} onChange={setFilter} placeholder={t.search} />
               {table(
                 [
                   t.key,
@@ -211,7 +219,7 @@ export function IdentityViews({ view, data, locale, t, literal, filter, setFilte
                   t.state,
                   t.details
                 ],
-                filtered(data.principals).map((principal) => {
+                visibleRows(data.principals).map((principal) => {
                   const creds = (principal.credentials as Row[]) ?? [];
                   const scopes = (principal.scopes as Row[]) ?? [];
                   const grants = (principal.tenantGrants as Row[]) ?? [];
@@ -350,12 +358,13 @@ export function IdentityViews({ view, data, locale, t, literal, filter, setFilte
                     dateValue(creds[0]?.lastUsedAt, locale),
                     <>
                       {badge(principal.status)}{" "}
-                      {actionButton(t.changeStatus, "identity.status", {
+                      {principal.status !== "ARCHIVED" && actionButton(t.changeStatus, "identity.status", {
                         kind: "principal",
                         applicationId: principal.applicationId,
                         id: principal.id,
                         status: principal.status === "ACTIVE" ? "SUSPENDED" : "ACTIVE"
                       })}
+                      {principal.status !== "ARCHIVED" && actionButton(t.archive, "identity.status", { kind: "principal", applicationId: principal.applicationId, id: principal.id, status: "ARCHIVED" }, "button subtle small-button danger-button")}
                     </>,
                     mono(principal.id, true)
                   ];

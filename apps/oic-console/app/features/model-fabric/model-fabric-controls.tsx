@@ -157,7 +157,8 @@ export function ModelHierarchy({
   badge,
   mono,
   actionButton,
-  perform
+  perform,
+  showArchived
 }: {
   families: Row[];
   applications: Row[];
@@ -173,8 +174,10 @@ export function ModelHierarchy({
   mono: (value: unknown, clipped?: boolean) => ReactNode;
   actionButton: (label: string, action: string, values: Row, className?: string) => ReactNode;
   perform: (action: string, values?: Row) => Promise<Row | null>;
+  showArchived: boolean;
 }) {
   const submit = (action: string, base: Row = {}) => (values: Row) => perform(action, { ...base, ...values });
+  const nextEditionLifecycle: Record<string, string> = { DRAFT: "EXPERIMENTAL", EXPERIMENTAL: "CANDIDATE", CANDIDATE: "CANARY", CANARY: "MAINTENANCE", PRODUCTION: "MAINTENANCE", MAINTENANCE: "DEPRECATED" };
   const applicationOptions = applications.map((app) => ({ value: safeText(app.id), label: `${safeText(app.key)} · ${safeText(app.displayName)}` }));
   const tenantOptions = tenants.map((tenant) => ({ value: safeText(tenant.id), label: `${appLabel(tenant.applicationId)} · ${safeText(tenant.displayName)}` }));
   const upstreamOptions = upstreamModels.filter((model) => model.lifecycle === "ACTIVE").map((model) => ({
@@ -195,7 +198,8 @@ export function ModelHierarchy({
               </small>
             </div>
             {badge(family.lifecycle)}
-            <FormButton
+            {family.lifecycle !== "RETIRED" && actionButton(t.retireFamily, "model.family.retire", { id: family.id }, "button subtle small-button danger-button")}
+            {family.lifecycle !== "RETIRED" && <FormButton
               title={t.createEdition}
               fields={[
                 { name: "publicId", label: t.publicId, maxLength: 64, pattern: "oi-[a-z0-9]+([._-][a-z0-9]+)*" },
@@ -205,9 +209,9 @@ export function ModelHierarchy({
               ]}
               submitLabel={t.create}
               onSubmit={submit("model.edition.create", { familyId: family.id })}
-            />
+            />}
           </div>
-          {((family.editions as Row[]) ?? []).map((edition) => (
+          {((family.editions as Row[]) ?? []).filter((edition) => showArchived || edition.lifecycle !== "RETIRED").map((edition) => (
             <div className="edition-block" key={String(edition.id)}>
               <div className="edition-head">
                 <span className="tree-marker">02</span>
@@ -221,7 +225,7 @@ export function ModelHierarchy({
                   </small>
                 </div>
                 {badge(edition.lifecycle)}{" "}
-                <FormButton
+                {edition.lifecycle !== "RETIRED" && <FormButton
                   title={t.createRevision}
                   fields={[
                     { name: "instructions", label: t.instructions, type: "textarea", maxLength: 100_000, required: false },
@@ -229,15 +233,11 @@ export function ModelHierarchy({
                   ]}
                   submitLabel={t.create}
                   onSubmit={submit("model.revision.create", { editionId: edition.id })}
-                />
-                {actionButton(t.changeStatus, "edition.lifecycle", {
+                />}
+                {edition.lifecycle !== "RETIRED" && actionButton(t.retireEdition, "edition.lifecycle", { id: edition.id, lifecycle: "RETIRED" }, "button subtle small-button danger-button")}
+                {edition.lifecycle !== "RETIRED" && nextEditionLifecycle[String(edition.lifecycle)] && actionButton(t.changeStatus, "edition.lifecycle", {
                   id: edition.id,
-                  lifecycle:
-                    edition.lifecycle === "DRAFT"
-                      ? "EXPERIMENTAL"
-                      : edition.lifecycle === "CANDIDATE"
-                        ? "PRODUCTION"
-                        : "MAINTENANCE"
+                  lifecycle: nextEditionLifecycle[String(edition.lifecycle)]
                 })}
               </div>
               <div className="revision-list">
@@ -270,14 +270,14 @@ export function ModelHierarchy({
                               : safeText((variant.upstreamModel as Row)?.upstreamModelId)}
                           </small>
                         </div>
-                        <FormButton
+                        {edition.lifecycle !== "RETIRED" && <FormButton
                           title={t.createBinding}
                           fields={[
                             {
                               name: "connectionId",
                               label: t.connectionRecord,
                               options: connections
-                                .filter((connection) => getString((connection.providerDefinition as Row) ?? {}, "key") === getString((variant.providerDefinition as Row) ?? {}, "key"))
+                                .filter((connection) => connection.status !== "ARCHIVED" && getString((connection.providerDefinition as Row) ?? {}, "key") === getString((variant.providerDefinition as Row) ?? {}, "key"))
                                 .map((connection) => ({ value: safeText(connection.id), label: `${safeText(connection.displayName)} · ${safeText(connection.scope)}` }))
                             },
                             { name: "scope", label: t.scope, options: ["PLATFORM", "APPLICATION", "TENANT"].map((value) => ({ value, label: value })) },
@@ -287,7 +287,7 @@ export function ModelHierarchy({
                           ]}
                           submitLabel={t.create}
                           onSubmit={submit("model.binding.create", { editionId: edition.id, variantId: variant.id })}
-                        />
+                        />}
                         <div className="binding-list">
                           {((variant.bindings as Row[]) ?? []).map((binding) => (
                             <div className="binding-row" key={String(binding.id)}>
@@ -306,7 +306,7 @@ export function ModelHierarchy({
                                 </small>
                               </div>
                               {badge(binding.status)}{" "}
-                              {actionButton(t.changeStatus, "binding.status", {
+                              {(edition.lifecycle !== "RETIRED" || binding.status === "ACTIVE") && actionButton(t.changeStatus, "binding.status", {
                                 id: binding.id,
                                 status: binding.status === "ACTIVE" ? "DISABLED" : "ACTIVE"
                               })}
@@ -315,7 +315,7 @@ export function ModelHierarchy({
                         </div>
                       </div>
                     ))}
-                    <FormButton
+                    {edition.lifecycle !== "RETIRED" && <FormButton
                       title={t.createVariant}
                       fields={[
                         { name: "variantKey", label: t.variantKey, maxLength: 64, pattern: "[a-z0-9][a-z0-9._-]{0,63}" },
@@ -328,10 +328,10 @@ export function ModelHierarchy({
                       ]}
                       submitLabel={t.create}
                       onSubmit={submit("model.variant.create", { revisionId: revision.id })}
-                    />
+                    />}
                   </div>
                 ))}
-                {!(edition.revisions as Row[] ?? []).length && (
+                {edition.lifecycle !== "RETIRED" && !(edition.revisions as Row[] ?? []).length && (
                   <FormButton
                     title={t.createRevision}
                     fields={[

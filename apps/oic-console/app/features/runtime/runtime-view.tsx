@@ -1,9 +1,11 @@
 "use client";
 
 import type { FormEvent } from "react";
+import { useState } from "react";
 import type { Locale, Messages, View } from "../../i18n";
 import { safeText } from "../../format";
 import type { Row, Snapshot } from "../../types";
+import { EmptyState, EntityPicker } from "../../components/oic-primitives";
 
 type Props = {
   view: View;
@@ -17,6 +19,29 @@ type Props = {
 };
 
 export function RuntimeView({ view, data, locale, t, literal, runInvocation, running, invocation }: Props) {
+  const [model, setModel] = useState("");
+  const [tenantId, setTenantId] = useState("");
+  const visibleModels = (data?.modelFamilies ?? []).flatMap((family) => {
+    const editions = Array.isArray(family.editions) ? family.editions as Row[] : [];
+    return editions
+      .filter((edition) => (Array.isArray(edition.visibility) ? edition.visibility as Row[] : []).some((item) => item.applicationId === data?.runtimeContext?.application.id))
+      .map((edition) => {
+        const lifecycle = safeText(edition.lifecycle) || "ACTIVE";
+        const enumLabels = t.enums as Record<string, string>;
+        return {
+          id: safeText(edition.publicId),
+          label: safeText(edition.displayName) || safeText(edition.publicId),
+          metadata: `${safeText(family.displayName)} · ${safeText(edition.publicId)}`,
+          status: lifecycle,
+          statusLabel: enumLabels[lifecycle] ?? lifecycle
+        };
+      });
+  }).filter((option, index, items) => option.id && items.findIndex((candidate) => candidate.id === option.id) === index);
+  const tenants = (data?.runtimeContext?.tenants ?? []).map((tenant) => ({
+    id: safeText(tenant.id),
+    label: safeText(tenant.displayName) || safeText(tenant.key),
+    metadata: safeText(tenant.key)
+  }));
   return <>          {view === "runtime" && (
             <section className="runtime-grid">
               <div className="panel runtime-form-panel">
@@ -31,28 +56,11 @@ export function RuntimeView({ view, data, locale, t, literal, runInvocation, run
                 <form
                   className="runtime-form"
                   onSubmit={(event) => {
+                    if (!model) { event.preventDefault(); return; }
                     void runInvocation(event);
                   }}
                 >
-                  <label>
-                    {t.requestModel}
-                    <input
-                      name="model"
-                      required
-                      maxLength={64}
-                      pattern="oi-[a-z0-9]+([._-][a-z0-9]+)*"
-                      dir="ltr"
-                      list="oic-visible-models"
-                      placeholder={t.runtimeModelHint}
-                    />
-                    <datalist id="oic-visible-models">
-                      {data?.modelFamilies.flatMap((family) =>
-                        ((family.editions as Row[]) ?? [])
-                          .filter((edition) => ((edition.visibility as Row[]) ?? []).some((item) => item.applicationId === data.runtimeContext?.application.id))
-                          .map((edition) => <option key={String(edition.id)} value={String(edition.publicId)}>{String(edition.displayName)}</option>)
-                      )}
-                    </datalist>
-                  </label>
+                  <EntityPicker name="model" options={visibleModels} value={model} onChange={setModel} label={t.requestModel} placeholder={t.chooseRuntimeModel} emptyLabel={t.noVisibleModels} disabled={!data?.runtimeContext} dir={locale === "ar" ? "rtl" : "ltr"} />
                   <div className="runtime-context-row">
                     <span>{t.runtimeApplication}</span>
                     <b>{data?.runtimeContext?.application ? `${safeText(data.runtimeContext.application.key)} · ${safeText(data.runtimeContext.application.displayName)}` : t.noRuntimeContext}</b>
@@ -71,17 +79,7 @@ export function RuntimeView({ view, data, locale, t, literal, runInvocation, run
                     />
                   </label>
                   <div className="form-row">
-                    <label>
-                      {t.runtimeTenant}
-                      <select name="tenantId" defaultValue="" disabled={!data?.runtimeContext}>
-                        <option value="">—</option>
-                        {(data?.runtimeContext?.tenants ?? []).map((tenant) => (
-                          <option key={String(tenant.id)} value={String(tenant.id)}>
-                            {`${safeText(tenant.key)} · ${safeText(tenant.displayName)}`}
-                          </option>
-                        ))}
-                      </select>
-                    </label>
+                    <EntityPicker name="tenantId" options={tenants} value={tenantId} onChange={setTenantId} label={t.runtimeTenant} placeholder={t.chooseRuntimeTenant} emptyLabel={t.noGrantedTenants} disabled={!data?.runtimeContext || tenants.length === 0} dir={locale === "ar" ? "rtl" : "ltr"} />
                     <label>
                       {t.maxOutput}
                       <input
@@ -117,11 +115,7 @@ export function RuntimeView({ view, data, locale, t, literal, runInvocation, run
                     <pre className="response-code">{JSON.stringify(invocation.result ?? invocation, null, 2)}</pre>
                   </>
                 ) : (
-                  <div className="response-empty">
-                    <span>01</span>
-                    <p>{t.noData}</p>
-                    <small>{literal("REQUEST → RESOLUTION → EXECUTION → RESPONSE")}</small>
-                  </div>
+                  <EmptyState title={t.runtimeAwaitingResult} description={t.runtimeAwaitingExplain} technicalReason={literal("REQUEST → RESOLUTION → EXECUTION → RESPONSE")} />
                 )}
               </div>
             </section>

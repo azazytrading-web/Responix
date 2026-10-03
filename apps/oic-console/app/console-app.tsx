@@ -1,12 +1,14 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import type { FormEvent } from "react";
 
 import { arabicLiterals, messages, nav } from "./i18n";
 import type { Locale, Messages, View } from "./i18n";
 import { dateValue, entryText, getString, pretty, safeText } from "./format";
 import type { Row, Snapshot } from "./types";
+import { ActionFeedback, DataTable, EmptyState, ErrorState, LoadingState, Slider } from "./components/oic-primitives";
+import { PageFrame } from "./components/oic-frames";
 import { IdentityViews } from "./features/identity/identity-views";
 import { ModelFabricViews } from "./features/model-fabric/model-fabric-views";
 import { OverviewView } from "./features/overview/overview-view";
@@ -44,6 +46,11 @@ export default function ConsoleApp({ platformUrl }: { platformUrl: string }) {
   const [selectedKnowledge, setSelectedKnowledge] = useState<Row | null>(null);
   const [workbenchResult, setWorkbenchResult] = useState<Row | null>(null);
   const [running, setRunning] = useState(false);
+  const [commandOpen, setCommandOpen] = useState(false);
+  const [commandQuery, setCommandQuery] = useState("");
+  const commandTriggerRef = useRef<HTMLButtonElement>(null);
+  const commandResultsRef = useRef<HTMLDivElement>(null);
+  const commandDialogRef = useRef<HTMLElement>(null);
   const t = messages[locale] as Messages;
   const literal = (value: string) => (locale === "ar" ? (arabicLiterals[value] ?? value) : value);
 
@@ -123,8 +130,8 @@ export default function ConsoleApp({ platformUrl }: { platformUrl: string }) {
   }, [loadSnapshot]);
 
   useEffect(() => {
-    if (authenticated) void loadHealth();
-  }, [authenticated, loadHealth]);
+    if (authenticated && snapshot) void loadHealth();
+  }, [authenticated, snapshot, loadHealth]);
   useEffect(() => { if (authenticated) void loadProfiles(); }, [authenticated, loadProfiles]);
   useEffect(() => { if (authenticated) void loadExecutions(); }, [authenticated, loadExecutions]);
   useEffect(() => { if (authenticated) { void loadIntelligenceRecords("memory"); void loadIntelligenceRecords("knowledge"); } }, [authenticated, loadIntelligenceRecords]);
@@ -132,6 +139,31 @@ export default function ConsoleApp({ platformUrl }: { platformUrl: string }) {
     document.documentElement.lang = locale;
     document.documentElement.dir = locale === "ar" ? "rtl" : "ltr";
   }, [locale]);
+
+  useEffect(() => {
+    if (!authenticated) return;
+    const onKeyDown = (event: KeyboardEvent) => {
+      if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === "k") {
+        event.preventDefault();
+        setCommandOpen(true);
+        setCommandQuery("");
+      }
+      if (event.key === "Escape") setCommandOpen(false);
+      if (commandOpen && event.key === "Tab") {
+        const focusable = Array.from(commandDialogRef.current?.querySelectorAll<HTMLElement>('input:not(:disabled),button:not(:disabled),[tabindex]:not([tabindex="-1"])') ?? []);
+        if (!focusable.length) { event.preventDefault(); return; }
+        if (event.shiftKey && document.activeElement === focusable[0]) { event.preventDefault(); focusable.at(-1)?.focus(); }
+        else if (!event.shiftKey && document.activeElement === focusable.at(-1)) { event.preventDefault(); focusable[0]?.focus(); }
+      }
+    };
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [authenticated, commandOpen]);
+
+  useEffect(() => {
+    if (!commandOpen) return;
+    return () => commandTriggerRef.current?.focus();
+  }, [commandOpen]);
 
   const setLanguage = (next: Locale) => {
     setLocale(next);
@@ -233,7 +265,7 @@ export default function ConsoleApp({ platformUrl }: { platformUrl: string }) {
     </span>
   );
   const table = (headers: string[], rows: React.ReactNode[][], empty: string = t.noData) => (
-    <div className="table-frame">
+    <DataTable label={headers.join(", ")} className="table-frame">
       <table>
         <thead>
           <tr>
@@ -254,13 +286,13 @@ export default function ConsoleApp({ platformUrl }: { platformUrl: string }) {
           ) : (
             <tr>
               <td colSpan={headers.length} className="empty-cell">
-                {empty}
+                <EmptyState title={empty} description={t.emptyTableExplain} />
               </td>
             </tr>
           )}
         </tbody>
       </table>
-    </div>
+    </DataTable>
   );
   const metric = (index: string, label: string, value: number, note: string) => (
     <article className="metric-card" key={label}>
@@ -327,7 +359,13 @@ export default function ConsoleApp({ platformUrl }: { platformUrl: string }) {
     );
   };
   const data = snapshot;
-  const title = t[view];
+  const activeDestination = nav.find((item) => item.id === view);
+  const title = activeDestination?.label ? t[activeDestination.label] : t[view];
+  const commandItems = nav.filter((item) => {
+    const label = item.label ? t[item.label] : t[item.id];
+    return `${label} ${t[item.group]}`.toLocaleLowerCase().includes(commandQuery.trim().toLocaleLowerCase());
+  });
+  const selectDestination = (id: View) => { setView(id); setFilter(""); setCommandOpen(false); };
 
   if (authenticated === null)
     return (
@@ -425,7 +463,7 @@ export default function ConsoleApp({ platformUrl }: { platformUrl: string }) {
           API <b>{health?.status === "ok" ? t.online : t.check}</b>
         </div>
         <nav aria-label={locale === "ar" ? "التنقل الرئيسي" : "Primary navigation"}>
-          {(["identity", "providersGroup", "intelligence", "operations"] as const).map((group) => (
+          {(["command", "foundation", "factory", "intelligence", "lab", "operations"] as const).map((group) => (
             <div className="nav-group" key={group}>
               <p>{t[group]}</p>
               {nav
@@ -435,14 +473,14 @@ export default function ConsoleApp({ platformUrl }: { platformUrl: string }) {
                     key={item.id}
                     type="button"
                     className={`nav-item ${view === item.id ? "selected" : ""}`}
+                    aria-current={view === item.id ? "page" : undefined}
                     onClick={() => {
                       setView(item.id);
                       setFilter("");
                     }}
                   >
-                    <span className="nav-number">{item.number}</span>
-                    <span>{t[item.id]}</span>
-                    {view === item.id && <span className="nav-arrow">↗</span>}
+                    <span className="nav-item-label">{item.label ? t[item.label] : t[item.id]}</span>
+                    {view === item.id && <span className="nav-arrow" aria-hidden="true">↗</span>}
                   </button>
                 ))}
             </div>
@@ -460,13 +498,25 @@ export default function ConsoleApp({ platformUrl }: { platformUrl: string }) {
             <span>OIC</span>
             <b>/</b>
             <span>{title}</span>
-            <span className="crumb-code">{nav.find((item) => item.id === view)?.number}</span>
           </div>
           <div className="top-actions">
             <div className="api-state">
               <span className={`status-light ${health?.status === "ok" ? "online" : "offline"}`} />
               {health?.status === "ok" ? t.connected : t.unavailable}
             </div>
+            <button
+              className="command-trigger"
+              ref={commandTriggerRef}
+              type="button"
+              onClick={() => { setCommandOpen(true); setCommandQuery(""); }}
+              aria-label={t.openCommand}
+              aria-keyshortcuts="Control+K Meta+K"
+              title={t.openCommand}
+            >
+              <span className="command-trigger-icon" aria-hidden="true">⌕</span>
+              <span className="command-trigger-label">{t.openCommand}</span>
+              <kbd>CTRL K</kbd>
+            </button>
             <button
               className="locale-button"
               type="button"
@@ -489,15 +539,14 @@ export default function ConsoleApp({ platformUrl }: { platformUrl: string }) {
             </button>
           </div>
         </header>
-        <section className="content-area">
-          <div className="page-heading">
-            <div>
-              <div className="eyebrow">
-                Oi {t.intelligenceCore} <span>/{nav.find((item) => item.id === view)?.number}</span>
-              </div>
-              <h1>{title}</h1>
-              <p>{view === "overview" ? t.subtitle : `${t.product} / ${title}`}</p>
-            </div>
+        <PageFrame
+          breadcrumbLabel={t.breadcrumb}
+          workspaceNavigationLabel={t.workspaceNavigation}
+          context={`Oi ${t.intelligenceCore} / ${t[activeDestination?.group ?? "command"]}`}
+          title={title}
+          description={view === "overview" ? t.subtitle : `${t.product} / ${title}`}
+          dir={locale === "ar" ? "rtl" : "ltr"}
+          meta={
             <div className="heading-meta">
               <span>{literal("CONTROL PLANE")}</span>
               <strong>OIC—4.5</strong>
@@ -505,25 +554,16 @@ export default function ConsoleApp({ platformUrl }: { platformUrl: string }) {
                 {data ? `${t.generated} · ${dateValue(data.generatedAt, locale)}` : t.loading}
               </small>
             </div>
-          </div>
+          }
+        >
           {pageError && (
-            <div className="notice error-notice" role="alert">
-              {pageError}{" "}
-              <button type="button" onClick={() => void loadSnapshot()}>
-                {t.retry}
-              </button>
-            </div>
+            <ErrorState title={t.unavailable} description={pageError} action={<button type="button" className="button subtle" onClick={() => void loadSnapshot()}>{t.retry}</button>} />
           )}
           {toast && (
-            <div className="notice success-notice" role="status">
-              {toast}
-            </div>
+            <ActionFeedback result={toast} />
           )}
           {loading && (
-            <div className="loading-line">
-              <span />
-              {t.loading}
-            </div>
+            <LoadingState label={t.loading} />
           )}
 
           <OverviewView view={view} data={data} health={health} locale={locale} t={t} literal={literal} navigate={setView} badge={badge} mono={mono} table={table} metric={metric} renderAudit={(events) => renderAudit(events, table, mono, dateValue, locale, t)} />
@@ -547,12 +587,11 @@ export default function ConsoleApp({ platformUrl }: { platformUrl: string }) {
             perform={perform}
           />
           {view === "profiles" && <section className="panel-stack">
-            <div className="section-heading"><div><div className="eyebrow">OIC / INTELLIGENCE</div><h2>{title}</h2><p>{locale === "ar" ? "إصدارات ملفات السياسات المرتبطة بمراجعات النماذج." : "Versioned policies assigned to Oi Model revisions."}</p></div></div>
             <form className="form-grid" onSubmit={(event) => { event.preventDefault(); const form = new FormData(event.currentTarget); const key = entryText(form.get("profileKey")); const displayName = entryText(form.get("displayName")); const source = profiles.flatMap((profile) => rowsOf(profile.revisions)).find((revision) => String(revision.id) === entryText(form.get("sourceRevisionId"))); if (!source) return; void perform("intelligence.profile.clone", { sourceRevisionId: String(source.id), profileKey: key, displayName }); }}>
               <label>{locale === "ar" ? "مفتاح الملف الجديد" : "New profile key"}<input name="profileKey" pattern="[a-z][a-z0-9._-]{1,63}" required /></label><label>{t.displayName}<input name="displayName" required maxLength={160} /></label><label>{locale === "ar" ? "نسخة المصدر" : "Source revision"}<select name="sourceRevisionId" required>{profiles.flatMap((profile) => rowsOf(profile.revisions).map((revision) => <option key={String(revision.id)} value={String(revision.id)}>{String(profile.profileKey)} · r{String(revision.revision)}</option>))}</select></label><button className="button primary" type="submit">{locale === "ar" ? "استنساخ الملف" : "Clone profile"}</button>
             </form>
             {profiles.map((profile) => <article className="data-card" key={String(profile.id)}><header><div><strong>{String(profile.displayName)}</strong><small>{String(profile.profileKey)} · {String(profile.lifecycle)} · {profile.source === "BUILTIN" ? "Built-in" : "Custom"}</small></div><span>{rowsOf(profile.revisions).length ? `${scalarText(rowsOf(profile.revisions)[0]?.revision, "0")} revisions` : "No revisions"}</span></header>
-              {rowsOf(profile.revisions).map((revision) => <details key={String(revision.id)}><summary>{String(profile.profileKey)} r{String(revision.revision)} · {String(revision.id)}</summary><div className="metric-grid">{["contextIntensity", "memoryIntensity", "retrievalIntensity", "reasoningIntensity", "toolsIntensity", "verificationIntensity", "synthesisIntensity", "efficiencyIntensity"].map((key) => <label key={key}>{key}<input aria-label={key} type="number" min={0} max={100} defaultValue={Number(revision[key] ?? 0)} disabled={profile.source === "BUILTIN"} data-profile-intensity={key} /></label>)}</div>{profile.source !== "BUILTIN" && <button className="button subtle" type="button" onClick={() => { const inputs = Array.from(document.querySelectorAll<HTMLInputElement>("[data-profile-intensity]")); const currentInputs = inputs.filter((input) => input.closest("details")?.querySelector("summary")?.textContent?.includes(`${String(profile.profileKey)} r${String(revision.revision)}`)); const policy: Row = {}; for (const key of ["contextIntensity", "memoryIntensity", "retrievalIntensity", "reasoningIntensity", "toolsIntensity", "verificationIntensity", "synthesisIntensity", "efficiencyIntensity", "maxStages", "maxProviderCalls", "maxToolCalls", "maxRetrievalQueries", "maxMemoryItems", "maxCandidates", "maxVerificationRounds", "maxContextTokens", "maxExecutionMs", "allowMemoryWrites", "allowRevision", "requireEvidence"]) if (revision[key] !== undefined) policy[key] = revision[key]; for (const input of currentInputs) { const key = input.dataset.profileIntensity; if (key) policy[key] = Number(input.value); } for (const key of ["id", "profileId", "revision", "createdAt", "updatedAt"]) delete policy[key]; void perform("intelligence.profile.revision", { profileId: String(profile.id), policy }); }}>{locale === "ar" ? "حفظ كنسخة جديدة" : "Save as new revision"}</button>}</details>)}
+              {rowsOf(profile.revisions).map((revision) => <details key={String(revision.id)}><summary>{String(profile.profileKey)} r{String(revision.revision)} · {String(revision.id)}</summary><div className="metric-grid">{["contextIntensity", "memoryIntensity", "retrievalIntensity", "reasoningIntensity", "toolsIntensity", "verificationIntensity", "synthesisIntensity", "efficiencyIntensity"].map((key) => <Slider key={key} label={key} min={0} max={100} step={1} defaultValue={Number(revision[key] ?? 0)} unavailableLabel={locale === "ar" ? "غير متاح" : "UNAVAILABLE"} disabled={profile.source === "BUILTIN"} compact dir={locale === "ar" ? "rtl" : "ltr"} inputProps={{ "aria-label": key, "data-profile-intensity": key }} />)}</div>{profile.source !== "BUILTIN" && <button className="button subtle" type="button" onClick={() => { const inputs = Array.from(document.querySelectorAll<HTMLInputElement>("[data-profile-intensity]")); const currentInputs = inputs.filter((input) => input.closest("details")?.querySelector("summary")?.textContent?.includes(`${String(profile.profileKey)} r${String(revision.revision)}`)); const policy: Row = {}; for (const key of ["contextIntensity", "memoryIntensity", "retrievalIntensity", "reasoningIntensity", "toolsIntensity", "verificationIntensity", "synthesisIntensity", "efficiencyIntensity", "maxStages", "maxProviderCalls", "maxToolCalls", "maxRetrievalQueries", "maxMemoryItems", "maxCandidates", "maxVerificationRounds", "maxContextTokens", "maxExecutionMs", "allowMemoryWrites", "allowRevision", "requireEvidence"]) if (revision[key] !== undefined) policy[key] = revision[key]; for (const input of currentInputs) { const key = input.dataset.profileIntensity; if (key) policy[key] = Number(input.value); } for (const key of ["id", "profileId", "revision", "createdAt", "updatedAt"]) delete policy[key]; void perform("intelligence.profile.revision", { profileId: String(profile.id), policy }); }}>{locale === "ar" ? "حفظ كنسخة جديدة" : "Save as new revision"}</button>}</details>)}
               {profile.source !== "BUILTIN" && <div className="button-row">{actionButton("Disable", "intelligence.profile.lifecycle", { profileId: profile.id, lifecycle: "DISABLED" })}{actionButton("Archive", "intelligence.profile.lifecycle", { profileId: profile.id, lifecycle: "ARCHIVED" })}</div>}
             </article>)}
           </section>}
@@ -571,7 +610,7 @@ export default function ConsoleApp({ platformUrl }: { platformUrl: string }) {
               {data ? `${t.refreshed} ${dateValue(data.generatedAt, locale)}` : "OIC—4.5"}
             </span>
           </footer>
-        </section>
+        </PageFrame>
       </main>
       <a
         className="oi-home"
@@ -584,6 +623,50 @@ export default function ConsoleApp({ platformUrl }: { platformUrl: string }) {
       >
         <span>Oi</span>
       </a>
+      {commandOpen && (
+        <div className="command-overlay" onMouseDown={(event) => { if (event.target === event.currentTarget) setCommandOpen(false); }}>
+          <section ref={commandDialogRef} className="command-dialog" role="dialog" aria-modal="true" aria-labelledby="command-title">
+            <div className="command-dialog-head">
+              <div>
+                <span className="section-index">OIC / {t.command}</span>
+                <h2 id="command-title">{t.openCommand}</h2>
+              </div>
+              <kbd>ESC</kbd>
+            </div>
+            <label className="command-search">
+              <span aria-hidden="true">⌕</span>
+              <input autoFocus aria-label={t.commandSearch} value={commandQuery} onChange={(event) => setCommandQuery(event.target.value)} onKeyDown={(event) => {
+                if (event.key === "ArrowDown") { event.preventDefault(); commandResultsRef.current?.querySelector<HTMLButtonElement>("button")?.focus(); }
+                if (event.key === "ArrowUp") { event.preventDefault(); commandResultsRef.current?.querySelectorAll<HTMLButtonElement>("button").item(commandItems.length - 1)?.focus(); }
+                if (event.key === "Enter") { event.preventDefault(); commandResultsRef.current?.querySelector<HTMLButtonElement>("button")?.click(); }
+              }} placeholder={t.commandSearch} />
+              <kbd>↵</kbd>
+            </label>
+            <div className="command-results" ref={commandResultsRef} role="group" aria-label={t.openCommand} onKeyDown={(event) => {
+              if (event.key !== "ArrowDown" && event.key !== "ArrowUp") return;
+              const results = Array.from(commandResultsRef.current?.querySelectorAll<HTMLButtonElement>("button") ?? []);
+              if (!results.length) return;
+              event.preventDefault();
+              const current = results.indexOf(event.target as HTMLButtonElement);
+              const delta = event.key === "ArrowDown" ? 1 : -1;
+              results[(current + delta + results.length) % results.length]?.focus();
+            }}>
+              {commandItems.map((item) => {
+                const label = item.label ? t[item.label] : t[item.id];
+                return (
+                  <button key={item.id} type="button" aria-current={view === item.id ? "page" : undefined} className={view === item.id ? "command-result current" : "command-result"} onClick={() => selectDestination(item.id)}>
+                    <span><small>{t[item.group]}</small><b>{label}</b></span>
+                    {view === item.id && <i>{locale === "ar" ? "الحالي" : "CURRENT"}</i>}
+                    <span aria-hidden="true">↗</span>
+                  </button>
+                );
+              })}
+              {!commandItems.length && <p className="command-empty">{t.noCommands}</p>}
+            </div>
+            <footer><span>OIC · INTELLIGENCE OPERATING ENVIRONMENT</span><span>{t.closeCommand}</span></footer>
+          </section>
+        </div>
+      )}
       {issuedCredential && (
         <div className="credential-overlay" role="presentation">
           <section

@@ -15,6 +15,7 @@ export type View =
   | "runtime"
   | "health"
   | "audit";
+export type NavGroup = "command" | "foundation" | "factory" | "intelligence" | "lab" | "operations";
 export type Messages = typeof messages.en;
 
 export const messages = {
@@ -67,10 +68,21 @@ export const messages = {
     ready: "READY",
     checked: "Last checked",
     generated: "Snapshot generated",
-    identity: "IDENTITY FABRIC",
-    providersGroup: "PROVIDER FABRIC",
-    intelligence: "OI MODEL FABRIC",
+    command: "COMMAND",
+    foundation: "FOUNDATION",
+    factory: "FACTORY",
+    intelligence: "INTELLIGENCE",
+    lab: "LAB",
     operations: "OPERATIONS",
+    commandSearch: "Find a workspace or action…",
+    openCommand: "Open command palette",
+    noCommands: "No matching destinations.",
+    closeCommand: "ESC TO CLOSE",
+    breadcrumb: "Breadcrumb",
+    workspaceNavigation: "Workspace navigation",
+    providerFactory: "Provider Factory",
+    modelFactory: "Model Factory",
+    access: "Access",
     application: "Application",
     tenant: "Tenant",
     externalReferences: "EXTERNAL REFERENCES",
@@ -159,6 +171,13 @@ export const messages = {
     syncCompleted: "Catalog synchronization completed.",
     runtimeApplication: "Runtime identity application",
     runtimeTenant: "Granted tenant context (optional)",
+    chooseRuntimeModel: "Choose a visible Oi Model",
+    noVisibleModels: "No visible models are available to this runtime identity.",
+    chooseRuntimeTenant: "Application scope",
+    noGrantedTenants: "No granted tenant contexts are available.",
+    runtimeAwaitingResult: "Ready for a runtime request",
+    runtimeAwaitingExplain: "Run an OIC request to see its response and execution evidence here.",
+    emptyTableExplain: "Nothing is available in this view yet. Refresh the OIC snapshot or adjust the current filter.",
     noRuntimeContext: "The configured runtime principal was not found in the OIC snapshot.",
     runtimeModelHint: "Select a visible Oi Model or enter its canonical reference.",
     platformState: "Platform state",
@@ -259,6 +278,19 @@ export const messages = {
     detailId: "RECORD ID"
   },
   ar: {
+    command: "القيادة",
+    foundation: "الأساس",
+    factory: "المصنع",
+    lab: "المختبر",
+    commandSearch: "ابحث عن مساحة عمل أو إجراء…",
+    openCommand: "فتح لوحة الأوامر",
+    noCommands: "لا توجد وجهات مطابقة.",
+    closeCommand: "اضغط Esc للإغلاق",
+    breadcrumb: "مسار التنقل",
+    workspaceNavigation: "تنقل مساحة العمل",
+    providerFactory: "مصنع المزوّدين",
+    modelFactory: "مصنع النماذج",
+    access: "الوصول",
     product: "Oi INTELLIGENCE CORE",
     console: "وحدة تحكم المشغّل",
     environment: "مستوى التحكّم",
@@ -399,6 +431,13 @@ export const messages = {
     syncCompleted: "اكتملت مزامنة الفهرس.",
     runtimeApplication: "تطبيق هوية التشغيل",
     runtimeTenant: "سياق المستأجر الممنوح (اختياري)",
+    chooseRuntimeModel: "اختر نموذج Oi متاحاً",
+    noVisibleModels: "لا توجد نماذج متاحة لهوية التشغيل هذه.",
+    chooseRuntimeTenant: "نطاق التطبيق",
+    noGrantedTenants: "لا توجد سياقات مستأجر ممنوحة.",
+    runtimeAwaitingResult: "جاهز لطلب تشغيل",
+    runtimeAwaitingExplain: "شغّل طلب OIC لعرض الاستجابة وأدلة التنفيذ هنا.",
+    emptyTableExplain: "لا توجد عناصر متاحة في هذا العرض بعد. حدّث لقطة OIC أو غيّر عامل التصفية الحالي.",
     noRuntimeContext: "لم تُعثر على هوية التشغيل المُعدّة في لقطة OIC.",
     runtimeModelHint: "اختر نموذج Oi متاحاً أو أدخل مرجعه المعتمد.",
     platformState: "حالة المنصة",
@@ -499,22 +538,22 @@ export const messages = {
   }
 } as const;
 
-export const nav: { id: View; number: string; group: string }[] = [
-  { id: "overview", number: "00", group: "operations" },
-  { id: "applications", number: "01", group: "identity" },
-  { id: "tenants", number: "02", group: "identity" },
-  { id: "principals", number: "03", group: "identity" },
-  { id: "providers", number: "04", group: "providersGroup" },
-  { id: "catalog", number: "05", group: "providersGroup" },
-  { id: "models", number: "06", group: "intelligence" },
-  { id: "profiles", number: "06A", group: "intelligence" },
-  { id: "memory", number: "06B", group: "intelligence" },
-  { id: "knowledge", number: "06C", group: "intelligence" },
-  { id: "workbench", number: "06D", group: "intelligence" },
-  { id: "traces", number: "06E", group: "intelligence" },
-  { id: "runtime", number: "07", group: "intelligence" },
-  { id: "health", number: "08", group: "operations" },
-  { id: "audit", number: "09", group: "operations" }
+export const nav: { id: View; group: NavGroup; label?: "access" | "providerFactory" | "modelFactory" }[] = [
+  { id: "overview", group: "command" },
+  { id: "applications", group: "foundation" },
+  { id: "tenants", group: "foundation" },
+  { id: "principals", group: "foundation", label: "access" },
+  { id: "providers", group: "factory", label: "providerFactory" },
+  { id: "catalog", group: "factory" },
+  { id: "models", group: "factory", label: "modelFactory" },
+  { id: "profiles", group: "factory" },
+  { id: "memory", group: "intelligence" },
+  { id: "knowledge", group: "intelligence" },
+  { id: "workbench", group: "lab" },
+  { id: "runtime", group: "lab" },
+  { id: "traces", group: "lab" },
+  { id: "health", group: "operations" },
+  { id: "audit", group: "operations" }
 ];
 
 export const arabicLiterals: Record<string, string> = {

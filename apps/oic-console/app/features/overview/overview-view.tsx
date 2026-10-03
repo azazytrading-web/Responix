@@ -26,7 +26,7 @@ export function OverviewView({ view, data, health, locale, t, literal, navigate,
               <div className="hero-panel">
                 <div>
                   <div className="eyebrow">
-                    {literal("SYSTEM OVERVIEW")} <span>· 00</span>
+                    {literal("SYSTEM OVERVIEW")}
                   </div>
                   <h2>
                     {locale === "ar" ? (
@@ -55,7 +55,7 @@ export function OverviewView({ view, data, health, locale, t, literal, navigate,
                     ) : (
                       t.platformState
                   )}
-                  <b>01—09</b>
+                  <b>{health?.status === "ok" ? t.online : t.unavailable}</b>
                 </div>
               </div>
               <div className="metrics-grid">
@@ -96,7 +96,7 @@ export function OverviewView({ view, data, health, locale, t, literal, navigate,
                       <h3>{t.health}</h3>
                     </div>
                     <button type="button" className="text-button" onClick={() => navigate("health")}>
-                      08 ↗
+                      ↗
                     </button>
                   </div>
                   <div className="readiness-row">
@@ -134,7 +134,7 @@ export function OverviewView({ view, data, health, locale, t, literal, navigate,
                       className="text-button"
                       onClick={() => navigate("applications")}
                     >
-                      01 ↗
+                      ↗
                     </button>
                   </div>
                   {table(
@@ -157,7 +157,7 @@ export function OverviewView({ view, data, health, locale, t, literal, navigate,
                     <h3>{t.recentEvents}</h3>
                   </div>
                   <button type="button" className="text-button" onClick={() => navigate("audit")}>
-                    09 ↗
+                    ↗
                   </button>
                 </div>
                 {renderAudit(data.audit.slice(0, 5))}

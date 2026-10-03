@@ -6,7 +6,7 @@ Status vocabulary is defined in [acceptance architecture](../architecture/oic-x1
 |---|---|---|---|---|---|---|---|---|---|
 | X1.0 / X1.0B architecture docs | N/A (docs) | N/A (docs) | N/A (docs) | N/A (docs) | N/A | N/A | UNCHANGED: no auth/code edits | PARTIAL: source, service health and document checks; no browser interaction run | X1.0B |
 | X1.0C runtime interaction/governance lock | N/A (docs) | N/A (docs) | N/A (docs) | N/A (docs) | N/A | PASS: temporal/action/permission/recovery/compatibility contracts reviewed against source; no app behavior claimed | UNCHANGED: no auth/code edits | PASS after document/link/path/secret/boundary checks; no browser acceptance implied | X1.0C |
-| X1.1 shell/current pages | NOT STARTED | NOT STARTED | NOT STARTED | NOT STARTED | NOT STARTED | PARTIAL: states exist unevenly; systematic matrix not run | BASELINE-PREEXISTING | NOT STARTED | X1.1 |
+| X1.1 shell/current pages | PASS: Edge 154, 1440×900, all six nav groups and live Overview rendered | PASS: Arabic headings/group labels and RTL direction; 1440×900 | PASS: 390×844, grouped nav scrolls within shell; no document overflow | PASS: 390×844 RTL; no document overflow | PASS: command palette open, arrow focus, Enter navigation, Escape close and focus return | PARTIAL: live BFF/API/DB PASS; empty/loading/error/unavailable primitives present; no fault injection or forced-offline run | PASS: authenticated BFF data path and current guards exercised; no auth/origin/CSRF/BFF code changed; static boundary scan | PASS: all 15 routes on EN/LTR desktop; representative route in every nav group in all four cells; no mutation action performed | X1.1 |
 | X1.2 Flight Deck | NOT STARTED | NOT STARTED | NOT STARTED | NOT STARTED | NOT STARTED | NOT STARTED | NOT STARTED | NOT STARTED | X1.2 |
 | X1.3 Provider Factory | NOT STARTED | NOT STARTED | NOT STARTED | NOT STARTED | NOT STARTED | NOT STARTED | NOT STARTED | NOT STARTED | X1.3 |
 | X1.4 Model Factory / profiles / DNA | NOT STARTED | NOT STARTED | NOT STARTED | NOT STARTED | NOT STARTED | NOT STARTED | NOT STARTED | NOT STARTED | X1.4 |
@@ -33,3 +33,12 @@ Per page expand with: keyboard/screen reader; scope-denied; empty; filtered empt
 | Human workflow | Operator completes normal and failure path without raw ID/password workaround | Owner-observed browser task; cannot be replaced by unit test |
 
 Each PASS links a reproducible command/test/artifact or dated owner review. PARTIAL names passed subset and missing evidence. BLOCKED names dependency/owner/next action. UNCHANGED is not regression-tested.
+
+## X1.1 browser run record
+
+- **Run date:** 2026-10-03. **Browser:** Microsoft Edge 154.0.4258.48. **Preview:** Console `http://localhost:3002`; API `http://127.0.0.1:4100`.
+- **Locale/viewport matrix:** EN/LTR and AR/RTL at 1440×900 and 390×844. `document.documentElement.scrollWidth` stayed within the viewport; all six global navigation groups remained present. The narrow navigation scrolls inside its own bounded strip.
+- **Route walk:** all 15 destinations rendered the expected page heading in EN/LTR desktop. Overview, Applications, Provider Factory, OIC Memory, Intelligence Workbench and Health & readiness rendered with the correct selected destination in each of the four matrix cells.
+- **Authenticated data path:** `/api/session` reported authenticated; BFF snapshot and health each returned 200. Snapshot counts were 15 applications, 19 tenants, 13 principals, 12 connections, 19 upstream models, 7 model families and 60 audit rows. Health and database readiness were `ok`.
+- **Keyboard:** command palette opened; ArrowDown moved focus to a result; Enter navigated and returned focus; Escape closed and returned focus.
+- **Evidence limits:** no destructive or write workflow was run. No forced API failure/offline or screen-reader test was performed. No Console test/browser-runner script is configured.

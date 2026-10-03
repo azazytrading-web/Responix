@@ -14,6 +14,19 @@ const uuid = (value: unknown): value is string =>
   /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(value);
 const text = (value: unknown, maximum = 160): value is string =>
   typeof value === "string" && value.trim().length > 0 && value.length <= maximum;
+const knowledgeDependencies = (value: unknown) =>
+  value === undefined ||
+  (Array.isArray(value) &&
+    value.length <= 16 &&
+    value.every(
+      (item) =>
+        !!item &&
+        typeof item === "object" &&
+        !Array.isArray(item) &&
+        text((item as Record<string, unknown>).sourceKey, 128) &&
+        /^[a-z0-9][a-z0-9._:-]{0,127}$/i.test(String((item as Record<string, unknown>).sourceKey)) &&
+        text((item as Record<string, unknown>).sourceRef, 512)
+    ));
 const supportedScope = (value: unknown) =>
   [
     "oic:applications:read",
@@ -301,11 +314,39 @@ export async function POST(request: Request) {
     !path &&
     action === "model.revision.create" &&
     uuid(body.editionId) &&
+    (body.intelligenceProfileRevisionId === undefined || uuid(body.intelligenceProfileRevisionId)) &&
     (body.instructions === undefined || (typeof body.instructions === "string" && body.instructions.length <= 100_000)) &&
     (body.specification === undefined || (typeof body.specification === "string" && body.specification.length <= 100_000))
   ) {
     path = `/api/v1/admin/model-editions/${body.editionId}/revisions`;
-    payload = { ...(body.instructions ? { instructions: body.instructions } : {}), ...(body.specification ? { specification: body.specification } : {}) };
+    payload = { ...(body.instructions ? { instructions: body.instructions } : {}), ...(body.specification ? { specification: body.specification } : {}), ...(body.intelligenceProfileRevisionId ? { intelligenceProfileRevisionId: body.intelligenceProfileRevisionId } : {}) };
+  } else if (!path && action === "intelligence.profile.create" && text(body.profileKey, 64) && /^[a-z][a-z0-9._-]{1,63}$/.test(String(body.profileKey)) && text(body.displayName) && body.policy && typeof body.policy === "object" && !Array.isArray(body.policy)) {
+    path = "/api/v1/admin/intelligence/profiles";
+    payload = { profileKey: body.profileKey, displayName: body.displayName.trim(), ...(text(body.description, 1000) ? { description: body.description.trim() } : {}), policy: body.policy };
+  } else if (!path && action === "intelligence.profile.clone" && uuid(body.sourceRevisionId) && text(body.profileKey, 64) && /^[a-z][a-z0-9._-]{1,63}$/.test(String(body.profileKey)) && text(body.displayName)) {
+    path = `/api/v1/admin/intelligence/profiles/${body.sourceRevisionId}/clone`;
+    payload = { profileKey: body.profileKey, displayName: body.displayName.trim(), ...(text(body.description, 1000) ? { description: body.description.trim() } : {}) };
+  } else if (!path && action === "intelligence.profile.revision" && uuid(body.profileId) && body.policy && typeof body.policy === "object" && !Array.isArray(body.policy)) {
+    path = `/api/v1/admin/intelligence/profiles/${body.profileId}/revisions`;
+    payload = body.policy;
+  } else if (!path && action === "intelligence.profile.lifecycle" && uuid(body.profileId) && typeof body.lifecycle === "string" && ["ACTIVE", "DISABLED", "ARCHIVED"].includes(body.lifecycle)) {
+    path = `/api/v1/admin/intelligence/profiles/${body.profileId}/lifecycle`;
+    method = "PATCH";
+    payload = { lifecycle: body.lifecycle };
+  } else if (!path && action === "intelligence.knowledge.create" && (body.tenantId === undefined || body.tenantId === "" || uuid(body.tenantId)) && text(body.sourceKey, 128) && /^[a-z0-9][a-z0-9._:-]{0,127}$/i.test(String(body.sourceKey)) && text(body.sourceRef, 512) && text(body.title, 240) && typeof body.content === "string" && body.content.trim().length > 0 && body.content.length <= 200_000 && knowledgeDependencies(body.dependsOn)) {
+    path = "/api/v1/admin/intelligence/knowledge";
+    payload = { ...(body.tenantId ? { tenantId: body.tenantId } : {}), sourceKey: body.sourceKey, sourceRef: body.sourceRef, title: body.title, content: body.content, ...(body.dependsOn !== undefined ? { dependsOn: body.dependsOn } : {}), authority: Number.isInteger(body.authority) ? body.authority : 50, sourcePriority: Number.isInteger(body.sourcePriority) ? body.sourcePriority : 50 };
+  } else if (!path && action === "intelligence.knowledge.update" && uuid(body.id) && (body.title === undefined || text(body.title, 240)) && (body.lifecycle === undefined || typeof body.lifecycle === "string" && ["ACTIVE", "DISABLED", "ARCHIVED"].includes(body.lifecycle)) && (body.authority === undefined || Number.isInteger(body.authority) && Number(body.authority) >= 0 && Number(body.authority) <= 100) && (body.sourcePriority === undefined || Number.isInteger(body.sourcePriority) && Number(body.sourcePriority) >= 0 && Number(body.sourcePriority) <= 100) && knowledgeDependencies(body.dependsOn)) {
+    path = `/api/v1/admin/intelligence/knowledge/${body.id}`; method = "PATCH";
+    payload = { ...(body.title ? { title: body.title } : {}), ...(body.lifecycle ? { lifecycle: String(body.lifecycle) } : {}), ...(body.authority !== undefined ? { authority: body.authority } : {}), ...(body.sourcePriority !== undefined ? { sourcePriority: body.sourcePriority } : {}), ...(body.dependsOn !== undefined ? { dependsOn: body.dependsOn } : {}) };
+  } else if (!path && action === "intelligence.memory.create" && (body.tenantId === undefined || body.tenantId === "" || uuid(body.tenantId)) && ["EPISODIC", "SEMANTIC", "PROCEDURAL", "APPLICATION"].includes(String(body.kind)) && text(body.title, 240) && typeof body.content === "string" && body.content.trim().length > 0 && body.content.length <= 20_000 && text(body.sourceType, 128)) {
+    path = "/api/v1/admin/intelligence/memory";
+    payload = { ...(body.tenantId ? { tenantId: body.tenantId } : {}), kind: body.kind, sensitivity: body.sensitivity ?? "INTERNAL", title: body.title, content: body.content, sourceType: body.sourceType, ...(body.sourceRef ? { sourceRef: body.sourceRef } : {}), confidence: Number.isInteger(body.confidence) ? body.confidence : 50, salience: Number.isInteger(body.salience) ? body.salience : 50 };
+  } else if (!path && action === "intelligence.memory.lifecycle" && uuid(body.id) && typeof body.lifecycle === "string" && ["ACTIVE", "STALE", "SUPERSEDED", "CONFLICTED", "UNVERIFIED", "ARCHIVED"].includes(body.lifecycle)) {
+    path = `/api/v1/admin/intelligence/memory/${body.id}`; method = "PATCH"; payload = { lifecycle: body.lifecycle };
+  } else if (!path && action === "intelligence.workbench.run" && text(body.model, 64) && uuid(body.profileRevisionId) && text(body.prompt, 12_000) && (body.tenantId === undefined || body.tenantId === "" || uuid(body.tenantId))) {
+    path = "/api/v1/admin/intelligence/workbench/run"; runtime = true;
+    payload = { model: body.model, profileRevisionId: body.profileRevisionId, prompt: body.prompt, ...(body.tenantId ? { tenant: { kind: "id", tenantId: body.tenantId } } : {}), ...(text(body.sessionId, 128) ? { sessionId: body.sessionId } : {}), ...(Number.isInteger(body.maxOutputUnits) ? { maxOutputUnits: body.maxOutputUnits } : {}) };
   } else if (
     !path &&
     action === "model.variant.create" &&

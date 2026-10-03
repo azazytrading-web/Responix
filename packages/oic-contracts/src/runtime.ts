@@ -12,7 +12,36 @@ export type OicRuntimeRequest = {
   model: OicModelReference;
   input: OicRuntimeMessage[];
   tenant?: OicTenantSelector;
+  sessionId?: string;
   maxOutputUnits?: number;
+};
+
+export type OicIntelligenceProfilePolicy = {
+  id: string;
+  profileId: string;
+  profileKey: string;
+  displayName: string;
+  revision: number;
+  contextIntensity: number;
+  memoryIntensity: number;
+  retrievalIntensity: number;
+  reasoningIntensity: number;
+  toolsIntensity: number;
+  verificationIntensity: number;
+  synthesisIntensity: number;
+  efficiencyIntensity: number;
+  maxStages: number;
+  maxProviderCalls: number;
+  maxToolCalls: number;
+  maxRetrievalQueries: number;
+  maxMemoryItems: number;
+  maxCandidates: number;
+  maxVerificationRounds: number;
+  maxContextTokens: number;
+  maxExecutionMs: number;
+  allowMemoryWrites: boolean;
+  allowRevision: boolean;
+  requireEvidence: boolean;
 };
 
 export type OicRuntimeContext = {
@@ -21,6 +50,7 @@ export type OicRuntimeContext = {
   applicationId: string;
   principalId: string;
   tenantId: string | null;
+  sessionId?: string;
   callerRequestId?: string;
 };
 
@@ -102,7 +132,7 @@ export type OicVisibleModel = {
   capabilities: Array<"text.generate" | "text.stream">;
 };
 
-export type OicResolvedModel = OicVisibleModel & { resolverVersion: string; tenantRequired?: boolean };
+export type OicResolvedModel = OicVisibleModel & { resolverVersion: string; tenantRequired?: boolean; revisionId?: string; intelligenceProfile?: OicIntelligenceProfilePolicy };
 
 export type OicRuntimeExecutionResult = {
   outputText: string;

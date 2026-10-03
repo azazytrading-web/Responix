@@ -7,6 +7,11 @@ export type View =
   | "providers"
   | "catalog"
   | "models"
+  | "profiles"
+  | "memory"
+  | "knowledge"
+  | "workbench"
+  | "traces"
   | "runtime"
   | "health"
   | "audit";
@@ -24,6 +29,11 @@ export const messages = {
     providers: "Provider fabric",
     catalog: "Upstream catalog",
     models: "Oi Model fabric",
+    profiles: "Intelligence profiles",
+    memory: "OIC Memory",
+    knowledge: "OIC Knowledge",
+    workbench: "Intelligence Workbench",
+    traces: "Execution traces",
     runtime: "Runtime lab",
     health: "Health & readiness",
     audit: "Audit trail",
@@ -259,6 +269,11 @@ export const messages = {
     providers: "نسيج المزوّدين",
     catalog: "فهرس النماذج الخارجية",
     models: "نسيج نماذج Oi",
+    profiles: "ملفات الذكاء",
+    memory: "ذاكرة OIC",
+    knowledge: "معرفة OIC",
+    workbench: "مختبر الذكاء",
+    traces: "آثار التنفيذ",
     runtime: "مختبر التشغيل",
     health: "الصحة والجاهزية",
     audit: "سجل التدقيق",
@@ -492,6 +507,11 @@ export const nav: { id: View; number: string; group: string }[] = [
   { id: "providers", number: "04", group: "providersGroup" },
   { id: "catalog", number: "05", group: "providersGroup" },
   { id: "models", number: "06", group: "intelligence" },
+  { id: "profiles", number: "06A", group: "intelligence" },
+  { id: "memory", number: "06B", group: "intelligence" },
+  { id: "knowledge", number: "06C", group: "intelligence" },
+  { id: "workbench", number: "06D", group: "intelligence" },
+  { id: "traces", number: "06E", group: "intelligence" },
   { id: "runtime", number: "07", group: "intelligence" },
   { id: "health", number: "08", group: "operations" },
   { id: "audit", number: "09", group: "operations" }

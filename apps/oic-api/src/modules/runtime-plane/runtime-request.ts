@@ -14,6 +14,7 @@ const requestSchema = z.object({
     content: z.array(z.object({ type: z.literal("text"), text: z.string().max(1_000_000) }).strict()).min(1).max(100)
   }).strict()).min(1).max(1000),
   tenant: tenantSelectorSchema.optional(),
+  sessionId: z.string().regex(/^[A-Za-z0-9._:-]{1,128}$/).optional(),
   maxOutputUnits: z.number().int().min(1).max(65_536).optional()
 }).strict();
 

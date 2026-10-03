@@ -13,10 +13,13 @@ import { OverviewView } from "./features/overview/overview-view";
 import { AuditView } from "./features/operations/audit-view";
 import { HealthView } from "./features/operations/health-view";
 import { RuntimeView } from "./features/runtime/runtime-view";
+import { IntelligenceCenter } from "./features/intelligence/intelligence-center";
 async function responseRecord(response: Response): Promise<Row> {
   const value: unknown = await response.json().catch(() => ({}));
   return value && typeof value === "object" && !Array.isArray(value) ? (value as Row) : {};
 }
+const rowsOf = (value: unknown): Row[] => Array.isArray(value) ? value.filter((item): item is Row => !!item && typeof item === "object" && !Array.isArray(item)) : [];
+const scalarText = (value: unknown, fallback = "—") => typeof value === "string" || typeof value === "number" || typeof value === "boolean" ? String(value) : fallback;
 
 export default function ConsoleApp({ platformUrl }: { platformUrl: string }) {
   const [locale, setLocale] = useState<Locale>("en");
@@ -33,6 +36,13 @@ export default function ConsoleApp({ platformUrl }: { platformUrl: string }) {
   const [filter, setFilter] = useState("");
   const [password, setPassword] = useState("");
   const [invocation, setInvocation] = useState<Row | null>(null);
+  const [profiles, setProfiles] = useState<Row[]>([]);
+  const [executions, setExecutions] = useState<Row[]>([]);
+  const [selectedExecution, setSelectedExecution] = useState<Row | null>(null);
+  const [memories, setMemories] = useState<Row[]>([]);
+  const [knowledge, setKnowledge] = useState<Row[]>([]);
+  const [selectedKnowledge, setSelectedKnowledge] = useState<Row | null>(null);
+  const [workbenchResult, setWorkbenchResult] = useState<Row | null>(null);
   const [running, setRunning] = useState(false);
   const t = messages[locale] as Messages;
   const literal = (value: string) => (locale === "ar" ? (arabicLiterals[value] ?? value) : value);
@@ -68,6 +78,31 @@ export default function ConsoleApp({ platformUrl }: { platformUrl: string }) {
     }
   }, []);
 
+  const loadProfiles = useCallback(async () => {
+    try {
+      const response = await fetch("/api/console?view=profiles", { cache: "no-store" });
+      const value: unknown = await response.json().catch(() => []);
+      setProfiles(response.ok && Array.isArray(value) ? value as Row[] : []);
+    } catch { setProfiles([]); }
+  }, []);
+
+  const loadExecutions = useCallback(async () => {
+    try { const response = await fetch("/api/console?view=executions", { cache: "no-store" }); const value: unknown = await response.json().catch(() => []); setExecutions(response.ok && Array.isArray(value) ? value as Row[] : []); }
+    catch { setExecutions([]); }
+  }, []);
+  const loadIntelligenceRecords = useCallback(async (resource: "memory" | "knowledge") => {
+    try { const response = await fetch(`/api/console?view=${resource}`, { cache: "no-store" }); const value: unknown = await response.json().catch(() => []); const data = response.ok ? rowsOf(value) : []; if (resource === "memory") setMemories(data); else setKnowledge(data); }
+    catch { if (resource === "memory") setMemories([]); else setKnowledge([]); }
+  }, []);
+  const inspectKnowledge = async (id: string) => { try { const response = await fetch(`/api/console?view=knowledge&id=${encodeURIComponent(id)}`, { cache: "no-store" }); const value: unknown = await response.json().catch(() => null); setSelectedKnowledge(value && typeof value === "object" && !Array.isArray(value) ? value as Row : null); } catch { setSelectedKnowledge(null); } };
+  const inspectMemory = async (id: string) => { try { const response = await fetch(`/api/console?view=memory&id=${encodeURIComponent(id)}`, { cache: "no-store" }); const value: unknown = await response.json().catch(() => null); setSelectedMemory(value && typeof value === "object" && !Array.isArray(value) ? value as Row : null); } catch { setSelectedMemory(null); } };
+  const inspectTrace = async (traceId: string) => { try { const response = await fetch(`/api/console?view=executions&traceId=${encodeURIComponent(traceId)}`, { cache: "no-store" }); const value: unknown = await response.json().catch(() => null); setSelectedExecution(value && typeof value === "object" && !Array.isArray(value) ? value as Row : null); } catch { setSelectedExecution(null); } };
+  const [selectedMemory, setSelectedMemory] = useState<Row | null>(null);
+  const loadExecution = async (traceId: string) => {
+    try { const response = await fetch(`/api/console?view=executions&traceId=${encodeURIComponent(traceId)}`, { cache: "no-store" }); const value: unknown = await response.json().catch(() => null); setSelectedExecution(value && typeof value === "object" && !Array.isArray(value) ? value as Row : null); }
+    catch { setSelectedExecution(null); }
+  };
+
   useEffect(() => {
     const savedLocale = document.cookie
       .split("; ")
@@ -90,6 +125,9 @@ export default function ConsoleApp({ platformUrl }: { platformUrl: string }) {
   useEffect(() => {
     if (authenticated) void loadHealth();
   }, [authenticated, loadHealth]);
+  useEffect(() => { if (authenticated) void loadProfiles(); }, [authenticated, loadProfiles]);
+  useEffect(() => { if (authenticated) void loadExecutions(); }, [authenticated, loadExecutions]);
+  useEffect(() => { if (authenticated) { void loadIntelligenceRecords("memory"); void loadIntelligenceRecords("knowledge"); } }, [authenticated, loadIntelligenceRecords]);
   useEffect(() => {
     document.documentElement.lang = locale;
     document.documentElement.dir = locale === "ar" ? "rtl" : "ltr";
@@ -149,7 +187,12 @@ export default function ConsoleApp({ platformUrl }: { platformUrl: string }) {
     }
     if (action !== "runtime.invoke") setToast(t.saved);
     await loadSnapshot();
-    return data;
+    if (action.startsWith("intelligence.profile.")) await loadProfiles();
+    if (action.startsWith("intelligence.memory.")) { await loadIntelligenceRecords("memory"); await loadExecutions(); }
+    if (action.startsWith("intelligence.knowledge.")) await loadIntelligenceRecords("knowledge");
+    if (action === "runtime.invoke" || action === "intelligence.workbench.run") await loadExecutions();
+    if (action === "intelligence.workbench.run" && data.result && typeof data.result === "object" && !Array.isArray(data.result)) setWorkbenchResult(data.result as Row);
+    return action === "intelligence.workbench.run" && data.result && typeof data.result === "object" && !Array.isArray(data.result) ? data.result as Row : data;
   };
 
   const runInvocation = async (event: FormEvent<HTMLFormElement>) => {
@@ -484,8 +527,41 @@ export default function ConsoleApp({ platformUrl }: { platformUrl: string }) {
           )}
 
           <OverviewView view={view} data={data} health={health} locale={locale} t={t} literal={literal} navigate={setView} badge={badge} mono={mono} table={table} metric={metric} renderAudit={(events) => renderAudit(events, table, mono, dateValue, locale, t)} />
+          <IntelligenceCenter
+            view={view}
+            locale={locale}
+            t={t}
+            data={data}
+            profiles={profiles}
+            memories={memories}
+            knowledge={knowledge}
+            executions={executions}
+            selectedMemory={selectedMemory}
+            selectedKnowledge={selectedKnowledge}
+            selectedTrace={selectedExecution}
+            workbenchResult={workbenchResult}
+            load={(resource) => { if (resource === "traces") void loadExecutions(); else void loadIntelligenceRecords(resource); }}
+            inspectMemory={(id) => { void inspectMemory(id); }}
+            inspectKnowledge={(id) => { void inspectKnowledge(id); }}
+            inspectTrace={(traceId) => { void inspectTrace(traceId); }}
+            perform={perform}
+          />
+          {view === "profiles" && <section className="panel-stack">
+            <div className="section-heading"><div><div className="eyebrow">OIC / INTELLIGENCE</div><h2>{title}</h2><p>{locale === "ar" ? "إصدارات ملفات السياسات المرتبطة بمراجعات النماذج." : "Versioned policies assigned to Oi Model revisions."}</p></div></div>
+            <form className="form-grid" onSubmit={(event) => { event.preventDefault(); const form = new FormData(event.currentTarget); const key = entryText(form.get("profileKey")); const displayName = entryText(form.get("displayName")); const source = profiles.flatMap((profile) => rowsOf(profile.revisions)).find((revision) => String(revision.id) === entryText(form.get("sourceRevisionId"))); if (!source) return; void perform("intelligence.profile.clone", { sourceRevisionId: String(source.id), profileKey: key, displayName }); }}>
+              <label>{locale === "ar" ? "مفتاح الملف الجديد" : "New profile key"}<input name="profileKey" pattern="[a-z][a-z0-9._-]{1,63}" required /></label><label>{t.displayName}<input name="displayName" required maxLength={160} /></label><label>{locale === "ar" ? "نسخة المصدر" : "Source revision"}<select name="sourceRevisionId" required>{profiles.flatMap((profile) => rowsOf(profile.revisions).map((revision) => <option key={String(revision.id)} value={String(revision.id)}>{String(profile.profileKey)} · r{String(revision.revision)}</option>))}</select></label><button className="button primary" type="submit">{locale === "ar" ? "استنساخ الملف" : "Clone profile"}</button>
+            </form>
+            {profiles.map((profile) => <article className="data-card" key={String(profile.id)}><header><div><strong>{String(profile.displayName)}</strong><small>{String(profile.profileKey)} · {String(profile.lifecycle)} · {profile.source === "BUILTIN" ? "Built-in" : "Custom"}</small></div><span>{rowsOf(profile.revisions).length ? `${scalarText(rowsOf(profile.revisions)[0]?.revision, "0")} revisions` : "No revisions"}</span></header>
+              {rowsOf(profile.revisions).map((revision) => <details key={String(revision.id)}><summary>{String(profile.profileKey)} r{String(revision.revision)} · {String(revision.id)}</summary><div className="metric-grid">{["contextIntensity", "memoryIntensity", "retrievalIntensity", "reasoningIntensity", "toolsIntensity", "verificationIntensity", "synthesisIntensity", "efficiencyIntensity"].map((key) => <label key={key}>{key}<input aria-label={key} type="number" min={0} max={100} defaultValue={Number(revision[key] ?? 0)} disabled={profile.source === "BUILTIN"} data-profile-intensity={key} /></label>)}</div>{profile.source !== "BUILTIN" && <button className="button subtle" type="button" onClick={() => { const inputs = Array.from(document.querySelectorAll<HTMLInputElement>("[data-profile-intensity]")); const currentInputs = inputs.filter((input) => input.closest("details")?.querySelector("summary")?.textContent?.includes(`${String(profile.profileKey)} r${String(revision.revision)}`)); const policy: Row = {}; for (const key of ["contextIntensity", "memoryIntensity", "retrievalIntensity", "reasoningIntensity", "toolsIntensity", "verificationIntensity", "synthesisIntensity", "efficiencyIntensity", "maxStages", "maxProviderCalls", "maxToolCalls", "maxRetrievalQueries", "maxMemoryItems", "maxCandidates", "maxVerificationRounds", "maxContextTokens", "maxExecutionMs", "allowMemoryWrites", "allowRevision", "requireEvidence"]) if (revision[key] !== undefined) policy[key] = revision[key]; for (const input of currentInputs) { const key = input.dataset.profileIntensity; if (key) policy[key] = Number(input.value); } for (const key of ["id", "profileId", "revision", "createdAt", "updatedAt"]) delete policy[key]; void perform("intelligence.profile.revision", { profileId: String(profile.id), policy }); }}>{locale === "ar" ? "حفظ كنسخة جديدة" : "Save as new revision"}</button>}</details>)}
+              {profile.source !== "BUILTIN" && <div className="button-row">{actionButton("Disable", "intelligence.profile.lifecycle", { profileId: profile.id, lifecycle: "DISABLED" })}{actionButton("Archive", "intelligence.profile.lifecycle", { profileId: profile.id, lifecycle: "ARCHIVED" })}</div>}
+            </article>)}
+          </section>}
+          {view === "profiles" && <section className="panel"><div className="panel-heading"><div><span className="section-index">TRACE / SAFE STAGE DATA</span><h3>{locale === "ar" ? "آثار التنفيذ" : "Execution traces"}</h3></div><button className="button subtle" type="button" onClick={() => void loadExecutions()}>{t.refresh}</button></div>
+            {table(["Trace", "Model", "Profile", "Strategy", "Stages", "Provider calls", "Retrieval", "Verification", "Duration"], executions.map((execution) => { const summary = execution.summary && typeof execution.summary === "object" && !Array.isArray(execution.summary) ? execution.summary as Row : {}; return [<button className="text-button" key={String(execution.traceId)} type="button" onClick={() => { void loadExecution(String(execution.traceId)); }}>{String(execution.traceId)}</button>, scalarText(execution.modelId), scalarText(execution.profileRevisionId, "FAST"), scalarText(execution.strategy), scalarText(execution.stageCount), scalarText(execution.providerCallCount), scalarText(execution.retrievalQueryCount), scalarText(execution.verificationStatus), scalarText(summary.durationMs)]; }))}
+            {selectedExecution && <div className="runtime-context-row"><b>{String(selectedExecution.traceId)} · {String(selectedExecution.status)}</b><span>Stage records contain no prompt or response content.</span>{rowsOf(selectedExecution.stages).map((stage) => <span key={String(stage.stageIndex)}>{String(stage.stageIndex)} · {String(stage.stageType)} · {String(stage.status)} · {String(stage.durationMs)} ms · {scalarText(stage.strategy, "")}</span>)}</div>}
+          </section>}
           {data && <IdentityViews view={view} data={data} locale={locale} t={t} literal={literal} filter={filter} setFilter={setFilter} filtered={filtered} table={table} badge={badge} mono={mono} appLabel={appLabel} tenantLabel={tenantLabel} actionButton={actionButton} perform={perform} issueCredential={issueCredential} />}
-          {data && <ModelFabricViews view={view} data={data} locale={locale} t={t} literal={literal} filter={filter} setFilter={setFilter} filtered={filtered} table={table} badge={badge} mono={mono} appLabel={appLabel} tenantLabel={tenantLabel} actionButton={actionButton} perform={perform} />}
+          {data && <ModelFabricViews view={view} data={data} locale={locale} t={t} literal={literal} filter={filter} setFilter={setFilter} filtered={filtered} table={table} badge={badge} mono={mono} appLabel={appLabel} tenantLabel={tenantLabel} actionButton={actionButton} perform={perform} profileRevisions={profiles.flatMap((profile) => (Array.isArray(profile.revisions) ? profile.revisions as Row[] : []).map((revision) => ({ ...revision, profile })))} />}
           <RuntimeView view={view} data={data} locale={locale} t={t} literal={literal} runInvocation={(event) => { void runInvocation(event); }} running={running} invocation={invocation} />
           <HealthView view={view} health={health} t={t} literal={literal} badge={badge} loadHealth={loadHealth} />
           <AuditView view={view} data={data} t={t} literal={literal} filter={filter} setFilter={setFilter} filtered={filtered} renderAudit={(events) => renderAudit(events, table, mono, dateValue, locale, t)} />

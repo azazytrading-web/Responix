@@ -8,13 +8,23 @@ export async function GET(request: Request) {
     return NextResponse.json({ error: "Operator session required." }, { status: 401 });
   const view = new URL(request.url).searchParams.get("view");
   const healthPath = view === "health" ? "/api/v1/health/ready" : null;
-  const path = healthPath ?? (view === "snapshot" ? "/api/v1/admin/console/snapshot" : null);
-  if (!path) return NextResponse.json({ error: "Unknown console view." }, { status: 404 });
+  const path = healthPath ?? (view === "snapshot" ? "/api/v1/admin/console/snapshot" : view === "profiles" ? "/api/v1/admin/intelligence/profiles" : view === "engines" ? "/api/v1/admin/intelligence/engines" : null);
+  const params = new URL(request.url).searchParams;
+  const resource = view === "memory" ? "memory" : view === "knowledge" ? "knowledge" : view === "executions" || view === "traces" ? "executions" : null;
+  const safeQuery = (name: string, max: number) => { const value = params.get(name); return value && value.length <= max ? value : null; };
+  const tenantId = safeQuery("tenantId", 36); const q = safeQuery("q", 120); const lifecycle = safeQuery("lifecycle", 16); const kind = safeQuery("kind", 32);
+  const listPath = resource ? `/api/v1/admin/intelligence/${resource}${resource === "executions" ? "?limit=50" : `?${new URLSearchParams({ ...(tenantId ? { tenantId } : {}), ...(q ? { q } : {}), ...(lifecycle ? { lifecycle } : {}), ...(kind && resource === "memory" ? { kind } : {}) }).toString()}`}` : null;
+  const traceId = new URL(request.url).searchParams.get("traceId");
+  const executionPath = (view === "executions" || view === "traces") && traceId && /^[A-Za-z0-9._:-]{1,128}$/.test(traceId) ? `/api/v1/admin/intelligence/executions/${encodeURIComponent(traceId)}` : null;
+  const itemPath = resource === "memory" && params.get("id") && /^[0-9a-f-]{36}$/i.test(params.get("id")!) ? `/api/v1/admin/intelligence/memory/${params.get("id")}` : null;
+  const knowledgeItemPath = resource === "knowledge" && params.get("id") && /^[0-9a-f-]{36}$/i.test(params.get("id")!) ? `/api/v1/admin/intelligence/knowledge/${params.get("id")}` : null;
+  const resolvedPath = path ?? executionPath ?? itemPath ?? knowledgeItemPath ?? listPath;
+  if (!resolvedPath) return NextResponse.json({ error: "Unknown console view." }, { status: 404 });
   try {
     const headers: HeadersInit = healthPath
       ? {}
       : { Authorization: `Bearer ${controlPlaneCredential()}` };
-    const response = await fetch(apiUrl(path), {
+    const response = await fetch(apiUrl(resolvedPath), {
       headers,
       cache: "no-store",
       signal: AbortSignal.timeout(8000)

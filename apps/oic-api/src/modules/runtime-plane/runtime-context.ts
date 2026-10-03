@@ -11,7 +11,7 @@ export type RuntimeRequestIdentity = { requestId?: string; traceId?: string; cal
 export class RuntimeContextResolver {
   constructor(private readonly db: OicDatabaseService) {}
 
-  async resolve(actor: AuthenticatedPrincipal, request: Pick<OicRuntimeRequest, "tenant">, identity: RuntimeRequestIdentity): Promise<OicRuntimeContext> {
+  async resolve(actor: AuthenticatedPrincipal, request: Pick<OicRuntimeRequest, "tenant" | "sessionId">, identity: RuntimeRequestIdentity): Promise<OicRuntimeContext> {
     const tenantId = await this.resolveTenant(actor, request.tenant);
     return {
       requestId: identity.requestId ?? randomUUID(),
@@ -19,6 +19,7 @@ export class RuntimeContextResolver {
       applicationId: actor.applicationId,
       principalId: actor.id,
       tenantId,
+      ...(request.sessionId ? { sessionId: request.sessionId } : {}),
       callerRequestId: identity.callerRequestId
     };
   }

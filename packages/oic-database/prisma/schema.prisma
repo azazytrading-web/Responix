@@ -85,6 +85,55 @@ enum OicModelLifecycle {
   RETIRED
 }
 
+enum OicIntelligenceProfileLifecycle {
+  ACTIVE
+  DISABLED
+  ARCHIVED
+}
+
+enum OicIntelligenceProfileSource {
+  BUILTIN
+  CUSTOM
+}
+
+enum OicMemoryKind {
+  EPISODIC
+  SEMANTIC
+  PROCEDURAL
+  SESSION
+  APPLICATION
+}
+
+enum OicMemoryLifecycle {
+  ACTIVE
+  STALE
+  SUPERSEDED
+  CONFLICTED
+  UNVERIFIED
+  ARCHIVED
+}
+
+enum OicMemorySensitivity {
+  PUBLIC
+  INTERNAL
+  SENSITIVE
+  RESTRICTED
+}
+
+enum OicKnowledgeLifecycle {
+  ACTIVE
+  DISABLED
+  ARCHIVED
+}
+
+enum OicExecutionStatus {
+  RUNNING
+  SUCCEEDED
+  PARTIAL
+  FAILED
+  CANCELLED
+}
+
 enum OicModelVariantKind {
   EXTERNAL_PROVIDER
 }
@@ -122,6 +171,9 @@ model OicApplication {
   providerConnections OicProviderConnection[]
   runtimeBindings    OicRuntimeBinding[]
   modelVisibility    OicApplicationModelVisibility[]
+  intelligenceMemories OicIntelligenceMemory[]
+  intelligenceKnowledge OicIntelligenceKnowledge[]
+  intelligenceExecutions OicIntelligenceExecution[]
   @@index([status, key])
 }
 
@@ -138,6 +190,9 @@ model OicTenant {
   grants      OicPrincipalTenantGrant[]
   providerConnections OicProviderConnection[]
   runtimeBindings OicRuntimeBinding[]
+  intelligenceMemories OicIntelligenceMemory[]
+  intelligenceKnowledge OicIntelligenceKnowledge[]
+  intelligenceExecutions OicIntelligenceExecution[]
   @@unique([id, applicationId])
   @@unique([applicationId, key])
   @@index([applicationId, status, createdAt])
@@ -444,11 +499,14 @@ model OicModelRevision {
   revision       Int
   instructions   String?            @db.Text
   specification  String?            @db.Text
+  intelligenceProfileRevisionId String? @db.Uuid
   createdAt      DateTime           @default(now()) @db.Timestamptz(6)
   edition        OicModelEdition    @relation(fields: [editionId], references: [id], onDelete: Restrict)
+  intelligenceProfileRevision OicIntelligenceProfileRevision? @relation(fields: [intelligenceProfileRevisionId], references: [id], onDelete: Restrict)
   variants       OicModelVariant[]
   @@unique([editionId, revision])
   @@index([editionId, revision])
+  @@index([intelligenceProfileRevisionId])
 }
 
 model OicModelVariant {
@@ -498,4 +556,154 @@ model OicApplicationModelVisibility {
   edition       OicModelEdition @relation(fields: [editionId], references: [id], onDelete: Restrict)
   @@unique([applicationId, editionId])
   @@index([applicationId, createdAt])
+}
+
+model OicIntelligenceProfile {
+  id          String                          @id @default(uuid()) @db.Uuid
+  profileKey  String                          @unique @db.VarChar(64)
+  displayName String                          @db.VarChar(160)
+  description String                          @default("") @db.VarChar(1000)
+  source      OicIntelligenceProfileSource    @default(CUSTOM)
+  lifecycle   OicIntelligenceProfileLifecycle @default(ACTIVE)
+  createdAt   DateTime                        @default(now()) @db.Timestamptz(6)
+  updatedAt   DateTime                        @updatedAt @db.Timestamptz(6)
+  revisions   OicIntelligenceProfileRevision[]
+  @@index([lifecycle, source, profileKey])
+}
+
+model OicIntelligenceProfileRevision {
+  id                         String                @id @default(uuid()) @db.Uuid
+  profileId                  String                @db.Uuid
+  revision                   Int
+  contextIntensity           Int                   @default(50)
+  memoryIntensity            Int                   @default(0)
+  retrievalIntensity         Int                   @default(0)
+  reasoningIntensity         Int                   @default(50)
+  toolsIntensity             Int                   @default(0)
+  verificationIntensity      Int                   @default(50)
+  synthesisIntensity         Int                   @default(50)
+  efficiencyIntensity        Int                   @default(50)
+  maxStages                   Int                   @default(8)
+  maxProviderCalls            Int                   @default(3)
+  maxToolCalls                Int                   @default(0)
+  maxRetrievalQueries         Int                   @default(2)
+  maxMemoryItems              Int                   @default(4)
+  maxCandidates               Int                   @default(1)
+  maxVerificationRounds       Int                   @default(1)
+  maxContextTokens            Int                   @default(8192)
+  maxExecutionMs              Int                   @default(60000)
+  allowMemoryWrites           Boolean               @default(false)
+  allowRevision               Boolean               @default(true)
+  requireEvidence             Boolean               @default(false)
+  createdAt                   DateTime              @default(now()) @db.Timestamptz(6)
+  profile                     OicIntelligenceProfile @relation(fields: [profileId], references: [id], onDelete: Restrict)
+  modelRevisions              OicModelRevision[]
+  @@unique([profileId, revision])
+  @@index([profileId, revision])
+}
+
+model OicIntelligenceMemory {
+  id                     String                  @id @default(uuid()) @db.Uuid
+  applicationId          String                  @db.Uuid
+  tenantId               String?                 @db.Uuid
+  actorPrincipalId       String?                 @db.Uuid
+  sessionId              String?                 @db.VarChar(128)
+  kind                   OicMemoryKind
+  lifecycle              OicMemoryLifecycle      @default(UNVERIFIED)
+  sensitivity            OicMemorySensitivity    @default(INTERNAL)
+  title                  String                  @db.VarChar(240)
+  content                String                  @db.Text
+  embedding              Float[]                 @default([])
+  embeddingModel         String                  @default("hashed-token-ngram-v1") @db.VarChar(64)
+  embeddingDimensions    Int                     @default(384)
+  entityKey              String?                 @db.VarChar(160)
+  sourceType             String                  @db.VarChar(64)
+  sourceRef              String?                 @db.VarChar(256)
+  confidence              Int                     @default(50)
+  salience                Int                     @default(50)
+  validUntil              DateTime?               @db.Timestamptz(6)
+  lastConfirmedAt         DateTime?               @db.Timestamptz(6)
+  originatingExecutionId String?                 @db.Uuid
+  createdAt               DateTime                @default(now()) @db.Timestamptz(6)
+  updatedAt               DateTime                @updatedAt @db.Timestamptz(6)
+  archivedAt              DateTime?               @db.Timestamptz(6)
+  application             OicApplication          @relation(fields: [applicationId], references: [id], onDelete: Restrict)
+  tenant                  OicTenant?              @relation(fields: [tenantId, applicationId], references: [id, applicationId], onDelete: Restrict)
+  @@index([applicationId, tenantId, lifecycle, kind])
+  @@index([applicationId, sessionId, lifecycle])
+  @@index([applicationId, entityKey, lifecycle])
+}
+
+model OicIntelligenceKnowledge {
+  id            String               @id @default(uuid()) @db.Uuid
+  applicationId String               @db.Uuid
+  tenantId      String?              @db.Uuid
+  sourceKey     String               @db.VarChar(128)
+  sourceRef     String               @db.VarChar(512)
+  title         String               @db.VarChar(240)
+  content       String               @db.Text
+  dependsOn     Json                 @default("[]")
+  embedding     Float[]              @default([])
+  embeddingModel String              @default("hashed-token-ngram-v1") @db.VarChar(64)
+  embeddingDimensions Int            @default(384)
+  authority     Int                  @default(50)
+  sourcePriority Int                @default(50)
+  lifecycle     OicKnowledgeLifecycle @default(ACTIVE)
+  publishedAt   DateTime?            @db.Timestamptz(6)
+  createdAt     DateTime             @default(now()) @db.Timestamptz(6)
+  updatedAt     DateTime             @updatedAt @db.Timestamptz(6)
+  archivedAt    DateTime?            @db.Timestamptz(6)
+  application   OicApplication       @relation(fields: [applicationId], references: [id], onDelete: Restrict)
+  tenant        OicTenant?           @relation(fields: [tenantId, applicationId], references: [id, applicationId], onDelete: Restrict)
+  @@unique([applicationId, tenantId, sourceKey, sourceRef])
+  @@index([applicationId, tenantId, lifecycle, updatedAt])
+}
+
+model OicIntelligenceExecution {
+  id                 String            @id @default(uuid()) @db.Uuid
+  traceId            String            @unique @db.VarChar(128)
+  requestId          String            @db.VarChar(128)
+  applicationId      String            @db.Uuid
+  tenantId           String?           @db.Uuid
+  principalId        String             @db.Uuid
+  modelId            String             @db.VarChar(64)
+  modelRevisionId    String?            @db.Uuid
+  profileRevisionId  String?            @db.Uuid
+  status             OicExecutionStatus @default(RUNNING)
+  strategy           String             @db.VarChar(64)
+  taskType           String             @db.VarChar(64)
+  uncertainty        String             @db.VarChar(32)
+  stageCount         Int                @default(0)
+  providerCallCount  Int                @default(0)
+  retrievalQueryCount Int               @default(0)
+  memoryLookupCount  Int                @default(0)
+  contextTokens      Int                @default(0)
+  inputTokens        Int?
+  outputTokens       Int?
+  verificationStatus String             @db.VarChar(32)
+  summary            Json
+  startedAt          DateTime           @default(now()) @db.Timestamptz(6)
+  completedAt        DateTime?          @db.Timestamptz(6)
+  application        OicApplication     @relation(fields: [applicationId], references: [id], onDelete: Restrict)
+  tenant             OicTenant?         @relation(fields: [tenantId, applicationId], references: [id, applicationId], onDelete: Restrict)
+  stages             OicIntelligenceExecutionStage[]
+  @@index([applicationId, tenantId, startedAt])
+  @@index([traceId, applicationId])
+}
+
+model OicIntelligenceExecutionStage {
+  id           String                   @id @default(uuid()) @db.Uuid
+  executionId  String                   @db.Uuid
+  stageIndex   Int
+  stageType    String                   @db.VarChar(64)
+  status       String                   @db.VarChar(32)
+  strategy     String?                  @db.VarChar(64)
+  durationMs   Int                      @default(0)
+  resourceUse  Json
+  metadata     Json
+  startedAt    DateTime                 @db.Timestamptz(6)
+  completedAt  DateTime?                @db.Timestamptz(6)
+  execution    OicIntelligenceExecution @relation(fields: [executionId], references: [id], onDelete: Restrict)
+  @@unique([executionId, stageIndex])
+  @@index([executionId, stageIndex])
 }

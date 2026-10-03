@@ -278,14 +278,18 @@ export class ModelFabricService {
     } catch (error) { if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === "P2002") throw new ConflictException("Model edition identity is already in use"); throw error; }
   }
 
-  async createRevision(actor: AuthenticatedPrincipal, editionId: string, input: { instructions?: string; specification?: string }, requestId?: string, traceId?: string) {
+  async createRevision(actor: AuthenticatedPrincipal, editionId: string, input: { instructions?: string; specification?: string; intelligenceProfileRevisionId?: string }, requestId?: string, traceId?: string) {
     this.requireScope(actor, "oic:models:manage");
     const edition = await this.db.oicModelEdition.findUnique({ where: { id: editionId }, select: { id: true, lifecycle: true } });
     if (!edition || edition.lifecycle === "RETIRED") throw new NotFoundException();
     return this.db.$transaction(async (tx) => {
       const latest = await tx.oicModelRevision.findFirst({ where: { editionId }, orderBy: { revision: "desc" }, select: { revision: true } });
+      if (input.intelligenceProfileRevisionId) {
+        const profileRevision = await tx.oicIntelligenceProfileRevision.findUnique({ where: { id: input.intelligenceProfileRevisionId }, include: { profile: true } });
+        if (!profileRevision || profileRevision.profile.lifecycle !== "ACTIVE") throw new ConflictException("Intelligence profile revision is unavailable");
+      }
       const revision = await tx.oicModelRevision.create({ data: { editionId, revision: (latest?.revision ?? 0) + 1, ...input } });
-      await tx.oicAuditEvent.create({ data: { actorPrincipalId: actor.id, action: "model-revision.created", targetType: "model-revision", targetId: revision.id, requestId, traceId, metadata: { editionId, revision: revision.revision } } });
+      await tx.oicAuditEvent.create({ data: { actorPrincipalId: actor.id, action: "model-revision.created", targetType: "model-revision", targetId: revision.id, requestId, traceId, metadata: { editionId, revision: revision.revision, intelligenceProfileRevisionId: revision.intelligenceProfileRevisionId } } });
       return revision;
     });
   }

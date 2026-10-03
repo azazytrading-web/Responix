@@ -16,7 +16,7 @@ void test("customer-side identities and caller-supplied ownership metadata do no
     { "x-workspace-id": "workspace-customer-a" },
     { "x-workspace-id": "workspace-customer-a", authorization: "Bearer customer_api_abcdefghijklmnop" },
     { authorization: "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJjdXN0b21lciJ9.signature" },
-    { authorization: "Bearer oic_v1.AAAAAAAAAAAAAAAAAAAA.AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", "x-oic-application-id": "app-spoof", "x-tenant-id": "tenant-spoof" }
+    { authorization: "Bearer oic_v1.invalid.short", "x-oic-application-id": "app-spoof", "x-tenant-id": "tenant-spoof" }
   ]) await assert.rejects(guard.canActivate(context(headers)), UnauthorizedException);
   assert.throws(() => parseOicRuntimeRequest({ model: "oi-core", input: [{ speaker: "user", content: [{ type: "text", text: "hello" }] }], applicationId: "caller-selected-app", tenantId: "caller-selected-tenant" }), OicRuntimeException);
 });

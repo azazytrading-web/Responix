@@ -27,7 +27,7 @@ type Props = {
   perform: (action: string, values?: Row) => Promise<Row | null>;
 };
 
-export function ModelFabricViews({ view, data, locale, t, literal, filter, setFilter, filtered, table, badge, mono, appLabel, tenantLabel, actionButton, perform }: Props) {
+export function ModelFabricViews({ view, data, locale, t, literal, filter, setFilter, filtered, table, badge, mono, appLabel, tenantLabel, actionButton, perform, profileRevisions = [] }: Props & { profileRevisions?: Row[] }) {
   const [showArchived, setShowArchived] = useState(false);
   const visibleRows = (rows: Row[]) => filtered(showArchived ? rows : rows.filter((row) => row.status !== "ARCHIVED" && row.lifecycle !== "ARCHIVED"));
   const archiveToggle = <label className="archive-toggle"><input type="checkbox" checked={showArchived} onChange={(event) => setShowArchived(event.target.checked)} />{t.showArchived}</label>;
@@ -282,6 +282,7 @@ export function ModelFabricViews({ view, data, locale, t, literal, filter, setFi
                 upstreamModels={data.upstreamModels}
                 connections={data.connections}
                 providers={data.providers}
+                profileRevisions={profileRevisions}
                 appLabel={appLabel}
                 tenantLabel={tenantLabel}
                 literal={literal}

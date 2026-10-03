@@ -42,7 +42,7 @@ const editionDto = z.object({
   publicId: z.string().regex(/^oi-[a-z0-9]+(?:[._-][a-z0-9]+)*$/).max(64),
   editionKey: z.string().regex(/^[a-z0-9][a-z0-9._-]{0,63}$/), displayName: z.string().trim().min(1).max(160), domain: z.string().trim().min(1).max(128).optional()
 }).strict();
-const revisionDto = z.object({ instructions: z.string().max(100_000).optional(), specification: z.string().max(100_000).optional() }).strict();
+const revisionDto = z.object({ instructions: z.string().max(100_000).optional(), specification: z.string().max(100_000).optional(), intelligenceProfileRevisionId: z.string().uuid().optional() }).strict();
 const variantDto = z.object({ variantKey: z.string().regex(/^[a-z0-9][a-z0-9._-]{0,63}$/), upstreamModelId: z.string().uuid(), transportProfile: z.string().regex(/^[a-z0-9][a-z0-9-]{1,127}$/) }).strict();
 const bindingDto = z.object({
   variantId: z.string().uuid(), connectionId: z.string().uuid(), scope: z.enum(["PLATFORM", "APPLICATION", "TENANT"]),
@@ -59,6 +59,13 @@ const catalogLifecycleDto = z.object({ lifecycle: z.enum(["ACTIVE", "DISABLED", 
 @UseGuards(OicAuthenticationGuard, OicScopeGuard)
 export class ModelFabricController {
   constructor(private readonly models: ModelFabricService) {}
+
+  @Version("1")
+  @Get("intelligence/engines")
+  @RequireScopes("oic:models:read")
+  intelligenceEngines() {
+    return { version: "oic-intelligence-engines-v1", engines: ["task-analysis-v1", "adaptive-depth-v1", "typed-plan-v1", "budgeted-context-v1", "hybrid-retrieval-v1", "structured-verification-v1", "bounded-stop-control-v1"] };
+  }
 
   @Version("1")
   @Get("provider-connections/:connectionId/upstream-models")

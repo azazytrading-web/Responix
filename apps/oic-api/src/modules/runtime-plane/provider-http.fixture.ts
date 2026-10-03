@@ -9,6 +9,8 @@ export class LocalProviderHttpFixture {
   private server?: Server;
   mode: ProviderFixtureMode = "success";
   delayMs = 100;
+  responseTexts: string[] = [];
+  responseForRequest?: (body: string) => string;
   captured: CapturedProviderRequest[] = [];
   cancellationCount = 0;
 
@@ -19,6 +21,8 @@ export class LocalProviderHttpFixture {
       response.on("close", () => { if (!response.writableEnded) this.cancellationCount += 1; });
       request.on("end", () => {
         this.captured.push({ authorization: request.headers.authorization, contentType: request.headers["content-type"], body: Buffer.concat(chunks).toString("utf8") });
+        const body = Buffer.concat(chunks).toString("utf8");
+        const responseText = this.responseForRequest?.(body) ?? this.responseTexts.shift() ?? "fixture answer";
         const mode = this.mode;
         const errors: Partial<Record<ProviderFixtureMode, number>> = { "400": 400, "401": 401, "403": 403, "404": 404, "408": 408, "429": 429, "500": 500, "502": 502, "503": 503 };
         const errorStatus = errors[mode];
@@ -50,8 +54,8 @@ export class LocalProviderHttpFixture {
         }
         response.writeHead(200, { "content-type": "application/json" });
         if (request.method === "GET") { response.end(JSON.stringify({ data: [{ id: "fixture-model" }] })); return; }
-        if (request.url?.includes("/responses")) response.end(JSON.stringify({ status: "completed", output_text: "fixture answer", usage: { input_tokens: 11, output_tokens: 4, input_tokens_details: { cached_tokens: 2 }, output_tokens_details: { reasoning_tokens: 1 } } }));
-        else response.end(JSON.stringify({ choices: [{ message: { content: "fixture answer" }, finish_reason: "stop" }], usage: { prompt_tokens: 11, completion_tokens: 4, prompt_tokens_details: { cached_tokens: 2 }, completion_tokens_details: { reasoning_tokens: 1 } } }));
+        if (request.url?.includes("/responses")) response.end(JSON.stringify({ status: "completed", output_text: responseText, usage: { input_tokens: 11, output_tokens: 4, input_tokens_details: { cached_tokens: 2 }, output_tokens_details: { reasoning_tokens: 1 } } }));
+        else response.end(JSON.stringify({ choices: [{ message: { content: responseText }, finish_reason: "stop" }], usage: { prompt_tokens: 11, completion_tokens: 4, prompt_tokens_details: { cached_tokens: 2 }, completion_tokens_details: { reasoning_tokens: 1 } } }));
       });
     });
     await new Promise<void>((resolve, reject) => { this.server!.once("error", reject); this.server!.listen(0, "127.0.0.1", () => resolve()); });

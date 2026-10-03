@@ -1,6 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { OicDatabaseService } from "@oic/database";
 import type { OicModelResolver, OicRuntimeContext, OicResolvedModel, OicRuntimeRequest, OicVisibleModel } from "@oic/contracts";
+import { policyFromRevision, FAST_POLICY } from "../intelligence/engines/profile-policy";
 
 export const OIC_MODEL_RESOLVER = Symbol("OIC_MODEL_RESOLVER");
 
@@ -29,16 +30,23 @@ export class DatabaseOicModelResolver implements OicModelResolver {
           { scope: "APPLICATION", applicationId: context.applicationId }, { scope: "PLATFORM", applicationId: null, tenantId: null }
         ] } }
       },
-      include: { bindings: { where: { status: "ACTIVE", environment: "production", connection: { status: "ACTIVE", healthStatus: "HEALTHY", lastValidatedAt: { not: null } } }, include: { variant: { include: { revision: true } } } } }
+      include: {
+        bindings: {
+          where: { status: "ACTIVE", environment: "production", connection: { status: "ACTIVE", healthStatus: "HEALTHY", lastValidatedAt: { not: null } } },
+          include: { variant: { include: { revision: { include: { intelligenceProfileRevision: { include: { profile: true } } } } } } }
+        }
+      }
     });
     if (!edition) return null;
     const rank = (binding: (typeof edition.bindings)[number]) => binding.scope === "TENANT" && binding.tenantId === context.tenantId ? 0 : binding.scope === "APPLICATION" && binding.applicationId === context.applicationId ? 1 : binding.scope === "PLATFORM" ? 2 : 3;
     const binding = [...edition.bindings].filter((candidate) => rank(candidate) < 3).sort((left, right) => rank(left) - rank(right) || left.id.localeCompare(right.id))[0];
     if (!binding || binding.variant.revision.editionId !== edition.id) return null;
+    const profileRevision = binding.variant.revision.intelligenceProfileRevision;
+    if (profileRevision && profileRevision.profile.lifecycle !== "ACTIVE") return null;
     return {
       id: edition.publicId as OicResolvedModel["id"], displayName: edition.displayName,
       capabilities: ["text.generate", "text.stream"], resolverVersion: "oic-model-resolver-v1",
-      revisionId: binding.variant.revisionId, variantId: binding.variantId, bindingId: binding.id
+      revisionId: binding.variant.revisionId, intelligenceProfile: profileRevision ? policyFromRevision(profileRevision) : { ...FAST_POLICY, id: "builtin-fast-unassigned", profileId: "builtin-fast-unassigned", profileKey: "FAST", displayName: "Fast (default)", revision: 1 }, variantId: binding.variantId, bindingId: binding.id
     } as ResolvedOicModel;
   }
 

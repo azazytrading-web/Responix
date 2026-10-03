@@ -150,6 +150,7 @@ export function ModelHierarchy({
   upstreamModels,
   connections,
   providers,
+  profileRevisions,
   appLabel,
   tenantLabel,
   literal,
@@ -166,6 +167,7 @@ export function ModelHierarchy({
   upstreamModels: Row[];
   connections: Row[];
   providers: Row[];
+  profileRevisions: Row[];
   appLabel: (id: unknown) => string;
   tenantLabel: (id: unknown) => string;
   literal: (value: string) => string;
@@ -184,6 +186,7 @@ export function ModelHierarchy({
     value: safeText(model.id),
     label: `${safeText(model.providerName)} · ${safeText(model.displayName)} · ${safeText(model.upstreamModelId)}`
   }));
+  const profileOptions = profileRevisions.filter((revision) => (revision.profile as Row | undefined)?.lifecycle === "ACTIVE").map((revision) => ({ value: safeText(revision.id), label: `${safeText((revision.profile as Row | undefined)?.profileKey)} · r${safeText(revision.revision)}` }));
   return (
     <div className="model-hierarchy">
       {families.map((family) => (
@@ -229,7 +232,8 @@ export function ModelHierarchy({
                   title={t.createRevision}
                   fields={[
                     { name: "instructions", label: t.instructions, type: "textarea", maxLength: 100_000, required: false },
-                    { name: "specification", label: t.specification, type: "textarea", maxLength: 100_000, required: false }
+                    { name: "specification", label: t.specification, type: "textarea", maxLength: 100_000, required: false },
+                    { name: "intelligenceProfileRevisionId", label: "Intelligence profile revision", options: [{ value: "", label: "FAST (default)" }, ...profileOptions], required: false }
                   ]}
                   submitLabel={t.create}
                   onSubmit={submit("model.revision.create", { editionId: edition.id })}
@@ -336,7 +340,8 @@ export function ModelHierarchy({
                     title={t.createRevision}
                     fields={[
                       { name: "instructions", label: t.instructions, type: "textarea", maxLength: 100_000, required: false },
-                      { name: "specification", label: t.specification, type: "textarea", maxLength: 100_000, required: false }
+                      { name: "specification", label: t.specification, type: "textarea", maxLength: 100_000, required: false },
+                      { name: "intelligenceProfileRevisionId", label: "Intelligence profile revision", options: [{ value: "", label: "FAST (default)" }, ...profileOptions], required: false }
                     ]}
                     submitLabel={t.create}
                     onSubmit={submit("model.revision.create", { editionId: edition.id })}

@@ -16,6 +16,10 @@ function isOicDatabaseUrl(value: string): boolean {
 export const oicEnvironmentSchema = z.object({
   NODE_ENV: z.enum(["development", "test", "production"]).default("development"),
   OIC_ENABLE_LOCAL_PROVIDER_FIXTURE: z.enum(["true", "false"]).default("false"),
+  OIC_PROVIDER_CREDENTIAL_ENCRYPTION_KEY: z.string().optional().refine(
+    (value) => value === undefined || /^[a-f0-9]{64}$/i.test(value) || /^[A-Za-z0-9+/]{43}=$/.test(value),
+    { message: "OIC_PROVIDER_CREDENTIAL_ENCRYPTION_KEY must encode 32 bytes as hex or base64" }
+  ),
   OIC_HOST: z.string().min(1).default("0.0.0.0"),
   OIC_PORT: z.coerce.number().int().min(1).max(65535).default(4100),
   OIC_AUTH_REQUESTS_PER_MINUTE: z.coerce.number().int().min(1).max(10000).default(120),

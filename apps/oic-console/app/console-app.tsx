@@ -294,17 +294,6 @@ export default function ConsoleApp({ platformUrl }: { platformUrl: string }) {
       </table>
     </DataTable>
   );
-  const metric = (index: string, label: string, value: number, note: string) => (
-    <article className="metric-card" key={label}>
-      <div className="metric-top">
-        <span>{index}</span>
-        <span className="metric-mark">↗</span>
-      </div>
-      <p>{label}</p>
-      <strong>{value.toString().padStart(2, "0")}</strong>
-      <small>{note}</small>
-    </article>
-  );
   const appFor = (applicationId: unknown) =>
     snapshot?.applications.find((app) => app.id === applicationId);
   const appLabel = (applicationId: unknown) => {
@@ -546,6 +535,7 @@ export default function ConsoleApp({ platformUrl }: { platformUrl: string }) {
           title={title}
           description={view === "overview" ? t.subtitle : `${t.product} / ${title}`}
           dir={locale === "ar" ? "rtl" : "ltr"}
+          wide={view === "overview"}
           meta={
             <div className="heading-meta">
               <span>{literal("CONTROL PLANE")}</span>
@@ -566,7 +556,7 @@ export default function ConsoleApp({ platformUrl }: { platformUrl: string }) {
             <LoadingState label={t.loading} />
           )}
 
-          <OverviewView view={view} data={data} health={health} locale={locale} t={t} literal={literal} navigate={setView} badge={badge} mono={mono} table={table} metric={metric} renderAudit={(events) => renderAudit(events, table, mono, dateValue, locale, t)} />
+          <OverviewView view={view} data={data} health={health} executions={executions} locale={locale} literal={literal} navigate={setView} loading={loading} refresh={() => { void Promise.all([loadSnapshot(), loadHealth(), loadExecutions()]); }} />
           <IntelligenceCenter
             view={view}
             locale={locale}

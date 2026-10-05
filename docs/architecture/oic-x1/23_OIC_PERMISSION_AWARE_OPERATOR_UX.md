@@ -43,3 +43,5 @@ Use text/icon/state shape plus semantic color; never color alone. Do not make di
 | Audit | Apply API filtering and authorization before pagination/export. Never broaden scope in the client to “complete” a result. |
 
 Permission changes during an open page are handled by fresh server decisions. A prior successful read or stale capability cache never authorizes a later write. Preserve authentication, origin, CSRF/session protections and machine credential boundaries without exception.
+
+The shared visual states and reason handling are specified in [34](34_OIC_INTERFACE_STATE_PERMISSION_MACHINE.md). X1.3A confirms that the current Console has a human session/BFF boundary and the API has a separate machine principal/scope boundary; no generic human-role capability discovery is present. Affordances can explain known endpoint requirements but never authorize or leak out-of-scope entity existence.

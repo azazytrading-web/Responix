@@ -30,7 +30,7 @@
 - OIC-only product changes. Responix and Mega Platform Portal are untouched. X1.1 adds no dependency, API change, schema change or auth change.
 - Existing preview processes must remain live; separately verify Console HTTP and API readiness at closeout.
 
-## Expanded X1.1–X1.7 position
+## Expanded X1.1–X1.8 position
 
 The detailed goals, allowed/forbidden scope, documents to read, data/dependency decisions, human checkpoints, live-preview arrangement, acceptance and return points are locked in `OIC_X1_EXECUTION_PLAN.md`.
 
@@ -39,11 +39,13 @@ The detailed goals, allowed/forbidden scope, documents to read, data/dependency 
 | X1.0 / X1.0B / X1.0C | GO / LOCKED v1.0 | Docs-only architecture commit; X1-1 working tree preserved separately. |
 | X1.1 | GO | Shell, frames/primitives, Overview/runtime presentation and locale/style foundation complete. Authenticated four-cell viewport matrix, 15-route EN/LTR walk, command keyboard path, API/BFF data path, typecheck/lint/build and scoped boundary checks passed; evidence limits are recorded in the acceptance matrix. |
 | X1.2 | GO / CLOSED | Owner manual visual acceptance PASS; showcase visual matrix PASS. Automated authenticated real-Overview capture NOT AVAILABLE. Console checks, production dev-route 404, API/DB readiness and OIC boundary validation recorded at closeout. Accepted cosmetic polish debt does not reopen X1.2. |
-| X1.3 | NOT STARTED | Current API entities exist; workspace still planned. Provider security contract is prerequisite. |
-| X1.4 | NOT STARTED | Model hierarchy/profile APIs exist. OIC-7 evaluator methodology is required before measured DNA. |
-| X1.5 | NOT STARTED | Current memory/knowledge APIs and schema exist; studio/graph/analytics remain planned. |
-| X1.6 | NOT STARTED | Current Workbench/runtime/traces exist; unified Lab surfaces and trace inspector contract remain planned. |
-| X1.7 | NOT STARTED | No SOL/alert/host telemetry implementation claimed. Requires source-backed advice and final integration. |
+| X1.3A | GO / CLOSED | Interface Systems architecture and contracts are source-audited and locked in docs 28–38; project-state and architecture references updated; no implementation changes. |
+| X1.3B | NOT STARTED / NEXT RETURN POINT | Implement the OIC-owned control, command, selection, workspace, reactive systems and dev gallery only after owner review/authorization of X1.3A. |
+| X1.4 | NOT STARTED | Provider Factory; current API entities exist. Provider security contract is prerequisite. |
+| X1.5 | NOT STARTED | Model hierarchy/profile APIs exist. OIC-7 evaluator methodology is required before measured DNA. |
+| X1.6 | NOT STARTED | Current memory/knowledge APIs and schema exist; studio/graph/analytics remain planned. |
+| X1.7 | NOT STARTED | Current Workbench/runtime/traces exist; unified Lab surfaces and trace inspector contract remain planned. |
+| X1.8 | NOT STARTED | No SOL/alert/host telemetry implementation claimed. Requires source-backed advice and final integration. |
 
 ## X1.1 completion checkpoint
 
@@ -74,3 +76,12 @@ Architecture lock now has two review layers: X1.0 structure/direction and X1.0B 
 - **Final status:** GO / CLOSED by explicit owner acceptance. Owner manual visual acceptance of the real Overview, showcase and instrument gallery is PASS. The showcase visual matrix is PASS based on completed captures/checks. Automated authenticated real-Overview capture is NOT AVAILABLE; it is not represented as run or passed.
 - **Accepted Cosmetic Polish Debt:** micro-spacing, typography alignment, small instrument-label polish and local density refinements may remain. They do not reopen X1.2 and may be addressed only as later opportunistic polish or real bug fixes; no new sprint is created.
 - **Freeze:** the X1.2 hero, monitoring rack, instruments, Flight Deck composition/showcase, gallery, model/provider/factory/lab/cognitive/operations areas, locale/direction behavior and dormant geometry are the accepted baseline. X1.3 and OIC-6 remain unstarted.
+
+
+## X1.3A architecture lock closeout (2026-10-05)
+
+- **Status:** GO / CLOSED — documentation-only architecture and source audit. X1.3B implementation remains NOT STARTED.
+- **Locked scope:** one OIC-owned typed interface system; control, command/action, selection, reactive configuration, workspace/inspector, state/permission, dev-gallery, acceptance, extraction and page-adoption contracts are linked from docs 28–38. Existing architecture docs 01, 03, 04, 13, 14, 18, 20, 22–27 and DECISION_LOG are updated.
+- **Source decision:** React Aria Components is the X1.3B recommendation for evaluation, not an installed dependency. Version/framework compatibility, SSR, RTL, dependency/license and bundle review are mandatory before adoption.
+- **Boundary:** no application, API, database, Portal or Responix code changed; no test/build needed for unchanged app code. X1.1/X1.2 historical names remain unchanged; future milestones explicitly transition to X1.4–X1.8.
+- **Next return point:** X1.3B — Oi Interface Systems Implementation & Gallery. DO NOT START until separately requested.

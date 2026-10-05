@@ -156,3 +156,7 @@ flowchart LR
 ## Architecture lock version
 
 **OIC-X1 ARCHITECTURE LOCK VERSION: 1.0 — STATUS: LOCKED.** This lock becomes effective after the X1.0C GO gate. Implementation follows the linked contracts, including [live/temporal state](21_OIC_LIVE_STATE_AND_TEMPORAL_ARCHITECTURE.md), [commands/events](22_OIC_ACTION_COMMAND_EVENT_ARCHITECTURE.md), [permission-aware UX](23_OIC_PERMISSION_AWARE_OPERATOR_UX.md), [recovery](24_OIC_FAILURE_RECOVERY_AND_ROLLBACK.md), [performance](25_OIC_FRONTEND_PERFORMANCE_AND_DENSITY.md), [compatibility](26_OIC_VERSIONING_CAPABILITY_AND_COMPATIBILITY.md), and [visual acceptance](27_OIC_VISUAL_ACCEPTANCE_GOVERNANCE.md). Any later architecture change requires an explicit decision-log amendment; implementation may not diverge ad hoc. Current implementation facts and milestone status remain distinct from the locked target contracts.
+
+## X1.3A companion architecture
+
+The OIC-X1 Architecture Lock 1.0 remains unchanged. Its interface implementation contract is refined by the versioned Oi Interface Systems 1.0 set in [28–38](28_OIC_INTERFACE_SYSTEM_ARCHITECTURE.md); these documents do not authorize code or change API truth. The neutral interaction/product-specific skin boundary is defined in [28](28_OIC_INTERFACE_SYSTEM_ARCHITECTURE.md#neutral-mechanics-and-oic-identity). X1.3A closes architecture; X1.3B is a separate implementation milestone requiring owner review/authorization.

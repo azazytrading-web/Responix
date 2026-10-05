@@ -59,3 +59,7 @@ All components receive already-authorized options/data from a workspace. They em
 4. **Expert inspector** for raw IDs, versions, safe metadata and diagnostics; secondary to the normal operator picker.
 
 Choose the least interruptive pattern that still communicates scope and consequence. A lifecycle action, credential rotation, binding change or cross-scope reassignment is never reduced to an unlabeled toggle. Network failure leaves the last confirmed state visible with stale marker, not a new value.
+
+## X1.3A interaction-system extension
+
+Five cooperating systems are now contracted in [28](28_OIC_INTERFACE_SYSTEM_ARCHITECTURE.md): controls ([29](29_OIC_CONTROL_LIBRARY_CONTRACT.md)), commands ([30](30_OIC_COMMAND_AND_ACTION_SYSTEM.md)), selection ([31](31_OIC_SELECTION_AND_PICKER_SYSTEM.md)), reactive configuration ([32](32_OIC_REACTIVE_CONFIGURATION_SYSTEM.md)), and workspaces/inspectors ([33](33_OIC_WORKSPACE_PANEL_AND_INSPECTOR_SYSTEM.md)). Shared state and permission semantics are in [34](34_OIC_INTERFACE_STATE_PERMISSION_MACHINE.md). These refine the existing interaction principles; X1.3A implements none of them.

@@ -41,3 +41,5 @@ These states are not interchangeable with temporal freshness (`FRESH`, `AGING`, 
 - New provider capability: expose only after API contract/version and configuration/auth state are defined. Unknown capability remains unsupported, never actionable by inference.
 
 Compatibility tests should include additive fields, unknown metric/hint/dimension, missing optional values, unsupported major version, partial capability and malformed units/scope. A safe degraded state is preferable to a crash or semantic misrepresentation.
+
+Interface control availability maps explicit current capability/source to AVAILABLE, READ_ONLY, DENIED, UNAVAILABLE, NOT_CONFIGURED or UNSUPPORTED, with a distinct reason and no fabricated discovery contract ([34](34_OIC_INTERFACE_STATE_PERMISSION_MACHINE.md)). Generic capability descriptors remain PLANNED. Gallery and future extraction are versioned OIC-owned architecture; there is no shared package now ([35](35_OIC_INTERFACE_GALLERY_SPEC.md), [37](37_OIC_INTERFACE_EXTRACTION_STRATEGY.md)).

@@ -61,3 +61,7 @@ State light behavior: LIVE has explicit “Live” plus source timestamp and sem
 Density modes: **standard** is default operator reading, with comfortable body copy and controls; **compact/instrument** is for high-volume Fleet/deck cells after legibility and targets are verified; **inspection/detail** increases spacing and wraps IDs/metadata for safe reading. Density changes layout only; never remove labels, units, state, keyboard target or source freshness.
 
 Icon philosophy: use one consistent line weight and simple geometry; icons communicate actions or entity classes, not decoration. Pair unfamiliar/ambiguous marks with a visible or accessible label. Directional icons mirror; brand glyph, status glyph and technical symbol do not mirror unless their semantics require it. **CURRENT:** there is no declared icon library in `apps/oic-console/package.json`; current UI uses CSS/text glyphs and local components. An icon package decision belongs to X1-1 only if demonstrated coverage gaps block operation.
+
+## X1.3A interface visual contract
+
+Controls and panels inherit the OIC tokens and semantic color rules above; no headless behavior dependency may supply a competing visual theme. Interface dimensions, focus, control geometry, density, motion and safe areas are specified in [Oi Interface Systems](28_OIC_INTERFACE_SYSTEM_ARCHITECTURE.md) and [control contract](29_OIC_CONTROL_LIBRARY_CONTRACT.md). Every component preserves labels/value/state in compact mode and visually distinguishes preview, persisted, predicted and verified information.

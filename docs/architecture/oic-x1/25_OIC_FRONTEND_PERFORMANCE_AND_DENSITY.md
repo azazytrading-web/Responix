@@ -30,3 +30,5 @@ Provider connections and metrics follow the same bounded grouping. New instrumen
 ## Flight Deck acceptance
 
 Benchmark the seven sections using realistic source-backed data, worst-case supported cardinality and sparse/unknown values. Measure network requests per refresh cycle, aggregate payload, rendering cost, browser responsiveness, DOM/window size, retained samples and active connections. Acceptance fails if a new widget creates an independent poll, fake live animation, unbounded history, or blocks the shell while deep telemetry loads. Performance never permits skipping scope checks, accessible labels, empty/error state, textual values or RTL-safe layout.
+
+The X1.3B interface tests must also measure control-count rerender cost and large picker behavior before virtualization or observers are introduced. Keep state local to the changed control, debounce supported remote search, and virtualize only after real cardinality/profiling justifies it. Acceptance and measurement record are in [36](36_OIC_INTERFACE_ACCEPTANCE_GOVERNANCE.md); no speculative numeric budget is asserted.

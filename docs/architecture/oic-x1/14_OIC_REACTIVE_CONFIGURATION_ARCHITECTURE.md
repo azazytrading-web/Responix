@@ -38,3 +38,5 @@ Current candidates include intelligence-profile revision controls, model variant
 | Context budget | Revision persists max context tokens; execution records context tokens when available. | Truncation/completeness effects require trace/compiler evidence; quality and latency projection OIC-7. |
 
 For each implementation page, render Current/Draft diff; scope/entity; known impact; predicted panel only when source exists; unknowns; optional simulation if API supports; apply confirmation; request/audit response; later observed trace. A draft discard restores last server value. Concurrent update conflict requires refetch/merge review, never blind overwrite. Do not claim cross-entity rollback where APIs have no atomic transaction.
+
+The shared control, diff, preset, local/server-preview and apply/verify component contract is expanded in [32](32_OIC_REACTIVE_CONFIGURATION_SYSTEM.md); common orthogonal draft/command/permission states are in [34](34_OIC_INTERFACE_STATE_PERMISSION_MACHINE.md). Existing endpoint-specific support remains authoritative: no generic simulator, revision guard, multi-entity transaction or rollback is introduced by X1.3A.

@@ -190,3 +190,25 @@ These amendments complete the X1.0 architecture lock. They extend the existing p
 ### X1-ADR-24 — Owner-visible local preview is permanent
 
 **DECIDED:** during each frontend milestone, keep the Console on `localhost:3002` and OIC API on `127.0.0.1:4100` as separate persistent processes, visible in VS Code; use a third terminal for validation/Git. Do not silently change ports or routinely terminate previews. Preserve all auth/origin/CSRF/session/machine-credential controls and never request the Operator password. See [execution plan](../../project-state/OIC_X1_EXECUTION_PLAN.md).
+
+## X1.3A — Interface Systems architecture lock (2026-10-05)
+
+### X1-ADR-25 — One OIC Interface Systems layer, with a deferred dependency decision
+
+**DECIDED:** X1.3B implements one OIC-owned typed interface system, composed from OIC-styled interaction primitives, workspace patterns and domain adapters. React Aria Components is the recommended behavior foundation after X1.3B pins and verifies a version against React 19 / Next 15, SSR, RTL, bundle, dependency and license requirements. No package is installed and no library extracted in X1.3A. Keep domain instruments and OIC semantic rendering in OIC-owned components. See [architecture](28_OIC_INTERFACE_SYSTEM_ARCHITECTURE.md), [contracts](29_OIC_CONTROL_LIBRARY_CONTRACT.md) and [extraction strategy](37_OIC_INTERFACE_EXTRACTION_STRATEGY.md).
+
+### X1-ADR-26 — Controls preserve domain meaning and bounds
+
+**DECIDED:** sliders/ranges use domain-provided minimum, maximum, step, units, presets and validation; presets never imply permission to save. Numeric controls preserve exact values and formatting semantics. Each control has explicit labels, help, disabled/read-only/unauthorized/error states, focus behavior, keyboard behavior and EN/AR direction rules. Styling cannot redefine a domain scale or authority. See [control contract](29_OIC_CONTROL_LIBRARY_CONTRACT.md).
+
+### X1-ADR-27 — Drafts, previews and authoritative state remain distinct
+
+**DECIDED:** editable workspaces keep local draft separate from last-loaded server state, validation/preview output and confirmed persisted state. Preview has no mutation side effect. Save, publish, test, revoke and other commands require explicit intent and server authorization. Ambiguous outcomes reconcile against authoritative state; no client-only permission, impact or rollback claim. See [reactive configuration](32_OIC_REACTIVE_CONFIGURATION_SYSTEM.md), [state machine](34_OIC_INTERFACE_STATE_PERMISSION_MACHINE.md) and existing [failure/recovery contract](24_OIC_FAILURE_RECOVERY_AND_ROLLBACK.md).
+
+### X1-ADR-28 — Component availability reflects evidence, not speculation
+
+**DECIDED:** show action availability based on the server response and current route contract. Do not invent generic permission discovery, universal preview/impact, conditional-write, cancellation, undo or rollback APIs. Distinguish unsupported, unavailable, not authorized, invalid, conflict and transport-uncertain states. API authorization remains authoritative. See [command/action system](30_OIC_COMMAND_AND_ACTION_SYSTEM.md), [permission-aware UX](23_OIC_PERMISSION_AWARE_OPERATOR_UX.md) and [state machine](34_OIC_INTERFACE_STATE_PERMISSION_MACHINE.md).
+
+### X1-ADR-29 — X1.3A locks architecture; X1.3B owns code and gallery delivery
+
+**DECIDED:** X1.3A is documentation/source audit only. X1.3B is the next return point for implementation of shared controls, selection/pickers, configuration state, workspace panels, gallery, tests and incremental page adoption. The gallery is development-only and must use production components. X1.3A makes the planned milestone transition explicit: future Provider Factory, Model Factory, Memory, Runtime/Lab and SOL milestones are X1.4 through X1.8; completed X1.1 and X1.2 records keep their historical labels. See [execution plan](../../project-state/OIC_X1_EXECUTION_PLAN.md), [gallery spec](35_OIC_INTERFACE_GALLERY_SPEC.md), [acceptance governance](36_OIC_INTERFACE_ACCEPTANCE_GOVERNANCE.md) and [page matrix](38_OIC_PAGE_CONTROL_ADOPTION_MATRIX.md).

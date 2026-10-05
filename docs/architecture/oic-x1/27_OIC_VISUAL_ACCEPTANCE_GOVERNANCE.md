@@ -38,3 +38,5 @@ Visual PASS requires no unexplained hierarchy/alignment/overflow/state-regressio
 | L — history unavailable, live snapshot available | Keep current snapshot available and mark historical controls/series unavailable or partial. No interpolated history from snapshots. |
 
 Any newly discovered gap is recorded as PARTIAL with owner and prerequisite; it is not covered by a visual approximation.
+
+The X1.3B control/command/selection/workspace/reactive state gallery and visual matrix are detailed in [35](35_OIC_INTERFACE_GALLERY_SPEC.md) and [36](36_OIC_INTERFACE_ACCEPTANCE_GOVERNANCE.md). Owner review of the live Console remains a named visual gate; automated capture, if unavailable, is recorded as unavailable, never inferred from a component test.

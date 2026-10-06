@@ -1,0 +1,78 @@
+.oi-interface-system {
+  --oi-surface-0: #080a08;
+  --oi-surface-1: #0d100e;
+  --oi-surface-2: #121612;
+  --oi-surface-3: #181d18;
+  --oi-line: #30372e;
+  --oi-line-strong: #514b31;
+  --oi-text: #e9ede5;
+  --oi-muted: #9ca69a;
+  --oi-dim: #727b70;
+  --oi-amber: #e7b946;
+  --oi-amber-bright: #f0cb62;
+  --oi-green: #8ddd72;
+  --oi-orange: #f2a550;
+  --oi-red: #f06d65;
+  --oi-disabled: #555a52;
+  --oi-control-accent: #65d7d9;
+  --oi-control-accent-rgb: 101 215 217;
+  --oi-control-accent-bright: #a4fcf2;
+  --oi-control-accent-bright-rgb: 164 252 242;
+  --oi-control-accent-soft: rgb(59 190 194 / 14%);
+  --oi-control-accent-muted: #438f92;
+  --oi-control-accent-border: #397a7c;
+  --oi-control-accent-border-rgb: 57 122 124;
+  --oi-control-accent-glow: rgb(83 226 222 / 26%);
+  --oi-control-accent-glow-rgb: 83 226 222;
+  --oi-control-surface: #0b1313;
+  --oi-control-surface-active: #18302f;
+  --oi-control-surface-raised: #14201f;
+  --oi-control-surface-hover: #111c1c;
+  --oi-control-line: #2c3b39;
+  --oi-control-line-strong: #354643;
+  --oi-control-track: #242d2c;
+  --oi-control-track-active: #55c9c9;
+  --oi-control-readout: #e2f7f1;
+  --oi-control-highlight: #c5fff5;
+  --oi-control-thumb: #0d1717;
+  --oi-control-focus: #8beee9;
+  --oi-control-selection: #163031;
+  --oi-control-selection-rgb: 17 35 35;
+  --oi-control-inset: rgb(0 0 0 / 48%);
+  --oi-focus: var(--oi-control-focus);
+  --oi-control-compact: 30px;
+  --oi-control-standard: 38px;
+  --oi-control-large: 48px;
+  --oi-control-precision: 42px;
+  --oi-track-compact: 4px;
+  --oi-track-standard: 6px;
+  --oi-track-large: 8px;
+  --oi-track-precision: 4px;
+  --oi-thumb-compact: 13px;
+  --oi-thumb-standard: 17px;
+  --oi-thumb-large: 21px;
+  --oi-thumb-precision: 17px;
+  --oi-space-1: 4px;
+  --oi-space-2: 8px;
+  --oi-space-3: 12px;
+  --oi-space-4: 16px;
+  --oi-space-5: 22px;
+  --oi-space-6: 30px;
+  --oi-radius: 2px;
+  --oi-duration-fast: 100ms;
+  --oi-duration-standard: 180ms;
+  --oi-duration-slow: 260ms;
+  --oi-easing: cubic-bezier(.2, .65, .25, 1);
+  --oi-layer-menu: 40;
+  --oi-layer-drawer: 60;
+  color: var(--oi-text);
+  color-scheme: dark;
+  font-family: Inter, "Segoe UI", Tahoma, sans-serif;
+  font-size: 14px;
+  line-height: 1.45;
+}
+
+.oi-interface-system[data-density="compact"] { --oi-current-control: var(--oi-control-compact); --oi-current-track: var(--oi-track-compact); --oi-current-thumb: var(--oi-thumb-compact); }
+.oi-interface-system[data-density="standard"] { --oi-current-control: var(--oi-control-standard); --oi-current-track: var(--oi-track-standard); --oi-current-thumb: var(--oi-thumb-standard); }
+.oi-interface-system[data-density="large"] { --oi-current-control: var(--oi-control-large); --oi-current-track: var(--oi-track-large); --oi-current-thumb: var(--oi-thumb-large); }
+.oi-interface-system[data-density="precision"] { --oi-current-control: var(--oi-control-precision); --oi-current-track: var(--oi-track-precision); --oi-current-thumb: var(--oi-thumb-precision); }

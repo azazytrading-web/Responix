@@ -1,8 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import type { ArcSweep, SemanticScale } from "../../components/instruments/scales";
 import { ArcMeter, AssemblyPipeline, CapacityRail, DeltaIndicator, DNARadar, DistributionRail, InstrumentFrame, NodeTrack, NumericInstrument, OicOrbitalGauge, RadialGauge, SensorBank, StateBeacon, StatusRing, TelemetryStrip, VerticalPressureGauge } from "../../components/instruments";
+import type { ArcSweep, SemanticScale } from "../../components/instruments";
 
 const states = ["LIVE", "IDLE", "DEGRADED", "FAULT", "UNAVAILABLE", "INSUFFICIENT_DATA", "NOT_CONFIGURED", "UNMEASURED"] as const;
 const riskScale: SemanticScale = { polarity: "HIGH_IS_BAD", zones: [{ from: 0, to: 30, state: "NORMAL" }, { from: 30, to: 50, state: "ELEVATED" }, { from: 50, to: 70, state: "WARNING" }, { from: 70, to: 85, state: "SEVERE" }, { from: 85, to: 100, state: "CRITICAL" }] };

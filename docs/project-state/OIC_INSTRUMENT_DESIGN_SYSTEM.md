@@ -8,11 +8,12 @@ OIC-owned React, SVG and CSS instrumentation used by the X1.2 Flight Deck. The l
 ## Ownership and entry points
 
 - Components and semantic contracts: `apps/oic-console/app/components/instruments/index.tsx` and `scales.ts`.
-- OIC theme tokens and component styling: `apps/oic-console/app/styles.css` (`--oii-*`).
+- Stable public imports: `apps/oic-console/app/components/instruments` (the barrel entry resolves to `index.tsx`, including the public scale contracts).
+- OIC theme tokens and component styling: the canonical `--oii-*` rules are globally provided by `apps/oic-console/app/styles.css`; Flight Deck `fd-*` composition rules remain page-owned.
 - Registry-driven metric interpretation remains in `features/overview/metric-registry.ts` and `instrument-registry.ts`.
 - Development reference gallery: `/dev/instruments`, behind a server-side `NODE_ENV === "development"` guard. It is not in Console navigation. A production `next start` process has `NODE_ENV=production`, so the route intentionally returns 404.
 
-Gallery fixtures live only in its development page and are never imported by Overview or data adapters. Production values remain source-derived. There are no fabricated metrics, samples, thresholds, confidence values, or deltas in the production path.
+The development Gallery and Flight Deck showcase import the public instrument barrel used by production Overview. Gallery fixtures live only in their development routes and are never imported by Overview or data adapters. Production values remain source-derived. There are no fabricated metrics, samples, thresholds, confidence values, or deltas in the production path. Product pages compose canonical instruments; they do not copy SVG, scale, focus, or state implementations.
 
 ## Instrument and scale contracts
 

@@ -37,6 +37,21 @@ Every later milestone specifies exact APIs/fields, migration need, rollback, and
 - **GATE:** state/contract/interaction/RTL/gallery/production-404 tests, owner visual review, serial validation, full OIC-only diff and artifact review.
 - **RETURN:** X1.3B closeout; do not automatically begin X1.4.
 
+#### Final source-of-truth closeout (2026-10-06)
+
+- **STATUS:** GO / CLOSED after owner acceptance, final validation, commit and normal push. Oi Operator Interface System v1.0 is ACCEPTED / FROZEN; the Oi Instrumentation System remains canonical and frozen.
+- **SOURCE OF TRUTH:** `/components/interface` and `/components/instruments` are authoritative implementations with public barrels. Both development galleries consume their canonical components. Production Overview and Flight Deck composition use canonical instruments; real Interface adoption starts in X1.4. No production/gallery duplicate implementation was found. Fixtures stay confined to development routes.
+- **VALIDATION:** Console typecheck, lint, all configured tests (34), production build, production dev-route 404 gates, source-of-truth/isolation tests, `git diff --check`, secret and boundary scans pass. Live Console and API/database readiness are confirmed; full evidence is in the acceptance matrix.
+- **BOUNDARY:** OIC Console and X1 docs only; no auth, origin, CSRF/session, BFF, API/database, Responix, Portal, X1.4 or OIC-6 changes.
+- **NEXT:** OIC-X1.4 is the next return point and remains NOT STARTED. OIC-6 remains NOT STARTED.
+
+#### X1.3B implementation checkpoint (2026-10-06)
+
+- **STATUS:** PARTIAL; owner visual and interaction review pending. Implementation is limited to the typed OIC interface library and development-only `/dev/interface-system` gallery described by architecture docs 28–38.
+- **VALIDATION:** focused Console typecheck, lint and interface-system tests passed. Production build/404, manual browser layout/locale/direction matrix, keyboard/focus review and owner workflow acceptance are not claimed. See the acceptance matrix for the evidence and gaps.
+- **BOUNDARY:** no production page adoption, API/BFF/database/security change, Portal or Responix change; demo fixtures remain development-only. Keep Console `:3002` and API `:4100` running.
+- **NEXT:** owner inspects `/dev/interface-system`; retain PARTIAL until the visual/interaction gate is explicitly recorded. No commit, push, X1.4, X1.5 or OIC-6 work is part of this checkpoint.
+
 ### X1.1 — Shell / Design System / Interaction Foundation
 
 #### LIVE DEVELOPMENT BOOTSTRAP (required first step)

@@ -1,8 +1,6 @@
 import type { CSSProperties, ReactNode } from "react";
-import { ArcMeter, CapacityRail, DistributionRail, NumericInstrument, RadialGauge, StatusRing, TelemetryStrip, VerticalPressureGauge } from "../../components/instruments";
-import type { InstrumentState } from "../../components/instruments";
-import { resolveThresholdZone } from "../../components/instruments/scales";
-import type { SemanticScale } from "../../components/instruments/scales";
+import { ArcMeter, CapacityRail, DistributionRail, NumericInstrument, RadialGauge, resolveThresholdZone, StatusRing, TelemetryStrip, VerticalPressureGauge } from "../../components/instruments";
+import type { InstrumentState, SemanticScale } from "../../components/instruments";
 import type { Locale } from "../../i18n";
 
 export type CompositionSize = "XS" | "SM" | "MD" | "LG";

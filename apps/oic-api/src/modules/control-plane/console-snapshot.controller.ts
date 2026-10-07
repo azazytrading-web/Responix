@@ -36,8 +36,7 @@ export class ConsoleSnapshotController {
         include: {
           application: { select: { id: true, key: true, displayName: true } },
           references: {
-            where: { revokedAt: null },
-            select: { id: true, sourceType: true, externalId: true, createdAt: true }
+            select: { id: true, sourceType: true, externalId: true, createdAt: true, revokedAt: true }
           }
         }
       }),

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "./styles.css";
+import "./components/interface/interface-system.css";
 
 export const metadata: Metadata = {
   title: "Oi Intelligence Core · Operator Console",

@@ -19,13 +19,14 @@ export type ActionButtonProps = {
   permission?: PermissionState;
   className?: string;
   label?: string;
+  type?: "button" | "submit";
 };
 
-export function ActionButton({ children, onPress, variant = "secondary", size = "standard", icon, loading = false, disabled = false, permission = { kind: "allowed" }, className = "", label }: ActionButtonProps) {
+export function ActionButton({ children, onPress, variant = "secondary", size = "standard", icon, loading = false, disabled = false, permission = { kind: "allowed" }, className = "", label, type = "button" }: ActionButtonProps) {
   const permissionId = useId();
   const permissionBlocks = permission.kind !== "allowed";
   const content = <><span className="oi-action-icon" aria-hidden="true">{loading ? <i className="oi-spinner" /> : icon}</span><span className="oi-action-label">{children}</span></>;
-  return <AriaButton className={`oi-action is-${variant} oi-size-${size} ${loading ? "is-loading" : ""} ${className}`.trim()} onPress={onPress} isDisabled={disabled || loading || permissionBlocks} aria-label={label} aria-describedby={permissionBlocks ? permissionId : undefined} aria-busy={loading || undefined}>
+  return <AriaButton type={type} className={`oi-action is-${variant} oi-size-${size} ${loading ? "is-loading" : ""} ${className}`.trim()} onPress={onPress} isDisabled={disabled || loading || permissionBlocks} aria-label={label} aria-describedby={permissionBlocks ? permissionId : undefined} aria-busy={loading || undefined}>
     {content}
     {permissionBlocks && <span className="oi-visually-hidden" id={permissionId}>{permission.reason}</span>}
   </AriaButton>;

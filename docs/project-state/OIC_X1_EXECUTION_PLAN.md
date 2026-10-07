@@ -1,21 +1,21 @@
 # OIC-X1 Execution Plan
 
-**Baseline:** `aa50e61`. **Product boundary:** OIC only. **Current:** OIC-5 GO; X1-1 PARTIAL with dirty work. X1.0 architecture lock precedes broad implementation. X1.0 does not commit or advance milestones.
+**Baseline:** `aa50e61`. **Product boundary:** OIC only. **Current:** OIC-5 GO; X1.4 Identity, Scope & Access GO / CLOSED by owner visual and workflow acceptance. Next return point OIC-X1.5. X1.0 architecture lock precedes broad implementation. X1.0 does not commit or advance milestones.
 
 | Milestone | Scope | Dependencies | Non-goals | Frontend surfaces | Backend/API work | Acceptance gate / return point |
-|---|---|---|---|---|---|---|
 | X1.0 Architecture Lock | Freeze architecture, catalogs, blueprints and gates in `docs/architecture/oic-x1/` and project-state docs. | Audit actual API/schema/Console and dirty tree. | Feature implementation, X1-2, dependency additions. | None; keep current Console preview live. | Inspection only; restore local services only if needed. | Docs checked against source; `git diff --check`; closeout for review. Then stop. |
 | X1.1 Shell / Design System / Interaction Foundation | Complete shell, navigation/workspace frames, tokens, interactions, reusable states, locale/direction coverage. | X1.0 review; preserve current dirty implementation. | Flight Deck, provider/model factory redesign. | Global shell and current pages progressively framed. | Only OIC endpoints strictly needed, separate approval within milestone. | Existing pages usable at four browser layouts; security and keyboard gates; return to X1.1 closeout. |
 | X1.2 Intelligence Flight Deck | Source-backed Overview instruments, groups and drilldowns. | X1.1 shell; metric/instrument contract; real source/history decision. | Fake telemetry, Model DNA, arbitrary dashboards. | Overview/System Core/Fleet/Provider/Factory/Lab sections. | Add telemetry/history API only where required and owner-approved. | Every instrument source/state/unit/freshness; four viewports; empty/offline and live. Return to X1.2. |
 | X1.3A Oi Interface Systems Architecture | Lock control, command, selection, workspace and reactive interaction contracts before implementation. | X1.2 accepted; audited Console/API and locked X1 architecture. | Application code, controls, page modernization, OIC-6, cross-product package. | Documentation only; keep Console and API live. | Read-only source audit; no API changes. | Architecture docs source-grounded, linked, consistent, boundary and service checks pass; owner review. |
 | X1.3B Oi Interface Systems Implementation & Gallery | Build and accept OIC-owned reusable interaction library and dev gallery in bounded stages. | X1.3A closed and owner authorizes implementation; dependency decision reviewed. | Broad page modernization, unsupported API semantics, Portal/Responix changes. | Shared controls/commands/pickers/workspaces/reactive patterns; `/dev/interface-system`. | Only separately authorized, evidenced OIC allowlist/API work. | Component, state, accessibility, locale, route-gate, visual and serial validation; return X1.3B closeout. |
-| X1.4 Provider Factory | Workspace across provider definitions, connections, credentials metadata, checks, sync and upstream catalog. | X1.3B foundation; API/security source audit. | Billing/economics not modeled; credential exposure. | Provider Factory/catalog and scoped inspectors. | Only missing OIC API contracts evidenced by needs. | Credential custody, scopes, provider failure/sync and real status. Return to X1.4. |
-| X1.5 Model Factory + Cognitive Profiles + Model DNA | Model Passport and actual hierarchy; profile configuration; DNA shell consumes valid OIC-7 evidence only. | X1.3B/X1.4; OIC-7 measurement contract before scored DNA. | Invented scores or lifecycle semantics. | Fleet, hierarchy, revisions, bindings, visibility, profile, compare/passport. | Respect existing model/profile APIs; evaluate only if OIC-7 contract exists. | Hierarchy/scope/lifecycle; profile → trace evidence; DNA method/version or unavailable. Return to X1.5. |
-| X1.6 Memory & Knowledge Intelligence Studio | Scoped records, provenance, dependencies, lifecycle and linked execution. | X1.3B and current memory/knowledge API. | Cross-tenant joins, general document platform. | Memory and Knowledge studios. | Changes only for demonstrated query/relationship gaps. | Scope isolation, provenance/dependency integrity, lifecycle and empty/failure. Return to X1.6. |
-| X1.7 Intelligence Lab / Runtime / Traces | Controlled run, result, evidence and safe trace inspection. | X1.3B, runtime and trace contracts; OIC-5 baseline. | Hidden CoT; unsupported quality rankings. | Workbench, Runtime Lab, Trace Explorer. | Preserve bounded/safe trace DTO; add only evidenced observability. | Request→trace→result, scope, matched compare, no sensitive payload, four layouts. Return to X1.7. |
-| X1.8 Smart Operating Layer / Operations / Final Integration | Contextual source-linked advice, health/audit integration and end-to-end polish. | Prior milestones; grounded impact contracts. | Autonomous change, fabricated prediction, cross-product operations. | Context insights, Operations/Health/Audit, global cross-workspace flows. | Only required measured signals and integration contracts. | Full browser/security/product-boundary/performance matrix and owner acceptance. Return final OIC-X1 review. |
+| X1.4 Identity, Scope & Access Engineering Workspaces | Production adoption for Applications, Tenants, Service Principals, scopes, tenant grants and credential lifecycle using canonical Oi interface/instrument systems where applicable. | X1.3B accepted; identity APIs and security contracts audited. | Provider Factory, unsupported authorization evaluation, schema redesign, OIC-6. | Applications, Tenants, Access; scoped inspectors and relationships. | Existing OIC foundation APIs; only source-proven compatible correction; no schema change. | Four locale/viewport cells per workspace, keyboard/accessibility, exact secret/session boundaries and readback. Return to X1.4. |
+| X1.5 Provider Factory | Workspace across provider definitions, connections, credentials metadata, checks, sync and upstream catalog. | X1.3B foundation; API/security source audit. | Billing/economics not modeled; credential exposure. | Provider Factory/catalog and scoped inspectors. | Only missing OIC API contracts evidenced by needs. | Credential custody, scopes, provider failure/sync and real status. Return to X1.5. |
+| X1.6 Model Factory + Cognitive Profiles + Model DNA | Model Passport and actual hierarchy; profile configuration; DNA shell consumes valid OIC-7 evidence only. | X1.3B/X1.4/X1.5; OIC-7 measurement contract before scored DNA. | Invented scores or lifecycle semantics. | Fleet, hierarchy, revisions, bindings, visibility, profile, compare/passport. | Respect existing model/profile APIs; evaluate only if OIC-7 contract exists. | Hierarchy/scope/lifecycle; profile → trace evidence; DNA method/version or unavailable. Return to X1.6. |
+| X1.7 Memory & Knowledge Intelligence Studio | Scoped records, provenance, dependencies, lifecycle and linked execution. | X1.3B and current memory/knowledge API. | Cross-tenant joins, general document platform. | Memory and Knowledge studios. | Changes only for demonstrated query/relationship gaps. | Scope isolation, provenance/dependency integrity, lifecycle and empty/failure. Return to X1.7. |
+| X1.8 Intelligence Lab / Runtime / Traces | Controlled run, result, evidence and safe trace inspection. | X1.3B, runtime and trace contracts; OIC-5 baseline. | Hidden CoT; unsupported quality rankings. | Workbench, Runtime Lab, Trace Explorer. | Preserve bounded/safe trace DTO; add only evidenced observability. | Request→trace→result, scope, matched compare, no sensitive payload, four layouts. Return to X1.8. |
+| X1.9 Smart Operating Layer / Operations / Final Integration | Contextual source-linked advice, health/audit integration and end-to-end polish. | Prior milestones; grounded impact contracts. | Autonomous change, fabricated prediction, cross-product operations. | Context insights, Operations/Health/Audit, global cross-workspace flows. | Only required measured signals and integration contracts. | Full browser/security/product-boundary/performance matrix and owner acceptance. Return final OIC-X1 review. |
 
-**Milestone numbering amendment (2026-10-05):** completed X1.1 and X1.2 are unchanged. X1.3 is now explicitly split into X1.3A architecture and X1.3B library implementation. The still-future feature milestones formerly labeled X1.3–X1.7 are intentionally renumbered X1.4–X1.8, respectively; no completed work is silently renumbered. Historical closeout records retain the labels used when written.
+**Milestone numbering amendment (2026-10-06):** completed X1.1, X1.2, X1.3A and X1.3B keep their historical labels. X1.4 is the Identity, Scope & Access adoption milestone authorized by the current packet. Future Provider Factory, Model Factory, Memory/Knowledge, Lab/Runtime and Smart Operations milestones are X1.5–X1.9.
 
 Every later milestone specifies exact APIs/fields, migration need, rollback, and dependencies before coding. If OIC-7 work is unavailable, keep affected UI explicitly unmeasured and continue independent scope.
 
@@ -86,7 +86,15 @@ Every later milestone specifies exact APIs/fields, migration need, rollback, and
 - **DEPENDENCY DECISIONS:** prototype native SVG/CSS first; chart library needs measured need/bundle/accessibility/RTL decision. **LIVE PREVIEW:** Terminal A :3002, B :4100, C checks, separately persistent.
 - **HUMAN CHECKPOINT / GATE:** validate each section on real source, stale/offline/fault states, dynamic model/provider registration, all four browser combinations and keyboard. Commit/push after review and serial evidence. **RETURN:** X1.2 closeout; defer unsupported metric family clearly.
 
-### X1.4 — Provider Factory
+### X1.4 — Identity, Scope & Access Engineering Workspaces
+
+- **GOAL:** complete Applications, Tenants, Service Principals and Access as canonical OIC engineering workspaces, including safe scope/grant, external-reference and credential lifecycle workflows.
+- **PREREQUISITES / SOURCE AUDIT:** accepted X1.3B; audit `foundation.controller.ts`, `foundation.service.ts`, `console-snapshot.controller.ts`, same-origin `/api/action`, scoped console snapshot routing, current Prisma schema, and canonical Interface/Instrument public barrels.
+- **ALLOWED / FORBIDDEN:** `apps/oic-console/**`, narrowly required compatible OIC API correction and X1 project-state evidence. No schema changes, generalized search API, permission-evaluation invention, Provider/Model Factory work, Responix, Mega Platform Portal or OIC-6.
+- **FRONTEND / DATA:** source-backed app/tenant/principal index, search/filter/selection, inspector, relationship navigation, ApplicationPicker/TenantPicker, external references, known scope allowlist, tenant grants, credential metadata/issue/rotate/revoke and one-time secret presentation. Unsupported evaluation remains explicit.
+- **LIVE PREVIEW:** keep Console `localhost:3002` and API `127.0.0.1:4100` in separate persistent processes; use a third terminal for checks. Do not ask for or inspect the Operator password.
+- **HUMAN CHECKPOINT / GATE:** focused tests, typecheck/lint, canonical regressions, secret/boundary checks and authenticated Applications/Tenants/Access EN/AR × LTR/RTL desktop/narrow browser acceptance; then owner visual/workflow review. **RETURN:** X1.4 PARTIAL owner checkpoint; no commit/push before owner acceptance.
+### X1.5 — Provider Factory
 
 #### LIVE DEVELOPMENT BOOTSTRAP (required first step)
 
@@ -101,9 +109,9 @@ Every later milestone specifies exact APIs/fields, migration need, rollback, and
 - **ALLOWED / FORBIDDEN:** provider Console feature, same-origin BFF allowlist and strictly required OIC provider APIs. No cross-product provider reuse, secret display after issue, cost claims, capability guarantee from catalog, or arbitrary catalog JSON as default.
 - **FRONTEND / API-BFF / DATA:** overview, connections, credentials metadata, capabilities, upstream catalog, test/sync feedback. Add endpoint only after documented contract. Use existing provider definitions/connections, credential metadata, check/sync/evidence records; preview diff only if actual API supports it.
 - **DEPENDENCY DECISIONS:** graph/chart package not required; catalog editor JSON uses current controls. **LIVE PREVIEW:** A :3002, B :4100, C validation; never terminate preview to run validations.
-- **HUMAN CHECKPOINT / GATE:** demonstrate onboarding, error/retry, credential set/revoke, scope denial and catalog evidence; inspect browser network for no secret. Four viewports/locales. Commit/push after acceptance. **RETURN:** X1.4 closeout.
+- **HUMAN CHECKPOINT / GATE:** demonstrate onboarding, error/retry, credential set/revoke, scope denial and catalog evidence; inspect browser network for no secret. Four viewports/locales. Commit/push after acceptance. **RETURN:** X1.5 closeout.
 
-### X1.5 — Model Factory + Cognitive Profiles + Model DNA
+### X1.6 — Model Factory + Cognitive Profiles + Model DNA
 
 #### LIVE DEVELOPMENT BOOTSTRAP (required first step)
 
@@ -114,13 +122,13 @@ Every later milestone specifies exact APIs/fields, migration need, rollback, and
 5. Keep the frontend available throughout implementation; do not silently change ports.
 
 - **GOAL:** provide coherent workspace over actual model hierarchy, profile revisions, bindings, visibility and source-backed passport; DNA only consumes validated evaluation results.
-- **PREREQUISITES / READ:** accepted X1.3B and X1.4; read 02, 08, 10, 14, 17–27; obtain OIC-7 evaluator contract before scoring UI.
+- **PREREQUISITES / READ:** accepted X1.3B and X1.5; read 02, 08, 10, 14, 17–27; obtain OIC-7 evaluator contract before scoring UI.
 - **ALLOWED / FORBIDDEN:** OIC model/profile screens and exact necessary API DTO/BFF needs. Do not reshape API entities to fit UI metaphor, conflate variant/upstream model, infer binding resolution, turn settings into scores or promote on invented metric.
 - **FRONTEND / API-BFF / DATA:** fleet/tree/passport/revision/variant/relationship/binding/visibility/policy. API remains source for valid transitions and scope. DATA is existing `OicModel*`, profile revision, audit and traces; OIC-7 measurements only with provenance/version/sample.
 - **DEPENDENCY DECISIONS:** native table/list first; SVG graph/radar decision from measured comparison need. **LIVE PREVIEW:** A :3002, B :4100, C checks.
-- **HUMAN CHECKPOINT / GATE:** operator follows family→edition→revision→variant and app/tenant binding/visibility path; validates partial/unmeasured DNA and RTL. Commit/push after acceptance. **RETURN:** X1.5 closeout.
+- **HUMAN CHECKPOINT / GATE:** operator follows family→edition→revision→variant and app/tenant binding/visibility path; validates partial/unmeasured DNA and RTL. Commit/push after acceptance. **RETURN:** X1.6 closeout.
 
-### X1.6 — Memory & Knowledge Intelligence Studio
+### X1.7 — Memory & Knowledge Intelligence Studio
 
 #### LIVE DEVELOPMENT BOOTSTRAP (required first step)
 
@@ -135,9 +143,9 @@ Every later milestone specifies exact APIs/fields, migration need, rollback, and
 - **ALLOWED / FORBIDDEN:** Memory/Knowledge workspace and minimal OIC DTO improvements if justified. No cross-tenant graph, vector-engine assumptions, fabricated retrieval utility, raw IDs as default, or editing server-owned embeddings.
 - **FRONTEND / API-BFF / DATA:** inventory/composer/source editor/dependency list/inspectors/trace links. Add BFF fields only from explicit source. Use existing OicIntelligenceMemory/Knowledge; new search/history metrics need API query/retention contract.
 - **DEPENDENCY DECISIONS:** dependency canvas starts accessible list; graph package deferred until scale/use measured. **LIVE PREVIEW:** A :3002, B :4100, C checks.
-- **HUMAN CHECKPOINT / GATE:** demonstrate create/edit/archive and scope denial, dependency unknown/conflict states, sensitivity and focus in four layouts. Commit/push after acceptance. **RETURN:** X1.6 closeout.
+- **HUMAN CHECKPOINT / GATE:** demonstrate create/edit/archive and scope denial, dependency unknown/conflict states, sensitivity and focus in four layouts. Commit/push after acceptance. **RETURN:** X1.7 closeout.
 
-### X1.7 — Intelligence Lab / Runtime / Traces
+### X1.8 — Intelligence Lab / Runtime / Traces
 
 #### LIVE DEVELOPMENT BOOTSTRAP (required first step)
 
@@ -152,9 +160,9 @@ Every later milestone specifies exact APIs/fields, migration need, rollback, and
 - **ALLOWED / FORBIDDEN:** Workbench, Runtime Lab, Trace Explorer and necessary OIC runtime DTOs. No private CoT, provider payload, unsupported benchmark store, arbitrary winner ranking, or exposing secrets.
 - **FRONTEND / API-BFF / DATA:** setup/scenario/pair/result/evidence/resources/trace. API may expose only safe existing stage fields or evidenced additions. Experiment persistence stays PLANNED absent a reviewed record/schema.
 - **DEPENDENCY DECISIONS:** timeline/list native first; graph/visual library only with bounded data rationale. **LIVE PREVIEW:** A :3002, B :4100, C validation.
-- **HUMAN CHECKPOINT / GATE:** trace request correlation through scope-safe detail and compare changed conditions; verify private payload absent; all four locale/layouts. Commit/push after acceptance. **RETURN:** X1.7 closeout.
+- **HUMAN CHECKPOINT / GATE:** trace request correlation through scope-safe detail and compare changed conditions; verify private payload absent; all four locale/layouts. Commit/push after acceptance. **RETURN:** X1.8 closeout.
 
-### X1.8 — Smart Operating Layer / Operations / Final Integration
+### X1.9 — Smart Operating Layer / Operations / Final Integration
 
 #### LIVE DEVELOPMENT BOOTSTRAP (required first step)
 
@@ -174,3 +182,8 @@ Every later milestone specifies exact APIs/fields, migration need, rollback, and
 ## Permanent local environment protocol
 
 Every frontend implementation sprint uses Terminal A (Console dev process, fixed port 3002, visible in VS Code), Terminal B (OIC API at 4100 when needed), and Terminal C (build/test/lint/Git). Do not silently change ports or repeatedly terminate A/B. If a build truly requires interruption, record why, restart the same service and verify HTTP/health before proceeding. Never inspect/request Operator password or weaken auth, origin, CSRF, session, BFF or machine credential boundaries.
+
+## X1.4 final closeout (2026-10-07)
+
+- **Status:** GO / CLOSED by explicit owner Visual and Workflow Acceptance PASS. The accepted scope and evidence limits are recorded in `OIC_X1_ACCEPTANCE_MATRIX.md`.
+- **Next return point:** OIC-X1.5. X1.5 and OIC-6 remain NOT STARTED. No Provider Factory or Model Factory modernization is included in this closeout.

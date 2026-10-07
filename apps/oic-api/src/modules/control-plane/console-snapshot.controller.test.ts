@@ -14,7 +14,19 @@ void test("console snapshot keeps credential secrets and audit metadata outside 
         return Promise.resolve([]);
       }
     },
-    oicTenant: { findMany: () => Promise.resolve([]) },
+    oicTenant: {
+      findMany: (query: unknown) => {
+        calls.tenants = query;
+        return Promise.resolve([
+          {
+            id: "tenant-id",
+            references: [
+              { id: "reference-id", sourceType: "external", externalId: "tenant-42", createdAt: new Date(0), revokedAt: new Date(1) }
+            ]
+          }
+        ]);
+      }
+    },
     oicServicePrincipal: {
       findMany: (query: unknown) => {
         calls.principals = query;
@@ -50,6 +62,7 @@ void test("console snapshot keeps credential secrets and audit metadata outside 
 
   const reader: AuthenticatedPrincipal = { id: "console-reader", applicationId: "platform", scopes: ["oic:console:read"], tenantIds: [] };
   const result = await new ConsoleSnapshotController(db).snapshot(reader);
+  assert.equal(result.tenants[0]?.references[0]?.revokedAt?.getTime(), 1);
   assert.equal(result.connections[0]?.credential?.id, "credential-id");
   assert.equal("credentials" in (result.connections[0] ?? {}), false);
   assert.equal("verifier" in (result.connections[0]?.credential ?? {}), false);
@@ -61,6 +74,10 @@ void test("console snapshot keeps credential secrets and audit metadata outside 
   };
   assert.equal("verifier" in principalQuery.include.credentials.select, false);
   assert.equal("secret" in principalQuery.include.credentials.select, false);
+  const tenantQuery = calls.tenants as {
+    include: { references: { select: Record<string, unknown> } };
+  };
+  assert.equal(tenantQuery.include.references.select.revokedAt, true);
 });
 
 void test("console snapshot denies identities without global console read scope", async () => {

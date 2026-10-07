@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 
-export function PageFrame({ breadcrumbs, breadcrumbLabel, context, title, description, meta, actions, workspaceNavigation, workspaceNavigationLabel, inspector, children, dir = "ltr", wide = false }: {
+export function PageFrame({ breadcrumbs, breadcrumbLabel, context, title, description, meta, actions, workspaceNavigation, workspaceNavigationLabel, inspector, children, dir = "ltr", wide = false, headerMode = "full" }: {
   breadcrumbs?: { label: string; href?: string; current?: boolean }[];
   breadcrumbLabel: string;
   context: string;
@@ -14,11 +14,12 @@ export function PageFrame({ breadcrumbs, breadcrumbLabel, context, title, descri
   children: ReactNode;
   dir?: "ltr" | "rtl";
   wide?: boolean;
+  headerMode?: "full" | "meta";
 }) {
   return <section className={`oic-page-frame ${wide ? "oic-page-frame-wide" : ""}`} dir={dir}>
     {breadcrumbs && <nav className="oic-page-breadcrumbs" aria-label={breadcrumbLabel}>{breadcrumbs.map((item, index) => <span key={`${item.label}-${index}`}>{item.href && !item.current ? <a href={item.href}>{item.label}</a> : <span aria-current={item.current ? "page" : undefined}>{item.label}</span>}{index < breadcrumbs.length - 1 && <i aria-hidden="true">/</i>}</span>)}</nav>}
-    <header className="oic-page-header">
-      <div><span className="eyebrow">{context}</span><h1>{title}</h1><p>{description}</p></div>
+    <header className={`oic-page-header ${headerMode === "meta" ? "is-meta-only" : ""}`}>
+      {headerMode === "full" && <div><span className="eyebrow">{context}</span><h1>{title}</h1><p>{description}</p></div>}
       {meta && <div className="oic-page-meta">{meta}</div>}
       {actions && <div className="oic-page-actions">{actions}</div>}
     </header>

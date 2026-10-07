@@ -173,7 +173,7 @@ test("development fixtures stay inside the dev gallery and never enter productio
   assert.doesNotMatch(productionSource, /dev\/interface-system\/demo-data/);
   assert.doesNotMatch(
     fs.readFileSync(path.join(appRoot, "console-app.tsx"), "utf8"),
-    /interface-system/
+    /dev\/interface-system|interface-system\/gallery/
   );
   assert.doesNotMatch(
     fs.readFileSync(path.join(interfaceRoot, "composites/configuration.tsx"), "utf8"),

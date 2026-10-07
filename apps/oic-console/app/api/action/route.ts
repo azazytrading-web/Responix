@@ -156,6 +156,7 @@ export async function POST(request: Request) {
     action === "credential.issue" &&
     uuid(applicationId) &&
     uuid(id) &&
+    (body.replacesId === undefined || body.replacesId === null || uuid(body.replacesId)) &&
     (body.expiresAt === undefined ||
       body.expiresAt === null ||
       (typeof body.expiresAt === "string" &&
@@ -163,7 +164,7 @@ export async function POST(request: Request) {
         Date.parse(body.expiresAt) > Date.now()))
   ) {
     path = `/api/v1/admin/applications/${applicationId}/service-principals/${id}/credentials`;
-    payload = { expiresAt: body.expiresAt ?? null };
+    payload = { expiresAt: body.expiresAt ?? null, ...(body.replacesId ? { replacesId: body.replacesId } : {}) };
   } else if (!path && action === "credential.revoke" && uuid(applicationId) && uuid(id)) {
     path = `/api/v1/admin/applications/${applicationId}/credentials/${id}`;
     method = "DELETE";

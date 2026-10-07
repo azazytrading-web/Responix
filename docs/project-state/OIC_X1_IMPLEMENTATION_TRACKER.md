@@ -3,7 +3,7 @@
 ## Baseline and milestone history
 
 - **Baseline:** `aa50e61` on branch `oic`.
-- **Current state:** OIC-5 GO; OIC-X1.0C architecture lock GO, version 1.0 LOCKED; X1.1, X1.2, X1.3A and X1.3B are closed by owner acceptance. X1.3B source-of-truth lock is final; X1.4 is the next return point and is NOT STARTED.
+- **Current state:** OIC-5 GO; OIC-X1.0C architecture lock GO, version 1.0 LOCKED; X1.1, X1.2, X1.3A, X1.3B and X1.4 are closed by owner acceptance. X1.4 is GO / CLOSED; next return point OIC-X1.5. X1.5 and OIC-6 are NOT STARTED.
 - **X1.1 delivered files:**
   - Modified: `apps/oic-console/app/console-app.tsx`, `features/overview/overview-view.tsx`, `features/runtime/runtime-view.tsx`, `i18n.ts`, `styles.css`.
   - New: `apps/oic-console/app/components/oic-frames.tsx`, `oic-primitives.tsx`.
@@ -30,7 +30,7 @@
 - OIC-only product changes. Responix and Mega Platform Portal are untouched. X1.1 adds no dependency, API change, schema change or auth change.
 - Existing preview processes must remain live; separately verify Console HTTP and API readiness at closeout.
 
-## Expanded X1.1–X1.8 position
+## Expanded X1.1–X1.9 position
 
 The detailed goals, allowed/forbidden scope, documents to read, data/dependency decisions, human checkpoints, live-preview arrangement, acceptance and return points are locked in `OIC_X1_EXECUTION_PLAN.md`.
 
@@ -41,20 +41,21 @@ The detailed goals, allowed/forbidden scope, documents to read, data/dependency 
 | X1.2 | GO / CLOSED | Owner manual visual acceptance PASS; showcase visual matrix PASS. Automated authenticated real-Overview capture NOT AVAILABLE. Console checks, production dev-route 404, API/DB readiness and OIC boundary validation recorded at closeout. Accepted cosmetic polish debt does not reopen X1.2. |
 | X1.3A | GO / CLOSED | Interface Systems architecture and contracts are source-audited and locked in docs 28–38; project-state and architecture references updated; no implementation changes. |
 | X1.3B | GO / CLOSED | Owner visual acceptance PASS; Interface System v1.0 ACCEPTED / FROZEN; canonical Interface and Instrument source trees/public barrels; both galleries consume canonical components; production Overview/Flight Deck consume canonical instruments; fixture isolation, all 34 Console tests, build and production 404 gates pass. Commit/push recorded at closeout. |
-| X1.4 | NOT STARTED | Provider Factory; current API entities exist. Provider security contract is prerequisite. |
-| X1.5 | NOT STARTED | Model hierarchy/profile APIs exist. OIC-7 evaluator methodology is required before measured DNA. |
-| X1.6 | NOT STARTED | Current memory/knowledge APIs and schema exist; studio/graph/analytics remain planned. |
-| X1.7 | NOT STARTED | Current Workbench/runtime/traces exist; unified Lab surfaces and trace inspector contract remain planned. |
-| X1.8 | NOT STARTED | No SOL/alert/host telemetry implementation claimed. Requires source-backed advice and final integration. |
+| X1.4 | GO / CLOSED | Owner Visual and Workflow Acceptance PASS. Applications, Tenants and Access / Service Principals, canonical adoption, EN/AR, LTR/RTL, narrow layouts and security accepted. Closeout validation and production dev-route isolation recorded. Next return point OIC-X1.5. |
+| X1.5 | NOT STARTED | Provider Factory; current provider API entities exist. Provider security contract is prerequisite. |
+| X1.6 | NOT STARTED | Model hierarchy/profile APIs exist. OIC-7 evaluator methodology is required before measured DNA. |
+| X1.7 | NOT STARTED | Current memory/knowledge APIs and schema exist; studio/graph/analytics remain planned. |
+| X1.8 | NOT STARTED | Current Workbench/runtime/traces exist; unified Lab surfaces and trace inspector contract remain planned. |
+| X1.9 | NOT STARTED | No SOL/alert/host telemetry implementation claimed. Requires source-backed advice and final integration. |
 
 ## X1.3B source-of-truth closeout (2026-10-06)
 
 - **Owner acceptance:** PASS. Oi Operator Interface System v1.0 is ACCEPTED / FROZEN. Minor cosmetic spacing, typography, proportion, picker/chip and motion timing remains non-blocking debt.
-- **Canonical paths:** `apps/oic-console/app/components/interface/` and `apps/oic-console/app/components/instruments/`; each has a stable public barrel. Development galleries consume canonical components; production Overview and Flight Deck consume canonical instruments. No production Interface consumer exists before X1.4.
+- **Canonical paths:** `apps/oic-console/app/components/interface/` and `apps/oic-console/app/components/instruments/`; each has a stable public barrel. Development galleries consume canonical components; production Overview and Flight Deck consume canonical instruments. X1.4 is the first production Interface consumer.
 - **Propagation rule:** one OIC implementation, many same-repo consumers; updates propagate on rebuild/redeploy. Breaking contracts require compatibility or explicit migration. Cross-product propagation is versioned and controlled; no extraction occurred.
 - **Validation:** Console typecheck, lint, 34 configured tests, production build, all three dev-route production 404 checks, `git diff --check`, secret scan, and OIC-only boundary review PASS. Development Console and API remain live; API readiness reports database `ok`.
-- **Security/boundary:** no authentication, session, CSRF, origin, BFF, API or database changes; no Responix, Mega Platform Portal, X1.4 implementation or OIC-6 work.
-- **Disposition:** GO / CLOSED after commit and normal push. Next return point OIC-X1.4; X1.4 and OIC-6 NOT STARTED.
+- **Security/boundary:** no authentication, session, CSRF, origin, BFF, API or database changes; no Responix, Mega Platform Portal, X1.5+ implementation or OIC-6 work.
+- **Disposition:** GO / CLOSED after commit and normal push. Next return point OIC-X1.4; X1.4 and OIC-6 NOT STARTED at this historical closeout.
 
 ## X1.1 completion checkpoint
 
@@ -104,3 +105,19 @@ Architecture lock now has two review layers: X1.0 structure/direction and X1.0B 
 - **Validation:** Console typecheck PASS; Console ESLint PASS; focused interface-system tests PASS (6/6, including locale/key completeness, route gate, fixture isolation, helper contracts, and command/configuration state transitions); `git diff --check` PASS. Console `/`, `/dev/instruments`, `/dev/flight-deck` and `/dev/interface-system` each returned HTTP 200. API `/api/v1/health/live` and `/api/v1/health/ready` returned `ok`; readiness reported database `ok`. No production build was run.
 - **Owner checkpoint:** inspect `/dev/interface-system` for desktop/narrow, EN/AR, LTR/RTL, density and reduced-motion behavior, then exercise keyboard focus, picker, conflict and disabled/permission states. Record the review before changing this status to GO/CLOSED.
 - **Dependency preview:** Console `http://localhost:3002`; OIC API `http://127.0.0.1:4100` remains separate and unchanged. No commit or push.
+
+## X1.4 Identity, Scope & Access implementation checkpoint (2026-10-07)
+
+- **Status:** PARTIAL pending owner review. Applications, Tenants and Access use canonical Interface components; existing OIC identity endpoints and the authenticated Console snapshot remain authoritative. X1.5–X1.9 are future Provider Factory, Model Factory, Memory/Knowledge, Lab/Runtime and Smart Operations milestones.
+- **Source correction:** Console snapshot exposes the safe `revokedAt` timestamp on external-reference metadata so the existing revoke/remap lifecycle can be represented; credential response fields remain explicitly selected without secret/verifier material. No schema change.
+- **Browser evidence:** authenticated Applications, Tenants and Access reviewed in EN/LTR and AR/RTL at 1440×900 and 390×844. No document overflow; search empty state, direct relationship navigation, query selection, review-before-create, scope diff, reference revoke review, keyboard selection, picker navigation, Escape close and arm/cancel paths were checked. No live mutation was submitted. A live revoked reference was unavailable, so remap is covered by focused rules/tests only.
+- **Focused evidence:** Console typecheck and lint pass; all 40 configured Console tests pass, including six X1.4/security tests and Interface/Instrument/i18n regressions. API typecheck/build and the two focused snapshot tests pass. Console production build passes, `git diff --check` passes, and the changed-file secret/product-boundary scan is clean.
+- **Security:** same-origin validation, operator session guard, machine credential boundary and BFF allowlists remain in force. Issued credential secret is shown only in the immediate dialog and cleared on close/timeout; no password or secret appears in fixtures/tests/docs.
+- **Disposition:** browser acceptance is complete; owner visual/workflow review remains. No GO/Visual GO, commit or push. Keep Console `localhost:3002` and API `127.0.0.1:4100` live; stop at the single owner checkpoint.
+
+## X1.4 final closeout (2026-10-07)
+
+- **Status:** GO / CLOSED. Owner Visual Acceptance PASS and Owner Workflow Acceptance PASS. Applications PASS; Tenants PASS; Access / Service Principals PASS; canonical adoption PASS; EN PASS; AR PASS; LTR PASS; RTL PASS; Narrow PASS; Security PASS.
+- **Closeout:** Console/API checks and live readiness are recorded in the acceptance matrix. Production server returns 404 for all three development-only galleries. No live credential or other persistent mutation was performed.
+- **Accepted cosmetic debt:** minor spacing, typography and local density polish is non-blocking and does not reopen X1.4.
+- **Next:** OIC-X1.5. X1.5 and OIC-6 remain NOT STARTED.

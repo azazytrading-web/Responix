@@ -10,6 +10,7 @@ import type { Row, Snapshot } from "./types";
 import { ActionFeedback, DataTable, EmptyState, ErrorState, LoadingState, Slider } from "./components/oic-primitives";
 import { PageFrame } from "./components/oic-frames";
 import { IdentityViews } from "./features/identity/identity-views";
+import { ActionButton, ArmThenExecute, Inspector } from "./components/interface";
 import { ModelFabricViews } from "./features/model-fabric/model-fabric-views";
 import { OverviewView } from "./features/overview/overview-view";
 import { AuditView } from "./features/operations/audit-view";
@@ -23,6 +24,40 @@ async function responseRecord(response: Response): Promise<Row> {
 const rowsOf = (value: unknown): Row[] => Array.isArray(value) ? value.filter((item): item is Row => !!item && typeof item === "object" && !Array.isArray(item)) : [];
 const scalarText = (value: unknown, fallback = "—") => typeof value === "string" || typeof value === "number" || typeof value === "boolean" ? String(value) : fallback;
 
+const nestedRecord = (value: unknown): Row => value && typeof value === "object" && !Array.isArray(value) ? value as Row : {};
+function verifyIdentityReadback(action: string, values: Row, response: Row, snapshot: Snapshot): boolean {
+  const result = nestedRecord(response.value);
+  const entityId = scalarText(result.id, scalarText(response.id, ""));
+  if (["application.create", "tenant.create", "principal.create", "externalReference.create"].includes(action)) {
+    const collection = action === "application.create" ? snapshot.applications : action === "tenant.create" ? snapshot.tenants : action === "principal.create" ? snapshot.principals : snapshot.tenants.flatMap((tenant) => rowsOf(tenant.references));
+    return Boolean(entityId && collection.some((row) => row.id === entityId));
+  }
+  if (action === "identity.status") {
+    const rows = values.kind === "application" ? snapshot.applications : values.kind === "tenant" ? snapshot.tenants : snapshot.principals;
+    return rows.some((row) => row.id === values.id && row.status === values.status);
+  }
+  if (action.startsWith("principal.scope.")) {
+    const principal = snapshot.principals.find((row) => row.id === values.id);
+    const found = rowsOf(principal?.scopes).some((scope) => scope.scope === values.scope);
+    return action.endsWith("grant") ? found : !found;
+  }
+  if (action.startsWith("principal.tenant.")) {
+    const principal = snapshot.principals.find((row) => row.id === values.id);
+    const found = rowsOf(principal?.tenantGrants).some((grant) => grant.tenantId === values.tenantId);
+    return action.endsWith("grant") ? found : !found;
+  }
+  if (action === "credential.issue") {
+    const principal = snapshot.principals.find((row) => row.id === values.id);
+    const credentials = rowsOf(principal?.credentials);
+    const newId = scalarText(result.id, scalarText(response.id, ""));
+    return Boolean(newId && credentials.some((credential) => credential.id === newId && credential.status === "ACTIVE") && (!values.replacesId || credentials.some((credential) => credential.id === values.replacesId && credential.status === "REVOKED")));
+  }
+  if (action === "credential.revoke") return snapshot.principals.some((principal) => rowsOf(principal.credentials).some((credential) => credential.id === values.id && credential.status === "REVOKED"));
+  if (action === "externalReference.revoke") return snapshot.tenants.some((tenant) => rowsOf(tenant.references).some((reference) => reference.id === values.id && Boolean(reference.revokedAt)));
+  if (action === "externalReference.remap") return snapshot.tenants.some((tenant) => tenant.id === values.tenantId && rowsOf(tenant.references).some((reference) => reference.id === values.id && !reference.revokedAt));
+  return true;
+}
+
 export default function ConsoleApp({ platformUrl }: { platformUrl: string }) {
   const [locale, setLocale] = useState<Locale>("en");
   const [view, setView] = useState<View>("overview");
@@ -35,6 +70,7 @@ export default function ConsoleApp({ platformUrl }: { platformUrl: string }) {
   const [pageError, setPageError] = useState("");
   const [toast, setToast] = useState("");
   const [issuedCredential, setIssuedCredential] = useState("");
+  const [credentialIntent, setCredentialIntent] = useState<{ applicationId: unknown; principalId: unknown; replacesId?: unknown; expiresAt?: unknown } | null>(null);
   const [filter, setFilter] = useState("");
   const [password, setPassword] = useState("");
   const [invocation, setInvocation] = useState<Row | null>(null);
@@ -53,8 +89,18 @@ export default function ConsoleApp({ platformUrl }: { platformUrl: string }) {
   const commandDialogRef = useRef<HTMLElement>(null);
   const t = messages[locale] as Messages;
   const literal = (value: string) => (locale === "ar" ? (arabicLiterals[value] ?? value) : value);
+  const navigateTo = useCallback((destination: View, entityId?: string) => {
+    setView(destination);
+    setFilter("");
+    setCommandOpen(false);
+    const url = new URL(window.location.href);
+    url.searchParams.set("view", destination);
+    if (entityId) url.searchParams.set("entity", entityId);
+    else url.searchParams.delete("entity");
+    window.history.replaceState({}, "", url);
+  }, []);
 
-  const loadSnapshot = useCallback(async () => {
+  const loadSnapshot = useCallback(async (): Promise<Snapshot | null> => {
     setLoading(true);
     setPageError("");
     try {
@@ -62,14 +108,16 @@ export default function ConsoleApp({ platformUrl }: { platformUrl: string }) {
       if (response.status === 401) {
         setAuthenticated(false);
         setSessionError(t.sessionExpired);
-        return;
+        return null;
       }
       const data = await responseRecord(response);
       if (!response.ok) throw new Error(t.unavailable);
       setSnapshot(data as Snapshot);
       setAuthenticated(true);
+      return data as Snapshot;
     } catch (error) {
       setPageError(error instanceof Error ? error.message : t.unavailable);
+      return null;
     } finally {
       setLoading(false);
     }
@@ -91,7 +139,7 @@ export default function ConsoleApp({ platformUrl }: { platformUrl: string }) {
       const value: unknown = await response.json().catch(() => []);
       setProfiles(response.ok && Array.isArray(value) ? value as Row[] : []);
     } catch { setProfiles([]); }
-  }, []);
+  }, [navigateTo]);
 
   const loadExecutions = useCallback(async () => {
     try { const response = await fetch("/api/console?view=executions", { cache: "no-store" }); const value: unknown = await response.json().catch(() => []); setExecutions(response.ok && Array.isArray(value) ? value as Row[] : []); }
@@ -139,6 +187,23 @@ export default function ConsoleApp({ platformUrl }: { platformUrl: string }) {
     document.documentElement.lang = locale;
     document.documentElement.dir = locale === "ar" ? "rtl" : "ltr";
   }, [locale]);
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const requestedView = params.get("view");
+    if (requestedView && ["overview", "applications", "tenants", "principals", "providers", "catalog", "models", "profiles", "memory", "knowledge", "workbench", "traces", "runtime", "health", "audit"].includes(requestedView)) setView(requestedView as View);
+  }, []);
+
+  useEffect(() => {
+    const navigateIdentity = (event: Event) => {
+      const detail = (event as CustomEvent<{ view?: View; id?: string }>).detail;
+      if (detail?.view && ["applications", "tenants", "principals"].includes(detail.view)) {
+        navigateTo(detail.view, detail.id);
+      }
+    };
+    window.addEventListener("oic:navigate-identity", navigateIdentity);
+    return () => window.removeEventListener("oic:navigate-identity", navigateIdentity);
+  }, [navigateTo]);
 
   useEffect(() => {
     if (!authenticated) return;
@@ -217,14 +282,17 @@ export default function ConsoleApp({ platformUrl }: { platformUrl: string }) {
       setPageError(t.actionFailed);
       return null;
     }
-    if (action !== "runtime.invoke") setToast(t.saved);
-    await loadSnapshot();
+    const refreshedSnapshot = await loadSnapshot();
+    const identityAction = ["application.create", "tenant.create", "principal.create", "externalReference.create", "externalReference.revoke", "externalReference.remap", "principal.scope.grant", "principal.scope.revoke", "principal.tenant.grant", "principal.tenant.revoke", "credential.issue", "credential.revoke", "identity.status"].includes(action);
+    const verified = refreshedSnapshot && (!identityAction || verifyIdentityReadback(action, values, data, refreshedSnapshot));
+    if (action !== "runtime.invoke") setToast(identityAction ? (verified ? (locale === "ar" ? "تم التطبيق والتحقق من لقطة الخدمة" : "APPLIED · VERIFIED FROM SERVICE SNAPSHOT") : (locale === "ar" ? "تم التطبيق · تعذّر التحقق من القراءة" : "APPLIED · VERIFICATION UNKNOWN")) : t.saved);
     if (action.startsWith("intelligence.profile.")) await loadProfiles();
     if (action.startsWith("intelligence.memory.")) { await loadIntelligenceRecords("memory"); await loadExecutions(); }
     if (action.startsWith("intelligence.knowledge.")) await loadIntelligenceRecords("knowledge");
     if (action === "runtime.invoke" || action === "intelligence.workbench.run") await loadExecutions();
     if (action === "intelligence.workbench.run" && data.result && typeof data.result === "object" && !Array.isArray(data.result)) setWorkbenchResult(data.result as Row);
-    return action === "intelligence.workbench.run" && data.result && typeof data.result === "object" && !Array.isArray(data.result) ? data.result as Row : data;
+    const result = action === "intelligence.workbench.run" && data.result && typeof data.result === "object" && !Array.isArray(data.result) ? data.result as Row : data;
+    return identityAction && !verified ? { ...result, __verificationStatus: "unknown" } : result;
   };
 
   const runInvocation = async (event: FormEvent<HTMLFormElement>) => {
@@ -337,15 +405,24 @@ export default function ConsoleApp({ platformUrl }: { platformUrl: string }) {
       {label}
     </button>
   );
-  const issueCredential = async (applicationId: unknown, principalId: unknown) => {
-    if (!window.confirm(t.confirmIssue)) return;
-    const result = await perform("credential.issue", { applicationId, id: principalId });
-    if (typeof result?.credential !== "string" || result.replayed === true) return;
+  const issueCredential = (applicationId: unknown, principalId: unknown, replacesId?: unknown, expiresAt?: unknown) => {
+    setCredentialIntent({ applicationId, principalId, ...(replacesId ? { replacesId } : {}), ...(expiresAt ? { expiresAt } : {}) });
+  };
+  const executeCredentialIssue = async () => {
+    if (!credentialIntent) return "BLOCKED" as const;
+    const result = await perform("credential.issue", { applicationId: credentialIntent.applicationId, id: credentialIntent.principalId, ...(credentialIntent.replacesId ? { replacesId: credentialIntent.replacesId } : {}), ...(credentialIntent.expiresAt ? { expiresAt: credentialIntent.expiresAt } : {}) });
+    setCredentialIntent(null);
+    if (!result) return "FAILED" as const;
+    if (typeof result.credential !== "string" || result.replayed === true) {
+      setToast(locale === "ar" ? "اكتمل الأمر دون قيمة سرية جديدة؛ راجع بيانات الاعتماد المسجلة." : "The command completed without a new secret value; reconcile credential metadata.");
+      return "SUCCEEDED" as const;
+    }
     setIssuedCredential(result.credential);
     window.setTimeout(
       () => setIssuedCredential((current) => (current === result.credential ? "" : current)),
       60_000
     );
+    return "SUCCEEDED" as const;
   };
   const data = snapshot;
   const activeDestination = nav.find((item) => item.id === view);
@@ -354,7 +431,7 @@ export default function ConsoleApp({ platformUrl }: { platformUrl: string }) {
     const label = item.label ? t[item.label] : t[item.id];
     return `${label} ${t[item.group]}`.toLocaleLowerCase().includes(commandQuery.trim().toLocaleLowerCase());
   });
-  const selectDestination = (id: View) => { setView(id); setFilter(""); setCommandOpen(false); };
+  const selectDestination = (id: View) => navigateTo(id);
 
   if (authenticated === null)
     return (
@@ -463,10 +540,7 @@ export default function ConsoleApp({ platformUrl }: { platformUrl: string }) {
                     type="button"
                     className={`nav-item ${view === item.id ? "selected" : ""}`}
                     aria-current={view === item.id ? "page" : undefined}
-                    onClick={() => {
-                      setView(item.id);
-                      setFilter("");
-                    }}
+                    onClick={() => selectDestination(item.id)}
                   >
                     <span className="nav-item-label">{item.label ? t[item.label] : t[item.id]}</span>
                     {view === item.id && <span className="nav-arrow" aria-hidden="true">↗</span>}
@@ -482,7 +556,7 @@ export default function ConsoleApp({ platformUrl }: { platformUrl: string }) {
         </div>
       </aside>
       <main className="main-frame">
-        <header className="topbar">
+        <header className="topbar oi-interface-system" data-density="compact">
           <div className="crumb">
             <span>OIC</span>
             <b>/</b>
@@ -506,14 +580,15 @@ export default function ConsoleApp({ platformUrl }: { platformUrl: string }) {
               <span className="command-trigger-label">{t.openCommand}</span>
               <kbd>CTRL K</kbd>
             </button>
-            <button
+            <ActionButton
               className="locale-button"
-              type="button"
-              onClick={() => setLanguage(locale === "en" ? "ar" : "en")}
-              aria-label={t.language}
+              variant="quiet"
+              size="compact"
+              onPress={() => setLanguage(locale === "en" ? "ar" : "en")}
+              label={t.language}
             >
               {t.locale}
-            </button>
+            </ActionButton>
             <button
               className="icon-button refresh-button"
               type="button"
@@ -536,6 +611,7 @@ export default function ConsoleApp({ platformUrl }: { platformUrl: string }) {
           description={view === "overview" ? t.subtitle : `${t.product} / ${title}`}
           dir={locale === "ar" ? "rtl" : "ltr"}
           wide={view === "overview"}
+          headerMode={["applications", "tenants", "principals"].includes(view) ? "meta" : "full"}
           meta={
             <div className="heading-meta">
               <span>{literal("CONTROL PLANE")}</span>
@@ -589,7 +665,7 @@ export default function ConsoleApp({ platformUrl }: { platformUrl: string }) {
             {table(["Trace", "Model", "Profile", "Strategy", "Stages", "Provider calls", "Retrieval", "Verification", "Duration"], executions.map((execution) => { const summary = execution.summary && typeof execution.summary === "object" && !Array.isArray(execution.summary) ? execution.summary as Row : {}; return [<button className="text-button" key={String(execution.traceId)} type="button" onClick={() => { void loadExecution(String(execution.traceId)); }}>{String(execution.traceId)}</button>, scalarText(execution.modelId), scalarText(execution.profileRevisionId, "FAST"), scalarText(execution.strategy), scalarText(execution.stageCount), scalarText(execution.providerCallCount), scalarText(execution.retrievalQueryCount), scalarText(execution.verificationStatus), scalarText(summary.durationMs)]; }))}
             {selectedExecution && <div className="runtime-context-row"><b>{String(selectedExecution.traceId)} · {String(selectedExecution.status)}</b><span>Stage records contain no prompt or response content.</span>{rowsOf(selectedExecution.stages).map((stage) => <span key={String(stage.stageIndex)}>{String(stage.stageIndex)} · {String(stage.stageType)} · {String(stage.status)} · {String(stage.durationMs)} ms · {scalarText(stage.strategy, "")}</span>)}</div>}
           </section>}
-          {data && <IdentityViews view={view} data={data} locale={locale} t={t} literal={literal} filter={filter} setFilter={setFilter} filtered={filtered} table={table} badge={badge} mono={mono} appLabel={appLabel} tenantLabel={tenantLabel} actionButton={actionButton} perform={perform} issueCredential={issueCredential} />}
+          {data && ["applications", "tenants", "principals"].includes(view) && <IdentityViews view={view} data={data} locale={locale} t={t} filter={filter} setFilter={setFilter} badge={badge} appLabel={appLabel} tenantLabel={tenantLabel} perform={perform} issueCredential={issueCredential} />}
           {data && <ModelFabricViews view={view} data={data} locale={locale} t={t} literal={literal} filter={filter} setFilter={setFilter} filtered={filtered} table={table} badge={badge} mono={mono} appLabel={appLabel} tenantLabel={tenantLabel} actionButton={actionButton} perform={perform} profileRevisions={profiles.flatMap((profile) => (Array.isArray(profile.revisions) ? profile.revisions as Row[] : []).map((revision) => ({ ...revision, profile })))} />}
           <RuntimeView view={view} data={data} locale={locale} t={t} literal={literal} runInvocation={(event) => { void runInvocation(event); }} running={running} invocation={invocation} />
           <HealthView view={view} health={health} t={t} literal={literal} badge={badge} loadHealth={loadHealth} />
@@ -657,44 +733,36 @@ export default function ConsoleApp({ platformUrl }: { platformUrl: string }) {
           </section>
         </div>
       )}
-      {issuedCredential && (
-        <div className="credential-overlay" role="presentation">
-          <section
-            className="credential-dialog"
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby="credential-dialog-title"
-          >
-            <span className="section-index">
-              {t.oneTimeSecret}
-            </span>
-            <h2 id="credential-dialog-title">{t.issueCredential}</h2>
-            <p>{t.secretWarning}</p>
-            <code dir="ltr">{issuedCredential}</code>
-            <div className="credential-dialog-actions">
-              <button
-                type="button"
-                className="button primary"
-                onClick={() => {
-                  void navigator.clipboard
-                    .writeText(issuedCredential)
-                    .then(() => setToast(t.copied))
-                    .catch(() => setToast(t.actionFailed));
-                }}
-              >
-                {t.copySecret}
-              </button>
-              <button
-                type="button"
-                className="button subtle"
-                onClick={() => setIssuedCredential("")}
-              >
-                {t.close}
-              </button>
-            </div>
-          </section>
+      <Inspector
+        open={Boolean(credentialIntent)}
+        onClose={() => setCredentialIntent(null)}
+        title={t.issueCredential}
+        description={locale === "ar" ? "تأكيد إصدار بيانات اعتماد سرية لمرة واحدة" : "Confirm one-time machine credential issuance"}
+        closeLabel={t.close}
+        dir={locale === "ar" ? "rtl" : "ltr"}
+      >
+        {credentialIntent && <ArmThenExecute
+          title={credentialIntent.replacesId ? (locale === "ar" ? "تدوير بيانات الاعتماد" : "Rotate credential") : t.issueCredential}
+          target={`${safeText(snapshot?.principals.find((principal) => principal.id === credentialIntent.principalId)?.displayName)} · ${safeText(snapshot?.principals.find((principal) => principal.id === credentialIntent.principalId)?.key)}${credentialIntent.replacesId ? ` · ${safeText(credentialIntent.replacesId)}` : ""}`}
+          consequence={t.confirmIssue}
+          labels={{
+            arm: locale === "ar" ? "مراجعة الهدف" : "Review target",
+            execute: locale === "ar" ? "تأكيد الإصدار" : "Confirm issuance",
+            cancel: t.cancel,
+            status: { IDLE: "IDLE", READY: locale === "ar" ? "جاهز للمراجعة" : "READY TO REVIEW", ARMED: locale === "ar" ? "تمت المراجعة" : "REVIEWED", EXECUTING: t.loading, SUCCEEDED: locale === "ar" ? "تم الإصدار" : "ISSUED", FAILED: t.actionFailed, PARTIAL: "PARTIAL", CANCELLED: t.cancel, BLOCKED: "BLOCKED", DENIED: "DENIED", CONFLICT: "CONFLICT", UNKNOWN_RESULT: "UNKNOWN RESULT" }
+          }}
+          onExecute={executeCredentialIssue}
+        />}
+      </Inspector>
+      <Inspector open={Boolean(issuedCredential)} onClose={() => setIssuedCredential("")} title={t.oneTimeSecret} description={t.secretWarning} closeLabel={t.close} dir={locale === "ar" ? "rtl" : "ltr"}>
+        <div className="credential-dialog x14-one-time-secret">
+          <code dir="ltr" aria-live="polite">{issuedCredential}</code>
+          <div className="credential-dialog-actions">
+            <ActionButton variant="primary" onPress={() => { void navigator.clipboard.writeText(issuedCredential).then(() => setToast(t.copied)).catch(() => setToast(t.actionFailed)); }}>{t.copySecret}</ActionButton>
+            <ActionButton onPress={() => setIssuedCredential("")}>{t.close}</ActionButton>
+          </div>
         </div>
-      )}
+      </Inspector>
       {pageError && (
         <div className="mobile-error" role="alert">
           {pageError}

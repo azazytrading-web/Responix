@@ -3,7 +3,7 @@
 ## Baseline and milestone history
 
 - **Baseline:** `aa50e61` on branch `oic`.
-- **Current state:** OIC-5 GO; OIC-X1.0C architecture lock GO, version 1.0 LOCKED; X1.1, X1.2, X1.3A, X1.3B and X1.4 are closed by owner acceptance. X1.4 is GO / CLOSED; next return point OIC-X1.5. X1.5 and OIC-6 are NOT STARTED.
+- **Current state:** OIC-5 GO; OIC-X1.0C architecture lock GO, version 1.0 LOCKED; X1.1, X1.2, X1.3A, X1.3B, X1.4 and X1.5 are closed by owner acceptance. X1.6 is the next return point and NOT STARTED. OIC-6 is NOT STARTED.
 - **X1.1 delivered files:**
   - Modified: `apps/oic-console/app/console-app.tsx`, `features/overview/overview-view.tsx`, `features/runtime/runtime-view.tsx`, `i18n.ts`, `styles.css`.
   - New: `apps/oic-console/app/components/oic-frames.tsx`, `oic-primitives.tsx`.
@@ -12,7 +12,7 @@
 ## Architecture work and milestone position
 
 - **Completed in X1.0C:** runtime interaction/governance contracts 21–27, cross-links and decision amendments 15–24; execution plan bootstraps, acceptance matrix and tracker update (see `docs/architecture/oic-x1/`).
-- **Architecture baseline:** X1.0 Architecture Lock v1.0 remains LOCKED after X1.0C GO validation. **Current implementation checkpoint:** X1.3B PARTIAL pending owner visual and interaction review.
+- **Architecture baseline:** X1.0 Architecture Lock v1.0 remains LOCKED after X1.0C GO validation. **Current implementation checkpoint:** X1.5 GO / CLOSED; OIC-X1.6 is the next return point and NOT STARTED.
 - **X1.1:** completed against Architecture Lock v1.0. See the X1.1 browser run and validation evidence in `OIC_X1_ACCEPTANCE_MATRIX.md`.
 - **Current:** X1.2 is GO / CLOSED by owner manual visual acceptance. The showcase matrix passed; an automated authenticated real-Overview capture is NOT AVAILABLE and is not claimed. Accepted cosmetic refinements are non-blocking debt. Detailed evidence is in `OIC_X1_ACCEPTANCE_MATRIX.md`.
 - **Deferred:** Telemetry histories/alerts/resource metrics, Model DNA scores until OIC-7 methodology, graph/chart dependency decision, arbitrary layouts, autonomous SOL, generic chat.
@@ -42,8 +42,8 @@ The detailed goals, allowed/forbidden scope, documents to read, data/dependency 
 | X1.3A | GO / CLOSED | Interface Systems architecture and contracts are source-audited and locked in docs 28–38; project-state and architecture references updated; no implementation changes. |
 | X1.3B | GO / CLOSED | Owner visual acceptance PASS; Interface System v1.0 ACCEPTED / FROZEN; canonical Interface and Instrument source trees/public barrels; both galleries consume canonical components; production Overview/Flight Deck consume canonical instruments; fixture isolation, all 34 Console tests, build and production 404 gates pass. Commit/push recorded at closeout. |
 | X1.4 | GO / CLOSED | Owner Visual and Workflow Acceptance PASS. Applications, Tenants and Access / Service Principals, canonical adoption, EN/AR, LTR/RTL, narrow layouts and security accepted. Closeout validation and production dev-route isolation recorded. Next return point OIC-X1.5. |
-| X1.5 | NOT STARTED | Provider Factory; current provider API entities exist. Provider security contract is prerequisite. |
-| X1.6 | NOT STARTED | Model hierarchy/profile APIs exist. OIC-7 evaluator methodology is required before measured DNA. |
+| X1.5 | GO / CLOSED | Owner Visual and Workflow Acceptance PASS. Automated authenticated browser matrix unavailable due accepted local tooling limitation. Current-contract capability matrix and closeout evidence recorded. |
+| X1.6 | NOT STARTED | Cognitive Profiles + Model DNA; OIC-7 evaluator methodology is required before measured DNA. Model Factory hierarchy is in X1.5 per the current owner packet. |
 | X1.7 | NOT STARTED | Current memory/knowledge APIs and schema exist; studio/graph/analytics remain planned. |
 | X1.8 | NOT STARTED | Current Workbench/runtime/traces exist; unified Lab surfaces and trace inspector contract remain planned. |
 | X1.9 | NOT STARTED | No SOL/alert/host telemetry implementation claimed. Requires source-backed advice and final integration. |
@@ -121,3 +121,21 @@ Architecture lock now has two review layers: X1.0 structure/direction and X1.0B 
 - **Closeout:** Console/API checks and live readiness are recorded in the acceptance matrix. Production server returns 404 for all three development-only galleries. No live credential or other persistent mutation was performed.
 - **Accepted cosmetic debt:** minor spacing, typography and local density polish is non-blocking and does not reopen X1.4.
 - **Next:** OIC-X1.5. X1.5 and OIC-6 remain NOT STARTED.
+
+## X1.5 Factory Engineering Environment checkpoint (2026-10-07)
+
+- **Status at implementation checkpoint:** PARTIAL / OWNER REVIEW PENDING; superseded by the final owner closeout below. Provider Factory, Connections, Upstream Catalog and Model Factory are delivered as a connected engineering workspace, not separate milestone pages.
+- **Source audit:** code-owned provider definitions remain read-only; external discovery is not configured beyond the local fixture; catalog sync history has safe persisted counts/outcomes but no field-level diff baseline. Existing model lifecycle transitions, immutable revisions, bindings and visibility remain API-owned. Full capability classification is in `OIC_X1_5_FACTORY_CAPABILITY_MATRIX.md`.
+- **Code:** Console uses canonical Interface System actions, EntityPicker, TextInput, WizardFrame, Inspector, RelationshipPanel and sidecar surfaces. API snapshot adds only safe connection health-check and catalog sync-run metadata. No schema/auth/session/CSRF/origin/BFF changes.
+- **Visual hardening:** compact selectable connection index and actionable empty state; canonical Catalog filter rail and denser model index; grouped rare lifecycle actions; hidden retired/archived hierarchy records by default with opt-in; narrower grid and technical-ID wrapping guardrails. No local fixture records were deleted or mutated.
+- **Validation:** Console typecheck/lint PASS; all 45 Console tests PASS; API typecheck/build and focused snapshot tests PASS (2/2); default-heap Console production build PASS after stopping only the Console dev process; `git diff --check` PASS. Console was restored on `:3002`; API remained on `:4100`, live/readiness PASS with database `ok`.
+- **Browser/acceptance at implementation checkpoint:** automated authenticated matrix unavailable due local browser/CDP tooling. Owner manual visual and workflow acceptance was subsequently recorded as PASS. See final closeout below.
+
+## X1.5 Factory Engineering Environment final closeout (2026-10-07)
+
+- **Owner decision:** Visual Acceptance PASS and Workflow Acceptance PASS for Provider Factory, Upstream Catalog and Model Factory. Automated authenticated desktop/narrow × EN/AR × LTR/RTL capture is UNAVAILABLE due accepted local browser/CDP tooling limitation; this is not a product blocker.
+- **Factory governance:** provider definitions remain code-owned/read-only; connection controls follow existing API contracts; Catalog avoids fabricated discovery/history/deletion inference and reports no baseline when unsupported; model family, edition, immutable revision, variant and binding remain distinct.
+- **Fixture residue:** local acceptance fixtures are explicitly development-only and appeared retired in the owner-reviewed Model Factory. Preserve them without DB edits or audit changes; retired/archived hierarchy is hidden by default with an opt-in.
+- **Canonical/security:** Factory workspaces consume canonical Interface System components. API snapshot history is bounded metadata only (latest five checks/runs per connection), ordered deterministically, with existing authorization and schema unchanged. No auth/session/CSRF/origin/BFF/machine-credential boundary changed; no secret fields are projected.
+- **Validation:** Console typecheck/lint and all 45 tests PASS; API focused snapshot tests 2/2, typecheck and build PASS; default-heap Console production build PASS; `git diff --check`, secret scan and OIC product-boundary scan PASS. Console and API remain live; API readiness reports database `ok`.
+- **Disposition:** X1.5 = GO / CLOSED by owner acceptance. The exact next return point in the locked execution plan is OIC-X1.6 — Cognitive Profiles + Model DNA; it remains NOT STARTED and requires its listed prerequisites, including the OIC-7 evaluator contract before scoring UI. OIC-6 remains NOT STARTED.

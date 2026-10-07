@@ -9,13 +9,13 @@
 | X1.3A Oi Interface Systems Architecture | Lock control, command, selection, workspace and reactive interaction contracts before implementation. | X1.2 accepted; audited Console/API and locked X1 architecture. | Application code, controls, page modernization, OIC-6, cross-product package. | Documentation only; keep Console and API live. | Read-only source audit; no API changes. | Architecture docs source-grounded, linked, consistent, boundary and service checks pass; owner review. |
 | X1.3B Oi Interface Systems Implementation & Gallery | Build and accept OIC-owned reusable interaction library and dev gallery in bounded stages. | X1.3A closed and owner authorizes implementation; dependency decision reviewed. | Broad page modernization, unsupported API semantics, Portal/Responix changes. | Shared controls/commands/pickers/workspaces/reactive patterns; `/dev/interface-system`. | Only separately authorized, evidenced OIC allowlist/API work. | Component, state, accessibility, locale, route-gate, visual and serial validation; return X1.3B closeout. |
 | X1.4 Identity, Scope & Access Engineering Workspaces | Production adoption for Applications, Tenants, Service Principals, scopes, tenant grants and credential lifecycle using canonical Oi interface/instrument systems where applicable. | X1.3B accepted; identity APIs and security contracts audited. | Provider Factory, unsupported authorization evaluation, schema redesign, OIC-6. | Applications, Tenants, Access; scoped inspectors and relationships. | Existing OIC foundation APIs; only source-proven compatible correction; no schema change. | Four locale/viewport cells per workspace, keyboard/accessibility, exact secret/session boundaries and readback. Return to X1.4. |
-| X1.5 Provider Factory | Workspace across provider definitions, connections, credentials metadata, checks, sync and upstream catalog. | X1.3B foundation; API/security source audit. | Billing/economics not modeled; credential exposure. | Provider Factory/catalog and scoped inspectors. | Only missing OIC API contracts evidenced by needs. | Credential custody, scopes, provider failure/sync and real status. Return to X1.5. |
-| X1.6 Model Factory + Cognitive Profiles + Model DNA | Model Passport and actual hierarchy; profile configuration; DNA shell consumes valid OIC-7 evidence only. | X1.3B/X1.4/X1.5; OIC-7 measurement contract before scored DNA. | Invented scores or lifecycle semantics. | Fleet, hierarchy, revisions, bindings, visibility, profile, compare/passport. | Respect existing model/profile APIs; evaluate only if OIC-7 contract exists. | Hierarchy/scope/lifecycle; profile → trace evidence; DNA method/version or unavailable. Return to X1.6. |
+| X1.5 Factory Engineering Environment | Coherent Provider → Connection → Catalog → source model → Family → Edition → Revision → Variant → Binding workflows. | X1.3B/X1.4; source/API security audit. | Credential exposure; invented capability, catalog history or lifecycle semantics. | Provider, connection, catalog, model hierarchy, bindings, visibility and cross-entity navigation. | Existing contracts only; safe metadata projection if an evidenced gap exists. | Scope, source evidence, immutable revisions, lifecycle, EN/AR, RTL and narrow. Return to X1.5 owner checkpoint. |
+| X1.6 Cognitive Profiles + Model DNA | Profile configuration and source-backed DNA shell; DNA consumes valid OIC-7 evidence only. | X1.3B/X1.4/X1.5; OIC-7 measurement contract before scored DNA. | Invented scores or lifecycle semantics. | Profile, compare/passport and measured DNA only where contract exists. | Respect existing profile APIs; evaluate only with OIC-7 contract. | Profile → trace evidence; DNA method/version or unavailable. Return to X1.6. |
 | X1.7 Memory & Knowledge Intelligence Studio | Scoped records, provenance, dependencies, lifecycle and linked execution. | X1.3B and current memory/knowledge API. | Cross-tenant joins, general document platform. | Memory and Knowledge studios. | Changes only for demonstrated query/relationship gaps. | Scope isolation, provenance/dependency integrity, lifecycle and empty/failure. Return to X1.7. |
 | X1.8 Intelligence Lab / Runtime / Traces | Controlled run, result, evidence and safe trace inspection. | X1.3B, runtime and trace contracts; OIC-5 baseline. | Hidden CoT; unsupported quality rankings. | Workbench, Runtime Lab, Trace Explorer. | Preserve bounded/safe trace DTO; add only evidenced observability. | Request→trace→result, scope, matched compare, no sensitive payload, four layouts. Return to X1.8. |
 | X1.9 Smart Operating Layer / Operations / Final Integration | Contextual source-linked advice, health/audit integration and end-to-end polish. | Prior milestones; grounded impact contracts. | Autonomous change, fabricated prediction, cross-product operations. | Context insights, Operations/Health/Audit, global cross-workspace flows. | Only required measured signals and integration contracts. | Full browser/security/product-boundary/performance matrix and owner acceptance. Return final OIC-X1 review. |
 
-**Milestone numbering amendment (2026-10-06):** completed X1.1, X1.2, X1.3A and X1.3B keep their historical labels. X1.4 is the Identity, Scope & Access adoption milestone authorized by the current packet. Future Provider Factory, Model Factory, Memory/Knowledge, Lab/Runtime and Smart Operations milestones are X1.5–X1.9.
+**Milestone numbering amendment (2026-10-07):** completed X1.1, X1.2, X1.3A, X1.3B and X1.4 keep their historical labels. X1.4 is the Identity, Scope & Access adoption milestone. The current X1.5 owner packet groups Provider Factory, Catalog and Model Factory into one Factory Engineering Environment; X1.6 is Cognitive Profiles / DNA, followed by Memory/Knowledge, Lab/Runtime and Smart Operations.
 
 Every later milestone specifies exact APIs/fields, migration need, rollback, and dependencies before coding. If OIC-7 work is unavailable, keep affected UI explicitly unmeasured and continue independent scope.
 
@@ -94,7 +94,7 @@ Every later milestone specifies exact APIs/fields, migration need, rollback, and
 - **FRONTEND / DATA:** source-backed app/tenant/principal index, search/filter/selection, inspector, relationship navigation, ApplicationPicker/TenantPicker, external references, known scope allowlist, tenant grants, credential metadata/issue/rotate/revoke and one-time secret presentation. Unsupported evaluation remains explicit.
 - **LIVE PREVIEW:** keep Console `localhost:3002` and API `127.0.0.1:4100` in separate persistent processes; use a third terminal for checks. Do not ask for or inspect the Operator password.
 - **HUMAN CHECKPOINT / GATE:** focused tests, typecheck/lint, canonical regressions, secret/boundary checks and authenticated Applications/Tenants/Access EN/AR × LTR/RTL desktop/narrow browser acceptance; then owner visual/workflow review. **RETURN:** X1.4 PARTIAL owner checkpoint; no commit/push before owner acceptance.
-### X1.5 — Provider Factory
+### X1.5 — Factory Engineering Environment
 
 #### LIVE DEVELOPMENT BOOTSTRAP (required first step)
 
@@ -104,14 +104,14 @@ Every later milestone specifies exact APIs/fields, migration need, rollback, and
 4. Use a third terminal for typecheck, lint, tests, build and Git.
 5. Keep the frontend available throughout implementation; do not silently change ports.
 
-- **GOAL:** create provider definition/connection/credential/catalog operator workspace with scoped onboarding and truthful checks.
+- **GOAL:** create one connected engineering workspace across provider definitions, connections, credentials metadata, checks, upstream catalog, model families, editions, immutable revisions, variants, bindings and visibility.
 - **PREREQUISITES / READ:** X1.1 accepted; read 02, 04, 05, 09, 16–27; inspect provider controller/service/DTO and secret tests.
 - **ALLOWED / FORBIDDEN:** provider Console feature, same-origin BFF allowlist and strictly required OIC provider APIs. No cross-product provider reuse, secret display after issue, cost claims, capability guarantee from catalog, or arbitrary catalog JSON as default.
-- **FRONTEND / API-BFF / DATA:** overview, connections, credentials metadata, capabilities, upstream catalog, test/sync feedback. Add endpoint only after documented contract. Use existing provider definitions/connections, credential metadata, check/sync/evidence records; preview diff only if actual API supports it.
+- **FRONTEND / API-BFF / DATA:** source-backed Provider → Connection → Catalog → Model Factory lineage, capability/health evidence, lifecycle, family/edition/revision/variant/binding and visibility. Add endpoint only after documented contract. Never fabricate catalog diff or history.
 - **DEPENDENCY DECISIONS:** graph/chart package not required; catalog editor JSON uses current controls. **LIVE PREVIEW:** A :3002, B :4100, C validation; never terminate preview to run validations.
-- **HUMAN CHECKPOINT / GATE:** demonstrate onboarding, error/retry, credential set/revoke, scope denial and catalog evidence; inspect browser network for no secret. Four viewports/locales. Commit/push after acceptance. **RETURN:** X1.5 closeout.
+- **HUMAN CHECKPOINT / GATE:** demonstrate onboarding, error/retry, credential set/revoke, scope denial, catalog evidence and model lineage; inspect browser network for no secret. Four viewport/locale cells, focused tests and production build. One owner checkpoint; no commit/push before review. **RETURN:** X1.5 PARTIAL owner checkpoint.
 
-### X1.6 — Model Factory + Cognitive Profiles + Model DNA
+### X1.6 — Cognitive Profiles + Model DNA
 
 #### LIVE DEVELOPMENT BOOTSTRAP (required first step)
 
@@ -121,8 +121,8 @@ Every later milestone specifies exact APIs/fields, migration need, rollback, and
 4. Use a third terminal for typecheck, lint, tests, build and Git.
 5. Keep the frontend available throughout implementation; do not silently change ports.
 
-- **GOAL:** provide coherent workspace over actual model hierarchy, profile revisions, bindings, visibility and source-backed passport; DNA only consumes validated evaluation results.
-- **PREREQUISITES / READ:** accepted X1.3B and X1.5; read 02, 08, 10, 14, 17–27; obtain OIC-7 evaluator contract before scoring UI.
+- **GOAL:** modernize cognitive profile workflows and source-backed DNA; DNA only consumes validated evaluation results. Model hierarchy, bindings and visibility are included in X1.5 under the current owner packet.
+- **PREREQUISITES / READ:** accepted X1.3B, X1.4 and X1.5; read 02, 08, 10, 14, 17–27; obtain OIC-7 evaluator contract before scoring UI.
 - **ALLOWED / FORBIDDEN:** OIC model/profile screens and exact necessary API DTO/BFF needs. Do not reshape API entities to fit UI metaphor, conflate variant/upstream model, infer binding resolution, turn settings into scores or promote on invented metric.
 - **FRONTEND / API-BFF / DATA:** fleet/tree/passport/revision/variant/relationship/binding/visibility/policy. API remains source for valid transitions and scope. DATA is existing `OicModel*`, profile revision, audit and traces; OIC-7 measurements only with provenance/version/sample.
 - **DEPENDENCY DECISIONS:** native table/list first; SVG graph/radar decision from measured comparison need. **LIVE PREVIEW:** A :3002, B :4100, C checks.
@@ -187,3 +187,10 @@ Every frontend implementation sprint uses Terminal A (Console dev process, fixed
 
 - **Status:** GO / CLOSED by explicit owner Visual and Workflow Acceptance PASS. The accepted scope and evidence limits are recorded in `OIC_X1_ACCEPTANCE_MATRIX.md`.
 - **Next return point:** OIC-X1.5. X1.5 and OIC-6 remain NOT STARTED. No Provider Factory or Model Factory modernization is included in this closeout.
+
+## X1.5 final closeout (2026-10-07)
+
+- **Status:** GO / CLOSED by owner Visual Acceptance PASS and Workflow Acceptance PASS for Provider Factory, Upstream Catalog and Model Factory.
+- **Browser evidence:** automated authenticated EN/AR × desktop/narrow × LTR/RTL matrix is UNAVAILABLE due accepted local browser/CDP tooling limitation. Owner manual review is accepted; no further browser automation or profile attempts are authorized by this closeout.
+- **Validation:** Console typecheck, lint, 45 tests, API focused snapshot tests (2/2), API typecheck/build, default-heap Console production build, `git diff --check`, secret scan and OIC boundary scan PASS. API readiness reports database `ok`; Console and API remain on their prescribed ports.
+- **State:** X1.6 — Cognitive Profiles + Model DNA is the exact next return point defined below and remains NOT STARTED. Its OIC-7 evaluator-contract prerequisite applies before DNA scoring UI. OIC-6 remains NOT STARTED.

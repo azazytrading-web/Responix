@@ -35,10 +35,13 @@ void test("console snapshot keeps credential secrets and audit metadata outside 
     },
     oicProviderDefinition: { findMany: () => Promise.resolve([]) },
     oicProviderConnection: {
-      findMany: () =>
-        Promise.resolve([
+      findMany: (query: unknown) => {
+        calls.connections = query;
+        return Promise.resolve([
           {
             id: "connection-id",
+            healthChecks: [{ status: "HEALTHY", diagnosticCode: "MODELS_PROBE_OK", latencyMs: 18, endpointHost: "api.example.test", testedAt: new Date(2) }],
+            syncRuns: [{ id: "sync-id", status: "SUCCEEDED", discoveredCount: 2, createdCount: 1, updatedCount: 1, rejectedCount: 0, diagnosticCode: null, startedAt: new Date(3), completedAt: new Date(4) }],
             credentials: [
               {
                 id: "credential-id",
@@ -48,7 +51,8 @@ void test("console snapshot keeps credential secrets and audit metadata outside 
               }
             ]
           }
-        ])
+        ]);
+      }
     },
     oicUpstreamModel: { findMany: () => Promise.resolve([]) },
     oicModelFamily: { findMany: () => Promise.resolve([]) },
@@ -67,6 +71,12 @@ void test("console snapshot keeps credential secrets and audit metadata outside 
   assert.equal("credentials" in (result.connections[0] ?? {}), false);
   assert.equal("verifier" in (result.connections[0]?.credential ?? {}), false);
   assert.equal("ciphertext" in (result.connections[0]?.credential ?? {}), false);
+  assert.equal(result.connections[0]?.healthChecks?.[0]?.latencyMs, 18);
+  assert.equal(result.connections[0]?.syncRuns?.[0]?.createdCount, 1);
+  assert.equal(JSON.stringify(result.connections).includes("must-not-appear"), false);
+  const connectionQuery = calls.connections as { include: { healthChecks: { select: Record<string, unknown> }; syncRuns: { select: Record<string, unknown> } } };
+  assert.equal("ciphertext" in connectionQuery.include.healthChecks.select, false);
+  assert.equal("credential" in connectionQuery.include.syncRuns.select, false);
   const auditQuery = calls.audit as { select: Record<string, unknown> };
   assert.equal("metadata" in auditQuery.select, false);
   const principalQuery = calls.principals as {

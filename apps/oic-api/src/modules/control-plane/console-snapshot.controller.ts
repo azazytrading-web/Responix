@@ -81,6 +81,16 @@ export class ConsoleSnapshotController {
             orderBy: { version: "desc" },
             take: 1
           },
+          healthChecks: {
+            select: { status: true, diagnosticCode: true, latencyMs: true, endpointHost: true, testedAt: true },
+            orderBy: [{ testedAt: "desc" }, { id: "desc" }],
+            take: 5
+          },
+          syncRuns: {
+            select: { id: true, status: true, discoveredCount: true, createdCount: true, updatedCount: true, rejectedCount: true, diagnosticCode: true, startedAt: true, completedAt: true },
+            orderBy: [{ startedAt: "desc" }, { id: "desc" }],
+            take: 5
+          },
           _count: { select: { upstreamModels: true, bindings: true } }
         }
       }),

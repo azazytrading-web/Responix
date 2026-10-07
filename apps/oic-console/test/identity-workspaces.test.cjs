@@ -20,7 +20,7 @@ function scopesFrom(source) {
 test("Applications, Tenants and Access are isolated production workspaces using the canonical Interface System", () => {
   assert.match(identity, /from "\.\.\/\.\.\/components\/interface"/);
   for (const view of ["applications", "tenants", "principals"]) assert.match(identity, new RegExp(`view === "${view}"`));
-  assert.match(shell, /\["applications", "tenants", "principals"\]\.includes\(view\) && <IdentityViews/);
+  assert.match(shell, /\["applications", "tenants", "principals"\]\.includes\(view\) && \(\s*<IdentityViews/);
   for (const component of ["ApplicationPicker", "TenantPicker", "SearchableSelect", "WorkspaceTabs", "Inspector", "ArmThenExecute", "DangerAction", "TextInput"]) {
     assert.match(identity, new RegExp(`\\b${component}\\b`));
   }

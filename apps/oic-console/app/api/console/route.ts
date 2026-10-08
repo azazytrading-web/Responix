@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { apiUrl, controlPlaneCredential, hasConsoleSession } from "@/lib/server-auth";
+import { apiUrl, controlPlaneCredential, hasConsoleSession, runtimeCredential } from "@/lib/server-auth";
 
 export const dynamic = "force-dynamic";
 
@@ -8,6 +8,23 @@ export async function GET(request: Request) {
     return NextResponse.json({ error: "Operator session required." }, { status: 401 });
   const view = new URL(request.url).searchParams.get("view");
   const profileId = new URL(request.url).searchParams.get("profileId");
+  const runtimeTenantId = new URL(request.url).searchParams.get("tenantId");
+  if (view === "runtime-models") {
+    if (runtimeTenantId && !/^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(runtimeTenantId))
+      return NextResponse.json({ error: "Invalid runtime scope." }, { status: 400 });
+    const query = runtimeTenantId ? `?tenant_id=${encodeURIComponent(runtimeTenantId)}` : "";
+    try {
+      const response = await fetch(apiUrl(`/v1/models${query}`), {
+        headers: { Authorization: `Bearer ${runtimeCredential()}` },
+        cache: "no-store",
+        signal: AbortSignal.timeout(8000)
+      });
+      const body: unknown = await response.json().catch(() => ({ error: "OIC API returned an unreadable response." }));
+      return NextResponse.json(body, { status: response.status, headers: { "Cache-Control": "no-store" } });
+    } catch {
+      return NextResponse.json({ error: "Runtime model discovery is unavailable." }, { status: 503, headers: { "Cache-Control": "no-store" } });
+    }
+  }
   const healthPath = view === "health" ? "/api/v1/health/ready" : null;
   const path = healthPath ?? (view === "snapshot" ? "/api/v1/admin/console/snapshot" : view === "profiles" ? "/api/v1/admin/intelligence/profiles" : view === "profile-detail" && profileId && /^[0-9a-f-]{36}$/i.test(profileId) ? `/api/v1/admin/intelligence/profiles/${profileId}` : view === "engines" ? "/api/v1/admin/intelligence/engines" : null);
   const params = new URL(request.url).searchParams;

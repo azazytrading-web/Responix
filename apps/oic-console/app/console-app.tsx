@@ -5,7 +5,7 @@ import type { FormEvent } from "react";
 
 import { arabicLiterals, messages, nav } from "./i18n";
 import type { Locale, Messages, View } from "./i18n";
-import { dateValue, entryText, getString, pretty, safeText } from "./format";
+import { dateValue, getString, pretty, safeText } from "./format";
 import type { Row, Snapshot } from "./types";
 import {
   ActionFeedback,
@@ -21,8 +21,9 @@ import { ModelFabricViews } from "./features/model-fabric/model-fabric-views";
 import { OverviewView } from "./features/overview/overview-view";
 import { AuditView } from "./features/operations/audit-view";
 import { HealthView } from "./features/operations/health-view";
-import { RuntimeView } from "./features/runtime/runtime-view";
 import { IntelligenceCenter } from "./features/intelligence/intelligence-center";
+import { RuntimeWorkspace, TracesWorkspace, WorkbenchWorkspace } from "./features/intelligence/lab-workspaces";
+import type { RuntimeModel } from "./features/intelligence/lab-workspaces";
 import { IntelligenceProfilesWorkspace } from "./features/intelligence/intelligence-profiles-workspace";
 async function responseRecord(response: Response): Promise<Row> {
   const value: unknown = await response.json().catch(() => ({}));
@@ -144,21 +145,29 @@ export default function ConsoleApp({ platformUrl }: { platformUrl: string }) {
   } | null>(null);
   const [filter, setFilter] = useState("");
   const [password, setPassword] = useState("");
-  const [invocation, setInvocation] = useState<Row | null>(null);
   const [profiles, setProfiles] = useState<Row[]>([]);
   const [executions, setExecutions] = useState<Row[]>([]);
+  const [executionListState, setExecutionListState] = useState<"loading" | "available" | "failed">("loading");
   const [selectedExecution, setSelectedExecution] = useState<Row | null>(null);
   const [memories, setMemories] = useState<Row[]>([]);
   const [knowledge, setKnowledge] = useState<Row[]>([]);
   const [intelligenceRecordStates, setIntelligenceRecordStates] = useState<Record<"memory" | "knowledge", "loading" | "available" | "failed">>({ memory: "loading", knowledge: "loading" });
   const [selectedKnowledge, setSelectedKnowledge] = useState<Row | null>(null);
   const [workbenchResult, setWorkbenchResult] = useState<Row | null>(null);
-  const [running, setRunning] = useState(false);
+  const [runtimeModels, setRuntimeModels] = useState<RuntimeModel[]>([]);
+  const [runtimeModelState, setRuntimeModelState] = useState<"loading" | "available" | "failed">("loading");
+  const [runtimeResult, setRuntimeResult] = useState<Row | null>(null);
+  const [traceLoading, setTraceLoading] = useState(false);
+  const [traceError, setTraceError] = useState("");
   const [commandOpen, setCommandOpen] = useState(false);
   const [commandQuery, setCommandQuery] = useState("");
   const commandTriggerRef = useRef<HTMLButtonElement>(null);
   const commandResultsRef = useRef<HTMLDivElement>(null);
   const commandDialogRef = useRef<HTMLElement>(null);
+  const traceRequestSequence = useRef(0);
+  const selectedTraceId = useRef("");
+  const requestedTraceId = useRef("");
+  const runtimeModelSequence = useRef(0);
   const t = messages[locale] as Messages;
   const literal = (value: string) => (locale === "ar" ? (arabicLiterals[value] ?? value) : value);
   const navigateTo = useCallback((destination: View, entityId?: string) => {
@@ -167,8 +176,10 @@ export default function ConsoleApp({ platformUrl }: { platformUrl: string }) {
     setCommandOpen(false);
     const url = new URL(window.location.href);
     url.searchParams.set("view", destination);
-    if (entityId) url.searchParams.set("entity", entityId);
-    else url.searchParams.delete("entity");
+    url.searchParams.delete("entity");
+    url.searchParams.delete("trace");
+    if (entityId && destination === "traces") url.searchParams.set("trace", entityId);
+    else if (entityId) url.searchParams.set("entity", entityId);
     window.history.replaceState({}, "", url);
   }, []);
 
@@ -219,12 +230,20 @@ export default function ConsoleApp({ platformUrl }: { platformUrl: string }) {
   }, []);
 
   const loadExecutions = useCallback(async () => {
+    setExecutionListState("loading");
     try {
       const response = await fetch("/api/console?view=executions", { cache: "no-store" });
       const value: unknown = await response.json().catch(() => []);
-      setExecutions(response.ok && Array.isArray(value) ? (value as Row[]) : []);
+      if (!response.ok || !Array.isArray(value)) { setExecutions([]); setExecutionListState("failed"); return; }
+      const rows = value as Row[];
+      setExecutions(rows); setExecutionListState("available");
+      if (selectedTraceId.current && !rows.some((item) => item.traceId === selectedTraceId.current)) {
+        selectedTraceId.current = "";
+        setSelectedExecution(null);
+      }
     } catch {
       setExecutions([]);
+      setExecutionListState("failed");
     }
   }, []);
   const loadIntelligenceRecords = useCallback(async (resource: "memory" | "knowledge", filters: { q?: string; tenantId?: string; lifecycle?: string; kind?: string } = {}): Promise<Row[] | null> => {
@@ -273,20 +292,48 @@ export default function ConsoleApp({ platformUrl }: { platformUrl: string }) {
       return null;
     }
   };
-  const inspectTrace = async (traceId: string) => {
+  const inspectTrace = useCallback(async (traceId: string): Promise<Row | null> => {
+    const sequence = ++traceRequestSequence.current;
+    selectedTraceId.current = traceId;
+    setTraceLoading(true); setTraceError("");
+    setSelectedExecution(null);
     try {
       const response = await fetch(
         `/api/console?view=executions&traceId=${encodeURIComponent(traceId)}`,
         { cache: "no-store" }
       );
       const value: unknown = await response.json().catch(() => null);
-      setSelectedExecution(
-        value && typeof value === "object" && !Array.isArray(value) ? (value as Row) : null
-      );
+      const selected = response.ok && value && typeof value === "object" && !Array.isArray(value) ? value as Row : null;
+      if (sequence === traceRequestSequence.current) {
+        setSelectedExecution(selected);
+        if (!selected) { selectedTraceId.current = ""; setTraceError(locale === "ar" ? "تعذر تحميل تفاصيل الأثر من المصدر المصرح به." : "Trace detail could not be loaded from the authorized source."); }
+      }
+      return selected;
     } catch {
-      setSelectedExecution(null);
+      if (sequence === traceRequestSequence.current) { selectedTraceId.current = ""; setSelectedExecution(null); setTraceError(locale === "ar" ? "تعذر الاتصال بخدمة تفاصيل الآثار." : "Could not reach the trace detail service."); }
+      return null;
+    } finally {
+      if (sequence === traceRequestSequence.current) setTraceLoading(false);
     }
-  };
+  }, [locale]);
+  const loadRuntimeModels = useCallback(async (tenantId = "") => {
+    const sequence = ++runtimeModelSequence.current;
+    setRuntimeModelState("loading");
+    try {
+      const query = new URLSearchParams({ view: "runtime-models" });
+      if (tenantId) query.set("tenantId", tenantId);
+      const response = await fetch(`/api/console?${query.toString()}`, { cache: "no-store" });
+      const body = await responseRecord(response);
+      const records = Array.isArray(body.data) ? (body.data as Row[]) : null;
+      if (!response.ok || !records) throw new Error("Runtime model discovery unavailable");
+      if (sequence === runtimeModelSequence.current) {
+        setRuntimeModels(records.filter((item) => typeof item.id === "string" && /^oi-[a-z0-9][a-z0-9._:-]{0,62}$/i.test(item.id)).map((item) => ({ id: String(item.id), object: typeof item.object === "string" ? item.object : undefined, owned_by: typeof item.owned_by === "string" ? item.owned_by : undefined })));
+        setRuntimeModelState("available");
+      }
+    } catch {
+      if (sequence === runtimeModelSequence.current) { setRuntimeModels([]); setRuntimeModelState("failed"); }
+    }
+  }, []);
   const [selectedMemory, setSelectedMemory] = useState<Row | null>(null);
   useEffect(() => {
     const savedLocale = document.cookie
@@ -316,6 +363,17 @@ export default function ConsoleApp({ platformUrl }: { platformUrl: string }) {
   useEffect(() => {
     if (authenticated) void loadExecutions();
   }, [authenticated, loadExecutions]);
+  useEffect(() => {
+    if (authenticated) void loadRuntimeModels();
+  }, [authenticated]);
+  useEffect(() => {
+    if (!authenticated) return;
+    const traceId = new URLSearchParams(window.location.search).get("trace");
+    if (view === "traces" && traceId && requestedTraceId.current !== traceId) {
+      requestedTraceId.current = traceId;
+      void inspectTrace(traceId);
+    }
+  }, [authenticated, view, inspectTrace]);
   useEffect(() => {
     if (authenticated) {
       void loadIntelligenceRecords("memory");
@@ -425,6 +483,10 @@ export default function ConsoleApp({ platformUrl }: { platformUrl: string }) {
     await fetch("/api/session", { method: "DELETE" });
     setAuthenticated(false);
     setSnapshot(null);
+    setRuntimeResult(null);
+    setWorkbenchResult(null);
+    setSelectedExecution(null);
+    selectedTraceId.current = "";
   };
 
   const perform = async (action: string, values: Row = {}) => {
@@ -449,7 +511,7 @@ export default function ConsoleApp({ platformUrl }: { platformUrl: string }) {
       return null;
     }
     if (!response.ok) {
-      if (action === "runtime.invoke") return data;
+      if (action === "runtime.invoke") return { ...data, httpStatus: response.status };
       setPageError(t.actionFailed);
       return null;
     }
@@ -473,7 +535,7 @@ export default function ConsoleApp({ platformUrl }: { platformUrl: string }) {
       refreshedSnapshot &&
       (!identityAction || verifyIdentityReadback(action, values, data, refreshedSnapshot));
     if (action.startsWith("intelligence.profile.")) setToast("");
-    else if (action !== "runtime.invoke")
+    else if (action !== "runtime.invoke" && action !== "intelligence.workbench.run")
       setToast(
         identityAction
           ? verified
@@ -508,24 +570,6 @@ export default function ConsoleApp({ platformUrl }: { platformUrl: string }) {
         ? (data.result as Row)
         : data;
     return identityAction && !verified ? { ...result, __verificationStatus: "unknown" } : result;
-  };
-
-  const runInvocation = async (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    setRunning(true);
-    setInvocation(null);
-    setPageError("");
-    const form = new FormData(event.currentTarget);
-    const payload: Row = {
-      model: entryText(form.get("model")),
-      maxOutputUnits: Number(entryText(form.get("maxOutputUnits")) || 1024),
-      input: [{ speaker: "user", content: [{ type: "text", text: entryText(form.get("prompt")) }] }]
-    };
-    const tenantId = entryText(form.get("tenantId")).trim();
-    if (tenantId) payload.tenant = { kind: "id", tenantId };
-    const result = await perform("runtime.invoke", payload);
-    if (result) setInvocation(result);
-    setRunning(false);
   };
 
   const filtered = <T extends Row>(rows: T[] | undefined): T[] => {
@@ -863,7 +907,7 @@ export default function ConsoleApp({ platformUrl }: { platformUrl: string }) {
           description={view === "overview" ? t.subtitle : `${t.product} / ${title}`}
           dir={locale === "ar" ? "rtl" : "ltr"}
           wide={view === "overview"}
-          headerMode={["applications", "tenants", "principals"].includes(view) ? "meta" : "full"}
+          headerMode={["applications", "tenants", "principals", "workbench", "runtime", "traces"].includes(view) ? "meta" : "full"}
           meta={
             <div className="heading-meta">
               <span>{literal("CONTROL PLANE")}</span>
@@ -901,7 +945,7 @@ export default function ConsoleApp({ platformUrl }: { platformUrl: string }) {
               void Promise.all([loadSnapshot(), loadHealth(), loadExecutions()]);
             }}
           />
-          <IntelligenceCenter
+      <IntelligenceCenter
             view={view}
             locale={locale}
             t={t}
@@ -926,7 +970,9 @@ export default function ConsoleApp({ platformUrl }: { platformUrl: string }) {
             }}
             navigate={navigateTo}
             perform={perform}
-          />
+      />
+          {view === "workbench" && <WorkbenchWorkspace locale={locale} t={t} data={data} profiles={profiles} executions={executions} workbenchResult={workbenchResult} selectedTrace={selectedExecution} runtimeModels={runtimeModels} runtimeModelState={runtimeModelState} selectRuntimeTenant={(tenantId) => { void loadRuntimeModels(tenantId); }} loadExecutions={() => { void loadExecutions(); }} inspectTrace={inspectTrace} runWorkbench={(request) => perform("intelligence.workbench.run", request)} runRuntime={() => Promise.resolve(null)} navigate={navigateTo} />}
+          {view === "traces" && <TracesWorkspace locale={locale} t={t} data={data} profiles={profiles} executions={executions} executionListState={executionListState} workbenchResult={workbenchResult} selectedTrace={selectedExecution} traceLoading={traceLoading} traceError={traceError} runtimeModels={runtimeModels} runtimeModelState={runtimeModelState} selectRuntimeTenant={() => undefined} loadExecutions={() => { void loadExecutions(); }} inspectTrace={inspectTrace} runWorkbench={() => Promise.resolve(null)} runRuntime={() => Promise.resolve(null)} navigate={navigateTo} />}
           {view === "profiles" && (
             <IntelligenceProfilesWorkspace
               profiles={profiles}
@@ -978,18 +1024,7 @@ export default function ConsoleApp({ platformUrl }: { platformUrl: string }) {
               )}
             />
           )}
-          <RuntimeView
-            view={view}
-            data={data}
-            locale={locale}
-            t={t}
-            literal={literal}
-            runInvocation={(event) => {
-              void runInvocation(event);
-            }}
-            running={running}
-            invocation={invocation}
-          />
+          {view === "runtime" && <RuntimeWorkspace locale={locale} t={t} data={data} profiles={profiles} executions={executions} workbenchResult={workbenchResult} runtimeResult={runtimeResult} onRuntimeResult={setRuntimeResult} selectedTrace={selectedExecution} runtimeModels={runtimeModels} runtimeModelState={runtimeModelState} selectRuntimeTenant={(tenantId) => { void loadRuntimeModels(tenantId); }} inspectTrace={inspectTrace} runRuntime={({ model, tenantId, prompt, maxOutputUnits }) => { const input: Row = { model, maxOutputUnits, input: [{ speaker: "user", content: [{ type: "text", text: prompt }] }] }; if (tenantId) input.tenant = { kind: "id", tenantId }; return perform("runtime.invoke", input); }} runWorkbench={() => Promise.resolve(null)} navigate={navigateTo} loadExecutions={() => { void loadExecutions(); }} />}
           <HealthView
             view={view}
             health={health}

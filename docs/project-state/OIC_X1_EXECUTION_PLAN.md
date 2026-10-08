@@ -1,6 +1,6 @@
 # OIC-X1 Execution Plan
 
-**Baseline:** `aa50e61`. **Product boundary:** OIC only. **Current:** OIC-5 GO; X1.4 Identity, Scope & Access GO / CLOSED by owner visual and workflow acceptance. Next return point OIC-X1.5. X1.0 architecture lock precedes broad implementation. X1.0 does not commit or advance milestones.
+**Baseline:** `aa50e61`. **Product boundary:** OIC only. **Current:** OIC-5 GO; X1.1 through X1.6 GO / CLOSED with owner acceptance recorded in the acceptance matrix. Exact next return point: OIC-X1.7 Memory & Knowledge Intelligence Studio (NOT STARTED). OIC-6 and OIC-7 remain NOT STARTED. X1.0 architecture lock precedes broad implementation. X1.0 does not commit or advance milestones.
 
 | Milestone | Scope | Dependencies | Non-goals | Frontend surfaces | Backend/API work | Acceptance gate / return point |
 | X1.0 Architecture Lock | Freeze architecture, catalogs, blueprints and gates in `docs/architecture/oic-x1/` and project-state docs. | Audit actual API/schema/Console and dirty tree. | Feature implementation, X1-2, dependency additions. | None; keep current Console preview live. | Inspection only; restore local services only if needed. | Docs checked against source; `git diff --check`; closeout for review. Then stop. |
@@ -111,7 +111,7 @@ Every later milestone specifies exact APIs/fields, migration need, rollback, and
 - **DEPENDENCY DECISIONS:** graph/chart package not required; catalog editor JSON uses current controls. **LIVE PREVIEW:** A :3002, B :4100, C validation; never terminate preview to run validations.
 - **HUMAN CHECKPOINT / GATE:** demonstrate onboarding, error/retry, credential set/revoke, scope denial, catalog evidence and model lineage; inspect browser network for no secret. Four viewport/locale cells, focused tests and production build. One owner checkpoint; no commit/push before review. **RETURN:** X1.5 PARTIAL owner checkpoint.
 
-### X1.6 — Cognitive Profiles + Model DNA
+### X1.6 — Cognitive Profiles + Model DNA — GO / CLOSED (2026-10-08)
 
 #### LIVE DEVELOPMENT BOOTSTRAP (required first step)
 
@@ -127,6 +127,10 @@ Every later milestone specifies exact APIs/fields, migration need, rollback, and
 - **FRONTEND / API-BFF / DATA:** fleet/tree/passport/revision/variant/relationship/binding/visibility/policy. API remains source for valid transitions and scope. DATA is existing `OicModel*`, profile revision, audit and traces; OIC-7 measurements only with provenance/version/sample.
 - **DEPENDENCY DECISIONS:** native table/list first; SVG graph/radar decision from measured comparison need. **LIVE PREVIEW:** A :3002, B :4100, C checks.
 - **HUMAN CHECKPOINT / GATE:** operator follows family→edition→revision→variant and app/tenant binding/visibility path; validates partial/unmeasured DNA and RTL. Commit/push after acceptance. **RETURN:** X1.6 closeout.
+
+- **CLOSEOUT:** Owner Visual Acceptance PASS and Workflow Acceptance PASS. Profiles, tuning, revision engineering, comparison, DNA foundation, exact model relationships and activity truthfulness are accepted. Console typecheck/lint, 52 tests, default-heap production build, HTTP health, DB readiness, diff, secret and OIC-boundary checks passed. See `OIC_X1_ACCEPTANCE_MATRIX.md` and `OIC_X1_6_COGNITIVE_PROFILE_CAPABILITY_MATRIX.md`.
+- **BOUNDARY:** measured DNA and all evaluator/scoring/promotion work remain NOT IMPLEMENTED pending OIC-7; OIC-6 remains NOT STARTED. No next-milestone implementation is included.
+- **NEXT RETURN:** OIC-X1.7 Memory & Knowledge Intelligence Studio. It remains NOT STARTED.
 
 ### X1.7 — Memory & Knowledge Intelligence Studio
 
@@ -194,3 +198,10 @@ Every frontend implementation sprint uses Terminal A (Console dev process, fixed
 - **Browser evidence:** automated authenticated EN/AR × desktop/narrow × LTR/RTL matrix is UNAVAILABLE due accepted local browser/CDP tooling limitation. Owner manual review is accepted; no further browser automation or profile attempts are authorized by this closeout.
 - **Validation:** Console typecheck, lint, 45 tests, API focused snapshot tests (2/2), API typecheck/build, default-heap Console production build, `git diff --check`, secret scan and OIC boundary scan PASS. API readiness reports database `ok`; Console and API remain on their prescribed ports.
 - **State:** X1.6 — Cognitive Profiles + Model DNA is the exact next return point defined below and remains NOT STARTED. Its OIC-7 evaluator-contract prerequisite applies before DNA scoring UI. OIC-6 remains NOT STARTED.
+
+## X1.6 final closeout (2026-10-08)
+
+- **Status:** GO / CLOSED. Owner Visual Acceptance PASS and Workflow Acceptance PASS; primary Configuration workspace visual direction was already accepted, and remaining workflows were checked against source and focused tests.
+- **Validation:** Console typecheck and lint PASS; all 52 configured Console tests PASS; default-heap production build PASS after stopping only Console and restarting it on port 3002; Console root and requested workspaces HTTP 200; API live/readiness HTTP 200 with database `ok`; `git diff --check`, changed-file secret scan and OIC boundary review PASS.
+- **Truthfulness and security:** DNA remains unmeasured with OIC-7 dependency preserved. No synthetic values, ranking, evaluator/scoring/promotion, OIC-6 features or authentication/session/origin/CSRF/BFF weakening. No Responix or Mega Platform Portal changes.
+- **Next return point:** OIC-X1.7 — Memory & Knowledge Intelligence Studio. X1.7, OIC-6 and OIC-7 remain NOT STARTED.

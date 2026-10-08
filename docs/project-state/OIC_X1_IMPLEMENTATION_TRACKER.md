@@ -3,7 +3,7 @@
 ## Baseline and milestone history
 
 - **Baseline:** `aa50e61` on branch `oic`.
-- **Current state:** OIC-5 GO; OIC-X1.0C architecture lock GO, version 1.0 LOCKED; X1.1, X1.2, X1.3A, X1.3B, X1.4 and X1.5 are closed by owner acceptance. X1.6 is the next return point and NOT STARTED. OIC-6 is NOT STARTED.
+- **Current state:** OIC-5 GO; OIC-X1.0C architecture lock GO, version 1.0 LOCKED; X1.1 through X1.6 are closed by owner acceptance. Exact next return point is X1.7 Memory & Knowledge Intelligence Studio (NOT STARTED). OIC-6 and OIC-7 are NOT STARTED.
 - **X1.1 delivered files:**
   - Modified: `apps/oic-console/app/console-app.tsx`, `features/overview/overview-view.tsx`, `features/runtime/runtime-view.tsx`, `i18n.ts`, `styles.css`.
   - New: `apps/oic-console/app/components/oic-frames.tsx`, `oic-primitives.tsx`.
@@ -12,7 +12,7 @@
 ## Architecture work and milestone position
 
 - **Completed in X1.0C:** runtime interaction/governance contracts 21–27, cross-links and decision amendments 15–24; execution plan bootstraps, acceptance matrix and tracker update (see `docs/architecture/oic-x1/`).
-- **Architecture baseline:** X1.0 Architecture Lock v1.0 remains LOCKED after X1.0C GO validation. **Current implementation checkpoint:** X1.5 GO / CLOSED; OIC-X1.6 is the next return point and NOT STARTED.
+- **Architecture baseline:** X1.0 Architecture Lock v1.0 remains LOCKED after X1.0C GO validation. **Current implementation checkpoint:** X1.6 GO / CLOSED; OIC-X1.7 is the next return point and NOT STARTED.
 - **X1.1:** completed against Architecture Lock v1.0. See the X1.1 browser run and validation evidence in `OIC_X1_ACCEPTANCE_MATRIX.md`.
 - **Current:** X1.2 is GO / CLOSED by owner manual visual acceptance. The showcase matrix passed; an automated authenticated real-Overview capture is NOT AVAILABLE and is not claimed. Accepted cosmetic refinements are non-blocking debt. Detailed evidence is in `OIC_X1_ACCEPTANCE_MATRIX.md`.
 - **Deferred:** Telemetry histories/alerts/resource metrics, Model DNA scores until OIC-7 methodology, graph/chart dependency decision, arbitrary layouts, autonomous SOL, generic chat.
@@ -43,10 +43,21 @@ The detailed goals, allowed/forbidden scope, documents to read, data/dependency 
 | X1.3B | GO / CLOSED | Owner visual acceptance PASS; Interface System v1.0 ACCEPTED / FROZEN; canonical Interface and Instrument source trees/public barrels; both galleries consume canonical components; production Overview/Flight Deck consume canonical instruments; fixture isolation, all 34 Console tests, build and production 404 gates pass. Commit/push recorded at closeout. |
 | X1.4 | GO / CLOSED | Owner Visual and Workflow Acceptance PASS. Applications, Tenants and Access / Service Principals, canonical adoption, EN/AR, LTR/RTL, narrow layouts and security accepted. Closeout validation and production dev-route isolation recorded. Next return point OIC-X1.5. |
 | X1.5 | GO / CLOSED | Owner Visual and Workflow Acceptance PASS. Automated authenticated browser matrix unavailable due accepted local tooling limitation. Current-contract capability matrix and closeout evidence recorded. |
-| X1.6 | NOT STARTED | Cognitive Profiles + Model DNA; OIC-7 evaluator methodology is required before measured DNA. Model Factory hierarchy is in X1.5 per the current owner packet. |
+| X1.6 | GO / CLOSED | Owner Visual and Workflow Acceptance PASS. Cognitive Profiles, immutable revisions, truthful comparison, DNA foundation, exact revision relationships, draft workflow, canonical pickers and shared Inspector accepted. DNA remains unmeasured; evaluator/scoring depends on OIC-7. |
 | X1.7 | NOT STARTED | Current memory/knowledge APIs and schema exist; studio/graph/analytics remain planned. |
 | X1.8 | NOT STARTED | Current Workbench/runtime/traces exist; unified Lab surfaces and trace inspector contract remain planned. |
 | X1.9 | NOT STARTED | No SOL/alert/host telemetry implementation claimed. Requires source-backed advice and final integration. |
+
+## X1.6 final closeout (2026-10-08)
+
+- **Owner acceptance:** Visual PASS and Workflow PASS. Primary Configuration workspace was accepted by the owner. Remaining comparison, DNA, relationships/activity and clone/new-revision surfaces were reviewed against live implementation source and focused tests; browser automation was unavailable and is not represented as having run.
+- **Profile workspace:** source-backed profile detail, human-readable advanced configuration labels, archived filtering, immutable persisted revisions, local draft and current/proposed diff, effect unknown, and readback verification.
+- **Comparison and DNA:** canonical profile picker compares actual persisted configurations and describes higher/lower only as configuration. DNA uses canonical `DNARadar`; 0 measured, 0 configured/declared and 13 unmeasured dimensions remain `AWAITING OIC-7`; no scores or fake polygons.
+- **Relationships and activity:** exact profile-revision ID joins for model revisions and exact profile revision execution matching; no active-runtime inference; unavailable profile-scoped audit/history remains explicitly unavailable.
+- **Canonical/accessibility:** canonical Interface and Instrument components used; compare and source revision selection use canonical React Aria pickers; creation/lifecycle dialogs use shared React Aria Inspector for Escape and focus handling. EN/AR dictionaries align, Arabic strings are native, and direction is locale-aware. Narrow behavior uses canonical responsive primitives; browser-cell screenshots and screen-reader audit are not claimed.
+- **Validation:** typecheck PASS; lint PASS; all 52 Console tests PASS, covering X1.6, DNA guards, Interface and Instrument regressions, X1.4/X1.5 route regressions and i18n/RTL; default-heap production build PASS; Console and API live/readiness returned HTTP 200; database readiness `ok`; diff, secret and OIC boundary checks PASS.
+- **Boundary:** no OIC-7 evaluator, benchmark scheduling/execution/persistence, scoring/ranking/promotion; no OIC-6 OIU/plans/quotas/economics; no auth or BFF security weakening; no Responix or Portal files touched.
+- **Disposition:** X1.6 GO / CLOSED. Next return point OIC-X1.7 Memory & Knowledge Intelligence Studio. Do not start it as part of X1.6 closeout.
 
 ## X1.3B source-of-truth closeout (2026-10-06)
 

@@ -7,8 +7,9 @@ export async function GET(request: Request) {
   if (!(await hasConsoleSession()))
     return NextResponse.json({ error: "Operator session required." }, { status: 401 });
   const view = new URL(request.url).searchParams.get("view");
+  const profileId = new URL(request.url).searchParams.get("profileId");
   const healthPath = view === "health" ? "/api/v1/health/ready" : null;
-  const path = healthPath ?? (view === "snapshot" ? "/api/v1/admin/console/snapshot" : view === "profiles" ? "/api/v1/admin/intelligence/profiles" : view === "engines" ? "/api/v1/admin/intelligence/engines" : null);
+  const path = healthPath ?? (view === "snapshot" ? "/api/v1/admin/console/snapshot" : view === "profiles" ? "/api/v1/admin/intelligence/profiles" : view === "profile-detail" && profileId && /^[0-9a-f-]{36}$/i.test(profileId) ? `/api/v1/admin/intelligence/profiles/${profileId}` : view === "engines" ? "/api/v1/admin/intelligence/engines" : null);
   const params = new URL(request.url).searchParams;
   const resource = view === "memory" ? "memory" : view === "knowledge" ? "knowledge" : view === "executions" || view === "traces" ? "executions" : null;
   const safeQuery = (name: string, max: number) => { const value = params.get(name); return value && value.length <= max ? value : null; };

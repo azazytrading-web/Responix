@@ -15,6 +15,7 @@ temp
 .dev-runtime
 .next-dashboard
 .next-client
+.next-x16-*
 *.tsbuildinfo
 **/*.tsbuildinfo
 .tmp-edge-delete-profile/

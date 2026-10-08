@@ -12,8 +12,7 @@ import {
   DataTable,
   EmptyState,
   ErrorState,
-  LoadingState,
-  Slider
+  LoadingState
 } from "./components/oic-primitives";
 import { PageFrame } from "./components/oic-frames";
 import { IdentityViews } from "./features/identity/identity-views";
@@ -24,6 +23,7 @@ import { AuditView } from "./features/operations/audit-view";
 import { HealthView } from "./features/operations/health-view";
 import { RuntimeView } from "./features/runtime/runtime-view";
 import { IntelligenceCenter } from "./features/intelligence/intelligence-center";
+import { IntelligenceProfilesWorkspace } from "./features/intelligence/intelligence-profiles-workspace";
 async function responseRecord(response: Response): Promise<Row> {
   const value: unknown = await response.json().catch(() => ({}));
   return value && typeof value === "object" && !Array.isArray(value) ? (value as Row) : {};
@@ -204,15 +204,18 @@ export default function ConsoleApp({ platformUrl }: { platformUrl: string }) {
     }
   }, []);
 
-  const loadProfiles = useCallback(async () => {
+  const loadProfiles = useCallback(async (): Promise<Row[]> => {
     try {
       const response = await fetch("/api/console?view=profiles", { cache: "no-store" });
       const value: unknown = await response.json().catch(() => []);
-      setProfiles(response.ok && Array.isArray(value) ? (value as Row[]) : []);
+      const loaded = response.ok && Array.isArray(value) ? (value as Row[]) : [];
+      setProfiles(loaded);
+      return loaded;
     } catch {
       setProfiles([]);
+      return [];
     }
-  }, [navigateTo]);
+  }, []);
 
   const loadExecutions = useCallback(async () => {
     try {
@@ -276,21 +279,6 @@ export default function ConsoleApp({ platformUrl }: { platformUrl: string }) {
     }
   };
   const [selectedMemory, setSelectedMemory] = useState<Row | null>(null);
-  const loadExecution = async (traceId: string) => {
-    try {
-      const response = await fetch(
-        `/api/console?view=executions&traceId=${encodeURIComponent(traceId)}`,
-        { cache: "no-store" }
-      );
-      const value: unknown = await response.json().catch(() => null);
-      setSelectedExecution(
-        value && typeof value === "object" && !Array.isArray(value) ? (value as Row) : null
-      );
-    } catch {
-      setSelectedExecution(null);
-    }
-  };
-
   useEffect(() => {
     const savedLocale = document.cookie
       .split("; ")
@@ -475,7 +463,8 @@ export default function ConsoleApp({ platformUrl }: { platformUrl: string }) {
     const verified =
       refreshedSnapshot &&
       (!identityAction || verifyIdentityReadback(action, values, data, refreshedSnapshot));
-    if (action !== "runtime.invoke")
+    if (action.startsWith("intelligence.profile.")) setToast("");
+    else if (action !== "runtime.invoke")
       setToast(
         identityAction
           ? verified
@@ -932,252 +921,15 @@ export default function ConsoleApp({ platformUrl }: { platformUrl: string }) {
             perform={perform}
           />
           {view === "profiles" && (
-            <section className="panel-stack">
-              <form
-                className="form-grid"
-                onSubmit={(event) => {
-                  event.preventDefault();
-                  const form = new FormData(event.currentTarget);
-                  const key = entryText(form.get("profileKey"));
-                  const displayName = entryText(form.get("displayName"));
-                  const source = profiles
-                    .flatMap((profile) => rowsOf(profile.revisions))
-                    .find(
-                      (revision) => String(revision.id) === entryText(form.get("sourceRevisionId"))
-                    );
-                  if (!source) return;
-                  void perform("intelligence.profile.clone", {
-                    sourceRevisionId: String(source.id),
-                    profileKey: key,
-                    displayName
-                  });
-                }}
-              >
-                <label>
-                  {locale === "ar" ? "مفتاح الملف الجديد" : "New profile key"}
-                  <input name="profileKey" pattern="[a-z][a-z0-9._-]{1,63}" required />
-                </label>
-                <label>
-                  {t.displayName}
-                  <input name="displayName" required maxLength={160} />
-                </label>
-                <label>
-                  {locale === "ar" ? "نسخة المصدر" : "Source revision"}
-                  <select name="sourceRevisionId" required>
-                    {profiles.flatMap((profile) =>
-                      rowsOf(profile.revisions).map((revision) => (
-                        <option key={String(revision.id)} value={String(revision.id)}>
-                          {String(profile.profileKey)} · r{String(revision.revision)}
-                        </option>
-                      ))
-                    )}
-                  </select>
-                </label>
-                <button className="button primary" type="submit">
-                  {locale === "ar" ? "استنساخ الملف" : "Clone profile"}
-                </button>
-              </form>
-              {profiles.map((profile) => (
-                <article className="data-card" key={String(profile.id)}>
-                  <header>
-                    <div>
-                      <strong>{String(profile.displayName)}</strong>
-                      <small>
-                        {String(profile.profileKey)} · {String(profile.lifecycle)} ·{" "}
-                        {profile.source === "BUILTIN" ? "Built-in" : "Custom"}
-                      </small>
-                    </div>
-                    <span>
-                      {rowsOf(profile.revisions).length
-                        ? `${scalarText(rowsOf(profile.revisions)[0]?.revision, "0")} revisions`
-                        : "No revisions"}
-                    </span>
-                  </header>
-                  {rowsOf(profile.revisions).map((revision) => (
-                    <details key={String(revision.id)}>
-                      <summary>
-                        {String(profile.profileKey)} r{String(revision.revision)} ·{" "}
-                        {String(revision.id)}
-                      </summary>
-                      <div className="metric-grid">
-                        {[
-                          "contextIntensity",
-                          "memoryIntensity",
-                          "retrievalIntensity",
-                          "reasoningIntensity",
-                          "toolsIntensity",
-                          "verificationIntensity",
-                          "synthesisIntensity",
-                          "efficiencyIntensity"
-                        ].map((key) => (
-                          <Slider
-                            key={key}
-                            label={key}
-                            min={0}
-                            max={100}
-                            step={1}
-                            defaultValue={Number(revision[key] ?? 0)}
-                            unavailableLabel={locale === "ar" ? "غير متاح" : "UNAVAILABLE"}
-                            disabled={profile.source === "BUILTIN"}
-                            compact
-                            dir={locale === "ar" ? "rtl" : "ltr"}
-                            inputProps={{ "aria-label": key, "data-profile-intensity": key }}
-                          />
-                        ))}
-                      </div>
-                      {profile.source !== "BUILTIN" && (
-                        <button
-                          className="button subtle"
-                          type="button"
-                          onClick={() => {
-                            const inputs = Array.from(
-                              document.querySelectorAll<HTMLInputElement>(
-                                "[data-profile-intensity]"
-                              )
-                            );
-                            const currentInputs = inputs.filter((input) =>
-                              input
-                                .closest("details")
-                                ?.querySelector("summary")
-                                ?.textContent?.includes(
-                                  `${String(profile.profileKey)} r${String(revision.revision)}`
-                                )
-                            );
-                            const policy: Row = {};
-                            for (const key of [
-                              "contextIntensity",
-                              "memoryIntensity",
-                              "retrievalIntensity",
-                              "reasoningIntensity",
-                              "toolsIntensity",
-                              "verificationIntensity",
-                              "synthesisIntensity",
-                              "efficiencyIntensity",
-                              "maxStages",
-                              "maxProviderCalls",
-                              "maxToolCalls",
-                              "maxRetrievalQueries",
-                              "maxMemoryItems",
-                              "maxCandidates",
-                              "maxVerificationRounds",
-                              "maxContextTokens",
-                              "maxExecutionMs",
-                              "allowMemoryWrites",
-                              "allowRevision",
-                              "requireEvidence"
-                            ])
-                              if (revision[key] !== undefined) policy[key] = revision[key];
-                            for (const input of currentInputs) {
-                              const key = input.dataset.profileIntensity;
-                              if (key) policy[key] = Number(input.value);
-                            }
-                            for (const key of [
-                              "id",
-                              "profileId",
-                              "revision",
-                              "createdAt",
-                              "updatedAt"
-                            ])
-                              delete policy[key];
-                            void perform("intelligence.profile.revision", {
-                              profileId: String(profile.id),
-                              policy
-                            });
-                          }}
-                        >
-                          {locale === "ar" ? "حفظ كنسخة جديدة" : "Save as new revision"}
-                        </button>
-                      )}
-                    </details>
-                  ))}
-                  {profile.source !== "BUILTIN" && (
-                    <div className="button-row">
-                      {actionButton("Disable", "intelligence.profile.lifecycle", {
-                        profileId: profile.id,
-                        lifecycle: "DISABLED"
-                      })}
-                      {actionButton("Archive", "intelligence.profile.lifecycle", {
-                        profileId: profile.id,
-                        lifecycle: "ARCHIVED"
-                      })}
-                    </div>
-                  )}
-                </article>
-              ))}
-            </section>
-          )}
-          {view === "profiles" && (
-            <section className="panel">
-              <div className="panel-heading">
-                <div>
-                  <span className="section-index">TRACE / SAFE STAGE DATA</span>
-                  <h3>{locale === "ar" ? "آثار التنفيذ" : "Execution traces"}</h3>
-                </div>
-                <button
-                  className="button subtle"
-                  type="button"
-                  onClick={() => void loadExecutions()}
-                >
-                  {t.refresh}
-                </button>
-              </div>
-              {table(
-                [
-                  "Trace",
-                  "Model",
-                  "Profile",
-                  "Strategy",
-                  "Stages",
-                  "Provider calls",
-                  "Retrieval",
-                  "Verification",
-                  "Duration"
-                ],
-                executions.map((execution) => {
-                  const summary =
-                    execution.summary &&
-                    typeof execution.summary === "object" &&
-                    !Array.isArray(execution.summary)
-                      ? (execution.summary as Row)
-                      : {};
-                  return [
-                    <button
-                      className="text-button"
-                      key={String(execution.traceId)}
-                      type="button"
-                      onClick={() => {
-                        void loadExecution(String(execution.traceId));
-                      }}
-                    >
-                      {String(execution.traceId)}
-                    </button>,
-                    scalarText(execution.modelId),
-                    scalarText(execution.profileRevisionId, "FAST"),
-                    scalarText(execution.strategy),
-                    scalarText(execution.stageCount),
-                    scalarText(execution.providerCallCount),
-                    scalarText(execution.retrievalQueryCount),
-                    scalarText(execution.verificationStatus),
-                    scalarText(summary.durationMs)
-                  ];
-                })
-              )}
-              {selectedExecution && (
-                <div className="runtime-context-row">
-                  <b>
-                    {String(selectedExecution.traceId)} · {String(selectedExecution.status)}
-                  </b>
-                  <span>Stage records contain no prompt or response content.</span>
-                  {rowsOf(selectedExecution.stages).map((stage) => (
-                    <span key={String(stage.stageIndex)}>
-                      {String(stage.stageIndex)} · {String(stage.stageType)} ·{" "}
-                      {String(stage.status)} · {String(stage.durationMs)} ms ·{" "}
-                      {scalarText(stage.strategy, "")}
-                    </span>
-                  ))}
-                </div>
-              )}
-            </section>
+            <IntelligenceProfilesWorkspace
+              profiles={profiles}
+              locale={locale}
+              perform={perform}
+              reloadProfiles={loadProfiles}
+              executions={executions}
+              snapshot={data}
+              navigate={navigateTo}
+            />
           )}
           {data && ["applications", "tenants", "principals"].includes(view) && (
             <IdentityViews

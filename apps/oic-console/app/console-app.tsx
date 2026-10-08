@@ -150,6 +150,7 @@ export default function ConsoleApp({ platformUrl }: { platformUrl: string }) {
   const [selectedExecution, setSelectedExecution] = useState<Row | null>(null);
   const [memories, setMemories] = useState<Row[]>([]);
   const [knowledge, setKnowledge] = useState<Row[]>([]);
+  const [intelligenceRecordStates, setIntelligenceRecordStates] = useState<Record<"memory" | "knowledge", "loading" | "available" | "failed">>({ memory: "loading", knowledge: "loading" });
   const [selectedKnowledge, setSelectedKnowledge] = useState<Row | null>(null);
   const [workbenchResult, setWorkbenchResult] = useState<Row | null>(null);
   const [running, setRunning] = useState(false);
@@ -226,42 +227,50 @@ export default function ConsoleApp({ platformUrl }: { platformUrl: string }) {
       setExecutions([]);
     }
   }, []);
-  const loadIntelligenceRecords = useCallback(async (resource: "memory" | "knowledge") => {
+  const loadIntelligenceRecords = useCallback(async (resource: "memory" | "knowledge", filters: { q?: string; tenantId?: string; lifecycle?: string; kind?: string } = {}): Promise<Row[] | null> => {
+    setIntelligenceRecordStates((current) => ({ ...current, [resource]: "loading" }));
     try {
-      const response = await fetch(`/api/console?view=${resource}`, { cache: "no-store" });
+      const query = new URLSearchParams({ view: resource });
+      for (const [key, value] of Object.entries(filters)) if (value) query.set(key, value);
+      const response = await fetch(`/api/console?${query.toString()}`, { cache: "no-store" });
       const value: unknown = await response.json().catch(() => []);
-      const data = response.ok ? rowsOf(value) : [];
+      if (!response.ok) { setIntelligenceRecordStates((current) => ({ ...current, [resource]: "failed" })); return null; }
+      const data = rowsOf(value);
       if (resource === "memory") setMemories(data);
       else setKnowledge(data);
+      setIntelligenceRecordStates((current) => ({ ...current, [resource]: "available" }));
+      return data;
     } catch {
-      if (resource === "memory") setMemories([]);
-      else setKnowledge([]);
+      setIntelligenceRecordStates((current) => ({ ...current, [resource]: "failed" }));
+      return null;
     }
   }, []);
-  const inspectKnowledge = async (id: string) => {
+  const inspectKnowledge = async (id: string): Promise<Row | null> => {
     try {
       const response = await fetch(`/api/console?view=knowledge&id=${encodeURIComponent(id)}`, {
         cache: "no-store"
       });
       const value: unknown = await response.json().catch(() => null);
-      setSelectedKnowledge(
-        value && typeof value === "object" && !Array.isArray(value) ? (value as Row) : null
-      );
+      const selected = response.ok && value && typeof value === "object" && !Array.isArray(value) ? value as Row : null;
+      setSelectedKnowledge(selected);
+      return selected;
     } catch {
       setSelectedKnowledge(null);
+      return null;
     }
   };
-  const inspectMemory = async (id: string) => {
+  const inspectMemory = async (id: string): Promise<Row | null> => {
     try {
       const response = await fetch(`/api/console?view=memory&id=${encodeURIComponent(id)}`, {
         cache: "no-store"
       });
       const value: unknown = await response.json().catch(() => null);
-      setSelectedMemory(
-        value && typeof value === "object" && !Array.isArray(value) ? (value as Row) : null
-      );
+      const selected = response.ok && value && typeof value === "object" && !Array.isArray(value) ? value as Row : null;
+      setSelectedMemory(selected);
+      return selected;
     } catch {
       setSelectedMemory(null);
+      return null;
     }
   };
   const inspectTrace = async (traceId: string) => {
@@ -903,21 +912,19 @@ export default function ConsoleApp({ platformUrl }: { platformUrl: string }) {
             executions={executions}
             selectedMemory={selectedMemory}
             selectedKnowledge={selectedKnowledge}
+            recordStates={intelligenceRecordStates}
             selectedTrace={selectedExecution}
             workbenchResult={workbenchResult}
-            load={(resource) => {
-              if (resource === "traces") void loadExecutions();
-              else void loadIntelligenceRecords(resource);
+            load={(resource, filters) => {
+              if (resource === "traces") { void loadExecutions(); return Promise.resolve(executions); }
+              return loadIntelligenceRecords(resource, filters);
             }}
-            inspectMemory={(id) => {
-              void inspectMemory(id);
-            }}
-            inspectKnowledge={(id) => {
-              void inspectKnowledge(id);
-            }}
+            inspectMemory={inspectMemory}
+            inspectKnowledge={inspectKnowledge}
             inspectTrace={(traceId) => {
               void inspectTrace(traceId);
             }}
+            navigate={navigateTo}
             perform={perform}
           />
           {view === "profiles" && (

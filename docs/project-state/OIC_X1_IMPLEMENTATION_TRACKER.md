@@ -3,7 +3,7 @@
 ## Baseline and milestone history
 
 - **Baseline:** `aa50e61` on branch `oic`.
-- **Current state:** OIC-5 GO; OIC-X1.0C architecture lock GO, version 1.0 LOCKED; X1.1 through X1.6 are closed by owner acceptance. Exact next return point is X1.7 Memory & Knowledge Intelligence Studio (NOT STARTED). OIC-6 and OIC-7 are NOT STARTED.
+- **Current state:** OIC-5 GO; OIC-X1.0C architecture lock GO, version 1.0 LOCKED; X1.1 through X1.6 are closed by owner acceptance. X1.7 Memory & Knowledge Intelligence Studio is GO / CLOSED after Owner Visual and Workflow Acceptance PASS on 2026-10-08. Exact next return point is OIC-X1.8 Intelligence Lab / Runtime / Traces, NOT STARTED. OIC-6 and OIC-7 remain NOT STARTED.
 - **X1.1 delivered files:**
   - Modified: `apps/oic-console/app/console-app.tsx`, `features/overview/overview-view.tsx`, `features/runtime/runtime-view.tsx`, `i18n.ts`, `styles.css`.
   - New: `apps/oic-console/app/components/oic-frames.tsx`, `oic-primitives.tsx`.
@@ -12,7 +12,7 @@
 ## Architecture work and milestone position
 
 - **Completed in X1.0C:** runtime interaction/governance contracts 21–27, cross-links and decision amendments 15–24; execution plan bootstraps, acceptance matrix and tracker update (see `docs/architecture/oic-x1/`).
-- **Architecture baseline:** X1.0 Architecture Lock v1.0 remains LOCKED after X1.0C GO validation. **Current implementation checkpoint:** X1.6 GO / CLOSED; OIC-X1.7 is the next return point and NOT STARTED.
+- **Architecture baseline:** X1.0 Architecture Lock v1.0 remains LOCKED after X1.0C GO validation. **Current implementation checkpoint:** X1.7 GO / CLOSED; exact next return point X1.8 Intelligence Lab / Runtime / Traces remains NOT STARTED; OIC-6 and OIC-7 remain NOT STARTED.
 - **X1.1:** completed against Architecture Lock v1.0. See the X1.1 browser run and validation evidence in `OIC_X1_ACCEPTANCE_MATRIX.md`.
 - **Current:** X1.2 is GO / CLOSED by owner manual visual acceptance. The showcase matrix passed; an automated authenticated real-Overview capture is NOT AVAILABLE and is not claimed. Accepted cosmetic refinements are non-blocking debt. Detailed evidence is in `OIC_X1_ACCEPTANCE_MATRIX.md`.
 - **Deferred:** Telemetry histories/alerts/resource metrics, Model DNA scores until OIC-7 methodology, graph/chart dependency decision, arbitrary layouts, autonomous SOL, generic chat.
@@ -44,7 +44,7 @@ The detailed goals, allowed/forbidden scope, documents to read, data/dependency 
 | X1.4 | GO / CLOSED | Owner Visual and Workflow Acceptance PASS. Applications, Tenants and Access / Service Principals, canonical adoption, EN/AR, LTR/RTL, narrow layouts and security accepted. Closeout validation and production dev-route isolation recorded. Next return point OIC-X1.5. |
 | X1.5 | GO / CLOSED | Owner Visual and Workflow Acceptance PASS. Automated authenticated browser matrix unavailable due accepted local tooling limitation. Current-contract capability matrix and closeout evidence recorded. |
 | X1.6 | GO / CLOSED | Owner Visual and Workflow Acceptance PASS. Cognitive Profiles, immutable revisions, truthful comparison, DNA foundation, exact revision relationships, draft workflow, canonical pickers and shared Inspector accepted. DNA remains unmeasured; evaluator/scoring depends on OIC-7. |
-| X1.7 | NOT STARTED | Current memory/knowledge APIs and schema exist; studio/graph/analytics remain planned. |
+| X1.7 | GO / CLOSED | Owner Visual and Workflow Acceptance PASS. Memory and Knowledge studios, distinct domain semantics, truthful source/context provenance, canonical adoption, security and EN/AR + LTR/RTL direction accepted. Typecheck/lint, 59 Console tests, focused X1.7 tests 7/7, default-heap production build, production dev-route isolation, smoke routes, API/database health, diff, secret-pattern and OIC-boundary checks PASS. No screen-reader audit claimed. Commit and normal push completed for this closeout. Exact next return: X1.8, NOT STARTED. |
 | X1.8 | NOT STARTED | Current Workbench/runtime/traces exist; unified Lab surfaces and trace inspector contract remain planned. |
 | X1.9 | NOT STARTED | No SOL/alert/host telemetry implementation claimed. Requires source-backed advice and final integration. |
 

@@ -3,6 +3,6 @@ import { baseConfig } from "@responix/config/eslint";
 export default [
   ...baseConfig,
   {
-    ignores: [".next-x16-*/**"],
+    ignores: [".next-x16-*/**", "tmp/**"],
   },
 ];

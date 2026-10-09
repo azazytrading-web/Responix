@@ -7,6 +7,7 @@ import { arabicLiterals, messages, nav } from "./i18n";
 import type { Locale, Messages, View } from "./i18n";
 import { dateValue, getString, pretty, safeText } from "./format";
 import type { Row, Snapshot } from "./types";
+import { getApiConnectionState } from "./api-connection-state";
 import {
   ActionFeedback,
   DataTable,
@@ -132,6 +133,9 @@ export default function ConsoleApp({ platformUrl }: { platformUrl: string }) {
   const [configured, setConfigured] = useState(true);
   const [snapshot, setSnapshot] = useState<Snapshot | null>(null);
   const [health, setHealth] = useState<Row | null>(null);
+  const [healthState, setHealthState] = useState<"loading" | "available" | "failed">("loading");
+  const [auditEvents, setAuditEvents] = useState<Row[]>([]);
+  const [auditState, setAuditState] = useState<"idle" | "loading" | "available" | "failed" | "denied">("idle");
   const [loading, setLoading] = useState(false);
   const [sessionError, setSessionError] = useState("");
   const [pageError, setPageError] = useState("");
@@ -207,12 +211,32 @@ export default function ConsoleApp({ platformUrl }: { platformUrl: string }) {
   }, [t.sessionExpired, t.unavailable]);
 
   const loadHealth = useCallback(async () => {
+    setHealthState("loading");
     try {
       const response = await fetch("/api/console?view=health", { cache: "no-store" });
       const data = await responseRecord(response);
-      setHealth(response.ok ? data : { status: "error" });
+      if (!response.ok) throw new Error("Health source could not be queried.");
+      setHealth(data);
+      setHealthState("available");
     } catch {
-      setHealth({ status: "error" });
+      setHealth(null);
+      setHealthState("failed");
+    }
+  }, []);
+
+  const loadAudit = useCallback(async (applicationId = "") => {
+    setAuditState("loading");
+    const query = new URLSearchParams({ view: "audit", ...(applicationId ? { applicationId } : {}) });
+    try {
+      const response = await fetch(`/api/console?${query.toString()}`, { cache: "no-store" });
+      const value: unknown = await response.json().catch(() => null);
+      if (response.status === 403 || response.status === 404) { setAuditEvents([]); setAuditState("denied"); return; }
+      if (!response.ok || !Array.isArray(value)) { setAuditEvents([]); setAuditState("failed"); return; }
+      setAuditEvents(value as Row[]);
+      setAuditState("available");
+    } catch {
+      setAuditEvents([]);
+      setAuditState("failed");
     }
   }, []);
 
@@ -707,6 +731,14 @@ export default function ConsoleApp({ platformUrl }: { platformUrl: string }) {
   const data = snapshot;
   const activeDestination = nav.find((item) => item.id === view);
   const title = activeDestination?.label ? t[activeDestination.label] : t[view];
+  const apiConnection = getApiConnectionState(health, healthState);
+  const apiConnectionLabel = apiConnection === "connected"
+    ? t.connected
+    : apiConnection === "checking"
+      ? t.checking
+      : apiConnection === "unavailable"
+        ? t.unavailable
+        : t.enums.UNKNOWN;
   const commandItems = nav.filter((item) => {
     const label = item.label ? t[item.label] : t[item.id];
     return `${label} ${t[item.group]}`
@@ -808,8 +840,8 @@ export default function ConsoleApp({ platformUrl }: { platformUrl: string }) {
           </span>
         </a>
         <div className="side-status">
-          <span className={`status-light ${health?.status === "ok" ? "online" : "offline"}`} /> OIC
-          API <b>{health?.status === "ok" ? t.online : t.check}</b>
+          <span className={`status-light ${apiConnection === "connected" ? "online" : apiConnection === "unavailable" ? "offline" : ""}`} /> OIC
+          API <b>{apiConnection === "connected" ? t.online : apiConnectionLabel}</b>
         </div>
         <nav aria-label={locale === "ar" ? "التنقل الرئيسي" : "Primary navigation"}>
           {(["command", "foundation", "factory", "intelligence", "lab", "operations"] as const).map(
@@ -855,8 +887,8 @@ export default function ConsoleApp({ platformUrl }: { platformUrl: string }) {
           </div>
           <div className="top-actions">
             <div className="api-state">
-              <span className={`status-light ${health?.status === "ok" ? "online" : "offline"}`} />
-              {health?.status === "ok" ? t.connected : t.unavailable}
+              <span className={`status-light ${apiConnection === "connected" ? "online" : apiConnection === "unavailable" ? "offline" : ""}`} />
+              <span title={t.apiConnectionMeaning}>{apiConnectionLabel}</span>
             </div>
             <button
               className="command-trigger"
@@ -1028,20 +1060,22 @@ export default function ConsoleApp({ platformUrl }: { platformUrl: string }) {
           <HealthView
             view={view}
             health={health}
+            healthState={healthState}
             t={t}
             literal={literal}
-            badge={badge}
+            locale={locale}
             loadHealth={loadHealth}
           />
           <AuditView
             view={view}
             data={data}
+            events={auditEvents}
+            state={auditState}
             t={t}
             literal={literal}
-            filter={filter}
-            setFilter={setFilter}
-            filtered={filtered}
-            renderAudit={(events) => renderAudit(events, table, mono, dateValue, locale, t)}
+            locale={locale}
+            navigate={navigateTo}
+            loadAudit={loadAudit}
           />
           <footer className="content-footer">
             <span>OIC · {t.independentPlatform}</span>
@@ -1236,32 +1270,5 @@ export default function ConsoleApp({ platformUrl }: { platformUrl: string }) {
         </div>
       )}
     </div>
-  );
-}
-
-function renderAudit(
-  events: Row[],
-  table: (headers: string[], rows: React.ReactNode[][], empty?: string) => React.ReactNode,
-  mono: (value: unknown, clipped?: boolean) => React.ReactNode,
-  dateValue: (value: unknown, locale: Locale) => string,
-  locale: Locale,
-  t: Messages
-) {
-  return table(
-    [t.occurred, t.actor, t.application, t.tenant, t.action, t.target, t.request, t.trace],
-    events.map((event) => [
-      dateValue(event.occurredAt, locale),
-      mono(event.actorPrincipalId, true),
-      mono(event.applicationId, true),
-      mono(event.tenantId, true),
-      <span className="audit-action">{getString(event, "action")}</span>,
-      <>
-        {getString(event, "targetType")}
-        <small className="table-sub">{mono(event.targetId, true)}</small>
-      </>,
-      mono(event.requestId, true),
-      mono(event.traceId, true)
-    ]),
-    t.emptyAudit
   );
 }

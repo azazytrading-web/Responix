@@ -1,6 +1,6 @@
 # OIC-X1 Execution Plan
 
-**Baseline:** `aa50e61`. **Product boundary:** OIC only. **Current:** OIC-5 GO; X1.1 through X1.8 GO / CLOSED with owner acceptance recorded in the acceptance matrix. Exact next return point: OIC-X1.9 Smart Operating Layer / Operations / Final Integration, NOT STARTED. OIC-6, OIC-7 and OIC-8 remain NOT STARTED. X1.0 architecture lock precedes broad implementation. X1.0 does not commit or advance milestones.
+**Baseline:** `aa50e61`. **Product boundary:** OIC only. **Current:** OIC-5 GO; X1.1 through X1.9 GO / CLOSED with owner acceptance recorded in the acceptance matrix. X1.9 is the final X1 implementation milestone. Exact next return point: FINAL OIC-X1 PROGRAM CLOSEOUT. OIC-6, OIC-7 and OIC-8 remain NOT STARTED. X1.0 architecture lock precedes broad implementation. X1.0 does not commit or advance milestones.
 
 | Milestone | Scope | Dependencies | Non-goals | Frontend surfaces | Backend/API work | Acceptance gate / return point |
 | X1.0 Architecture Lock | Freeze architecture, catalogs, blueprints and gates in `docs/architecture/oic-x1/` and project-state docs. | Audit actual API/schema/Console and dirty tree. | Feature implementation, X1-2, dependency additions. | None; keep current Console preview live. | Inspection only; restore local services only if needed. | Docs checked against source; `git diff --check`; closeout for review. Then stop. |
@@ -194,7 +194,16 @@ Every later milestone specifies exact APIs/fields, migration need, rollback, and
 - **ALLOWED / FORBIDDEN:** contextual insight, operations surfaces, final OIC integration. No autonomous remediation, generic chatbot-first UI, ungrounded prediction or cross-product action.
 - **FRONTEND / API-BFF / DATA:** source-linked insight lifecycle and confirmed apply/result; Operations aggregates only with owner endpoint. API work only for explicit OIC-owned measured sources and guarded actions.
 - **DEPENDENCY DECISIONS:** no advisor model/package until grounding, permission and uncertainty contract approved. **LIVE PREVIEW:** A :3002, B :4100, C validation, kept separate and visible in VS Code.
-- **HUMAN CHECKPOINT / GATE:** end-to-end actions and failures, every locale/viewport, accessibility, security, performance and isolation; owner review. Commit/push only after final serial validation and diff approval. **RETURN:** OIC-X1 final closeout.
+- **HUMAN CHECKPOINT / GATE:** end-to-end actions and failures, every locale/viewport, accessibility, security, performance and isolation; owner review. The initial implementation checkpoint below was PARTIAL — OWNER REVIEW PENDING; it is superseded by the final owner-accepted closeout recorded below. **RETURN:** final OIC-X1 program closeout, kept separate from this X1.9 milestone closeout.
+
+#### X1.9 source and implementation checkpoint (2026-10-09)
+
+- **Official name/scope:** Smart Operating Layer / Operations / Final Integration; final X1 milestone. Official production surfaces are the authenticated shell routes `/?view=health` (Health & readiness) and `/?view=audit` (Audit trail), plus existing cross-workspace navigation. Source capability detail is recorded in `OIC_X1_9_SMART_OPERATING_LAYER_OPERATIONS_FINAL_INTEGRATION_CAPABILITY_MATRIX.md`.
+- **Source-backed implementation:** Health presents separate API process liveness and dependency readiness observations with database check only from readiness. Audit reads the authorized, newest-first bounded sample with sample-scoped search/action filtering, application scope and safe Inspector. BFF audit fields are allowlisted. Operations uses canonical Interface and Instrument components. No advice, alert/telemetry feed, arbitrary history, recovery or lifecycle command is invented.
+- **Truth/security:** no API/schema/DB or authorization change; session, origin/CSRF, BFF and machine-credential boundaries preserved. No synthetic operational data or metadata in the audit browser payload. No Responix or Portal work.
+- **Final shell correction:** global shell had read removed top-level `health.status` rather than the Health BFF `live` observation, causing a false UNAVAILABLE label. Shared header/sidebar state now maps successful liveness to Connected, refresh to Checking, liveness/read failure to Unavailable, and missing evidence to Unknown. It does not aggregate readiness; tooltip and EN/AR copy define the state as process liveness.
+- **Checkpoint/acceptance:** owner Visual and Workflow Acceptance PASS for Health & Readiness and Audit Trail; their composition and semantics are accepted. Console typecheck/lint, all 72 tests, X1.9 focused (6), shell regression (1), Interface (8), Instrument (9), X1.4 (6), X1.5 (5), X1.6 (7), X1.7 (7), X1.8 (7), locale/i18n (1), production build/isolation, live smoke, diff/secret/boundary scans PASS. No screen-reader audit claimed. Build has pre-existing Autoprefixer warnings in legacy X1.4 CSS.
+- **NEXT:** FINAL OIC-X1 PROGRAM CLOSEOUT. X1.9 GO / CLOSED; OIC-6/7/8 remain NOT STARTED. The X1 program closeout is outside this checkpoint.
 
 ## Permanent local environment protocol
 

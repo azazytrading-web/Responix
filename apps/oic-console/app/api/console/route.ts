@@ -25,8 +25,48 @@ export async function GET(request: Request) {
       return NextResponse.json({ error: "Runtime model discovery is unavailable." }, { status: 503, headers: { "Cache-Control": "no-store" } });
     }
   }
-  const healthPath = view === "health" ? "/api/v1/health/ready" : null;
-  const path = healthPath ?? (view === "snapshot" ? "/api/v1/admin/console/snapshot" : view === "profiles" ? "/api/v1/admin/intelligence/profiles" : view === "profile-detail" && profileId && /^[0-9a-f-]{36}$/i.test(profileId) ? `/api/v1/admin/intelligence/profiles/${profileId}` : view === "engines" ? "/api/v1/admin/intelligence/engines" : null);
+  if (view === "health") {
+    const readHealth = async (path: "/api/v1/health/live" | "/api/v1/health/ready") => {
+      const observedAt = new Date().toISOString();
+      try {
+        const response = await fetch(apiUrl(path), { cache: "no-store", signal: AbortSignal.timeout(8000) });
+        const body: unknown = await response.json().catch(() => null);
+        return { sourceState: "AVAILABLE", endpoint: path, httpStatus: response.status, observedAt, body };
+      } catch {
+        return { sourceState: "UNAVAILABLE", endpoint: path, httpStatus: null, observedAt, body: null };
+      }
+    };
+    const [live, ready] = await Promise.all([readHealth("/api/v1/health/live"), readHealth("/api/v1/health/ready")]);
+    return NextResponse.json({ live, ready }, { headers: { "Cache-Control": "no-store" } });
+  }
+  if (view === "audit") {
+    const applicationId = new URL(request.url).searchParams.get("applicationId");
+    if (applicationId && !/^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(applicationId))
+      return NextResponse.json({ error: "Invalid audit scope." }, { status: 400 });
+    const query = new URLSearchParams({ limit: "100", ...(applicationId ? { applicationId } : {}) });
+    try {
+      const response = await fetch(apiUrl(`/api/v1/admin/audit?${query.toString()}`), {
+        headers: { Authorization: `Bearer ${controlPlaneCredential()}` },
+        cache: "no-store",
+        signal: AbortSignal.timeout(8000)
+      });
+      const body: unknown = await response.json().catch(() => ({ error: "OIC API returned an unreadable response." }));
+      const events = Array.isArray(body) ? body.flatMap((item) => {
+        if (!item || typeof item !== "object" || Array.isArray(item)) return [];
+        const source = item as Record<string, unknown>;
+        const projected: Record<string, string | number> = {};
+        for (const key of ["id", "actorPrincipalId", "applicationId", "tenantId", "action", "targetType", "targetId", "requestId", "traceId", "occurredAt"]) {
+          const value = source[key];
+          if (typeof value === "string" || typeof value === "number") projected[key] = value;
+        }
+        return [projected];
+      }) : body;
+      return NextResponse.json(events, { status: response.status, headers: { "Cache-Control": "no-store" } });
+    } catch {
+      return NextResponse.json({ error: "Audit source is unavailable." }, { status: 503, headers: { "Cache-Control": "no-store" } });
+    }
+  }
+  const path = view === "snapshot" ? "/api/v1/admin/console/snapshot" : view === "profiles" ? "/api/v1/admin/intelligence/profiles" : view === "profile-detail" && profileId && /^[0-9a-f-]{36}$/i.test(profileId) ? `/api/v1/admin/intelligence/profiles/${profileId}` : view === "engines" ? "/api/v1/admin/intelligence/engines" : null;
   const params = new URL(request.url).searchParams;
   const resource = view === "memory" ? "memory" : view === "knowledge" ? "knowledge" : view === "executions" || view === "traces" ? "executions" : null;
   const safeQuery = (name: string, max: number) => { const value = params.get(name); return value && value.length <= max ? value : null; };
@@ -39,9 +79,7 @@ export async function GET(request: Request) {
   const resolvedPath = path ?? executionPath ?? itemPath ?? knowledgeItemPath ?? listPath;
   if (!resolvedPath) return NextResponse.json({ error: "Unknown console view." }, { status: 404 });
   try {
-    const headers: HeadersInit = healthPath
-      ? {}
-      : { Authorization: `Bearer ${controlPlaneCredential()}` };
+    const headers: HeadersInit = { Authorization: `Bearer ${controlPlaneCredential()}` };
     const response = await fetch(apiUrl(resolvedPath), {
       headers,
       cache: "no-store",

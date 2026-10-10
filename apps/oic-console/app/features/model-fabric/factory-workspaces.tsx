@@ -5,16 +5,7 @@ import type { ReactNode } from "react";
 import type { Locale, Messages, View } from "../../i18n";
 import type { Row, Snapshot } from "../../types";
 import { safeText, dateValue } from "../../format";
-import { ActionButton, ActionMenu } from "../../components/interface/commands/actions";
-import { ToggleControl } from "../../components/interface/controls/choices";
-import { EntityPicker } from "../../components/interface/selection/pickers";
-import {
-  Inspector,
-  RelationshipPanel,
-  SidecarPanel,
-  WizardFrame
-} from "../../components/interface/workspace/surfaces";
-import { TextInput } from "../../components/interface/controls/text";
+import { ActionButton, ActionMenu, ToggleControl, EntityPicker, Inspector, RelationshipPanel, SidecarPanel, WizardFrame, TextInput } from "../../components/interface";
 import { EmptyState } from "../../components/oic-primitives";
 import { SecretAction } from "../providers/secret-input";
 

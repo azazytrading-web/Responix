@@ -5,7 +5,8 @@ import { useState } from "react";
 import type { Locale, Messages, View } from "../../i18n";
 import { safeText } from "../../format";
 import type { Row, Snapshot } from "../../types";
-import { EmptyState, EntityPicker } from "../../components/oic-primitives";
+import { EmptyState } from "../../components/oic-primitives";
+import { ModelPicker, TenantPicker } from "../../components/interface";
 
 type Props = {
   view: View;
@@ -27,20 +28,18 @@ export function RuntimeView({ view, data, locale, t, literal, runInvocation, run
       .filter((edition) => (Array.isArray(edition.visibility) ? edition.visibility as Row[] : []).some((item) => item.applicationId === data?.runtimeContext?.application.id))
       .map((edition) => {
         const lifecycle = safeText(edition.lifecycle) || "ACTIVE";
-        const enumLabels = t.enums as Record<string, string>;
         return {
           id: safeText(edition.publicId),
           label: safeText(edition.displayName) || safeText(edition.publicId),
-          metadata: `${safeText(family.displayName)} · ${safeText(edition.publicId)}`,
-          status: lifecycle,
-          statusLabel: enumLabels[lifecycle] ?? lifecycle
+          secondary: `${safeText(family.displayName)} · ${safeText(edition.publicId)}`,
+          lifecycle
         };
       });
   }).filter((option, index, items) => option.id && items.findIndex((candidate) => candidate.id === option.id) === index);
   const tenants = (data?.runtimeContext?.tenants ?? []).map((tenant) => ({
     id: safeText(tenant.id),
     label: safeText(tenant.displayName) || safeText(tenant.key),
-    metadata: safeText(tenant.key)
+    secondary: safeText(tenant.key)
   }));
   return <>          {view === "runtime" && (
             <section className="runtime-grid">
@@ -60,7 +59,8 @@ export function RuntimeView({ view, data, locale, t, literal, runInvocation, run
                     void runInvocation(event);
                   }}
                 >
-                  <EntityPicker name="model" options={visibleModels} value={model} onChange={setModel} label={t.requestModel} placeholder={t.chooseRuntimeModel} emptyLabel={t.noVisibleModels} disabled={!data?.runtimeContext} dir={locale === "ar" ? "rtl" : "ltr"} />
+                  <input type="hidden" name="model" value={model} disabled={!data?.runtimeContext} />
+                  <ModelPicker options={visibleModels} value={model} onChange={setModel} label={t.requestModel} placeholder={t.chooseRuntimeModel} searchLabel={t.search} emptyLabel={t.noVisibleModels} disabled={!data?.runtimeContext} dir={locale === "ar" ? "rtl" : "ltr"} locale={locale} lifecycleLabels={t.enums} />
                   <div className="runtime-context-row">
                     <span>{t.runtimeApplication}</span>
                     <b>{data?.runtimeContext?.application ? `${safeText(data.runtimeContext.application.key)} · ${safeText(data.runtimeContext.application.displayName)}` : t.noRuntimeContext}</b>
@@ -79,7 +79,8 @@ export function RuntimeView({ view, data, locale, t, literal, runInvocation, run
                     />
                   </label>
                   <div className="form-row">
-                    <EntityPicker name="tenantId" options={tenants} value={tenantId} onChange={setTenantId} label={t.runtimeTenant} placeholder={t.chooseRuntimeTenant} emptyLabel={t.noGrantedTenants} disabled={!data?.runtimeContext || tenants.length === 0} dir={locale === "ar" ? "rtl" : "ltr"} />
+                    <input type="hidden" name="tenantId" value={tenantId} disabled={!data?.runtimeContext || tenants.length === 0} />
+                    <TenantPicker options={tenants} value={tenantId} onChange={setTenantId} label={t.runtimeTenant} placeholder={t.chooseRuntimeTenant} searchLabel={t.search} emptyLabel={t.noGrantedTenants} disabled={!data?.runtimeContext || tenants.length === 0} dir={locale === "ar" ? "rtl" : "ltr"} locale={locale} />
                     <label>
                       {t.maxOutput}
                       <input

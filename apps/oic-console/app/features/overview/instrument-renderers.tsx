@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { Inspector } from "../../components/interface";
 import { ArcMeter, CapacityRail, DistributionRail, NumericInstrument, RadialGauge, StatusRing, TelemetryStrip, VerticalPressureGauge } from "../../components/instruments";
 import type { MetricDefinition, MetricInstance } from "./metric-registry";
 import { InstrumentRegistry, resolveInstrument } from "./instrument-registry";
@@ -56,12 +56,8 @@ export function Instrument({ definition, instance, title, compact = false, onSel
   </div>;
 }
 
-export function DetailDrawer({ definition, instance, entity, onClose, onDrilldown, t }: { definition: MetricDefinition; instance: MetricInstance; entity: string; onClose: () => void; onDrilldown: () => void; t: DeckText }) {
-  const drawerRef = useRef<HTMLElement>(null);
-  useEffect(() => { drawerRef.current?.querySelector<HTMLElement>("button")?.focus(); }, []);
-  return <div className="fd-drawer-backdrop" role="presentation" onMouseDown={(event) => { if (event.target === event.currentTarget) onClose(); }}><aside ref={drawerRef} className="fd-drawer" role="dialog" aria-modal="true" aria-labelledby="fd-drawer-title" dir="auto" onKeyDown={(event) => { if (event.key !== "Tab") return; const controls = Array.from(drawerRef.current?.querySelectorAll<HTMLElement>('button:not(:disabled),a[href],input:not(:disabled),[tabindex]:not([tabindex="-1"])') ?? []); if (!controls.length) { event.preventDefault(); return; } const first = controls[0]; const last = controls.at(-1); if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last?.focus(); } else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); } }}>
-    <header><div><small>{t("instrumentDetails", "INSTRUMENT DETAIL")} / {entity}</small><h3 id="fd-drawer-title">{t(definition.labelKey, definition.labelKey)}</h3></div><button type="button" className="button subtle" onClick={onClose}>{t("close", "Close")}</button></header>
+export function DetailDrawer({ definition, instance, entity, onClose, onDrilldown, dir, t }: { definition: MetricDefinition; instance: MetricInstance; entity: string; onClose: () => void; onDrilldown: () => void; dir: "ltr" | "rtl"; t: DeckText }) {
+  return <Inspector open onClose={onClose} title={t(definition.labelKey, definition.labelKey)} description={<>{t("instrumentDetails", "INSTRUMENT DETAIL")} / <bdi>{entity}</bdi></>} closeLabel={t("close", "Close")} dir={dir} footer={definition.drilldown ? <button type="button" className="button primary" onClick={onDrilldown}>{t("openWorkspace", "Open workspace")} <span aria-hidden="true">→</span></button> : undefined}>
     <dl><dt>{t("value", "Value")}</dt><dd>{instance.value === null ? t("unavailable", "UNAVAILABLE") : typeof instance.value === "object" ? `${instance.value.sampleSize} ${t("sample", "sample")}` : String(instance.value)}</dd><dt>{t("state", "State")}</dt><dd>{t(instance.state, instance.state)}</dd><dt>{t("maturity", "Maturity")}</dt><dd>{t(instance.maturity, instance.maturity)}</dd><dt>{t("freshness", "Freshness")}</dt><dd>{t(instance.freshness.state, instance.freshness.state)}{instance.freshness.observedAt ? ` / ${instance.freshness.observedAt}` : ""}</dd><dt>{t("source", "Source")}</dt><dd>{instance.source.service} / {instance.source.endpoint} / {instance.source.scope}</dd><dt>{t("semantics", "Meaning")}</dt><dd>{t(definition.descriptionKey, definition.valueSemantics)}</dd><dt>{t("thresholdContract", "Threshold contract")}</dt><dd>{definition.thresholdSemantics ?? "NO THRESHOLD CONTRACT"}</dd>{instance.reason && <><dt>{t("reason", "Availability")}</dt><dd>{t(instance.reason, instance.reason)}</dd></>}</dl>
-    {definition.drilldown && <button type="button" className="button primary" onClick={onDrilldown}>{t("openWorkspace", "Open workspace")} <span aria-hidden="true">â†—</span></button>}
-  </aside></div>;
+  </Inspector>;
 }

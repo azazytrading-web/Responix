@@ -1,6 +1,6 @@
 "use client";
 
-import { Fragment, useEffect, useMemo, useRef, useState } from "react";
+import { Fragment, useEffect, useMemo, useState } from "react";
 import type { Dispatch, ReactNode, SetStateAction } from "react";
 import type { Locale, View } from "../../i18n";
 import { dateValue } from "../../format";
@@ -14,6 +14,7 @@ import { DetailDrawer, Instrument } from "./instrument-renderers";
 import type { MetricDefinition, MetricInstance } from "./metric-registry";
 import { metricDefinitions } from "./metric-registry";
 import { flightDeckCopy } from "./flight-deck-copy";
+import { Inspector, ModelPicker } from "../../components/interface";
 import { coreVitalById, coreVitalRegistry, productionCoreVitalSignals } from "./core-vital-registry";
 import { buildDemoCoreLoad, buildProductionCoreLoad } from "./core-load-registry";
 import { FlightDeckBoard, FlightDeckSection, OperationsStrip, SensorRack, ShowcaseSignalInstrument, StableInstrumentCell } from "./flight-deck-composition";
@@ -36,19 +37,11 @@ export function OverviewView({ view, data, health, executions, locale, literal, 
   const [dnaModelId, setDnaModelId] = useState("");
   const [dnaCompareId, setDnaCompareId] = useState("");
   const [range, setRange] = useState("LIVE");
-  const previousFocus = useRef<HTMLElement | null>(null);
-  useEffect(() => {
-    if (!selected && !inspector) { previousFocus.current?.focus(); previousFocus.current = null; return; }
-    const onKeyDown = (event: KeyboardEvent) => { if (event.key === "Escape") { setSelected(null); setInspector(null); } };
-    window.addEventListener("keydown", onKeyDown);
-    return () => window.removeEventListener("keydown", onKeyDown);
-  }, [selected, inspector]);
   if (view !== "overview") return null;
   const copy = flightDeckCopy(locale);
   const tr = (key: string, fallback = key) => (copy as Record<string, string>)[key] ?? fallback;
   const vitalBayTitle = locale === "ar" ? "العلامات الحيوية لنواة OIC" : "CORE VITAL SIGNS";
   const openInspector = (title: string, entity: string, rows: Array<[string, string]>, target: View, demo = !!showcase) => {
-    previousFocus.current = document.activeElement instanceof HTMLElement ? document.activeElement : null;
     setSelected(null);
     setInspector({ title, entity, rows, destination: target, demo });
   };
@@ -82,7 +75,6 @@ export function OverviewView({ view, data, health, executions, locale, literal, 
   const inspectMetric = (instance: MetricInstance, title: string) => {
     const definition = metricDefinitions.find((entry) => entry.key === instance.metricKey);
     if (!definition) return;
-    previousFocus.current = document.activeElement instanceof HTMLElement ? document.activeElement : null;
     setInspector(null);
     setSelected({ definition, instance, entity: title });
   };
@@ -177,7 +169,7 @@ export function OverviewView({ view, data, health, executions, locale, literal, 
           </FlightDeckSection>
 
           <FlightDeckSection index="05" title={tr("modelDna", "FLEET DNA / COMPARE")} className="fd-fleet-dna" action={<BayActions inspect={tr("inspect", "Inspect")} onInspect={() => openInspector(tr("modelDna", "Model DNA"), "fleet-dna", [[tr("model", "Model"), dnaModel?.title ?? tr("noRuntimeModels", "No runtime model")], [tr("compare", "Compare"), dnaCompareModel?.title ?? tr("none", "None")], [tr("measured", "Measured dimensions"), `${dnaModel ? dnaDimensionsFor(dnaModel, showcase?.models[dnaModel.id]).filter((item) => item.state === "MEASURED").length : 0} / ${dnaModel ? dnaDimensionsFor(dnaModel, showcase?.models[dnaModel.id]).length : deck.dnaDefinitions.length}`]], "models")} open={tr("openFactory", "Model Factory")} onOpen={() => navigate("models")} />}>
-            <FleetDnaBay models={visibleFleet} selected={dnaModel} comparison={dnaCompareModel} selectedId={dnaModel?.id ?? ""} comparisonId={dnaCompareModel?.id ?? ""} setSelected={setDnaModelId} setComparison={setDnaCompareId} dimensions={dnaModel ? dnaDimensionsFor(dnaModel, showcase?.models[dnaModel.id]) : deck.dnaDefinitions.map((definition) => ({ id: definition.key, label: tr(definition.labelKey, definition.labelKey), state: "UNMEASURED" as const, stateLabel: tr("UNMEASURED", "UNMEASURED") }))} compareDimensions={dnaCompareModel ? dnaDimensionsFor(dnaCompareModel, showcase?.models[dnaCompareModel.id]) : undefined} t={tr} />
+            <FleetDnaBay models={visibleFleet} selected={dnaModel} comparison={dnaCompareModel} selectedId={dnaModel?.id ?? ""} comparisonId={dnaCompareModel?.id ?? ""} setSelected={setDnaModelId} setComparison={setDnaCompareId} dimensions={dnaModel ? dnaDimensionsFor(dnaModel, showcase?.models[dnaModel.id]) : deck.dnaDefinitions.map((definition) => ({ id: definition.key, label: tr(definition.labelKey, definition.labelKey), state: "UNMEASURED" as const, stateLabel: tr("UNMEASURED", "UNMEASURED") }))} compareDimensions={dnaCompareModel ? dnaDimensionsFor(dnaCompareModel, showcase?.models[dnaCompareModel.id]) : undefined} locale={locale} t={tr} />
           </FlightDeckSection>
 
           <FlightDeckSection index="06" title={tr("providerNetwork", "PROVIDER NETWORK")} className="fd-provider" action={<BayActions inspect={tr("inspect", "Inspect")} onInspect={() => inspectBay(tr("providerNetwork", "Provider Network"), "providers", "providers")} open={tr("providers", "Provider Factory")} onOpen={() => navigate("providers")} />}>
@@ -210,8 +202,8 @@ export function OverviewView({ view, data, health, executions, locale, literal, 
         </FlightDeckBoard>
       </section>
     </section>
-    {selected && <DetailDrawer definition={selected.definition} instance={selected.instance} entity={selected.entity} onClose={() => setSelected(null)} onDrilldown={() => { navigate(destination(selected.definition.drilldown ?? "")); setSelected(null); }} t={tr} />}
-    {inspector && <FlightDeckInspector title={inspector.title} entity={inspector.entity} rows={inspector.rows} demo={inspector.demo} close={() => setInspector(null)} open={() => { navigate(inspector.destination); setInspector(null); }} t={tr} />}
+    {selected && <DetailDrawer definition={selected.definition} instance={selected.instance} entity={selected.entity} onClose={() => setSelected(null)} onDrilldown={() => { navigate(destination(selected.definition.drilldown ?? "")); setSelected(null); }} dir={locale === "ar" ? "rtl" : "ltr"} t={tr} />}
+    {inspector && <FlightDeckInspector title={inspector.title} entity={inspector.entity} rows={inspector.rows} demo={inspector.demo} close={() => setInspector(null)} open={() => { navigate(inspector.destination); setInspector(null); }} dir={locale === "ar" ? "rtl" : "ltr"} t={tr} />}
   </>;
 }
 
@@ -226,20 +218,11 @@ function InstrumentControl({ label, state, onSelect, children }: { label: string
   return <div className="fd-visual-control"><StableInstrumentCell label={label} state={state}>{children}</StableInstrumentCell><button type="button" className="fd-entity-hit" aria-label={`Inspect ${label}`} onClick={onSelect}>{label}</button></div>;
 }
 
-function FlightDeckInspector({ title, entity, rows, demo, close, open, t }: { title: string; entity: string; rows: Array<[string, string]>; demo: boolean; close: () => void; open: () => void; t: (key: string, fallback?: string) => string }) {
-  const ref = useRef<HTMLElement>(null);
-  useEffect(() => { ref.current?.querySelector<HTMLElement>("button")?.focus(); }, []);
-  return <div className="fd-drawer-backdrop" role="presentation" onMouseDown={(event) => { if (event.target === event.currentTarget) close(); }}><aside ref={ref} className="fd-drawer" role="dialog" aria-modal="true" aria-labelledby="fd-drawer-title" dir="auto" onKeyDown={(event) => {
-    if (event.key !== "Tab") return;
-    const controls = Array.from(ref.current?.querySelectorAll<HTMLElement>('button:not(:disabled),a[href],input:not(:disabled),[tabindex]:not([tabindex="-1"])') ?? []);
-    if (!controls.length) { event.preventDefault(); return; }
-    if (event.shiftKey && document.activeElement === controls[0]) { event.preventDefault(); controls.at(-1)?.focus(); }
-    else if (!event.shiftKey && document.activeElement === controls.at(-1)) { event.preventDefault(); controls[0].focus(); }
-  }}><header><div><small>{demo ? "DEMO VALUE · DEVELOPMENT ONLY" : t("subsystemDetails", "SUBSYSTEM INSPECTOR")} / {entity}</small><h3 id="fd-drawer-title">{title}</h3></div><button type="button" className="button subtle" onClick={close}>{t("close", "Close")}</button></header>
+function FlightDeckInspector({ title, entity, rows, demo, close, open, dir, t }: { title: string; entity: string; rows: Array<[string, string]>; demo: boolean; close: () => void; open: () => void; dir: "ltr" | "rtl"; t: (key: string, fallback?: string) => string }) {
+  return <Inspector open onClose={close} title={title} description={<>{demo ? "DEMO VALUE · DEVELOPMENT ONLY" : t("subsystemDetails", "SUBSYSTEM INSPECTOR")} / <bdi>{entity}</bdi></>} closeLabel={t("close", "Close")} dir={dir} footer={<button type="button" className="button primary" onClick={open}>{t("openWorkspace", "Open workspace")} →</button>}>
     <dl>{rows.length ? rows.map(([label, value]) => <Fragment key={label}><dt>{label}</dt><dd>{value}</dd></Fragment>) : <><dt>{t("state", "State")}</dt><dd>{t("noMeasurements", "No measurements are available in this source snapshot.")}</dd></>}</dl>
     {demo && <p className="fd-demo-inspector-note">DEMO VALUES ONLY · NOT LIVE OIC TELEMETRY</p>}
-    <button type="button" className="button primary" onClick={open}>{t("openWorkspace", "Open workspace")} →</button>
-  </aside></div>;
+  </Inspector>;
 }
 
 function SystemStateBay({ data, deck, apiState, databaseState, byKey, t, onCount }: { data: Snapshot | null; deck: DeckData; apiState: InstrumentState; databaseState: InstrumentState; byKey: (key: string) => MetricInstance | undefined; t: (key: string, fallback?: string) => string; onCount: (key: string, label: string) => void }) {
@@ -346,10 +329,13 @@ function CoreLoadRail({ vitals, energyDraw, demo, locale, onSelect }: { vitals: 
   </button>;
 }
 
-function FleetDnaBay({ models, selected, comparison, selectedId, comparisonId, setSelected, setComparison, dimensions, compareDimensions, t }: { models: DeckEntity[]; selected?: DeckEntity; comparison?: DeckEntity; selectedId: string; comparisonId: string; setSelected: (id: string) => void; setComparison: (id: string) => void; dimensions: DnaDimension[]; compareDimensions?: DnaDimension[]; t: (key: string, fallback?: string) => string }) {
+function FleetDnaBay({ models, selected, comparison, selectedId, comparisonId, setSelected, setComparison, dimensions, compareDimensions, locale, t }: { models: DeckEntity[]; selected?: DeckEntity; comparison?: DeckEntity; selectedId: string; comparisonId: string; setSelected: (id: string) => void; setComparison: (id: string) => void; dimensions: DnaDimension[]; compareDimensions?: DnaDimension[]; locale: Locale; t: (key: string, fallback?: string) => string }) {
   const measured = dimensions.filter((dimension) => dimension.state === "MEASURED").length;
   return <div className="fd-dna-bay">
-    <div className="fd-dna-selectors"><label><span>{t("model", "MODEL")}</span><select aria-label={t("model", "Model")} value={selectedId} disabled={!models.length} onChange={(event) => setSelected(event.target.value)}>{models.map((model) => <option key={model.id} value={model.id}>{model.title}</option>)}</select></label><label><span>{t("compare", "COMPARE")}</span><select aria-label={t("compare", "Compare model")} value={comparisonId} disabled={models.length < 2} onChange={(event) => setComparison(event.target.value)}><option value="">-</option>{models.filter((model) => model.id !== selected?.id).map((model) => <option key={model.id} value={model.id}>{model.title}</option>)}</select></label></div>
+    <div className="fd-dna-selectors" dir={locale === "ar" ? "rtl" : "ltr"}>
+      <ModelPicker density="compact" label={t("model", "Model")} value={selectedId} onChange={setSelected} options={models.map((model) => ({ id: model.id, label: model.title }))} placeholder={t("noRuntimeModels", "No runtime model")} searchLabel={t("search", "Search models")} emptyLabel={t("noRuntimeModels", "No runtime model")} disabled={!models.length} locale={locale} />
+      <ModelPicker density="compact" label={t("compare", "Compare")} value={comparisonId} onChange={setComparison} options={models.filter((model) => model.id !== selected?.id).map((model) => ({ id: model.id, label: model.title }))} placeholder={t("none", "None")} searchLabel={t("search", "Search models")} emptyLabel={t("noRuntimeModels", "No runtime model")} disabled={models.length < 2} locale={locale} />
+    </div>
     <div className="fd-dna-visual"><DNARadar size="LG" label={selected?.title ?? t("modelDna", "Fleet model DNA")} dimensions={dimensions} comparison={compareDimensions} dimensionsLabel={t("dimensionsLabel", "dimensions")} measuredLabel={t("measuredLabel", "measured")} confidenceLabel={t("confidenceLabel", "confidence")} /></div>
     <div className="fd-dna-legend"><span><i className="fd-dna-current" />{selected?.title ?? t("noRuntimeModels", "No runtime model")}</span><span><i className="fd-dna-compare" />{comparison?.title ?? `${measured} / ${dimensions.length} ${t("measured", "measured")}`}</span></div>
   </div>;

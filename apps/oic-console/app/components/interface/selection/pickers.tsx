@@ -29,6 +29,9 @@ export type EntityOption = {
 };
 
 export type PickerProps = {
+  density?: "compact" | "standard" | "large" | "precision";
+  name?: string;
+  required?: boolean;
   label: string;
   value: string;
   onChange: (id: string) => void;
@@ -53,6 +56,9 @@ export type PickerProps = {
 
 export function SearchableSelect({
   label,
+  density,
+  name,
+  required = false,
   value,
   onChange,
   options,
@@ -102,8 +108,12 @@ export function SearchableSelect({
 
   return (
     <ComboBox
-      className={`oi-entity-picker is-${kind} is-search-${searchState}`}
+      className={`oi-entity-picker oi-interface-system is-${kind} is-search-${searchState}`}
+      data-density={density}
       selectedKey={selectedKey}
+      name={name}
+      isRequired={required}
+      formValue="key"
       inputValue={inputValue}
       onInputChange={setInputValue}
       onSelectionChange={(key) => {
@@ -135,7 +145,7 @@ export function SearchableSelect({
         <small>{[selected.secondary, selected.type, selected.scope, selected.lifecycle ? lifecycleLabels[selected.lifecycle] ?? selected.lifecycle : undefined].filter(Boolean).join(" · ")}</small>
         {selected.status && <small className={`oi-picker-current-state is-${selected.status}`}>{statusLabels[selected.status] ?? selected.status}</small>}
       </div>}
-      <Popover className="oi-picker-popover" shouldCloseOnInteractOutside={() => true}>
+      <Popover className="oi-picker-popover oi-interface-system" shouldCloseOnInteractOutside={() => true}>
         <ListBox
           className="oi-picker-list"
           items={shownOptions}

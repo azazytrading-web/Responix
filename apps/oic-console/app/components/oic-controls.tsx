@@ -3,7 +3,9 @@
 import { useState } from "react";
 import type { FormEvent } from "react";
 import { entryText } from "../format";
+import type { Locale } from "../i18n";
 import type { Row } from "../types";
+import { EntityPicker } from "./interface";
 
 export function FilterBox({
   value,
@@ -29,7 +31,8 @@ export function FormButton({
   title,
   fields,
   submitLabel,
-  onSubmit
+  onSubmit,
+  locale = "en"
 }: {
   title: string;
   fields: {
@@ -43,11 +46,15 @@ export function FormButton({
   }[];
   submitLabel: string;
   onSubmit: (values: Row) => Promise<Row | null>;
+  locale?: Locale;
 }) {
   const [open, setOpen] = useState(false);
   const [busy, setBusy] = useState(false);
+  const [selectedOptions, setSelectedOptions] = useState<Record<string, string>>({});
+  const missingRequiredOption = fields.some((field) => field.options && field.required !== false && !field.options.some((option) => option.value && option.value === selectedOptions[field.name]));
   const submit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    if (missingRequiredOption) return;
     setBusy(true);
     const form = new FormData(event.currentTarget);
     const values: Row = {};
@@ -56,12 +63,12 @@ export function FormButton({
     });
     const result = await onSubmit(values);
     setBusy(false);
-    if (result) setOpen(false);
+    if (result) { setOpen(false); setSelectedOptions({}); }
   };
   return (
     <div className="inline-form-wrap">
       {!open ? (
-        <button type="button" className="button subtle" onClick={() => setOpen(true)}>
+        <button type="button" className="button subtle" onClick={() => { setSelectedOptions({}); setOpen(true); }}>
           {title} <span>＋</span>
         </button>
       ) : (
@@ -71,22 +78,14 @@ export function FormButton({
             void submit(event);
           }}
         >
-          {fields.map((field) => (
+          {fields.map((field) => field.options ? (
+            <div key={field.name} className="inline-form-choice">
+              <EntityPicker name={field.name} required={field.required !== false} density="compact" label={field.label} value={field.options.some((option) => option.value === selectedOptions[field.name]) ? selectedOptions[field.name] : ""} onChange={(value) => setSelectedOptions((current) => ({ ...current, [field.name]: value }))} options={field.options.map((option) => ({ id: option.value, label: option.label }))} placeholder="—" searchLabel={field.label} emptyLabel="—" locale={locale} dir={locale === "ar" ? "rtl" : "ltr"} />
+            </div>
+          ) : (
             <label key={field.name}>
               {field.label}
-              {field.options ? (
-                <select name={field.name} required={field.required !== false} defaultValue="">
-                  {" "}
-                  <option value="" disabled>
-                    —
-                  </option>
-                  {field.options.map((option) => (
-                    <option key={option.value} value={option.value}>
-                      {option.label}
-                    </option>
-                  ))}
-                </select>
-              ) : field.type === "textarea" ? (
+              {field.type === "textarea" ? (
                 <textarea
                   name={field.name}
                   required={field.required !== false}
@@ -103,13 +102,13 @@ export function FormButton({
               )}
             </label>
           ))}
-          <button className="button primary small-button" disabled={busy}>
+          <button className="button primary small-button" disabled={busy || missingRequiredOption}>
             {busy ? "…" : submitLabel}
           </button>
           <button
             className="button subtle small-button"
             type="button"
-            onClick={() => setOpen(false)}
+            onClick={() => { setOpen(false); setSelectedOptions({}); }}
           >
             ×
           </button>

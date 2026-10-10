@@ -13,14 +13,8 @@ const consoleApp = fs.readFileSync(path.join(appRoot, "console-app.tsx"), "utf8"
 const styles = fs.readFileSync(path.join(appRoot, "styles.css"), "utf8");
 
 test("factory workspaces use canonical controls and do not clone the interface system", () => {
-  for (const modulePath of [
-    "components/interface/commands/actions",
-    "components/interface/selection/pickers",
-    "components/interface/workspace/surfaces",
-    "components/interface/controls/text",
-    "components/interface/controls/choices",
-    "components/oic-primitives"
-  ])
+  assert.ok(source.includes('from "../../components/interface"'), "missing public canonical import boundary");
+  for (const modulePath of ["components/oic-primitives"])
     assert.ok(source.includes(modulePath), `missing canonical import ${modulePath}`);
   for (const component of [
     "WizardFrame",

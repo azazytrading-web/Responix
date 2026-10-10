@@ -371,6 +371,11 @@
   background: #111511;
   box-shadow: 0 12px 30px #0009;
 }
+.oi-picker-popover.oi-interface-system {
+  min-height: 0;
+  padding: 4px;
+  background: #0d1515;
+}
 .oi-menu,
 .oi-choice-list,
 .oi-picker-list {
@@ -1020,6 +1025,11 @@
   position: relative;
   min-width: 0;
 }
+.oi-entity-picker.oi-interface-system {
+  min-height: 0;
+  padding: 0;
+  background: transparent;
+}
 .oi-picker-input-row {
   display: flex;
   min-height: var(--oi-current-control, var(--oi-control-standard));
@@ -1226,10 +1236,20 @@
   justify-content: flex-end;
   background: #0009;
 }
+.oi-modal-overlay.oi-interface-system {
+  min-height: 0;
+  padding: 0;
+  background: #0009;
+}
 .oi-modal {
   width: min(520px, 100vw);
   height: 100%;
   outline: none;
+}
+.oi-modal.oi-interface-system {
+  min-height: 0;
+  padding: 0;
+  background: transparent;
 }
 .oi-inspector {
   display: flex;

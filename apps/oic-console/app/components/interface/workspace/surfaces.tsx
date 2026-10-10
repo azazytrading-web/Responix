@@ -8,9 +8,9 @@ import { Tab, TabList, TabPanel, TabPanels, Tabs } from "react-aria-components/T
 import type { ReactNode } from "react";
 import type { ValidationIssue } from "../foundation/types";
 
-export function Inspector({ open, onClose, title, description, children, footer, closeLabel, dir = "ltr" }: { open: boolean; onClose: () => void; title: string; description?: string; children: ReactNode; footer?: ReactNode; closeLabel: string; dir?: "ltr" | "rtl" }) {
-  return <ModalOverlay className="oi-modal-overlay oi-inspector-overlay" isOpen={open} onOpenChange={(isOpen) => { if (!isOpen) onClose(); }} isDismissable>
-    <Modal className="oi-modal oi-inspector-modal" dir={dir}><Dialog className="oi-inspector" aria-label={title}>
+export function Inspector({ open, onClose, title, description, children, footer, closeLabel, dir = "ltr" }: { open: boolean; onClose: () => void; title: string; description?: ReactNode; children: ReactNode; footer?: ReactNode; closeLabel: string; dir?: "ltr" | "rtl" }) {
+  return <ModalOverlay className="oi-modal-overlay oi-inspector-overlay oi-interface-system" isOpen={open} onOpenChange={(isOpen) => { if (!isOpen) onClose(); }} isDismissable>
+    <Modal className="oi-modal oi-inspector-modal oi-interface-system" dir={dir}><Dialog className="oi-inspector" aria-label={title}>
       <header className="oi-inspector-header"><div><Heading slot="title">{title}</Heading>{description && <p>{description}</p>}</div><AriaButton className="oi-inspector-close" onPress={onClose} aria-label={closeLabel}>×</AriaButton></header>
       <div className="oi-inspector-body">{children}</div>{footer && <footer className="oi-inspector-footer">{footer}</footer>}
     </Dialog></Modal>

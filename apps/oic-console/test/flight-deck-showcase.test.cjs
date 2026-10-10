@@ -252,10 +252,9 @@ test("V9.1 keeps the premium hero outside the motherboard and restores operator 
   }
   assert.match(overview, /className="fd-entity-hit" aria-label=\{`\$\{model\.title\}.*Inspect model details`\}/);
   assert.match(overview, /className="fd-entity-hit" aria-label=\{`\$\{provider\.title\}.*Inspect provider`\}/);
-  assert.match(overview, /role="dialog" aria-modal="true"/);
-  assert.match(overview, /event\.key !== "Tab"/);
-  assert.match(overview, /event\.key === "Escape"/);
-  assert.match(overview, /if \(event\.key === "Escape"\) \{ setSelected\(null\); setInspector\(null\); \}/, "Escape closes either of the shared Overview inspectors");
+  assert.match(overview, /import \{ Inspector, ModelPicker \} from "\.\.\/\.\.\/components\/interface"/);
+  assert.match(overview, /<Inspector open onClose=\{close\}/, "Overview details use the shared Inspector shell");
+  assert.doesNotMatch(overview, /role="dialog"|event\.key !== "Tab"|event\.key === "Escape"/, "Inspector overlay and keyboard behavior stay canonical");
   assert.match(overview, /DEMO VALUE · DEVELOPMENT ONLY/);
   assert.match(composition, /onSelect\?: \(\) => void/);
   assert.match(composition, /<button type="button" className=\{className\}/);

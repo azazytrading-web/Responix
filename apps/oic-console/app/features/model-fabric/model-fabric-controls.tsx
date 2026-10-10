@@ -3,16 +3,20 @@
 import { useState } from "react";
 import type { ReactNode } from "react";
 import type { Messages } from "../../i18n";
+import type { Locale } from "../../i18n";
 import { getString, safeText } from "../../format";
 import type { Row } from "../../types";
 import { FormButton } from "../../components/oic-controls";
+import { EntityPicker } from "../../components/interface";
 
 export function CatalogSyncPanel({
   connections,
+  locale = "en",
   t,
   perform
 }: {
   connections: Row[];
+  locale?: Locale;
   t: Messages;
   perform: (action: string, values?: Row) => Promise<Row | null>;
 }) {
@@ -80,17 +84,25 @@ export function CatalogSyncPanel({
         <span className="section-index">{t.catalogPreview}</span>
         <span>{readyConnections.length.toString().padStart(2, "0")} / CONNECTIONS</span>
       </div>
-      <label className="catalog-sync-select">
-        {t.connectionRecord}
-        <select value={connectionId} onChange={(event) => { setConnectionId(event.target.value); setPreview(null); setSyncResult(null); }}>
-          <option value="">—</option>
-          {readyConnections.map((connection) => (
-            <option key={String(connection.id)} value={String(connection.id)}>
-              {`${safeText(connection.displayName)} · ${safeText((connection.providerDefinition as Row)?.displayName)} · ${safeText(connection.status)}`}
-            </option>
-          ))}
-        </select>
-      </label>
+      <div className="catalog-sync-select">
+        <EntityPicker
+          density="compact"
+          value={connectionId}
+          onChange={(value) => { setConnectionId(value); setPreview(null); setSyncResult(null); }}
+          label={t.connectionRecord}
+          placeholder={t.connectionRecord}
+          searchLabel={t.search}
+          emptyLabel={t.noData}
+          locale={locale}
+          dir={locale === "ar" ? "rtl" : "ltr"}
+          options={readyConnections.map((connection) => ({
+            id: safeText(connection.id),
+            label: safeText(connection.displayName),
+            secondary: safeText((connection.providerDefinition as Row | undefined)?.displayName),
+            lifecycle: safeText(connection.status)
+          }))}
+        />
+      </div>
       {selected && (
         <div className="catalog-readiness">
           <b>{t.connectionReadiness}</b>
@@ -144,6 +156,7 @@ function badgeText(value: unknown) {
 }
 
 export function ModelHierarchy({
+  locale = "en",
   families,
   applications,
   tenants,
@@ -161,6 +174,7 @@ export function ModelHierarchy({
   perform,
   showArchived
 }: {
+  locale?: Locale;
   families: Row[];
   applications: Row[];
   tenants: Row[];
@@ -203,6 +217,7 @@ export function ModelHierarchy({
             {badge(family.lifecycle)}
             {family.lifecycle !== "RETIRED" && actionButton(t.retireFamily, "model.family.retire", { id: family.id }, "button subtle small-button danger-button")}
             {family.lifecycle !== "RETIRED" && <FormButton
+              locale={locale}
               title={t.createEdition}
               fields={[
                 { name: "publicId", label: t.publicId, maxLength: 64, pattern: "oi-[a-z0-9]+([._-][a-z0-9]+)*" },
@@ -229,6 +244,7 @@ export function ModelHierarchy({
                 </div>
                 {badge(edition.lifecycle)}{" "}
                 {edition.lifecycle !== "RETIRED" && <FormButton
+                  locale={locale}
                   title={t.createRevision}
                   fields={[
                     { name: "instructions", label: t.instructions, type: "textarea", maxLength: 100_000, required: false },
@@ -275,6 +291,7 @@ export function ModelHierarchy({
                           </small>
                         </div>
                         {edition.lifecycle !== "RETIRED" && <FormButton
+                          locale={locale}
                           title={t.createBinding}
                           fields={[
                             {
@@ -320,6 +337,7 @@ export function ModelHierarchy({
                       </div>
                     ))}
                     {edition.lifecycle !== "RETIRED" && <FormButton
+                      locale={locale}
                       title={t.createVariant}
                       fields={[
                         { name: "variantKey", label: t.variantKey, maxLength: 64, pattern: "[a-z0-9][a-z0-9._-]{0,63}" },
@@ -337,6 +355,7 @@ export function ModelHierarchy({
                 ))}
                 {edition.lifecycle !== "RETIRED" && !(edition.revisions as Row[] ?? []).length && (
                   <FormButton
+                    locale={locale}
                     title={t.createRevision}
                     fields={[
                       { name: "instructions", label: t.instructions, type: "textarea", maxLength: 100_000, required: false },

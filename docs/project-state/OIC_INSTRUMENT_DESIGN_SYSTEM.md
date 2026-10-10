@@ -1,6 +1,7 @@
 # OIC Instrument Library v1.0
 
 **Status: VISUALLY APPROVED / FROZEN BASELINE**
+**Current OIC implementation:** The Oi Instrumentation System is canonical and frozen in `apps/oic-console/app/components/instruments/`; a separately versioned cross-product package remains planned.
 **Owner approval:** The owner approved the current visual direction on 2026-10-04 and accepted the X1.2 implementation on 2026-10-05. Owner manual visual acceptance is PASS. Automated authenticated real-Overview capture is NOT AVAILABLE and is not claimed.
 
 OIC-owned React, SVG and CSS instrumentation used by the X1.2 Flight Deck. The locked stack audit is in `docs/architecture/oic-x1/05_OIC_FRONTEND_TECHNOLOGY_STACK.md`: Console uses Next 15, React 19 and TypeScript, with no visualization or motion dependency. These instruments use native SVG/CSS and add no dependencies. Architecture v1.0 remains unchanged.

@@ -1,6 +1,6 @@
 # OIC-X1 Acceptance Matrix
 
-Status vocabulary is defined in [acceptance architecture](../architecture/oic-x1/20_OIC_ACCEPTANCE_ARCHITECTURE.md). This is an expandable per-milestone ledger. X1.0 documents gates; it does not claim UI acceptance. X1.1 through X1.8 retain their dated acceptance evidence below; X1.4–X1.8 are GO / CLOSED by owner acceptance. X1.8 closed on 2026-10-08. Prior OIC-5 acceptance is separate.
+Status vocabulary is defined in [acceptance architecture](../architecture/oic-x1/20_OIC_ACCEPTANCE_ARCHITECTURE.md). This is an expandable per-milestone ledger. X1.0 documents gates; it does not claim UI acceptance. X1.1 through X1.9 retain their dated acceptance evidence below; all are GO / CLOSED. Final canonical convergence found zero material production exceptions. OIC-X1 is CLOSED / FROZEN / GO, with evidence in [final closeout](OIC_X1_FINAL_CLOSEOUT.md). Prior OIC-5 acceptance is separate.
 
 | Milestone/surface | Desktop EN/LTR | Desktop AR/RTL | Narrow EN/LTR | Narrow AR/RTL | Keyboard | Empty/loading/error/offline/live | Security | Human workflow / integration | Owner |
 |---|---|---|---|---|---|---|---|---|---|

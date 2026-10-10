@@ -3,7 +3,7 @@
 ## Baseline and milestone history
 
 - **Baseline:** `aa50e61` on branch `oic`.
-- **Current state:** OIC-5 GO; OIC-X1.0C architecture lock GO, version 1.0 LOCKED; X1.1 through X1.9 are GO / CLOSED by owner acceptance. OIC-X1.8 source capability audit and API/schema matrix are recorded in `OIC_X1_8_LAB_RUNTIME_TRACE_CAPABILITY_MATRIX.md`; X1.9 in `OIC_X1_9_SMART_OPERATING_LAYER_OPERATIONS_FINAL_INTEGRATION_CAPABILITY_MATRIX.md`. X1.9 is the final X1 implementation milestone; exact next return point is FINAL OIC-X1 PROGRAM CLOSEOUT. OIC-6, OIC-7 and OIC-8 remain NOT STARTED.
+- **Current state:** OIC-5 GO; OIC-X1.0C architecture lock GO, version 1.0 LOCKED; X1.1 through X1.9 are GO / CLOSED by owner acceptance. Final canonical convergence found zero material production exceptions. OIC-X1 is CLOSED / FROZEN / GO, with OIC-6 as the next return point. OIC-6 through OIC-9 remain NOT STARTED. See [final closeout](OIC_X1_FINAL_CLOSEOUT.md); the dated milestone evidence and source capability matrices below remain historical records.
 - **X1.1 delivered files:**
   - Modified: `apps/oic-console/app/console-app.tsx`, `features/overview/overview-view.tsx`, `features/runtime/runtime-view.tsx`, `i18n.ts`, `styles.css`.
   - New: `apps/oic-console/app/components/oic-frames.tsx`, `oic-primitives.tsx`.
@@ -12,7 +12,7 @@
 ## Architecture work and milestone position
 
 - **Completed in X1.0C:** runtime interaction/governance contracts 21–27, cross-links and decision amendments 15–24; execution plan bootstraps, acceptance matrix and tracker update (see `docs/architecture/oic-x1/`).
-- **Architecture baseline:** X1.0 Architecture Lock v1.0 remains LOCKED after X1.0C GO validation. **Current implementation checkpoint:** X1.8 GO / CLOSED after owner Visual and Workflow Acceptance PASS. OIC-X1.9 is the exact next return point and remains NOT STARTED; OIC-6, OIC-7 and OIC-8 remain NOT STARTED.
+- **Architecture baseline:** X1.0 Architecture Lock v1.0 remains LOCKED after X1.0C GO validation. **Final program state:** X1.1–X1.9 GO / CLOSED; OIC-X1 CLOSED / FROZEN / GO after canonical convergence. Next return point: OIC-6. OIC-6 through OIC-9 remain NOT STARTED.
 - **X1.1:** completed against Architecture Lock v1.0. See the X1.1 browser run and validation evidence in `OIC_X1_ACCEPTANCE_MATRIX.md`.
 - **Current:** X1.2 is GO / CLOSED by owner manual visual acceptance. The showcase matrix passed; an automated authenticated real-Overview capture is NOT AVAILABLE and is not claimed. Accepted cosmetic refinements are non-blocking debt. Detailed evidence is in `OIC_X1_ACCEPTANCE_MATRIX.md`.
 - **Deferred:** Telemetry histories/alerts/resource metrics, Model DNA scores until OIC-7 methodology, graph/chart dependency decision, arbitrary layouts, autonomous SOL, generic chat.
@@ -71,7 +71,7 @@ The detailed goals, allowed/forbidden scope, documents to read, data/dependency 
 ## X1.3B source-of-truth closeout (2026-10-06)
 
 - **Owner acceptance:** PASS. Oi Operator Interface System v1.0 is ACCEPTED / FROZEN. Minor cosmetic spacing, typography, proportion, picker/chip and motion timing remains non-blocking debt.
-- **Canonical paths:** `apps/oic-console/app/components/interface/` and `apps/oic-console/app/components/instruments/`; each has a stable public barrel. Development galleries consume canonical components; production Overview and Flight Deck consume canonical instruments. X1.4 is the first production Interface consumer.
+- **Canonical paths:** `apps/oic-console/app/components/interface/` and `apps/oic-console/app/components/instruments/`; each has a stable public barrel. Development galleries and production workspaces consume canonical components; production Overview and Flight Deck consume canonical instruments. The dated X1.3B record below describes the adoption state at that milestone. Final adoption and the zero-material-exception audit are recorded in [final closeout](OIC_X1_FINAL_CLOSEOUT.md).
 - **Propagation rule:** one OIC implementation, many same-repo consumers; updates propagate on rebuild/redeploy. Breaking contracts require compatibility or explicit migration. Cross-product propagation is versioned and controlled; no extraction occurred.
 - **Validation:** Console typecheck, lint, 34 configured tests, production build, all three dev-route production 404 checks, `git diff --check`, secret scan, and OIC-only boundary review PASS. Development Console and API remain live; API readiness reports database `ok`.
 - **Security/boundary:** no authentication, session, CSRF, origin, BFF, API or database changes; no Responix, Mega Platform Portal, X1.5+ implementation or OIC-6 work.

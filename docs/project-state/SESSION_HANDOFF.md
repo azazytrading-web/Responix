@@ -1,5 +1,11 @@
 # Session Handoff
 
+## Current OIC Return Point — OIC-6 closed; stop before OIC-7.1
+
+OIC-6 packets 6.1–6.4 are implemented, validated, closed GO, and pushed on branch `oic`. See [OIC-6 tracker](OIC_6_IMPLEMENTATION_TRACKER.md), [acceptance matrix](OIC_6_ACCEPTANCE_MATRIX.md), and [closeout](OIC_6_FINAL_CLOSEOUT.md). The local API (`127.0.0.1:4100`) and development Console (`localhost:3002`) remain running in separate processes. OIC-7.1 is the next return point, but this sprint hard-stops here; do not begin it without a new owner request.
+
+The dated handoffs below are historical records and do not supersede this current OIC return point.
+
 ## Exact Current Resume Point — WhatsApp Connection Management - 2026-08-09
 
 The Dashboard `/channels/whatsapp` page now supports full connection lifecycle management: create channel, create connection, view connected state, edit connection, regenerate verify token, copy callback URL, validate connection, and disconnect. All operations use real Channel Runtime APIs with write-only credentials.

@@ -1,6 +1,13 @@
 # OIC Feature Inventory
 
-This inventory describes the current OIC-5 implementation and its verified limits. OIC-5 is **GO** after final acceptance, fixture cleanup, validation, and full diff review. OIC-6 has not started.
+This file retains historical OIC-5 inventory and evidence. Current OIC program state is OIC-X1 CLOSED / FROZEN / GO and OIC-6 CLOSED / GO; see [OIC-6 closeout](OIC_6_FINAL_CLOSEOUT.md). Older OIC-5 snapshots below are historical and do not describe the current milestone.
+
+## Current OIC program state (2026-10-11)
+
+- OIC-1 through OIC-5: complete; OIC-X1: CLOSED / FROZEN / GO.
+- OIC-6: CLOSED — GO through packets 6.1–6.4; pushed to `origin/oic`.
+- OIC-7 through OIC-9: architecture locked; implementation not started.
+- Responix and Mega Platform Portal remain outside OIC work.
 
 ## Current acceptance state (2026-10-03)
 
@@ -92,7 +99,7 @@ The named-case ledger, strategy activation notes, and explicit isolation/browser
 
 - Responix: unchanged.
 - Mega Platform Portal: unchanged.
-- OIC-6: not started.
+- OIC-6: CLOSED — GO through packets 6.1–6.4; see the [OIC-6 closeout](OIC_6_FINAL_CLOSEOUT.md).
 - OIC-5 acceptance and repository review are complete; the GO gate authorizes coherent OIC-only commit(s) and a normal push to `origin/oic`.
 
 ## Final closeout update (2026-10-02)

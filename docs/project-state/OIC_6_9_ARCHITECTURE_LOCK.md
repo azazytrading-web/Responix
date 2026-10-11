@@ -7,13 +7,13 @@
 
 | Milestone | Architecture | Implementation |
 |---|---|---|
-| OIC-6 | LOCKED | NOT STARTED |
+| OIC-6 | LOCKED | CLOSED — GO |
 | OIC-7 | LOCKED | NOT STARTED |
 | OIC-8 | LOCKED | NOT STARTED |
 | OIC-9 | LOCKED | NOT STARTED |
 
 The prior [OIC-6 through OIC-8 architecture package](../architecture/oic-6-8/00_ARCHITECTURE_INDEX.md) is preserved as historical/directional predecessor material and is superseded as active implementation authority. OIC-9 owner-approved scope is production hardening, resilience, certification, and final operational closure. Numerical SLO/RPO/RTO and capacity thresholds are later activation decisions.
 
-The frozen default packet order is OIC-6 6.1-6.4, OIC-7 7.1-7.7, OIC-8 8.1-8.3, then OIC-9 9.1-9.3. **Next implementation return point: OIC-6.1 Raw evidence.** This is a handoff point only; implementation has not started. Packet prerequisites and acceptance are in the [exact handoff](../architecture/oic-6-9/cross-cutting/54_PACKET_HANDOFF.md).
+The frozen default packet order is OIC-6 6.1-6.4, OIC-7 7.1-7.7, OIC-8 8.1-8.3, then OIC-9 9.1-9.3. OIC-6 implementation is recorded in the [OIC-6 tracker](OIC_6_IMPLEMENTATION_TRACKER.md), [acceptance matrix](OIC_6_ACCEPTANCE_MATRIX.md), and [final closeout](OIC_6_FINAL_CLOSEOUT.md). OIC-6 is CLOSED — GO. The next return point is OIC-7.1, but this sprint hard-stops here; OIC-7, OIC-8 and OIC-9 remain NOT STARTED. Packet prerequisites and acceptance remain defined by the [exact handoff](../architecture/oic-6-9/cross-cutting/54_PACKET_HANDOFF.md).
 
-OIC-X1 remains CLOSED / FROZEN / GO. OIC-1 through OIC-5 completion records are unchanged. No implementation, API, database, migration, or runtime work is authorized or performed by this state record.
+OIC-X1 remains CLOSED / FROZEN / GO. OIC-1 through OIC-5 completion records are unchanged. This file records current milestone status; it does not amend the locked architecture or authorize work beyond OIC-6.

@@ -4,10 +4,11 @@ import { useCallback, useEffect, useState } from "react";
 import type { FormEvent } from "react";
 import type { Locale, View } from "../../i18n";
 import { ErrorState, LoadingState } from "../../components/oic-primitives";
-import { ActionButton, DiscreteStepSelector, Inspector, TextInput } from "../../components/interface";
+import { ActionButton, ApplicationPicker, DiscreteStepSelector, EntityPicker, Inspector, RevisionPicker, SearchableSelect, TenantPicker, TextInput, Timeline, ToggleControl } from "../../components/interface";
+import { EconomicFlowStrip } from "./economic-flow-strip";
 
 type Row = Record<string, unknown>;
-type Dataset = { priceBooks: Row[]; rated: Row[]; fxEvidence: Row[] };
+type Dataset = { priceBooks: Row[]; rated: Row[]; fxEvidence: Row[]; usageEvents: Row[]; plans: Row[]; applications: Row[]; tenants: Row[] };
 const record = (value: unknown): Row => value && typeof value === "object" && !Array.isArray(value) ? value as Row : {};
 const list = (value: unknown): Row[] => Array.isArray(value) ? value.map(record) : [];
 const page = (value: unknown): Row[] => list(record(value).items);
@@ -15,11 +16,11 @@ const text = (value: unknown, fallback = "—") => typeof value === "string" || 
 const dateInput = () => new Date(Date.now() - new Date().getTimezoneOffset() * 60_000).toISOString().slice(0, 16);
 const toIso = (value: string) => new Date(value).toISOString();
 
-export function CustomerRatingView({ view, locale }: { view: View; locale: Locale }) {
+export function CustomerRatingView({ view, locale, navigate }: { view: View; locale: Locale; navigate: (view: View) => void }) {
   const ar = locale === "ar";
   const direction = ar ? "rtl" : "ltr";
   const tr = (en: string, arabic: string) => ar ? arabic : en;
-  const [data, setData] = useState<Dataset>({ priceBooks: [], rated: [], fxEvidence: [] });
+  const [data, setData] = useState<Dataset>({ priceBooks: [], rated: [], fxEvidence: [], usageEvents: [], plans: [], applications: [], tenants: [] });
   const [state, setState] = useState<"idle" | "loading" | "available" | "failed">("idle");
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState("");
@@ -28,6 +29,7 @@ export function CustomerRatingView({ view, locale }: { view: View; locale: Local
   const [tenantId, setTenantId] = useState("");
   const [planRevisionId, setPlanRevisionId] = useState("");
   const [priceBookKey, setPriceBookKey] = useState("");
+  const [selectedBookId, setSelectedBookId] = useState("");
   const [strategy, setStrategy] = useState("OIU_RATE");
   const [currency, setCurrency] = useState("USD");
   const [sourceReference, setSourceReference] = useState("");
@@ -44,6 +46,7 @@ export function CustomerRatingView({ view, locale }: { view: View; locale: Local
   const [ratedEventId, setRatedEventId] = useState("");
   const [adjustmentKey, setAdjustmentKey] = useState("");
   const [adjustmentReason, setAdjustmentReason] = useState("");
+  const [showAdvancedIds, setShowAdvancedIds] = useState(false);
   const [fxBase, setFxBase] = useState("USD");
   const [fxQuote, setFxQuote] = useState("EUR");
   const [fxRate, setFxRate] = useState("0.92");
@@ -56,28 +59,54 @@ export function CustomerRatingView({ view, locale }: { view: View; locale: Local
   const load = useCallback(async () => {
     setState("loading");
     try {
-      const response = await fetch("/api/console?view=rating", { cache: "no-store" });
+      const [response, usageResponse, admissionResponse, snapshotResponse] = await Promise.all([
+        fetch("/api/console?view=rating", { cache: "no-store" }),
+        fetch("/api/console?view=usage-events&limit=100", { cache: "no-store" }).catch(() => null),
+        fetch("/api/console?view=admission", { cache: "no-store" }).catch(() => null),
+        fetch("/api/console?view=snapshot", { cache: "no-store" }).catch(() => null)
+      ]);
       if (!response.ok) throw new Error("rating evidence unavailable");
       const body = record(await response.json());
-      setData({ priceBooks: list(body.priceBooks), rated: page(body.rated), fxEvidence: list(body.fxEvidence) });
+      const readOptional = async (source: Response | null): Promise<unknown> => source?.ok ? await source.json() as unknown : null;
+      const [usageBody, admissionBody, snapshotBody] = await Promise.all([readOptional(usageResponse), readOptional(admissionResponse), readOptional(snapshotResponse)]);
+      const nextData = { priceBooks: list(body.priceBooks), rated: page(body.rated), fxEvidence: list(body.fxEvidence), usageEvents: page(usageBody), plans: list(record(admissionBody).plans), applications: list(record(snapshotBody).applications), tenants: list(record(snapshotBody).tenants) };
+      setData(nextData);
       setState("available");
+      return nextData;
     } catch {
-      setData({ priceBooks: [], rated: [], fxEvidence: [] });
+      const empty: Dataset = { priceBooks: [], rated: [], fxEvidence: [], usageEvents: [], plans: [], applications: [], tenants: [] };
+      setData(empty);
       setState("failed");
+      return null;
     }
   }, []);
   useEffect(() => { if (view === "rating") void load(); }, [view, load]);
+  useEffect(() => {
+    if (view !== "rating" || typeof window === "undefined") return;
+    const entityId = new URLSearchParams(window.location.search).get("entity");
+    if (entityId && data.usageEvents.some((item) => item.id === entityId)) setUsageEventId(entityId);
+  }, [view, data.usageEvents]);
   if (view !== "rating") return null;
 
   const command = async (action: string, payload: Row) => {
     setBusy(true); setMessage("");
     try {
       const response = await fetch("/api/action", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ action, ...payload }) });
-      if (!response.ok) throw new Error("rating command rejected");
-      setMessage(tr("Evidence saved and audited.", "تم حفظ الدليل وتدقيقه."));
-      await load();
+      const result = record(await response.json().catch(() => null));
+      if (!response.ok) {
+        setMessage(response.status === 409 ? tr("Revision or evidence conflict. No existing record was overwritten; refresh and inspect before retrying.", "تعارض في المراجعة أو الدليل. لم يُستبدل أي سجل؛ حدّث البيانات وافحصها قبل إعادة المحاولة.") : response.status === 403 ? tr("This operation is not available to the current operator scope.", "هذه العملية غير متاحة لنطاق المشغّل الحالي.") : tr("The command was rejected. Verify scope, policy revision and required evidence.", "رُفض الأمر. تحقق من النطاق ومراجعة السياسة والأدلة المطلوبة."));
+        return;
+      }
+      setMessage(tr("Persisted. Reading the authoritative rating evidence…", "تم الحفظ. جارٍ قراءة دليل التسعير المعتمد…"));
+      const readback = await load();
+      const id = text(result.id, "");
+      const found = !!id && !!readback && [
+        ...readback.priceBooks, ...readback.rated, ...readback.fxEvidence,
+        ...readback.rated.flatMap((item) => list(item.adjustments))
+      ].some((item) => item.id === id);
+      setMessage(found ? tr("Persisted and verified by source readback.", "تم الحفظ والتحقق منه بقراءة المصدر.") : tr("The command was accepted, but source readback did not confirm the returned record. No verified state is claimed; refresh or inspect the source.", "قُبل الأمر لكن قراءة المصدر لم تؤكد السجل المعاد. لا ندّعي التحقق؛ حدّث البيانات أو افحص المصدر."));
     } catch {
-      setMessage(tr("The command failed. Verify the scope, revision, and effective interval.", "فشل الأمر. تحقق من النطاق والمراجعة والفترة الفعالة."));
+      setMessage(tr("The command failed before readback. Your inputs remain available; verify source, scope and revision before retrying.", "فشل الأمر قبل قراءة المصدر. بقيت المدخلات؛ تحقق من المصدر والنطاق والمراجعة قبل إعادة المحاولة."));
     } finally { setBusy(false); }
   };
   const draft = (event: FormEvent<HTMLFormElement>) => {
@@ -107,9 +136,15 @@ export function CustomerRatingView({ view, locale }: { view: View; locale: Local
   const heading = (title: string, description: string) => <header className="panel-heading"><div><span className="eyebrow">OIC-6.4 / COMMERCIAL EVIDENCE</span><h2>{title}</h2><p>{description}</p></div></header>;
   const publishedBooks = data.priceBooks.filter((item) => item.status === "PUBLISHED").length;
   const ratedCount = data.rated.filter((item) => item.status === "RATED").length;
+  const appOptions = data.applications.filter((item) => typeof item.id === "string").map((item) => ({ id: text(item.id, ""), label: text(item.displayName, text(item.key, tr("Application", "التطبيق"))), secondary: text(item.key, ""), type: tr("Application", "التطبيق") }));
+  const tenantOptions = data.tenants.filter((item) => typeof item.id === "string" && (!applicationId || item.applicationId === applicationId)).map((item) => ({ id: text(item.id, ""), label: text(item.displayName, text(item.key, tr("Tenant", "المستأجر"))), secondary: text(item.key, ""), type: tr("Tenant", "المستأجر") }));
+  const planOptions = data.plans.flatMap((plan) => list(plan.revisions).map((revision) => ({ id: text(revision.id, ""), label: `${text(plan.displayName, text(plan.planKey))} · r${text(revision.revision)}`, secondary: text(revision.status), type: tr("Plan revision", "مراجعة الخطة") })));
+  const usageOptions = data.usageEvents.filter((item) => typeof item.id === "string").map((item) => ({ id: text(item.id, ""), label: `${text(item.occurredAt, text(item.recordedAt))} · ${text(record(item.providerAttempt).providerKey, tr("Provider usage", "استخدام المزوّد"))}`, secondary: text(item.status, ""), scope: text(item.tenantId, text(item.applicationId, "")), type: tr("Captured usage event", "حدث استخدام مسجل") }));
+  const bookOptions = data.priceBooks.filter((item) => typeof item.priceBookKey === "string").map((item) => ({ id: text(item.id, ""), label: `${text(item.priceBookKey)} · r${text(item.revision)}`, secondary: `${text(item.strategy)} · ${text(item.status)}`, type: tr("Customer price book", "دفتر أسعار العميل") }));
   return <section className="workspace-page economics-view" dir={direction}>
-    <header className="lab-page-heading"><div><span className="eyebrow">OIC-6.4 / DARK CUSTOMER RATING</span><h1>{tr("Customer rating evidence", "أدلة تسعير استخدام العملاء")}</h1><p>{tr("Revision-pinned calculations and corrections, kept separate from provider expense, OIU, quota, and entitlement.", "حسابات وتصحيحات مثبتة بالمراجعة ومنفصلة عن تكلفة المزوّد ووحدات OIU والحصة والاستحقاق.")}</p></div><ActionButton variant="secondary" onPress={() => void load()}>{tr("Refresh", "تحديث")}</ActionButton></header>
-    <div className="economics-disclaimer">{tr("DARK / READ-ONLY COMMERCIAL DECISION. This workspace records rating evidence only. It does not create invoices, taxes, payments, receivables, or external charges. Missing price or FX is never treated as zero or parity. FREE_PLAN and TRIAL_CREDIT are explicit policy reasons.", "وضع تجريبي مظلم / قرار تجاري للقراءة فقط. يسجل هذا المساحة أدلة التسعير فقط ولا ينشئ فواتير أو ضرائب أو مدفوعات أو مستحقات أو رسوماً خارجية. لا يُعامل السعر أو التحويل المفقود كصفر أو تعادل للعملة. ويظهر FREE_PLAN وTRIAL_CREDIT كسببين صريحين في السياسة.")}</div>
+    <header className="lab-page-heading"><div><span className="eyebrow">OIC-6.4 / DARK CUSTOMER RATING</span><h1>{tr("Customer Rating Studio", "استوديو تسعير العميل")}</h1><p>{tr("Inspect the source usage, pinned customer policy, rating result and append-only corrections. This is evidence, not billing.", "افحص استخدام المصدر وسياسة العميل المثبتة ونتيجة التسعير والتصحيحات الإلحاقية. هذه أدلة وليست فوترة.")}</p></div><ActionButton variant="secondary" onPress={() => void load()}>{tr("Refresh", "تحديث")}</ActionButton></header>
+    <EconomicFlowStrip current="rating" locale={locale} navigate={navigate} states={{ usage: data.usageEvents.length ? "AVAILABLE" : "UNKNOWN", provider: "UNKNOWN", oiu: "UNKNOWN", admission: data.plans.length ? "AVAILABLE" : "UNKNOWN", rating: data.rated.length ? "AVAILABLE" : "UNKNOWN" }} />
+    <div className="economics-disclaimer">{tr("RATING EVIDENCE ONLY · NO INVOICE · NO PAYMENT · NO RECEIVABLE · NO TAX CLAIM · NO EXTERNAL CHARGE. Missing price or FX is never treated as zero or parity.", "أدلة التسعير فقط · لا فاتورة · لا دفع · لا مستحقات · لا ادعاء ضريبي · لا رسوم خارجية. لا يُعامل السعر أو تحويل العملة المفقود كصفر أو تعادل.")}</div>
     {message && <p role="status" className="admission-feedback">{message}</p>}
     {state === "loading" && <LoadingState label={tr("Loading customer rating evidence", "جارٍ تحميل أدلة تسعير العملاء")} />}
     {state === "failed" && <ErrorState title={tr("Rating evidence unavailable", "أدلة التسعير غير متاحة")} description={tr("The scoped commercial evidence source could not be loaded.", "تعذر تحميل مصدر الأدلة التجارية المحدد بالنطاق.")} />}
@@ -118,10 +153,12 @@ export function CustomerRatingView({ view, locale }: { view: View; locale: Local
       <section className="admission-forms">
         <form className="panel admission-form" onSubmit={draft}>
           {heading(tr("Draft a customer price revision", "إنشاء مسودة مراجعة سعر عميل"), tr("The calculation is dark and non-billable. Publishing pins a rule for later evidence only.", "الحساب مظلم وغير قابل للتحصيل. يثبت النشر قاعدة للأدلة اللاحقة فقط."))}
-          <TextInput label={tr("Application ID", "معرّف التطبيق")} value={applicationId} onChange={setApplicationId} required dir="ltr" />
-          <TextInput label={tr("Tenant ID (optional)", "معرّف المستأجر (اختياري)")} value={tenantId} onChange={setTenantId} dir="ltr" />
-          <TextInput label={tr("Pinned plan revision ID", "معرّف مراجعة الخطة المثبتة")} value={planRevisionId} onChange={setPlanRevisionId} required dir="ltr" />
-          <TextInput label={tr("Price book key", "مفتاح دفتر الأسعار")} value={priceBookKey} onChange={setPriceBookKey} required dir="ltr" maxLength={64} />
+          <ApplicationPicker label={tr("Application", "التطبيق")} value={applicationId} onChange={(value) => { setApplicationId(value); setTenantId(""); }} options={appOptions} placeholder={tr("Select application", "اختر تطبيقاً")} searchLabel={tr("Search applications", "ابحث عن تطبيق")} emptyLabel={tr("No application records available", "لا تتوفر سجلات تطبيقات")} locale={locale} dir={direction} disabled={showAdvancedIds || !appOptions.length} />
+          <TenantPicker label={tr("Tenant (optional)", "المستأجر (اختياري)")} value={tenantId} onChange={setTenantId} options={tenantOptions} placeholder={tr("Application scope", "نطاق التطبيق")} searchLabel={tr("Search tenants", "ابحث عن مستأجر")} emptyLabel={tr("No tenant records available", "لا تتوفر سجلات مستأجرين")} locale={locale} dir={direction} disabled={showAdvancedIds || !applicationId || !tenantOptions.length} />
+          <RevisionPicker label={tr("Plan revision", "مراجعة الخطة")} value={planRevisionId} onChange={setPlanRevisionId} options={planOptions} placeholder={tr("Select pinned plan revision", "اختر مراجعة الخطة المثبتة")} searchLabel={tr("Search plan revisions", "ابحث عن مراجعة خطة")} emptyLabel={tr("No plan revisions available", "لا توجد مراجعات خطط متاحة")} locale={locale} dir={direction} disabled={showAdvancedIds || !planOptions.length} />
+          <SearchableSelect label={tr("Price book source", "مصدر دفتر الأسعار")} value={selectedBookId} onChange={(value) => { const book = data.priceBooks.find((item) => item.id === value); if (!book) return; setSelectedBookId(value); setPriceBookKey(text(book.priceBookKey, "")); setStrategy(text(book.strategy, strategy)); setCurrency(text(book.currency, currency)); if (typeof book.applicationId === "string") setApplicationId(book.applicationId); if (typeof book.tenantId === "string") setTenantId(book.tenantId); const planRevision = record(book.planRevision); if (typeof planRevision.id === "string") setPlanRevisionId(planRevision.id); }} options={bookOptions} placeholder={tr("Choose a related book or configure a new key", "اختر دفتراً مرتبطاً أو أدخل مفتاحاً جديداً")} searchLabel={tr("Search price books", "ابحث في دفاتر الأسعار")} emptyLabel={tr("No customer price books available", "لا توجد دفاتر أسعار عملاء")} locale={locale} dir={direction} disabled={showAdvancedIds || !bookOptions.length} />
+          <ToggleControl label={tr("Advanced identifiers", "المعرّفات المتقدمة")} value={showAdvancedIds} onChange={setShowAdvancedIds} dir={direction} help={tr("Use manual IDs only when a source record is not available.", "استخدم المعرّفات اليدوية فقط عند عدم توفر سجل مصدر.")} />
+          {showAdvancedIds && <><TextInput label={tr("Application ID", "معرّف التطبيق")} value={applicationId} onChange={setApplicationId} required dir="ltr" /><TextInput label={tr("Tenant ID (optional)", "معرّف المستأجر (اختياري)")} value={tenantId} onChange={setTenantId} dir="ltr" /><TextInput label={tr("Pinned plan revision ID", "معرّف مراجعة الخطة المثبتة")} value={planRevisionId} onChange={setPlanRevisionId} required dir="ltr" /><TextInput label={tr("Price book key", "مفتاح دفتر الأسعار")} value={priceBookKey} onChange={setPriceBookKey} required dir="ltr" maxLength={64} /></>}
           <DiscreteStepSelector label={tr("Typed strategy", "استراتيجية محددة النوع")} value={strategy} onChange={setStrategy} options={["OIU_RATE", "RESOURCE_RATE", "REQUEST", "TASK", "FEATURE", "TIERED", "INCLUDED_PLUS_OVERAGE", "FIXED_PLUS_VARIABLE"].map((id) => ({ id, label: id }))} placeholder={tr("Choose a strategy", "اختر استراتيجية")} dir={direction} locale={locale} />
           <TextInput label={tr("Native currency", "العملة الأصلية")} value={currency} onChange={setCurrency} required maxLength={3} dir="ltr" />
           <TextInput label={tr("Source reference", "مرجع المصدر")} value={sourceReference} onChange={setSourceReference} required maxLength={256} dir="ltr" />
@@ -136,7 +173,9 @@ export function CustomerRatingView({ view, locale }: { view: View; locale: Local
         </form>
         <form className="panel admission-form" onSubmit={(event) => { event.preventDefault(); if (!/^[0-9a-f-]{36}$/i.test(usageEventId)) return; void command("rating.usage.rate", { usageEventId }); }}>
           {heading(tr("Rate a captured event", "تسعير حدث مسجل"), tr("Uses captured event time and its pinned admission plan. A missing qualified input remains NOT_RATED or PARTIAL.", "يستخدم وقت الحدث المسجل وخطة القبول المثبتة. يظل المدخل المؤهل المفقود غير مسعّر أو جزئياً."))}
-          <TextInput label={tr("Usage event ID", "معرّف حدث الاستخدام")} value={usageEventId} onChange={setUsageEventId} required dir="ltr" />
+          <EntityPicker label={tr("Captured usage event", "حدث الاستخدام المسجل")} value={usageEventId} onChange={setUsageEventId} options={usageOptions} placeholder={tr("Select captured usage", "اختر استخداماً مسجلاً")} searchLabel={tr("Search usage evidence", "ابحث في أدلة الاستخدام")} emptyLabel={tr("No captured usage events available", "لا توجد أحداث استخدام مسجلة")} locale={locale} dir={direction} disabled={showAdvancedIds || !usageOptions.length} kind="usage-event" />
+          {showAdvancedIds && <TextInput label={tr("Usage event ID", "معرّف حدث الاستخدام")} value={usageEventId} onChange={setUsageEventId} required dir="ltr" />}
+          {data.usageEvents.find((item) => item.id === usageEventId) ? <div className="rating-evidence-preview"><span className="eyebrow">{tr("SELECTED SOURCE EVIDENCE · NO LOCAL RATING", "دليل المصدر المحدد · لا يوجد تسعير محلي")}</span><b>{tr("Rating outcome", "نتيجة التسعير")}: {tr("Not evaluated", "لم يُقيّم بعد")}</b><p>{tr("The authoritative rating handler resolves the pinned plan, customer price rule, credits and missing-input reason. This screen does not estimate an amount before that response.", "يعالج محرك التسعير المعتمد الخطة المثبتة وقاعدة سعر العميل والأرصدة وأسباب المدخلات المفقودة. لا تقدّر هذه الشاشة مبلغاً قبل استجابة المحرك.")}</p></div> : <div className="rating-evidence-preview"><span className="eyebrow">{tr("RATING PREVIEW", "معاينة التسعير")}</span><b>{tr("NOT_RATED", "غير مسعّر")}</b><p>{tr("Select a captured usage event. No event or amount is inferred from an empty selection.", "اختر حدث استخدام مسجلاً. لا يُستنتج حدث أو مبلغ من اختيار فارغ.")}</p></div>}
           <ActionButton variant="secondary" type="submit" disabled={busy}>{tr("Record rating evidence", "تسجيل دليل التسعير")}</ActionButton>
           <TextInput label={tr("Credit amount", "مبلغ الرصيد الدائن")} value={adjustmentAmount} onChange={setAdjustmentAmount} dir="ltr" />
           <TextInput label={tr("Credit reason", "سبب الرصيد الدائن")} value={adjustmentReason} onChange={setAdjustmentReason} maxLength={256} />
@@ -161,6 +200,6 @@ export function CustomerRatingView({ view, locale }: { view: View; locale: Local
       <section className="panel economics-panel">{heading(tr("Customer price books", "دفاتر أسعار العملاء"), tr("Published policy remains immutable and interval-scoped.", "تبقى السياسة المنشورة ثابتة ومقيدة بفترة ونطاق."))}<div className="table-frame"><table><thead><tr><th>{tr("Book", "الدفتر")}</th><th>{tr("Strategy", "الاستراتيجية")}</th><th>{tr("Revision", "المراجعة")}</th><th>{tr("Currency", "العملة")}</th><th>{tr("Status", "الحالة")}</th><th>{tr("Action", "الإجراء")}</th></tr></thead><tbody>{data.priceBooks.map((item) => <tr key={text(item.id)}><td>{text(item.priceBookKey)}</td><td>{text(item.strategy)}</td><td>{text(item.revision)}</td><td>{text(item.currency)}</td><td>{text(item.status)}</td><td>{item.status === "DRAFT" ? <ActionButton variant="secondary" disabled={busy} onPress={() => void command("rating.price-book.publish", { id: item.id })}>{tr("Publish", "نشر")}</ActionButton> : <ActionButton variant="quiet" onPress={() => setSelected(item)}>{tr("Inspect", "فحص")}</ActionButton>}</td></tr>)}{!data.priceBooks.length && <tr><td colSpan={6}>{tr("No customer price books configured.", "لا توجد دفاتر أسعار عملاء مهيأة.")}</td></tr>}</tbody></table></div></section>
       <section className="panel economics-panel">{heading(tr("FX rate evidence", "أدلة أسعار الصرف"), tr("Evidence is recorded independently. No parity or conversion is inferred.", "يسجل الدليل بصورة مستقلة ولا يُفترض التعادل أو التحويل."))}<div className="table-frame"><table><thead><tr><th>{tr("Currency pair", "زوج العملات")}</th><th>{tr("Rate", "السعر")}</th><th>{tr("Effective", "تاريخ السريان")}</th><th>{tr("Source", "المصدر")}</th><th>{tr("Policy", "السياسة")}</th></tr></thead><tbody>{data.fxEvidence.map((item) => <tr key={text(item.id)}><td><bdi dir="ltr">{text(item.baseCurrency)} / {text(item.quoteCurrency)}</bdi></td><td>{text(item.rate)}</td><td>{text(item.effectiveAt)}</td><td>{text(item.source)}</td><td>{text(item.policyRevision)}</td></tr>)}{!data.fxEvidence.length && <tr><td colSpan={5}>{tr("No FX evidence. Cross-currency amounts remain UNKNOWN_CONVERSION.", "لا توجد أدلة صرف. تبقى المبالغ متعددة العملات غير معروفة التحويل.")}</td></tr>}</tbody></table></div></section>
     </>}
-    <Inspector open={Boolean(selected)} onClose={() => setSelected(null)} title={tr("Rating evidence detail", "تفاصيل دليل التسعير")} description={tr("Immutable calculation evidence; no invoice or settlement authority.", "دليل حساب ثابت؛ لا يملك صلاحية إصدار فاتورة أو تسوية.")} closeLabel={tr("Close", "إغلاق")} dir={direction}>{selected && Object.entries(selected).filter(([, value]) => value === null || ["string", "number", "boolean"].includes(typeof value)).map(([key, value]) => <div className="x14-detail-row" key={key}><span>{key}</span><bdi dir="auto">{text(value, "null")}</bdi></div>)}{selected && Boolean(selected.ratingTrace) && <pre className="economics-trace"><code>{JSON.stringify(selected.ratingTrace, null, 2)}</code></pre>}</Inspector>
+    <Inspector open={Boolean(selected)} onClose={() => setSelected(null)} title={tr("Rating evidence detail", "تفاصيل دليل التسعير")} description={tr("Immutable calculation evidence; no invoice or settlement authority.", "دليل حساب ثابت؛ لا يملك صلاحية إصدار فاتورة أو تسوية.")} closeLabel={tr("Close", "إغلاق")} dir={direction}>{selected && Object.entries(selected).filter(([, value]) => value === null || ["string", "number", "boolean"].includes(typeof value)).map(([key, value]) => <div className="x14-detail-row" key={key}><span>{key}</span><bdi dir="auto">{text(value, "null")}</bdi></div>)}{selected && Boolean(selected.ratingTrace) && <pre className="economics-trace"><code>{JSON.stringify(selected.ratingTrace, null, 2)}</code></pre>}{selected && list(selected.adjustments).length > 0 && <Timeline label={tr("Append-only adjustment history", "سجل التصحيحات الإلحاقي")} events={list(selected.adjustments).map((adjustment, index) => ({ id: text(adjustment.id, String(index)), title: text(adjustment.kind, tr("Adjustment", "تصحيح")), detail: [text(adjustment.amount), text(adjustment.currency), text(adjustment.reason)].filter((value) => value !== "—").join(" · "), time: text(adjustment.recordedAt), tone: "warning" as const }))} />}</Inspector>
   </section>;
 }

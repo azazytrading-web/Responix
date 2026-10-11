@@ -1082,10 +1082,10 @@ export default function ConsoleApp({ platformUrl }: { platformUrl: string }) {
             navigate={navigateTo}
             loadAudit={loadAudit}
           />
-          <UsageEvidenceView view={view} locale={locale} />
-          <EconomicsView view={view} locale={locale} />
-          <AdmissionView view={view} locale={locale} />
-          <CustomerRatingView view={view} locale={locale} />
+          <UsageEvidenceView view={view} locale={locale} navigate={navigateTo} />
+          <EconomicsView view={view} locale={locale} navigate={navigateTo} />
+          <AdmissionView view={view} locale={locale} navigate={navigateTo} />
+          <CustomerRatingView view={view} locale={locale} navigate={navigateTo} />
           <footer className="content-footer">
             <span>OIC · {t.independentPlatform}</span>
             <span>

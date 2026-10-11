@@ -72,3 +72,44 @@ test("production Model Factory imports canonical components through the public b
   assert.match(factory, /from "\.\.\/\.\.\/components\/interface"/);
   assert.doesNotMatch(factory, /from "\.\.\/\.\.\/components\/interface\//);
 });
+
+test("OIC-6 operator workspaces use canonical selection and inspection controls", () => {
+  const usage = source("features/operations/usage-evidence-view.tsx");
+  const economics = source("features/operations/economics-view.tsx");
+  const admission = source("features/operations/admission-view.tsx");
+  const rating = source("features/operations/customer-rating-view.tsx");
+
+  assert.match(usage, /SearchableSelect/);
+  assert.match(usage, /usage-investigation-tools/);
+  assert.match(economics, /<Inspector/);
+  assert.match(economics, /economics-source-explorer/);
+  assert.match(admission, /ApplicationPicker/);
+  assert.match(admission, /TenantPicker/);
+  assert.match(admission, /RevisionPicker/);
+  assert.match(admission, /ToggleControl label=\{tr\("Advanced IDs"/);
+  assert.match(admission, /<MultiSelect label=\{tr\("Entitled Oi models"/);
+  assert.match(admission, /edition\.visibility/);
+  assert.doesNotMatch(admission, /Entitled Oi model IDs, comma separated/);
+  assert.match(admission, /server policy precedence/);
+  assert.match(rating, /ApplicationPicker/);
+  assert.match(rating, /TenantPicker/);
+  assert.match(rating, /RevisionPicker/);
+  assert.match(rating, /EntityPicker label=\{tr\("Captured usage event"/);
+  assert.match(rating, /RATING EVIDENCE ONLY/);
+  assert.match(rating, /Timeline/);
+  assert.match(usage, /<EconomicFlowStrip current="usage"/);
+  assert.match(usage, /usage-evidence-pipeline/);
+  assert.match(usage, /UNKNOWN \/ LIABILITY PENDING/);
+  assert.match(usage, /hasCostRelationship \|\| hasOiuRelationship \|\| hasRatingRelationship/);
+  assert.match(economics, /<EconomicFlowStrip current="provider"/);
+  assert.match(economics, /<CompareSurface/);
+  assert.match(admission, /<EconomicFlowStrip current="admission"/);
+  assert.match(rating, /<EconomicFlowStrip current="rating"/);
+
+  for (const view of [usage, economics, admission, rating]) {
+    assert.match(view, /from "\.\.\/\.\.\/components\/interface"/);
+    assert.doesNotMatch(view, /<select\b|<input\s+type=["']checkbox["']/);
+    assert.doesNotMatch(view, /<button\b/);
+    assert.doesNotMatch(view, /\/dev\/flight-deck|dev\/interface-system\/demo-data|dev\/instruments/);
+  }
+});

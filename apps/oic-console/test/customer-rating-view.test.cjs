@@ -12,8 +12,8 @@ test("OIC-6.4 customer rating stays dark, scoped, revisioned, and separate from 
   const action = source("app/api/action/route.ts");
   const i18n = source("app/i18n.ts");
 
-  assert.match(view, /DARK \/ READ-ONLY COMMERCIAL DECISION/);
-  assert.match(view, /does not create invoices, taxes, payments, receivables, or external charges/);
+  assert.match(view, /DARK CUSTOMER RATING/);
+  assert.match(view, /This is evidence, not billing/);
   assert.match(view, /OIU_RATE|RESOURCE_RATE/);
   assert.match(action, /INCLUDED_PLUS_OVERAGE/);
   assert.match(view, /FREE_PLAN|TRIAL_CREDIT|UNKNOWN_CONVERSION/);
@@ -31,7 +31,7 @@ test("OIC-6.4 customer rating stays dark, scoped, revisioned, and separate from 
   for (const actionName of ["rating.price-book.draft", "rating.price-book.publish", "rating.usage.rate", "rating.adjustment.create", "rating.fx.create"]) assert.ok(action.includes(actionName), actionName);
   assert.match(action, /sameOrigin\(request\)/);
   assert.match(action, /hasConsoleSession\(\)/);
-  assert.match(i18n, /rating: "Customer rating"/);
-  assert.match(i18n, /rating: "تسعير الاستخدام للعملاء"/);
+  assert.match(i18n, /rating: "Customer Rating Studio"/);
+  assert.match(i18n, /rating: "استوديو تسعير العميل"/);
   assert.doesNotMatch(view, /\b(fetch\(|axios\.)[^\n]*127\.0\.0\.1:4100/);
 });

@@ -11,7 +11,11 @@ test("economics workspace keeps provider expense, OIU, unknown values and source
   const bff = source("app/api/console/route.ts");
   const action = source("app/api/action/route.ts");
 
-  assert.match(view, /Provider cost assessments/);
+  assert.match(view, /Provider expense assessments/);
+  assert.match(view, /economics-dual-path/);
+  assert.match(view, /Provider rate book/);
+  assert.match(view, /OIU policy/);
+  assert.match(view, /NumericInstrument/);
   assert.match(view, /OIU assessments & postings/);
   assert.match(view, /UNKNOWN or PARTIAL/);
   assert.match(view, /No customer rating or invoice/);

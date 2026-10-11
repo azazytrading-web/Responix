@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useState } from "react";
 import type { Locale, View } from "../../i18n";
 import { ErrorState, LoadingState } from "../../components/oic-primitives";
-import { ActionButton, Inspector, SearchableSelect, TextInput } from "../../components/interface";
+import { ActionButton, ApplicationPicker, Inspector, SearchableSelect, TenantPicker, TextInput } from "../../components/interface";
 import { EconomicFlowStrip } from "./economic-flow-strip";
 
 type UsageRow = Record<string, unknown>;
@@ -12,7 +12,7 @@ const rows = (value: unknown): UsageRow[] => value && typeof value === "object" 
   ? (value as Page).items.filter((item): item is UsageRow => !!item && typeof item === "object" && !Array.isArray(item))
   : [];
 const objectFields = (value: unknown): UsageRow => value && typeof value === "object" && !Array.isArray(value) ? value as UsageRow : {};
-const text = (value: unknown, fallback = "â€”") => typeof value === "string" || typeof value === "number" ? String(value) : fallback;
+const text = (value: unknown, fallback = "—") => typeof value === "string" || typeof value === "number" ? String(value) : fallback;
 
 export function UsageEvidenceView({ view, locale, navigate }: { view: View; locale: Locale; navigate: (view: View, entityId?: string) => void }) {
   const [attempts, setAttempts] = useState<UsageRow[]>([]);
@@ -20,6 +20,10 @@ export function UsageEvidenceView({ view, locale, navigate }: { view: View; loca
   const [costAssessments, setCostAssessments] = useState<UsageRow[]>([]);
   const [oiuAssessments, setOiuAssessments] = useState<UsageRow[]>([]);
   const [ratedEvents, setRatedEvents] = useState<UsageRow[]>([]);
+  const [applications, setApplications] = useState<UsageRow[]>([]);
+  const [tenants, setTenants] = useState<UsageRow[]>([]);
+  const [applicationId, setApplicationId] = useState(() => typeof window === "undefined" ? "" : new URLSearchParams(window.location.search).get("applicationId") ?? "");
+  const [tenantId, setTenantId] = useState(() => typeof window === "undefined" ? "" : new URLSearchParams(window.location.search).get("tenantId") ?? "");
   const [state, setState] = useState<"idle" | "loading" | "available" | "failed">("idle");
   const [selected, setSelected] = useState<UsageRow | null>(null);
   const [query, setQuery] = useState(() => typeof window === "undefined" ? "" : new URLSearchParams(window.location.search).get("usageQ") ?? "");
@@ -30,11 +34,15 @@ export function UsageEvidenceView({ view, locale, navigate }: { view: View; loca
   const load = useCallback(async () => {
     setState("loading");
     try {
-      const [attemptResponse, eventResponse, economicsResponse, ratingResponse] = await Promise.all([
-        fetch("/api/console?view=usage-attempts&limit=50", { cache: "no-store" }),
-        fetch("/api/console?view=usage-events&limit=50", { cache: "no-store" }),
+      const scope = new URLSearchParams({ limit: "50" });
+      if (applicationId) scope.set("applicationId", applicationId);
+      if (tenantId) scope.set("tenantId", tenantId);
+      const [attemptResponse, eventResponse, economicsResponse, ratingResponse, scopeResponse] = await Promise.all([
+        fetch(`/api/console?view=usage-attempts&${scope.toString()}`, { cache: "no-store" }),
+        fetch(`/api/console?view=usage-events&${scope.toString()}`, { cache: "no-store" }),
         fetch("/api/console?view=economics", { cache: "no-store" }).catch(() => null),
-        fetch("/api/console?view=rating", { cache: "no-store" }).catch(() => null)
+        fetch("/api/console?view=rating", { cache: "no-store" }).catch(() => null),
+        fetch("/api/console?view=snapshot", { cache: "no-store" }).catch(() => null)
       ]);
       if (!attemptResponse.ok || !eventResponse.ok) throw new Error("usage evidence unavailable");
       const attemptBody: unknown = await attemptResponse.json();
@@ -46,6 +54,11 @@ export function UsageEvidenceView({ view, locale, navigate }: { view: View; loca
       setCostAssessments(rows(economicsBody.costs));
       setOiuAssessments(rows(economicsBody.oiu));
       setRatedEvents(rows(ratingBody.rated));
+      if (scopeResponse?.ok) {
+        const scopeBody = objectFields(await scopeResponse.json());
+        setApplications(rows(scopeBody.applications));
+        setTenants(rows(scopeBody.tenants));
+      }
       setState("available");
     } catch {
       setAttempts([]);
@@ -55,7 +68,7 @@ export function UsageEvidenceView({ view, locale, navigate }: { view: View; loca
       setRatedEvents([]);
       setState("failed");
     }
-  }, []);
+  }, [applicationId, tenantId]);
   useEffect(() => { if (view === "usage") void load(); }, [view, load]);
   useEffect(() => {
     if (view !== "usage" || typeof window === "undefined") return;
@@ -63,8 +76,10 @@ export function UsageEvidenceView({ view, locale, navigate }: { view: View; loca
     if (query) url.searchParams.set("usageQ", query); else url.searchParams.delete("usageQ");
     if (provider !== "*") url.searchParams.set("usageProvider", provider); else url.searchParams.delete("usageProvider");
     if (usageState !== "*") url.searchParams.set("usageState", usageState); else url.searchParams.delete("usageState");
+    if (applicationId) url.searchParams.set("applicationId", applicationId); else url.searchParams.delete("applicationId");
+    if (tenantId) url.searchParams.set("tenantId", tenantId); else url.searchParams.delete("tenantId");
     window.history.replaceState({}, "", url);
-  }, [view, query, provider, usageState]);
+  }, [view, query, provider, usageState, applicationId, tenantId]);
   if (view !== "usage") return null;
 
   const selectedIsEvent = !!selected && "normalizedDimensions" in selected;
@@ -74,6 +89,8 @@ export function UsageEvidenceView({ view, locale, navigate }: { view: View; loca
   const hasRatingRelationship = ratedEvents.some((item) => item.usageEventId === selectedEventId);
   const providers = Array.from(new Set([...attempts, ...events].map((row) => text(row.providerKey, "")).filter(Boolean))).sort();
   const providerOptions = [{ id: "*", label: tr("All providers", "كل المزوّدين") }, ...providers.map((id) => ({ id, label: id }))];
+  const applicationOptions = applications.filter((item) => typeof item.id === "string").map((item) => ({ id: text(item.id, ""), label: text(item.displayName, text(item.key, tr("Application", "التطبيق"))), secondary: text(item.key, ""), type: tr("Application", "التطبيق") }));
+  const tenantOptions = tenants.filter((item) => typeof item.id === "string" && (!applicationId || item.applicationId === applicationId)).map((item) => ({ id: text(item.id, ""), label: text(item.displayName, text(item.key, tr("Tenant", "المستأجر"))), secondary: text(item.key, ""), type: tr("Tenant", "المستأجر") }));
   const stateOptions = [{ id: "*", label: tr("All states", "كل الحالات") }, ...Array.from(new Set(attempts.map((row) => text(row.usageStatus, "")).filter(Boolean))).sort().map((id) => ({ id, label: id }))];
   const visibleAttempts = attempts.filter((row) => {
     if (provider !== "*" && row.providerKey !== provider) return false;
@@ -83,6 +100,7 @@ export function UsageEvidenceView({ view, locale, navigate }: { view: View; loca
   });
   const visibleEvents = events.filter((row) => {
     if (provider !== "*" && row.providerKey !== provider) return false;
+    if (selected && !selectedIsEvent && row.providerAttemptId !== selected.id) return false;
     const needle = query.trim().toLocaleLowerCase(ar ? "ar" : "en");
     return !needle || [row.id, row.providerKey, row.transportProfile, row.receiptSequence, JSON.stringify(row.normalizedDimensions ?? {}), row.sourceDigest].map((item) => text(item, "")).join(" ").toLocaleLowerCase(ar ? "ar" : "en").includes(needle);
   });
@@ -127,37 +145,47 @@ export function UsageEvidenceView({ view, locale, navigate }: { view: View; loca
       <ActionButton variant="secondary" onPress={() => void load()}>{tr("Refresh evidence", "تحديث الأدلة")}</ActionButton>
     </header>
     <EconomicFlowStrip current="usage" locale={locale} navigate={navigate} states={{ usage: events.length ? "AVAILABLE" : attempts.length ? "PARTIAL" : "UNKNOWN", provider: "UNKNOWN", oiu: "UNKNOWN", admission: "UNKNOWN", rating: "UNKNOWN" }} />
-    {state === "loading" && <LoadingState label={tr("Loading source evidenceâ€¦", "جارٍ تحميل أدلة المصدر…")} />}
+    {state === "loading" && <LoadingState label={tr("Loading source evidence…", "جارٍ تحميل أدلة المصدر…")} />}
     {state === "failed" && <ErrorState title={tr("Evidence unavailable", "الأدلة غير متاحة")} description={tr("The scoped OIC usage evidence source could not be read.", "تعذرت قراءة مصدر أدلة الاستخدام ضمن النطاق.")} action={<ActionButton variant="secondary" onPress={() => void load()}>{tr("Try again", "إعادة المحاولة")}</ActionButton>} />}
     {state === "available" && <>
-      <div className="usage-investigation-tools" aria-label={tr("Evidence investigation filters", "مرشحات استقصاء الأدلة")}>
-        <TextInput label={tr("Search captured evidence", "ابحث في الأدلة المسجلة")} type="search" value={query} onChange={setQuery} placeholder={tr("Provider, model, trace, digestâ€¦", "المزوّد أو النموذج أو التتبّع أو البصمة…")} dir={ar ? "rtl" : "ltr"} />
+      <div className="usage-scope-toolbar" aria-label={tr("Evidence investigation filters", "مرشحات استقصاء الأدلة")}>
+        <span className="eyebrow">{tr("SCOPE / FILTERS", "النطاق / المرشحات")}</span>
+        <ApplicationPicker label={tr("Application scope", "نطاق التطبيق")} value={applicationId} onChange={(value) => { setApplicationId(value); setTenantId(""); setSelected(null); }} options={applicationOptions} placeholder={tr("All applications", "كل التطبيقات")} searchLabel={tr("Search applications", "ابحث عن التطبيقات")} emptyLabel={tr("No application records", "لا توجد سجلات تطبيقات")} locale={locale} dir={ar ? "rtl" : "ltr"} />
+        <TenantPicker label={tr("Tenant scope", "نطاق المستأجر")} value={tenantId} onChange={(value) => { setTenantId(value); setSelected(null); }} options={tenantOptions} placeholder={applicationId ? tr("All tenants", "كل المستأجرين") : tr("Select application first", "اختر التطبيق أولاً")} searchLabel={tr("Search tenants", "ابحث عن المستأجرين")} emptyLabel={tr("No tenant records", "لا توجد سجلات مستأجرين")} locale={locale} dir={ar ? "rtl" : "ltr"} disabled={!applicationId || !tenantOptions.length} />
+        <TextInput label={tr("Search captured evidence", "ابحث في الأدلة المسجلة")} type="search" value={query} onChange={setQuery} placeholder={tr("Provider, model, trace, digest…", "المزوّد أو النموذج أو التتبّع أو البصمة…")} dir={ar ? "rtl" : "ltr"} />
         <SearchableSelect label={tr("Provider", "المزوّد")} value={provider} onChange={setProvider} options={providerOptions} placeholder={tr("All providers", "كل المزوّدين")} searchLabel={tr("Search providers", "ابحث عن مزوّد")} emptyLabel={tr("No matching provider", "لا يوجد مزوّد مطابق")} locale={locale} dir={ar ? "rtl" : "ltr"} />
         <SearchableSelect label={tr("Usage state", "حالة الاستخدام")} value={usageState} onChange={setUsageState} options={stateOptions} placeholder={tr("All states", "كل الحالات")} searchLabel={tr("Search states", "ابحث عن حالة")} emptyLabel={tr("No matching state", "لا توجد حالة مطابقة")} locale={locale} dir={ar ? "rtl" : "ltr"} />
         <small>{tr("Provider attempt and receipt records · bounded latest page · read only", "سجلات محاولات المزوّد والإيصالات · أحدث صفحة محدودة · للقراءة فقط")}</small>
       </div>
+      <section className="usage-summary" aria-label={tr("Metering summary", "ملخص القياس")}>
+      <span className="eyebrow">{tr("SOURCE-BACKED SUMMARY", "ملخص موثق بالمصدر")}</span>
+      {!attempts.length && !events.length ? <div className="usage-summary-empty"><strong>{tr("DORMANT · NO SOURCE EVIDENCE", "خامل · لا توجد أدلة مصدر")}</strong><span>{tr("Available: scoped OIC sources · Awaiting: provider attempts and usage receipts · Unknown usage is not inferred", "متاح: مصادر OIC محددة النطاق · بانتظار: محاولات المزوّد وإيصالات الاستخدام · لا يُستنتج الاستخدام المجهول")}</span></div> :
       <div className="metrics-grid">
-        <article className="metric-card"><p>{tr("Provider attempts", "محاولات المزوّد")}</p><strong>{attempts.length || "â€”"}</strong><small>{tr("latest bounded page", "أحدث صفحة محدودة")}</small></article>
-        <article className="metric-card"><p>{tr("Usage receipts", "إيصالات الاستخدام")}</p><strong>{events.length || "â€”"}</strong><small>{tr("source-backed observations", "ملاحظات موثقة بالمصدر")}</small></article>
-        <article className="metric-card"><p>{tr("Unknown usage", "استخدام غير معروف")}</p><strong>{attempts.length ? unknownAttempts.length : "â€”"}</strong><small>{tr("not treated as zero", "لا يُعامل كصفر")}</small></article>
-        <article className="metric-card"><p>{tr("Partial evidence", "الدليل الجزئي")}</p><strong>{events.length ? partialUsageCount : "â€”"}</strong><small>{tr("source-reported partial status", "حالة جزئية مبلّغ عنها من المصدر")}</small></article>
-        <article className="metric-card"><p>{tr("Latest receipt", "أحدث إيصال")}</p><strong className="usage-latest-time">{latestRecorded ?? "â€”"}</strong><small>{tr("recorded time", "وقت التسجيل")}</small></article>
+        <article className="metric-card"><p>{tr("Provider attempts", "محاولات المزوّد")}</p><strong>{attempts.length || "—"}</strong><small>{attempts.length ? tr("records in latest bounded page", "سجلات في أحدث صفحة محدودة") : tr("No source records in scope", "لا توجد سجلات مصدر ضمن النطاق")}</small></article>
+        <article className="metric-card"><p>{tr("Usage receipts", "إيصالات الاستخدام")}</p><strong>{events.length || "—"}</strong><small>{events.length ? tr("source-backed observations", "ملاحظات موثقة بالمصدر") : tr("No receipts in scope", "لا توجد إيصالات ضمن النطاق")}</small></article>
+        <article className="metric-card"><p>{tr("Unknown usage", "استخدام غير معروف")}</p><strong>{attempts.length ? unknownAttempts.length : "—"}</strong><small>{tr("unknown is not treated as zero", "الاستخدام المجهول لا يُعامل كصفر")}</small></article>
+        <article className="metric-card"><p>{tr("Partial evidence", "الدليل الجزئي")}</p><strong>{events.length ? partialUsageCount : "—"}</strong><small>{tr("source-reported partial status", "حالة جزئية مبلّغ عنها من المصدر")}</small></article>
+        <article className="metric-card"><p>{tr("Latest receipt", "أحدث إيصال")}</p><strong className="usage-latest-time">{latestRecorded ?? "—"}</strong><small>{tr("recorded time", "وقت التسجيل")}</small></article>
       </div>
+      }
+      </section>
       <section className="usage-evidence-pipeline" aria-label={tr("Usage evidence pipeline", "مسار أدلة الاستخدام")}>
-        {[{ label: tr("Execution", "التنفيذ"), value: attempts.filter((item) => typeof item.executionId === "string").length, available: attempts.length > 0 }, { label: tr("Provider attempt", "محاولة المزوّد"), value: attempts.length, available: attempts.length > 0 }, { label: tr("Provider response", "استجابة المزوّد"), value: attempts.filter((item) => Boolean(item.completedAt || item.safeErrorCode)).length, available: attempts.length > 0 }, { label: tr("Usage receipt", "إيصال الاستخدام"), value: events.length, available: events.length > 0 }, { label: tr("Normalized dimensions", "الأبعاد الموحّدة"), value: receiptDimensionCount, available: events.length > 0 }].map((stage, index, stages) => <div className="usage-pipeline-stage" key={stage.label}><span className="eyebrow">{String(index + 1).padStart(2, "0")} / {stage.label}</span><strong>{stage.available ? stage.value : "â€”"}</strong><small>{stage.available ? tr("source observed", "مرصود بالمصدر") : tr("not present in bounded source page", "غير موجود في صفحة المصدر المحدودة")}</small>{index < stages.length - 1 && <span className="usage-pipeline-arrow" aria-hidden="true">â†’</span>}</div>)}
+        {[{ label: tr("Execution", "التنفيذ"), value: attempts.filter((item) => typeof item.executionId === "string").length, available: attempts.length > 0 }, { label: tr("Provider attempt", "محاولة المزوّد"), value: attempts.length, available: attempts.length > 0 }, { label: tr("Provider response", "استجابة المزوّد"), value: attempts.filter((item) => Boolean(item.completedAt || item.safeErrorCode)).length, available: attempts.length > 0 }, { label: tr("Usage receipt", "إيصال الاستخدام"), value: events.length, available: events.length > 0 }, { label: tr("Normalized dimensions", "الأبعاد الموحّدة"), value: receiptDimensionCount, available: events.length > 0 }].map((stage, index, stages) => <div className="usage-pipeline-stage" key={stage.label}><span className="eyebrow">{String(index + 1).padStart(2, "0")} / {stage.label}</span><strong>{stage.available ? stage.value : "—"}</strong><small>{stage.available ? tr("source observed", "مرصود بالمصدر") : tr("DORMANT · no source evidence", "خامل · لا توجد أدلة مصدر")}</small>{index < stages.length - 1 && <span className="usage-pipeline-arrow" aria-hidden="true">→</span>}</div>)}
         {unknownAttempts.length > 0 && <div className="usage-liability-branch"><span className="eyebrow">{tr("UNKNOWN / LIABILITY PENDING", "غير معروف / التزام قيد الانتظار")}</span><strong>{unknownAttempts.length}</strong><small>{tr("uncertain source attempts; no amount inferred", "محاولات مصدر غير مؤكدة؛ لا يُستنتج مبلغ")}</small></div>}
       </section>
-      <section className="panel"><div className="panel-heading"><div><h3>{tr("Provider attempts", "محاولات المزوّد")}</h3><p>{tr("Execution attempts can remain uncertain when provider dispatch or usage cannot be confirmed.", "قد تبقى حالة المحاولة غير مؤكدة عندما يتعذر تأكيد الإرسال أو الاستخدام.")}</p></div></div>
+      <section className="usage-investigation-workspace" aria-label={tr("Usage evidence investigation", "استقصاء أدلة الاستخدام")}>
+      <section className={`panel usage-event-panel usage-attempts-panel${attempts.length ? "" : " usage-no-records"}`}><div className="panel-heading"><div><span className="eyebrow">{tr("EXECUTION → ATTEMPT", "التنفيذ ← المحاولة")}</span><h3>{tr("Provider attempts", "محاولات المزوّد")}</h3><p>{tr("Select an attempt to focus its related receipts.", "اختر محاولة لعرض إيصالاتها المرتبطة.")}</p></div></div>
         <div className="table-frame"><table><thead><tr>{[tr("Started", "بدأت"), tr("Provider", "المزوّد"), tr("Upstream model", "النموذج المزوّد"), tr("State", "الحالة"), tr("Usage", "الاستخدام"), tr("Evidence", "الأدلة")].map((label) => <th key={label}>{label}</th>)}</tr></thead><tbody>
-          {visibleAttempts.map((item) => <tr key={text(item.id)}><td><ActionButton variant="quiet" onPress={() => setSelected(item)}>{text(item.startedAt)}</ActionButton></td><td>{text(item.providerKey)}</td><td>{text(item.upstreamModelId)}</td><td>{text(item.status)}</td><td>{text(item.usageStatus)}</td><td>{text((item._count as UsageRow | undefined)?.usageEvents)}</td></tr>)}
+          {visibleAttempts.map((item) => <tr key={text(item.id)} aria-selected={Boolean(selected && !selectedIsEvent && selected.id === item.id)}><td><ActionButton variant="quiet" onPress={() => setSelected(item)}>{text(item.startedAt)}</ActionButton></td><td>{text(item.providerKey)}</td><td>{text(item.upstreamModelId)}</td><td>{text(item.status)}</td><td>{text(item.usageStatus)}</td><td>{text((item._count as UsageRow | undefined)?.usageEvents)}</td></tr>)}
           {!attempts.length && <tr><td colSpan={6}>{tr("No provider attempts have been captured.", "لم تُسجّل محاولات مزوّد بعد.")}</td></tr>}
         </tbody></table></div>
       </section>
-      <section className="panel"><div className="panel-heading"><div><h3>{tr("Provider usage receipts", "إيصالات استخدام المزوّد")}</h3><p>{tr("Only allowlisted numeric usage fields are retained; raw provider responses and credentials are never stored here.", "تُحفظ حقول الاستخدام الرقمية المسموح بها فقط؛ لا تُخزّن استجابات المزوّد الخام أو بيانات الاعتماد هنا.")}</p></div></div>
-        <div className="table-frame"><table><thead><tr>{[tr("Recorded", "وقت التسجيل"), tr("Provider", "المزوّد"), tr("Transport", "النقل"), tr("Sequence", "التسلسل"), tr("Normalized usage", "الاستخدام الموحّد"), tr("Source digest", "بصمة المصدر")].map((label) => <th key={label}>{label}</th>)}</tr></thead><tbody>
-          {visibleEvents.map((item) => <tr key={text(item.id)}><td><ActionButton variant="quiet" onPress={() => setSelected(item)}>{text(item.recordedAt)}</ActionButton></td><td>{text(item.providerKey)}</td><td>{text(item.transportProfile)}</td><td>{text(item.receiptSequence)}</td><td><code>{JSON.stringify(item.normalizedDimensions ?? {})}</code></td><td><code>{text(item.sourceDigest).slice(0, 12)}â€¦</code></td></tr>)}
+      <section className={`panel usage-event-panel usage-receipts-panel${events.length ? "" : " usage-no-records"}`}><div className="panel-heading"><div><span className="eyebrow">{tr("RESPONSE → USAGE RECEIPT", "الاستجابة ← إيصال الاستخدام")}</span><h3>{tr("Provider usage receipts", "إيصالات استخدام المزوّد")}</h3><p>{selected && !selectedIsEvent ? tr("Receipts related to the selected attempt.", "الإيصالات المرتبطة بالمحاولة المحددة.") : tr("Select a receipt to inspect normalized dimensions and provenance.", "اختر إيصالاً لفحص الأبعاد الموحدة ومصدرها.")}</p></div></div>
+        <div className="table-frame"><table><thead><tr>{[tr("Recorded", "وقت التسجيل"), tr("Provider", "المزوّد"), tr("Transport", "النقل"), tr("Sequence", "التسلسل"), tr("Normalized usage", "الاستخدام الموحّد"), tr("Evidence", "الدليل")].map((label) => <th key={label}>{label}</th>)}</tr></thead><tbody>
+          {visibleEvents.map((item) => <tr key={text(item.id)} aria-selected={Boolean(selectedIsEvent && selected?.id === item.id)}><td><ActionButton variant="quiet" onPress={() => setSelected(item)}>{text(item.recordedAt)}</ActionButton></td><td>{text(item.providerKey)}</td><td>{text(item.transportProfile)}</td><td>{text(item.receiptSequence)}</td><td><code>{JSON.stringify(item.normalizedDimensions ?? {})}</code></td><td><ActionButton variant="quiet" onPress={() => setSelected(item)}>{tr("Inspect evidence", "افحص الدليل")}</ActionButton></td></tr>)}
           {!events.length && <tr><td colSpan={6}>{tr("No provider usage receipts have been reported.", "لم يبلّغ المزوّد عن إيصالات استخدام بعد.")}</td></tr>}
         </tbody></table></div>
+      </section>
       </section>
       {!attempts.length && !events.length && <section className="usage-empty-state"><span className="eyebrow">{tr("NO SOURCE EVIDENCE", "لا توجد أدلة مصدر")}</span><h3>{tr("No provider usage evidence has been captured yet.", "لم يتم تسجيل دليل استخدام من المزوّد بعد.")}</h3><p>{tr("A runtime execution can produce reportable provider usage. Missing usage is not inferred; an uncertain dispatch can leave provider liability unknown.", "قد ينتج التنفيذ بيانات استخدام أبلغ عنها المزوّد. لا يُستنتج الاستخدام المفقود؛ وقد يترك الإرسال غير المؤكد التزام المزوّد مجهولاً.")}</p><div><ActionButton variant="secondary" onPress={() => navigate("runtime")}>{tr("Open Runtime Lab", "افتح مختبر التشغيل")}</ActionButton><ActionButton variant="quiet" onPress={() => navigate("traces")}>{tr("Open Execution Traces", "افتح آثار التنفيذ")}</ActionButton><ActionButton variant="quiet" onPress={() => void load()}>{tr("Refresh evidence", "حدّث الأدلة")}</ActionButton></div></section>}
     </>}

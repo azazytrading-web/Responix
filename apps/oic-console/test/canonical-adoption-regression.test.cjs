@@ -80,7 +80,9 @@ test("OIC-6 operator workspaces use canonical selection and inspection controls"
   const rating = source("features/operations/customer-rating-view.tsx");
 
   assert.match(usage, /SearchableSelect/);
-  assert.match(usage, /usage-investigation-tools/);
+  assert.match(usage, /usage-scope-toolbar/);
+  assert.match(usage, /usage-investigation-workspace/);
+  assert.match(usage, /row\.providerAttemptId !== selected\.id/);
   assert.match(economics, /<Inspector/);
   assert.match(economics, /economics-source-explorer/);
   assert.match(admission, /ApplicationPicker/);
@@ -90,13 +92,23 @@ test("OIC-6 operator workspaces use canonical selection and inspection controls"
   assert.match(admission, /<MultiSelect label=\{tr\("Entitled Oi models"/);
   assert.match(admission, /edition\.visibility/);
   assert.doesNotMatch(admission, /Entitled Oi model IDs, comma separated/);
-  assert.match(admission, /server policy precedence/);
+  assert.match(admission, /not an admission simulation/);
+  assert.match(admission, /admission-control-workspace/);
+  assert.match(admission, /admission-consequence-rail/);
+  assert.match(admission, /activeHistory/);
+  assert.match(admission, /data-active-history=\{activeHistory\}/);
+  assert.match(usage, /ApplicationPicker/);
+  assert.match(usage, /TenantPicker/);
+  assert.match(usage, /applicationId/);
   assert.match(rating, /ApplicationPicker/);
   assert.match(rating, /TenantPicker/);
   assert.match(rating, /RevisionPicker/);
   assert.match(rating, /EntityPicker label=\{tr\("Captured usage event"/);
   assert.match(rating, /RATING EVIDENCE ONLY/);
   assert.match(rating, /Timeline/);
+  assert.match(rating, /activeSurface/);
+  assert.match(rating, /data-active-surface=\{activeSurface\}/);
+  assert.match(rating, /data-active-history=\{activeHistory\}/);
   assert.match(usage, /<EconomicFlowStrip current="usage"/);
   assert.match(usage, /usage-evidence-pipeline/);
   assert.match(usage, /UNKNOWN \/ LIABILITY PENDING/);

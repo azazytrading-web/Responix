@@ -23,6 +23,7 @@ import { OverviewView } from "./features/overview/overview-view";
 import { AuditView } from "./features/operations/audit-view";
 import { HealthView } from "./features/operations/health-view";
 import { UsageEvidenceView } from "./features/operations/usage-evidence-view";
+import { EconomicsView } from "./features/operations/economics-view";
 import { IntelligenceCenter } from "./features/intelligence/intelligence-center";
 import { RuntimeWorkspace, TracesWorkspace, WorkbenchWorkspace } from "./features/intelligence/lab-workspaces";
 import type { RuntimeModel } from "./features/intelligence/lab-workspaces";
@@ -1080,6 +1081,7 @@ export default function ConsoleApp({ platformUrl }: { platformUrl: string }) {
             loadAudit={loadAudit}
           />
           <UsageEvidenceView view={view} locale={locale} />
+          <EconomicsView view={view} locale={locale} />
           <footer className="content-footer">
             <span>OIC · {t.independentPlatform}</span>
             <span>

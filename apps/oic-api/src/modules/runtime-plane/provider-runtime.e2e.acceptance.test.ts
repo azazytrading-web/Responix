@@ -23,6 +23,7 @@ import { IntelligenceWorkbenchService } from "./intelligence-workbench.service";
 import { IntelligenceDataService } from "../intelligence/intelligence-data.service";
 import { IntelligenceProfileService } from "../intelligence/intelligence-profile.service";
 import { Oic5AcceptanceLedger } from "./oic5-acceptance-ledger";
+import { EconomicsService } from "../economics/economics.service";
 
 function useDedicatedDatabase(): boolean {
   const file = resolve(__dirname, "../../../../../.env.oic.local");
@@ -1243,6 +1244,17 @@ void test("Native Runtime and compatibility execute through the DB resolver, pro
       assert.deepEqual(streamAttempt.usageEvents[0]?.rawDimensions, { prompt_tokens: 7, completion_tokens: 3, "prompt_tokens_details.cached_tokens": 2 });
       assert.equal(JSON.stringify(streamAttempt).includes("e2e-only-secret"), false);
       assert.equal(await db.oicProviderAttempt.count({ where: { applicationId: foreignApplicationId } }), 0);
+      const economics = new EconomicsService(db);
+      const economicsActor = { ...actor, scopes: [...actor.scopes, "oic:economics:manage"] };
+      const eventId = streamAttempt.usageEvents[0].id;
+      const cost = await economics.assessProviderCost(economicsActor, eventId);
+      const oiu = await economics.assessOiu(economicsActor, eventId);
+      assert.equal(cost.status, "UNKNOWN", "without provider event time or a published rate, provider expense is unknown");
+      assert.equal(cost.nativeAmount, null);
+      assert.equal(cost.evidenceClass, "UNKNOWN");
+      assert.equal(oiu.status, "UNKNOWN", "without a published OIU policy and provider event time, no OIU is posted");
+      assert.equal(oiu.oiu, null);
+      assert.equal(oiu.posting, null);
     });
 
     const compatibility = new OpenAICompatibilityController(runtime);
@@ -1280,6 +1292,15 @@ void test("Native Runtime and compatibility execute through the DB resolver, pro
   } finally {
     const evidenceApplicationIds = [appId, foreignApplicationId, backtrackApplicationId].filter((id): id is string => Boolean(id));
     if (evidenceApplicationIds.length) {
+      const events = await db.oicUsageEvent.findMany({ where: { applicationId: { in: evidenceApplicationIds } }, select: { id: true } }).catch(() => []);
+      const eventIds = events.map(({ id }) => id);
+      if (eventIds.length) {
+        const assessments = await db.oicOiuAssessment.findMany({ where: { usageEventId: { in: eventIds } }, select: { id: true } }).catch(() => []);
+        const assessmentIds = assessments.map(({ id }) => id);
+        if (assessmentIds.length) await db.oicOiuPosting.deleteMany({ where: { assessmentId: { in: assessmentIds } } }).catch(() => undefined);
+        await db.oicProviderCostAssessment.deleteMany({ where: { usageEventId: { in: eventIds } } }).catch(() => undefined);
+        await db.oicOiuAssessment.deleteMany({ where: { usageEventId: { in: eventIds } } }).catch(() => undefined);
+      }
       await db.oicUsageEvent.deleteMany({ where: { applicationId: { in: evidenceApplicationIds } } }).catch(() => undefined);
       await db.oicProviderAttempt.deleteMany({ where: { applicationId: { in: evidenceApplicationIds } } }).catch(() => undefined);
     }

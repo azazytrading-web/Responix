@@ -62,6 +62,18 @@ export type OicRawUsageEvidence = {
   internalComputeUnits?: number;
   retrievalUnits?: number;
   toolUnits?: number;
+  imageInputUnits?: number;
+  imageOutputUnits?: number;
+  audioInputSeconds?: number;
+  audioOutputSeconds?: number;
+  videoSeconds?: number;
+  embeddingTokens?: number;
+  rerankUnits?: number;
+  requestUnits?: number;
+  cacheWriteTokens?: number;
+  batchTokens?: number;
+  priorityTokens?: number;
+  storageByteHours?: number;
 };
 
 export type OicRuntimeOutput = {

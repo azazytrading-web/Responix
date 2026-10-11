@@ -3,8 +3,8 @@ import { Injectable } from "@nestjs/common";
 import type { OicRawUsageEvidence, OicRuntimeContext } from "@oic/contracts";
 import { OicDatabaseService } from "@oic/database";
 
-const USAGE_FIELDS = ["inputTokens", "cachedInputTokens", "outputTokens", "reasoningTokens", "internalComputeUnits", "retrievalUnits", "toolUnits"] as const;
-const RAW_USAGE_FIELDS = ["prompt_tokens", "completion_tokens", "prompt_tokens_details.cached_tokens", "completion_tokens_details.reasoning_tokens", "input_tokens", "output_tokens", "input_tokens_details.cached_tokens", "output_tokens_details.reasoning_tokens"] as const;
+const USAGE_FIELDS = ["inputTokens", "cachedInputTokens", "outputTokens", "reasoningTokens", "internalComputeUnits", "retrievalUnits", "toolUnits", "imageInputUnits", "imageOutputUnits", "audioInputSeconds", "audioOutputSeconds", "videoSeconds", "embeddingTokens", "rerankUnits", "requestUnits", "cacheWriteTokens", "batchTokens", "priorityTokens", "storageByteHours"] as const;
+const RAW_USAGE_FIELDS = ["prompt_tokens", "completion_tokens", "prompt_tokens_details.cached_tokens", "completion_tokens_details.reasoning_tokens", "input_tokens", "output_tokens", "input_tokens_details.cached_tokens", "output_tokens_details.reasoning_tokens", "image_input_units", "image_output_units", "audio_input_seconds", "audio_output_seconds", "video_seconds", "embedding_tokens", "rerank_units", "request_units", "cache_write_tokens", "batch_tokens", "priority_tokens", "storage_byte_hours"] as const;
 type UsageField = typeof USAGE_FIELDS[number];
 type SafeUsage = Partial<Record<UsageField, number>>;
 

@@ -32,7 +32,7 @@ type Props = {
 type EntityKind = "application" | "tenant" | "principal";
 type Command = { title: string; target: string; consequence: string; action: string; values: Row; diff?: { current: string[]; proposed: string[]; added: string[]; removed: string[] } };
 
-const scopes = ["oic:applications:read", "oic:applications:manage", "oic:tenants:read", "oic:tenants:manage", "oic:principals:read", "oic:principals:manage", "oic:credentials:rotate", "oic:credentials:revoke", "oic:audit:read", "oic:providers:read", "oic:providers:manage", "oic:connections:manage", "oic:catalog:read", "oic:catalog:manage", "oic:models:read", "oic:models:manage", "oic:runtime:invoke", "oic:runtime:models:read", "oic:usage:evidence:read"];
+const scopes = ["oic:applications:read", "oic:applications:manage", "oic:tenants:read", "oic:tenants:manage", "oic:principals:read", "oic:principals:manage", "oic:credentials:rotate", "oic:credentials:revoke", "oic:audit:read", "oic:providers:read", "oic:providers:manage", "oic:connections:manage", "oic:catalog:read", "oic:catalog:manage", "oic:models:read", "oic:models:manage", "oic:runtime:invoke", "oic:runtime:models:read", "oic:usage:evidence:read", "oic:economics:read", "oic:economics:manage"];
 const rowArray = (value: unknown): Row[] => Array.isArray(value) ? value.filter((row): row is Row => Boolean(row && typeof row === "object")) : [];
 const idOf = (row: Row) => safeText(row.id);
 const liveStatus = (row: Row) => textOr(row.status, "UNKNOWN");

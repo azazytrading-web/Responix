@@ -66,6 +66,23 @@ export async function GET(request: Request) {
       return NextResponse.json({ error: "Audit source is unavailable." }, { status: 503, headers: { "Cache-Control": "no-store" } });
     }
   }
+  if (view === "economics") {
+    try {
+      const headers = { Authorization: `Bearer ${controlPlaneCredential()}` };
+      const [costs, oiu, rateBooks, policies] = await Promise.all([
+        fetch(apiUrl("/api/v1/admin/economics/costs?limit=50"), { headers, cache: "no-store", signal: AbortSignal.timeout(8000) }),
+        fetch(apiUrl("/api/v1/admin/economics/oiu?limit=50"), { headers, cache: "no-store", signal: AbortSignal.timeout(8000) }),
+        fetch(apiUrl("/api/v1/admin/economics/rate-books"), { headers, cache: "no-store", signal: AbortSignal.timeout(8000) }),
+        fetch(apiUrl("/api/v1/admin/economics/policies"), { headers, cache: "no-store", signal: AbortSignal.timeout(8000) })
+      ]);
+      const readJson = async (response: Response): Promise<unknown> => response.json().catch(() => null);
+      const [costBody, oiuBody, rateBody, policyBody] = await Promise.all([costs, oiu, rateBooks, policies].map(readJson));
+      const response = [costs, oiu, rateBooks, policies].find((item) => !item.ok);
+      return NextResponse.json({ costs: costBody, oiu: oiuBody, rateBooks: rateBody, policies: policyBody }, { status: response?.status ?? 200, headers: { "Cache-Control": "no-store" } });
+    } catch {
+      return NextResponse.json({ error: "Economics evidence is unavailable." }, { status: 503, headers: { "Cache-Control": "no-store" } });
+    }
+  }
   const path = view === "snapshot" ? "/api/v1/admin/console/snapshot" : view === "profiles" ? "/api/v1/admin/intelligence/profiles" : view === "profile-detail" && profileId && /^[0-9a-f-]{36}$/i.test(profileId) ? `/api/v1/admin/intelligence/profiles/${profileId}` : view === "engines" ? "/api/v1/admin/intelligence/engines" : null;
   const params = new URL(request.url).searchParams;
   const resource = view === "memory" ? "memory" : view === "knowledge" ? "knowledge" : view === "executions" || view === "traces" ? "executions" : null;

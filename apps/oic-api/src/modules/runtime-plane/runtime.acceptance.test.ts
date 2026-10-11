@@ -44,6 +44,10 @@ function prepareDedicatedDatabase(): boolean {
 
 const hasDedicatedDatabase = prepareDedicatedDatabase();
 
+void test("runtime credentials do not inherit usage-read or economics-management authority", () => {
+  assert.deepEqual(OIC_RUNTIME_SCOPES, ["oic:runtime:invoke", "oic:runtime:models:read"]);
+});
+
 void test("Native Runtime request schema rejects identity spoofing and bounds identifiers", () => {
   const base = { model: "oi-1.7", input: [{ speaker: "user", content: [{ type: "text", text: "hello" }] }] };
   assert.equal(parseOicRuntimeRequest(base).model, "oi-1.7");

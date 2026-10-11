@@ -47,7 +47,9 @@ const supportedScope = (value: unknown) =>
     "oic:models:manage",
     "oic:runtime:invoke",
     "oic:runtime:models:read",
-    "oic:usage:evidence:read"
+    "oic:usage:evidence:read",
+    "oic:economics:read",
+    "oic:economics:manage"
   ].includes(String(value));
 
 export async function POST(request: Request) {

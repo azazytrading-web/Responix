@@ -1,5 +1,5 @@
 import { createHash, randomUUID } from "node:crypto";
-import { Inject, Injectable } from "@nestjs/common";
+import { Inject, Injectable, Optional } from "@nestjs/common";
 import { Prisma, OicDatabaseService } from "@oic/database";
 import type {
   OicModelResolver, OicRawUsageEvidence, OicResolvedModel, OicRuntimeContext,
@@ -13,13 +13,14 @@ import { OIC_MODEL_RESOLVER } from "./model-resolver";
 import { OIC_RUNTIME_EXECUTOR } from "./runtime-executor";
 import { OIC_RUNTIME_POLICY } from "./runtime-policy";
 import { OicRuntimeException, runtimeErrorMessage } from "./runtime-errors";
+import { AdmissionService } from "../admission/admission.service";
 
 const OPERATION = "native.invoke.v1";
-export type RuntimeOperation = typeof OPERATION | "compat.chat.v1" | "compat.responses.v1";
+export type RuntimeOperation = typeof OPERATION | "native.stream.v1" | "compat.chat.v1" | "compat.responses.v1";
 const MODEL_ID = /^oi-[a-z0-9]+(?:[._-][a-z0-9]+)*$/i;
 const MAX_OUTPUT_CHARACTERS = 1_000_000;
 
-type Prepared = { context: OicRuntimeContext; policy: OicRuntimePolicyDecision };
+type Prepared = { context: OicRuntimeContext; policy: OicRuntimePolicyDecision; admissionKey?: string };
 type Claim = { kind: "claimed"; id: string } | { kind: "running" } | { kind: "replayed"; response: OicRuntimeResponse };
 type ManagedAbortController = AbortController & { oicTimer?: NodeJS.Timeout; oicParent?: AbortSignal; oicParentListener?: () => void };
 
@@ -58,23 +59,26 @@ export class OicRuntimeService {
     private readonly contexts: RuntimeContextResolver,
     @Inject(OIC_MODEL_RESOLVER) private readonly resolver: OicModelResolver,
     @Inject(OIC_RUNTIME_EXECUTOR) private readonly executor: OicRuntimeExecutor,
-    @Inject(OIC_RUNTIME_POLICY) private readonly policy: OicRuntimePolicy
+    @Inject(OIC_RUNTIME_POLICY) private readonly policy: OicRuntimePolicy,
+    @Optional() private readonly admissions?: AdmissionService
   ) {}
 
   async invoke(actor: AuthenticatedPrincipal, request: OicRuntimeRequest, identity: RuntimeRequestIdentity, idempotencyKey?: string, signal?: AbortSignal, operation: RuntimeOperation = OPERATION): Promise<OicRuntimeResponse> {
     const prepared = await this.prepare(actor, request, identity);
-    if (!idempotencyKey) return this.execute(prepared, request, signal);
-    if (idempotencyKey.length > 128 || !/^[A-Za-z0-9._:-]{1,128}$/.test(idempotencyKey)) throw new OicRuntimeException("INVALID_REQUEST");
+    if (idempotencyKey !== undefined && (idempotencyKey.length > 128 || !/^[A-Za-z0-9._:-]{1,128}$/.test(idempotencyKey))) throw new OicRuntimeException("INVALID_REQUEST");
+    const keyed = { ...prepared, admissionKey: idempotencyKey ?? randomUUID() };
+    if (!idempotencyKey) return this.execute(keyed, request, signal, operation);
     const requestHash = createHash("sha256").update(canonical({ operation, request, applicationId: prepared.context.applicationId, tenantId: prepared.context.tenantId })).digest("hex");
-    return this.executeIdempotently(actor, prepared, request, idempotencyKey, requestHash, operation, signal);
+    return this.executeIdempotently(actor, keyed, request, idempotencyKey, requestHash, operation, signal);
   }
 
   async stream(actor: AuthenticatedPrincipal, request: OicRuntimeRequest, identity: RuntimeRequestIdentity, idempotencyKey: string | undefined, signal?: AbortSignal): Promise<AsyncIterable<OicRuntimeStreamEvent>> {
     if (idempotencyKey !== undefined) throw new OicRuntimeException("STREAMING_IDEMPOTENCY_UNSUPPORTED");
-    const prepared = await this.prepare(actor, request, identity);
+    const prepared = { ...(await this.prepare(actor, request, identity)), admissionKey: randomUUID() };
     const model = await this.resolveModel(request, prepared.context, "text.stream");
+    const admitted = await this.admit(prepared, request, "native.stream.v1");
     const responseId = randomUUID();
-    return this.streamEvents(prepared, request, model, responseId, signal);
+    return this.streamEvents(admitted, request, model, responseId, signal);
   }
 
   private async *streamEvents(prepared: Prepared, request: OicRuntimeRequest, model: OicResolvedModel, responseId: string, parentSignal?: AbortSignal): AsyncIterable<OicRuntimeStreamEvent> {
@@ -82,6 +86,7 @@ export class OicRuntimeService {
     const startedAt = Date.now();
     let outputText = "";
     let usage: OicRawUsageEvidence | undefined;
+    let settled = false;
     try {
       yield { type: "response.started", responseId, model: request.model, requestId: prepared.context.requestId, traceId: prepared.context.traceId };
       const iterator = this.executor.stream(model, request, prepared.context, controller.signal)[Symbol.asyncIterator]();
@@ -107,12 +112,17 @@ export class OicRuntimeService {
         requestId: prepared.context.requestId, traceId: prepared.context.traceId,
         execution: { runtimeVersion: "1", durationMs: Date.now() - startedAt }
       };
+      if (prepared.context.admissionId && this.admissions) { await this.admissions.settle(prepared.context.admissionId, response.usage ?? null); settled = true; }
       yield { type: "response.completed", response };
     } catch (error) {
       if (controller.signal.aborted) return;
       const safe = safeExecutionError(error);
+      if (prepared.context.admissionId && this.admissions && !settled) { await this.admissions.uncertain(prepared.context.admissionId).catch(() => undefined); settled = true; }
       yield { type: "response.error", error: { code: safe.code, message: runtimeErrorMessage(safe.code), requestId: prepared.context.requestId, traceId: prepared.context.traceId } };
-    } finally { this.disposeExecutionSignal(controller, parentSignal); }
+    } finally {
+      if (prepared.context.admissionId && this.admissions && !settled) await this.admissions.uncertain(prepared.context.admissionId).catch(() => undefined);
+      this.disposeExecutionSignal(controller, parentSignal);
+    }
   }
 
   async listVisibleModels(actor: AuthenticatedPrincipal, tenant: OicRuntimeRequest["tenant"], identity: RuntimeRequestIdentity): Promise<{ context: OicRuntimeContext; models: OicVisibleModel[] }> {
@@ -142,17 +152,21 @@ export class OicRuntimeService {
     return model;
   }
 
-  private async execute(prepared: Prepared, request: OicRuntimeRequest, signal?: AbortSignal): Promise<OicRuntimeResponse> {
+  private async execute(prepared: Prepared, request: OicRuntimeRequest, signal?: AbortSignal, operation: RuntimeOperation = OPERATION): Promise<OicRuntimeResponse> {
     const model = await this.resolveModel(request, prepared.context, "text.generate");
+    const admitted = await this.admit(prepared, request, operation);
     const controller = this.executionSignal(prepared.policy.maxExecutionMs, signal);
     const startedAt = Date.now();
     try {
       let result: OicRuntimeExecutionResult;
-      try { result = await this.executor.execute(model, request, prepared.context, controller.signal); }
-      catch (error) { throw safeExecutionError(error); }
+      try { result = await this.executor.execute(model, request, admitted.context, controller.signal); }
+      catch (error) {
+        if (admitted.context.admissionId && this.admissions) await this.admissions.uncertain(admitted.context.admissionId).catch(() => undefined);
+        throw safeExecutionError(error);
+      }
       if (controller.signal.aborted) throw new OicRuntimeException("RUNTIME_UNAVAILABLE");
       if (result.outputText.length > MAX_OUTPUT_CHARACTERS) throw new OicRuntimeException("RUNTIME_UNAVAILABLE");
-      return {
+      const response: OicRuntimeResponse = {
         object: "oic.runtime.response", id: randomUUID(), model: request.model,
         output: [{ role: "assistant", content: [{ type: "text", text: result.outputText }] }],
         finishReason: result.finishReason,
@@ -160,6 +174,8 @@ export class OicRuntimeService {
         requestId: prepared.context.requestId, traceId: prepared.context.traceId,
         execution: { runtimeVersion: "1", durationMs: Date.now() - startedAt }
       };
+      if (admitted.context.admissionId && this.admissions) await this.admissions.settle(admitted.context.admissionId, response.usage ?? null);
+      return response;
     } finally { this.disposeExecutionSignal(controller, signal); }
   }
 
@@ -174,7 +190,7 @@ export class OicRuntimeService {
       if (claim.kind === "replayed") return claim.response;
       if (claim.kind === "running") { await new Promise((resolve) => setTimeout(resolve, 30)); continue; }
       try {
-        const response = await this.execute(prepared, request, signal);
+        const response = await this.execute(prepared, request, signal, operation);
         const saved = await this.db.oicIdempotencyRecord.updateMany({
           where: { id: claim.id, status: "IN_PROGRESS", requestHash },
           data: { status: "COMPLETED", result: response }
@@ -187,6 +203,16 @@ export class OicRuntimeService {
       }
     }
     throw new OicRuntimeException("IDEMPOTENCY_IN_PROGRESS");
+  }
+
+  private async admit(prepared: Prepared, request: OicRuntimeRequest, operation: RuntimeOperation): Promise<Prepared> {
+    if (!this.admissions || !prepared.admissionKey) return prepared;
+    const inputBytes = Buffer.byteLength(request.input.flatMap((message) => message.content.map((part) => part.text)).join(""), "utf8");
+    const result = await this.admissions.admit(prepared.context, request, operation, prepared.admissionKey, {
+      requestUnits: "1", inputTokens: String(inputBytes), outputTokens: String(prepared.policy.maxOutputUnits)
+    });
+    if (result.status === "DENIED") throw new OicRuntimeException((result.denialCode ?? "NOT_ENTITLED") as ConstructorParameters<typeof OicRuntimeException>[0]);
+    return { ...prepared, context: { ...prepared.context, admissionId: result.id } };
   }
 
   private async claim(actor: AuthenticatedPrincipal, scope: string, key: string, requestHash: string, operation: RuntimeOperation, leaseMs: number): Promise<Claim> {

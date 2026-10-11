@@ -83,6 +83,24 @@ export async function GET(request: Request) {
       return NextResponse.json({ error: "Economics evidence is unavailable." }, { status: 503, headers: { "Cache-Control": "no-store" } });
     }
   }
+  if (view === "admission") {
+    try {
+      const headers = { Authorization: `Bearer ${controlPlaneCredential()}` };
+      const [plans, assignments, quotas, budgets, balances] = await Promise.all([
+        fetch(apiUrl("/api/v1/admin/admission/plans"), { headers, cache: "no-store", signal: AbortSignal.timeout(8000) }),
+        fetch(apiUrl("/api/v1/admin/admission/assignments"), { headers, cache: "no-store", signal: AbortSignal.timeout(8000) }),
+        fetch(apiUrl("/api/v1/admin/admission/quotas"), { headers, cache: "no-store", signal: AbortSignal.timeout(8000) }),
+        fetch(apiUrl("/api/v1/admin/admission/budgets"), { headers, cache: "no-store", signal: AbortSignal.timeout(8000) }),
+        fetch(apiUrl("/api/v1/admin/admission/balances?limit=50"), { headers, cache: "no-store", signal: AbortSignal.timeout(8000) })
+      ]);
+      const readJson = async (response: Response): Promise<unknown> => response.json().catch(() => null);
+      const [planBody, assignmentBody, quotaBody, budgetBody, balanceBody] = await Promise.all([plans, assignments, quotas, budgets, balances].map(readJson));
+      const failed = [plans, assignments, quotas, budgets, balances].find((response) => !response.ok);
+      return NextResponse.json({ plans: planBody, assignments: assignmentBody, quotas: quotaBody, budgets: budgetBody, balances: balanceBody }, { status: failed?.status ?? 200, headers: { "Cache-Control": "no-store" } });
+    } catch {
+      return NextResponse.json({ error: "Plan and quota evidence is unavailable." }, { status: 503, headers: { "Cache-Control": "no-store" } });
+    }
+  }
   const path = view === "snapshot" ? "/api/v1/admin/console/snapshot" : view === "profiles" ? "/api/v1/admin/intelligence/profiles" : view === "profile-detail" && profileId && /^[0-9a-f-]{36}$/i.test(profileId) ? `/api/v1/admin/intelligence/profiles/${profileId}` : view === "engines" ? "/api/v1/admin/intelligence/engines" : null;
   const params = new URL(request.url).searchParams;
   const resource = view === "memory" ? "memory" : view === "knowledge" ? "knowledge" : view === "executions" || view === "traces" ? "executions" : null;

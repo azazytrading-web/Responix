@@ -22,6 +22,11 @@ const STATUS_BY_CODE: Record<OicRuntimeErrorCode, number> = {
   IDEMPOTENCY_CONFLICT: 409,
   IDEMPOTENCY_IN_PROGRESS: 409,
   STREAMING_IDEMPOTENCY_UNSUPPORTED: 400,
+  NOT_ENTITLED: 403,
+  EXHAUSTED: 429,
+  UNKNOWN_BOUND: 409,
+  UNCERTAIN_USAGE: 409,
+  ADMISSION_BUSY: 503,
   RUNTIME_UNAVAILABLE: 503,
   INTERNAL_ERROR: 500
 };
@@ -47,6 +52,11 @@ const SAFE_MESSAGES: Record<OicRuntimeErrorCode, string> = {
   IDEMPOTENCY_CONFLICT: "The idempotency key conflicts with another request",
   IDEMPOTENCY_IN_PROGRESS: "A request with this idempotency key is still running",
   STREAMING_IDEMPOTENCY_UNSUPPORTED: "Streaming request replay is not supported",
+  NOT_ENTITLED: "The current plan does not allow this operation",
+  EXHAUSTED: "An applicable hard quota or budget is exhausted",
+  UNKNOWN_BOUND: "The runtime cannot establish a safe reservation bound",
+  UNCERTAIN_USAGE: "Prior provider usage is uncertain and requires settlement",
+  ADMISSION_BUSY: "Admission is busy; retry with the same idempotency key",
   RUNTIME_UNAVAILABLE: "The runtime is temporarily unavailable",
   INTERNAL_ERROR: "The runtime request could not be completed"
 };

@@ -1,0 +1,2 @@
+ALTER TABLE "OicQuotaBucket" DROP CONSTRAINT "OicQuotaBucket_currency_matches_budget";
+ALTER TABLE "OicQuotaBucket" ADD CONSTRAINT "OicQuotaBucket_currency_matches_budget" CHECK (("budgetRevisionId" IS NULL AND "currency" IS NULL) OR ("budgetRevisionId" IS NOT NULL AND (("unit" = 'OIU' AND "currency" IS NULL) OR ("unit" = 'CURRENCY' AND "currency" IS NOT NULL))));

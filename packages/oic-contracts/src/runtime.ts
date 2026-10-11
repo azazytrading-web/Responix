@@ -52,6 +52,7 @@ export type OicRuntimeContext = {
   tenantId: string | null;
   sessionId?: string;
   callerRequestId?: string;
+  admissionId?: string;
 };
 
 export type OicRawUsageEvidence = {
@@ -115,6 +116,11 @@ export type OicRuntimeErrorCode =
   | "IDEMPOTENCY_CONFLICT"
   | "IDEMPOTENCY_IN_PROGRESS"
   | "STREAMING_IDEMPOTENCY_UNSUPPORTED"
+  | "NOT_ENTITLED"
+  | "EXHAUSTED"
+  | "UNKNOWN_BOUND"
+  | "UNCERTAIN_USAGE"
+  | "ADMISSION_BUSY"
   | "RUNTIME_UNAVAILABLE"
   | "INTERNAL_ERROR";
 

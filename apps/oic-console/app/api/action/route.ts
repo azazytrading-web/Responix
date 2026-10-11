@@ -49,7 +49,9 @@ const supportedScope = (value: unknown) =>
     "oic:runtime:models:read",
     "oic:usage:evidence:read",
     "oic:economics:read",
-    "oic:economics:manage"
+    "oic:economics:manage",
+    "oic:admission:read",
+    "oic:admission:manage"
   ].includes(String(value));
 
 export async function POST(request: Request) {
@@ -391,6 +393,40 @@ export async function POST(request: Request) {
   ) {
     path = `/api/v1/admin/applications/${body.applicationId}/models/${body.editionId}/visibility`;
     payload = { visible: body.visible };
+  } else if (
+    !path && action === "admission.plan.create" && uuid(body.applicationId) && text(body.planKey, 64) && /^[a-z0-9][a-z0-9-]{1,63}$/.test(String(body.planKey)) && text(body.displayName) && Array.isArray(body.models) && body.models.length <= 100 && body.models.every((model) => text(model, 96) && /^oi-[a-z0-9._-]+$/i.test(String(model))) && typeof body.effectiveFrom === "string" && Number.isFinite(Date.parse(body.effectiveFrom)) && (body.effectiveTo === undefined || typeof body.effectiveTo === "string" && Number.isFinite(Date.parse(body.effectiveTo))) && (body.maxOutputUnits === undefined || Number.isInteger(body.maxOutputUnits) && Number(body.maxOutputUnits) > 0 && Number(body.maxOutputUnits) <= 65536) && (body.maxConcurrency === undefined || Number.isInteger(body.maxConcurrency) && Number(body.maxConcurrency) > 0 && Number(body.maxConcurrency) <= 100000)
+  ) {
+    path = "/api/v1/admin/admission/plans";
+    payload = { applicationId: body.applicationId, planKey: String(body.planKey).trim(), displayName: String(body.displayName).trim(), entitlements: { models: body.models }, effectiveFrom: body.effectiveFrom, ...(body.effectiveTo ? { effectiveTo: body.effectiveTo } : {}), ...(body.maxOutputUnits ? { maxOutputUnits: body.maxOutputUnits } : {}), ...(body.maxConcurrency ? { maxConcurrency: body.maxConcurrency } : {}) };
+  } else if (
+    !path && action === "admission.plan.revision" && uuid(body.planId) && Array.isArray(body.models) && body.models.length <= 100 && body.models.every((model) => text(model, 96) && /^oi-[a-z0-9._-]+$/i.test(String(model))) && typeof body.effectiveFrom === "string" && Number.isFinite(Date.parse(body.effectiveFrom)) && (body.effectiveTo === undefined || typeof body.effectiveTo === "string" && Number.isFinite(Date.parse(body.effectiveTo))) && (body.maxOutputUnits === undefined || Number.isInteger(body.maxOutputUnits) && Number(body.maxOutputUnits) > 0 && Number(body.maxOutputUnits) <= 65536) && (body.maxConcurrency === undefined || Number.isInteger(body.maxConcurrency) && Number(body.maxConcurrency) > 0 && Number(body.maxConcurrency) <= 100000)
+  ) {
+    path = `/api/v1/admin/admission/plans/${body.planId}/revisions`;
+    payload = { entitlements: { models: body.models }, effectiveFrom: body.effectiveFrom, ...(body.effectiveTo ? { effectiveTo: body.effectiveTo } : {}), ...(body.maxOutputUnits ? { maxOutputUnits: body.maxOutputUnits } : {}), ...(body.maxConcurrency ? { maxConcurrency: body.maxConcurrency } : {}) };
+  } else if (!path && action === "admission.plan.publish" && uuid(body.id)) {
+    path = `/api/v1/admin/admission/plans/revisions/${body.id}/publish`;
+  } else if (
+    !path && action === "admission.assignment.create" && uuid(body.applicationId) && (body.tenantId === undefined || body.tenantId === null || uuid(body.tenantId)) && uuid(body.planRevisionId) && text(body.subjectKey, 128) && typeof body.effectiveFrom === "string" && Number.isFinite(Date.parse(body.effectiveFrom)) && (body.effectiveTo === undefined || typeof body.effectiveTo === "string" && Number.isFinite(Date.parse(body.effectiveTo)))
+  ) {
+    path = "/api/v1/admin/admission/assignments";
+    payload = { applicationId: body.applicationId, tenantId: body.tenantId ?? null, planRevisionId: body.planRevisionId, subjectKey: String(body.subjectKey).trim(), priority: Number.isInteger(body.priority) ? body.priority : 0, effectiveFrom: body.effectiveFrom, ...(body.effectiveTo ? { effectiveTo: body.effectiveTo } : {}) };
+  } else if (
+    !path && action === "admission.quota.create" && uuid(body.applicationId) && uuid(body.planRevisionId) && text(body.quotaKey, 64) && /^[a-z0-9][a-z0-9-]{1,63}$/.test(String(body.quotaKey)) && ["APPLICATION", "TENANT", "PRINCIPAL", "MODEL", "TIER", "CAPABILITY"].includes(String(body.subject)) && text(body.dimension, 64) && text(body.unit, 64) && ["LIFETIME", "UTC_DAY", "UTC_MONTH", "ROLLING", "CONTRACT_PERIOD"].includes(String(body.window)) && ["HARD", "SOFT"].includes(String(body.enforcement)) && typeof body.limitValue === "string" && /^(?:0|[1-9]\d*)(?:\.\d{1,18})?$/.test(body.limitValue) && typeof body.effectiveFrom === "string" && Number.isFinite(Date.parse(body.effectiveFrom))
+  ) {
+    path = "/api/v1/admin/admission/quotas";
+    payload = { applicationId: body.applicationId, ...(uuid(body.tenantId) ? { tenantId: body.tenantId } : {}), planRevisionId: body.planRevisionId, quotaKey: body.quotaKey, subject: body.subject, dimension: body.dimension, unit: body.unit, window: body.window, enforcement: body.enforcement, limitValue: body.limitValue, ...(typeof body.reservationUpperBound === "string" && /^(?:0|[1-9]\d*)(?:\.\d{1,18})?$/.test(body.reservationUpperBound) ? { reservationUpperBound: body.reservationUpperBound } : {}), safetyMargin: typeof body.safetyMargin === "string" ? body.safetyMargin : "0", unknownLiabilityRule: body.unknownLiabilityRule === "HOLD_MAXIMUM" ? "HOLD_MAXIMUM" : "DENY", effectiveFrom: body.effectiveFrom, ...(typeof body.effectiveTo === "string" ? { effectiveTo: body.effectiveTo } : {}), ...(body.window === "ROLLING" && Number.isInteger(body.windowSeconds) ? { windowSeconds: body.windowSeconds } : {}) };
+  } else if (!path && action === "admission.quota.publish" && uuid(body.id)) {
+    path = `/api/v1/admin/admission/quotas/revisions/${body.id}/publish`;
+  } else if (
+    !path && action === "admission.budget.create" && uuid(body.applicationId) && uuid(body.planRevisionId) && text(body.budgetKey, 64) && /^[a-z0-9][a-z0-9-]{1,63}$/.test(String(body.budgetKey)) && ["OIU", "CURRENCY"].includes(String(body.unit)) && (body.unit === "OIU" ? body.currency === undefined || body.currency === "" : typeof body.currency === "string" && /^[A-Z]{3}$/.test(body.currency)) && ["HARD", "SOFT"].includes(String(body.enforcement)) && typeof body.amount === "string" && /^(?:0|[1-9]\d*)(?:\.\d{1,18})?$/.test(body.amount) && text(body.purpose, 128) && typeof body.effectiveFrom === "string" && Number.isFinite(Date.parse(body.effectiveFrom))
+  ) {
+    path = "/api/v1/admin/admission/budgets";
+    payload = { applicationId: body.applicationId, ...(uuid(body.tenantId) ? { tenantId: body.tenantId } : {}), planRevisionId: body.planRevisionId, budgetKey: body.budgetKey, unit: body.unit, ...(body.currency ? { currency: body.currency } : {}), enforcement: body.enforcement, amount: body.amount, ...(typeof body.reservationUpperBound === "string" && /^(?:0|[1-9]\d*)(?:\.\d{1,18})?$/.test(body.reservationUpperBound) ? { reservationUpperBound: body.reservationUpperBound } : {}), safetyMargin: typeof body.safetyMargin === "string" ? body.safetyMargin : "0", purpose: body.purpose, unknownLiabilityRule: body.unknownLiabilityRule === "HOLD_MAXIMUM" ? "HOLD_MAXIMUM" : "DENY", effectiveFrom: body.effectiveFrom, ...(body.effectiveTo ? { effectiveTo: body.effectiveTo } : {}), ...(body.deadline ? { deadline: body.deadline } : {}) };
+  } else if (!path && action === "admission.budget.publish" && uuid(body.id)) {
+    path = `/api/v1/admin/admission/budgets/revisions/${body.id}/publish`;
+  } else if (!path && action === "admission.reconcile-expired" && (body.limit === undefined || Number.isInteger(body.limit) && Number(body.limit) >= 1 && Number(body.limit) <= 100)) {
+    path = "/api/v1/admin/admission/reconcile-expired";
+    payload = { limit: body.limit ?? 100 };
   } else if (
     !path &&
     action === "runtime.invoke" &&

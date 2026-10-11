@@ -1,9 +1,10 @@
-import { ConflictException, ForbiddenException, Injectable, NotFoundException } from "@nestjs/common";
+import { ConflictException, ForbiddenException, Injectable, NotFoundException, Optional } from "@nestjs/common";
 import Decimal from "decimal.js";
 import { createHash } from "node:crypto";
 import { OicDatabaseService, Prisma } from "@oic/database";
 import type { AuthenticatedPrincipal } from "../identity/auth.guard";
 import { hasOicConsoleManage, hasOicConsoleRead } from "../identity/foundation-policy";
+import { AdmissionService } from "../admission/admission.service";
 
 const PRODUCER_VERSION = "oic-economics-v1";
 Decimal.set({ precision: 60, rounding: Decimal.ROUND_HALF_EVEN, toExpNeg: -100, toExpPos: 100 });
@@ -37,7 +38,7 @@ function toInputJson(value: unknown): Prisma.InputJsonValue { return JSON.parse(
 
 @Injectable()
 export class EconomicsService {
-  constructor(private readonly db: OicDatabaseService) {}
+  constructor(private readonly db: OicDatabaseService, @Optional() private readonly admissions?: AdmissionService) {}
 
   private requireRead(actor: AuthenticatedPrincipal): void {
     if (!hasOicConsoleRead(actor.scopes) && !actor.scopes.includes("oic:economics:read")) throw new ForbiddenException();
@@ -211,6 +212,7 @@ export class EconomicsService {
       await tx.oicAuditEvent.create({ data: { actorPrincipalId: actor.id, applicationId: event.applicationId, tenantId: event.tenantId, action: "economics.oiu.assessed", targetType: "usage-event", targetId: usageEventId, requestId: correlation.requestId, traceId: correlation.traceId, metadata: { assessmentKey: key, policyRevisionId: policy?.id ?? null, status } } });
       return tx.oicOiuAssessment.findUniqueOrThrow({ where: { id: assessment.id }, include: { posting: true } });
     }, { isolationLevel: Prisma.TransactionIsolationLevel.Serializable });
+    if (record.status === "ASSESSED" && record.oiu !== null) await this.admissions?.settleBudgetFromUsageEvent(usageEventId, "OIU", record.oiu.toString(), null);
     return record;
   }
 
@@ -279,6 +281,7 @@ export class EconomicsService {
       await tx.oicAuditEvent.create({ data: { actorPrincipalId: actor.id, applicationId: event.applicationId, tenantId: event.tenantId, action: "economics.provider-cost.assessed", targetType: "usage-event", targetId: usageEventId, requestId: correlation.requestId, traceId: correlation.traceId, metadata: { assessmentKey: key, rateBookRevisionId: rateBook?.id ?? null, status } } });
       return row;
     }, { isolationLevel: Prisma.TransactionIsolationLevel.Serializable });
+    if (record.status === "ASSESSED" && record.nativeAmount !== null && record.currency !== null) await this.admissions?.settleBudgetFromUsageEvent(usageEventId, "CURRENCY", record.nativeAmount.toString(), record.currency);
     return record;
   }
 

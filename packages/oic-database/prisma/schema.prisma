@@ -195,6 +195,76 @@ enum OicProviderCostEvidenceClass {
   UNKNOWN
 }
 
+enum OicPolicyRevisionStatus {
+  DRAFT
+  PUBLISHED
+  RETIRED
+}
+
+enum OicPlanAssignmentStatus {
+  ACTIVE
+  SUSPENDED
+  REVOKED
+}
+
+enum OicQuotaSubject {
+  APPLICATION
+  TENANT
+  PRINCIPAL
+  MODEL
+  TIER
+  CAPABILITY
+}
+
+enum OicQuotaWindow {
+  LIFETIME
+  UTC_DAY
+  UTC_MONTH
+  ROLLING
+  CONTRACT_PERIOD
+}
+
+enum OicQuotaEnforcement {
+  HARD
+  SOFT
+}
+
+enum OicUnknownLiabilityRule {
+  DENY
+  HOLD_MAXIMUM
+}
+
+enum OicBudgetUnit {
+  OIU
+  CURRENCY
+}
+
+enum OicAdmissionStatus {
+  SHADOW
+  ADMITTED
+  DENIED
+  DISPATCHED
+  SETTLED
+  UNCERTAIN
+  RELEASED
+}
+
+enum OicReservationState {
+  HELD
+  DISPATCHED
+  SETTLING
+  SETTLED
+  UNCERTAIN
+  RELEASED
+}
+
+enum OicUsagePostingKind {
+  RESERVE
+  CONSUME
+  RELEASE
+  ADJUST
+}
+
 model OicApplication {
   id                 String                     @id @default(uuid()) @db.Uuid
   key                String                     @unique @db.VarChar(64)
@@ -215,6 +285,12 @@ model OicApplication {
   providerAttempts OicProviderAttempt[]
   providerRateBooks OicProviderRateBookRevision[]
   oiuPolicies OicOiuPolicyRevision[]
+  plans OicPlan[]
+  planAssignments OicPlanAssignment[]
+  quotaPolicies OicQuotaPolicyRevision[]
+  budgetPolicies OicBudgetRevision[]
+  quotaBuckets OicQuotaBucket[]
+  admissions OicAdmission[]
   @@index([status, key])
 }
 
@@ -237,6 +313,11 @@ model OicTenant {
   providerAttempts OicProviderAttempt[]
   providerRateBooks OicProviderRateBookRevision[]
   oiuPolicies OicOiuPolicyRevision[]
+  planAssignments OicPlanAssignment[]
+  quotaPolicies OicQuotaPolicyRevision[]
+  budgetPolicies OicBudgetRevision[]
+  quotaBuckets OicQuotaBucket[]
+  admissions OicAdmission[]
   @@unique([id, applicationId])
   @@unique([applicationId, key])
   @@index([applicationId, status, createdAt])
@@ -270,6 +351,7 @@ model OicServicePrincipal {
   credentials    OicMachineCredential[]
   adminRecoveryRecords OicAdminRecoveryRecord[]
   providerAttempts OicProviderAttempt[]
+  admissions OicAdmission[]
   @@unique([id, applicationId])
   @@unique([applicationId, key])
   @@index([applicationId, status])
@@ -620,6 +702,8 @@ model OicProviderAttempt {
   connection             OicProviderConnection    @relation(fields: [connectionId], references: [id], onDelete: Restrict)
   binding                OicRuntimeBinding        @relation(fields: [bindingId], references: [id], onDelete: Restrict)
   usageEvents            OicUsageEvent[]
+  admissionId             String?                  @db.Uuid
+  admission               OicAdmission?            @relation(fields: [admissionId], references: [id], onDelete: Restrict)
   @@index([applicationId, tenantId, startedAt, id])
   @@index([connectionId, startedAt])
   @@index([status, startedAt])
@@ -772,6 +856,219 @@ model OicOiuPosting {
   recordedAt            DateTime          @default(now()) @db.Timestamptz(6)
   assessment            OicOiuAssessment  @relation(fields: [assessmentId], references: [id], onDelete: Restrict)
   @@index([recordedAt, id])
+}
+
+model OicPlan {
+  id            String          @id @default(uuid()) @db.Uuid
+  applicationId String          @db.Uuid
+  planKey       String          @db.VarChar(64)
+  displayName   String          @db.VarChar(160)
+  createdAt     DateTime        @default(now()) @db.Timestamptz(6)
+  application   OicApplication @relation(fields: [applicationId], references: [id], onDelete: Restrict)
+  revisions     OicPlanRevision[]
+  @@unique([applicationId, planKey])
+  @@index([applicationId, createdAt])
+}
+
+model OicPlanRevision {
+  id                    String                    @id @default(uuid()) @db.Uuid
+  planId                String                    @db.Uuid
+  revision              Int
+  status                OicPolicyRevisionStatus   @default(DRAFT)
+  entitlements          Json                      @db.JsonB
+  maxOutputUnits        Int?
+  maxConcurrency        Int?
+  sourceDigest          String                    @db.Char(64)
+  effectiveFrom         DateTime                  @db.Timestamptz(6)
+  effectiveTo           DateTime?                 @db.Timestamptz(6)
+  publishedAt           DateTime?                 @db.Timestamptz(6)
+  createdAt             DateTime                  @default(now()) @db.Timestamptz(6)
+  plan                  OicPlan                   @relation(fields: [planId], references: [id], onDelete: Restrict)
+  assignments           OicPlanAssignment[]
+  quotaPolicies         OicQuotaPolicyRevision[]
+  budgetPolicies        OicBudgetRevision[]
+  admissions            OicAdmission[]
+  @@unique([planId, revision])
+  @@index([status, effectiveFrom, effectiveTo])
+}
+
+model OicPlanAssignment {
+  id                String                    @id @default(uuid()) @db.Uuid
+  applicationId     String                    @db.Uuid
+  tenantId          String?                   @db.Uuid
+  subjectKey        String                    @db.VarChar(128)
+  planRevisionId    String                    @db.Uuid
+  status            OicPlanAssignmentStatus   @default(ACTIVE)
+  priority          Int                       @default(0)
+  effectiveFrom     DateTime                  @db.Timestamptz(6)
+  effectiveTo       DateTime?                 @db.Timestamptz(6)
+  createdAt         DateTime                  @default(now()) @db.Timestamptz(6)
+  application       OicApplication             @relation(fields: [applicationId], references: [id], onDelete: Restrict)
+  tenant            OicTenant?                @relation(fields: [tenantId, applicationId], references: [id, applicationId], onDelete: Restrict)
+  planRevision      OicPlanRevision            @relation(fields: [planRevisionId], references: [id], onDelete: Restrict)
+  @@index([applicationId, tenantId, subjectKey, status, effectiveFrom])
+  @@index([planRevisionId, status])
+}
+
+model OicQuotaPolicyRevision {
+  id                    String                    @id @default(uuid()) @db.Uuid
+  applicationId         String?                   @db.Uuid
+  tenantId              String?                   @db.Uuid
+  planRevisionId        String?                   @db.Uuid
+  scopeKey              String                    @db.VarChar(128)
+  quotaKey              String                    @db.VarChar(64)
+  revision              Int
+  status                OicPolicyRevisionStatus   @default(DRAFT)
+  subject               OicQuotaSubject
+  dimension             String                    @db.VarChar(64)
+  unit                  String                    @db.VarChar(64)
+  window                OicQuotaWindow
+  windowSeconds         Int?
+  enforcement           OicQuotaEnforcement
+  limitValue            Decimal                   @db.Decimal(38, 18)
+  reservationUpperBound Decimal?                  @db.Decimal(38, 18)
+  safetyMargin          Decimal                   @default(0) @db.Decimal(38, 18)
+  unknownLiabilityRule  OicUnknownLiabilityRule   @default(DENY)
+  sourceDigest          String                    @db.Char(64)
+  effectiveFrom         DateTime                  @db.Timestamptz(6)
+  effectiveTo           DateTime?                 @db.Timestamptz(6)
+  publishedAt           DateTime?                 @db.Timestamptz(6)
+  createdAt             DateTime                  @default(now()) @db.Timestamptz(6)
+  application           OicApplication?           @relation(fields: [applicationId], references: [id], onDelete: Restrict)
+  tenant                OicTenant?                @relation(fields: [tenantId, applicationId], references: [id, applicationId], onDelete: Restrict)
+  planRevision          OicPlanRevision?          @relation(fields: [planRevisionId], references: [id], onDelete: Restrict)
+  buckets               OicQuotaBucket[]
+  legs                  OicReservationLeg[]
+  @@unique([scopeKey, quotaKey, revision])
+  @@index([applicationId, tenantId, dimension, status, effectiveFrom])
+  @@index([planRevisionId, dimension, status])
+}
+
+model OicBudgetRevision {
+  id                String                    @id @default(uuid()) @db.Uuid
+  applicationId     String?                   @db.Uuid
+  tenantId          String?                   @db.Uuid
+  planRevisionId    String?                   @db.Uuid
+  scopeKey          String                    @db.VarChar(128)
+  budgetKey         String                    @db.VarChar(64)
+  revision          Int
+  status            OicPolicyRevisionStatus   @default(DRAFT)
+  unit              OicBudgetUnit
+  currency          String?                   @db.Char(3)
+  enforcement       OicQuotaEnforcement
+  amount            Decimal                   @db.Decimal(38, 18)
+  reservationUpperBound Decimal?               @db.Decimal(38, 18)
+  safetyMargin      Decimal                   @default(0) @db.Decimal(38, 18)
+  purpose           String                    @db.VarChar(128)
+  deadline          DateTime?                 @db.Timestamptz(6)
+  unknownLiabilityRule OicUnknownLiabilityRule @default(DENY)
+  sourceDigest      String                    @db.Char(64)
+  effectiveFrom     DateTime                  @db.Timestamptz(6)
+  effectiveTo       DateTime?                 @db.Timestamptz(6)
+  publishedAt       DateTime?                 @db.Timestamptz(6)
+  createdAt         DateTime                  @default(now()) @db.Timestamptz(6)
+  application       OicApplication?           @relation(fields: [applicationId], references: [id], onDelete: Restrict)
+  tenant            OicTenant?                @relation(fields: [tenantId, applicationId], references: [id, applicationId], onDelete: Restrict)
+  planRevision      OicPlanRevision?          @relation(fields: [planRevisionId], references: [id], onDelete: Restrict)
+  buckets           OicQuotaBucket[]
+  legs              OicReservationLeg[]
+  @@unique([scopeKey, budgetKey, revision])
+  @@index([applicationId, tenantId, unit, status, effectiveFrom])
+  @@index([planRevisionId, unit, status])
+}
+
+model OicQuotaBucket {
+  id                    String                    @id @default(uuid()) @db.Uuid
+  bucketKey             String                    @unique @db.VarChar(128)
+  applicationId         String                    @db.Uuid
+  tenantId              String?                   @db.Uuid
+  quotaPolicyRevisionId String?                   @db.Uuid
+  budgetRevisionId      String?                   @db.Uuid
+  unit                  String                    @db.VarChar(64)
+  currency              String?                   @db.Char(3)
+  limitValue            Decimal                   @db.Decimal(38, 18)
+  consumed              Decimal                   @default(0) @db.Decimal(38, 18)
+  held                  Decimal                   @default(0) @db.Decimal(38, 18)
+  uncertain             Decimal                   @default(0) @db.Decimal(38, 18)
+  sequence              Int                       @default(0)
+  windowStart           DateTime                  @db.Timestamptz(6)
+  windowEnd             DateTime?                 @db.Timestamptz(6)
+  createdAt             DateTime                  @default(now()) @db.Timestamptz(6)
+  updatedAt             DateTime                  @updatedAt @db.Timestamptz(6)
+  application           OicApplication            @relation(fields: [applicationId], references: [id], onDelete: Restrict)
+  tenant                OicTenant?                @relation(fields: [tenantId, applicationId], references: [id, applicationId], onDelete: Restrict)
+  quotaPolicy           OicQuotaPolicyRevision?   @relation(fields: [quotaPolicyRevisionId], references: [id], onDelete: Restrict)
+  budgetPolicy          OicBudgetRevision?        @relation(fields: [budgetRevisionId], references: [id], onDelete: Restrict)
+  legs                  OicReservationLeg[]
+  postings              OicUsagePosting[]
+  @@index([applicationId, tenantId, windowStart, id])
+  @@index([quotaPolicyRevisionId, windowStart])
+  @@index([budgetRevisionId, windowStart])
+}
+
+model OicAdmission {
+  id                String                    @id @default(uuid()) @db.Uuid
+  applicationId     String                    @db.Uuid
+  tenantId          String?                   @db.Uuid
+  principalId       String                    @db.Uuid
+  scopeKey          String                    @db.VarChar(128)
+  planRevisionId    String?                   @db.Uuid
+  operation         String                    @db.VarChar(64)
+  idempotencyKey    String                    @db.VarChar(128)
+  requestHash       String                    @db.Char(64)
+  status            OicAdmissionStatus
+  denialCode        String?                   @db.VarChar(64)
+  requestBounds     Json                      @db.JsonB
+  fenceGeneration   Int                       @default(1)
+  dispatchDeadline  DateTime                  @db.Timestamptz(6)
+  createdAt         DateTime                  @default(now()) @db.Timestamptz(6)
+  updatedAt         DateTime                  @updatedAt @db.Timestamptz(6)
+  application       OicApplication            @relation(fields: [applicationId], references: [id], onDelete: Restrict)
+  tenant            OicTenant?                @relation(fields: [tenantId, applicationId], references: [id, applicationId], onDelete: Restrict)
+  principal         OicServicePrincipal       @relation(fields: [principalId, applicationId], references: [id, applicationId], onDelete: Restrict)
+  planRevision      OicPlanRevision?          @relation(fields: [planRevisionId], references: [id], onDelete: Restrict)
+  legs              OicReservationLeg[]
+  attempts          OicProviderAttempt[]
+  postings          OicUsagePosting[]
+  @@unique([scopeKey, operation, idempotencyKey])
+  @@index([applicationId, tenantId, status, createdAt])
+  @@index([principalId, status, createdAt])
+}
+
+model OicReservationLeg {
+  id                    String                    @id @default(uuid()) @db.Uuid
+  admissionId           String                    @db.Uuid
+  bucketId              String                    @db.Uuid
+  quotaPolicyRevisionId String?                   @db.Uuid
+  budgetRevisionId      String?                   @db.Uuid
+  amount                Decimal                   @db.Decimal(38, 18)
+  state                 OicReservationState       @default(HELD)
+  fenceGeneration       Int                       @default(1)
+  expiresAt             DateTime                  @db.Timestamptz(6)
+  createdAt             DateTime                  @default(now()) @db.Timestamptz(6)
+  admission             OicAdmission              @relation(fields: [admissionId], references: [id], onDelete: Restrict)
+  bucket                OicQuotaBucket            @relation(fields: [bucketId], references: [id], onDelete: Restrict)
+  quotaPolicy           OicQuotaPolicyRevision?   @relation(fields: [quotaPolicyRevisionId], references: [id], onDelete: Restrict)
+  budgetPolicy          OicBudgetRevision?        @relation(fields: [budgetRevisionId], references: [id], onDelete: Restrict)
+  @@unique([admissionId, bucketId])
+  @@index([bucketId, state, expiresAt])
+  @@index([admissionId, state])
+}
+
+model OicUsagePosting {
+  id             String               @id @default(uuid()) @db.Uuid
+  bucketId       String               @db.Uuid
+  admissionId    String?              @db.Uuid
+  sourceKey      String               @db.VarChar(160)
+  kind           OicUsagePostingKind
+  amount         Decimal              @db.Decimal(38, 18)
+  sequence       Int
+  recordedAt     DateTime             @default(now()) @db.Timestamptz(6)
+  bucket         OicQuotaBucket       @relation(fields: [bucketId], references: [id], onDelete: Restrict)
+  admission      OicAdmission?        @relation(fields: [admissionId], references: [id], onDelete: Restrict)
+  @@unique([bucketId, sourceKey, kind])
+  @@unique([bucketId, sequence])
+  @@index([bucketId, recordedAt, id])
 }
 
 model OicApplicationModelVisibility {

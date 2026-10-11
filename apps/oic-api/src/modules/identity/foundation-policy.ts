@@ -20,6 +20,7 @@ export const OIC_CONSOLE_SCOPES = ["oic:console:read", "oic:console:manage"] as 
 export const OIC_ECONOMICS_SCOPES = ["oic:economics:read", "oic:economics:manage"] as const;
 export const OIC_USAGE_EVIDENCE_SCOPES = ["oic:usage:evidence:read"] as const;
 export const OIC_ADMISSION_SCOPES = ["oic:admission:read", "oic:admission:manage"] as const;
+export const OIC_RATING_SCOPES = ["oic:rating:read", "oic:rating:manage"] as const;
 
 export function hasOicConsoleRead(scopes: readonly string[]): boolean {
   return scopes.includes("oic:foundation:admin") || scopes.includes("oic:console:read") || scopes.includes("oic:console:manage");

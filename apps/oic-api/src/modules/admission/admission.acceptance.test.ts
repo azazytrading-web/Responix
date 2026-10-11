@@ -75,7 +75,8 @@ void test("OIC-6.3 concurrent admission reserves hard quota once and settles imm
     assert.equal(bucket.held.toString(), "0");
     assert.equal(await db.oicUsagePosting.count({ where: { admissionId: admitted.id, kind: { in: ["RESERVE", "CONSUME", "RELEASE"] } } }), 3);
     assert.equal(await db.oicAdmission.findUniqueOrThrow({ where: { id: admitted.id } }).then((row) => row.status), "SETTLED");
-    const replay = await service.admit(context, request, "native.invoke.v1", `request-a-${suffix}`, { inputTokens: "80", outputTokens: "20", requestUnits: "1" });
+    const admittedKey = candidates[0].status === "ADMITTED" ? `request-a-${suffix}` : `request-b-${suffix}`;
+    const replay = await service.admit(context, request, "native.invoke.v1", admittedKey, { inputTokens: "80", outputTokens: "20", requestUnits: "1" });
     assert.equal(replay.id, candidates.find((item) => item.status === "ADMITTED")?.id);
   } finally {
     if (admissionIds.length) {

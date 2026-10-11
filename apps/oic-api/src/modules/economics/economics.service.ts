@@ -1,7 +1,7 @@
 import { ConflictException, ForbiddenException, Injectable, NotFoundException, Optional } from "@nestjs/common";
 import Decimal from "decimal.js";
 import { createHash } from "node:crypto";
-import { OicDatabaseService, Prisma } from "@oic/database";
+import { OicCustomerRatingStrategy, OicDatabaseService, OicRatedUsageStatus, Prisma } from "@oic/database";
 import type { AuthenticatedPrincipal } from "../identity/auth.guard";
 import { hasOicConsoleManage, hasOicConsoleRead } from "../identity/foundation-policy";
 import { AdmissionService } from "../admission/admission.service";
@@ -12,6 +12,7 @@ const dimensions = ["inputTokens", "cachedInputTokens", "outputTokens", "reasoni
 type Dimension = typeof dimensions[number];
 type DimensionInput = { dimension: Dimension; unit: string; required?: boolean; included?: boolean; weightNumerator?: string; weightDenominator?: string };
 type RateInput = { upstreamModelId?: string; dimension: Dimension; unit: string; quantityDivisor?: string; pricePerUnit: string; required?: boolean };
+type CustomerRuleInput = { dimension?: Dimension; unit?: string; pricePerUnit?: string; quantityDivisor?: string; fixedAmount?: string; includedQuantity?: string; tiers?: Array<{ upTo: string | null; pricePerUnit: string }> };
 type Correlation = { requestId?: string; traceId?: string };
 type ScopeInput = { applicationId?: string; tenantId?: string };
 const dimensionUnits: Record<Dimension, string> = {
@@ -300,6 +301,284 @@ export class EconomicsService {
       results.push(await this.assessOiu(actor, row.id, "REPLAY", correlation));
     }
     return { assessed: page.length, nextCursor: hasMore ? page.at(-1)?.id ?? null : null, results };
+  }
+
+  async createCustomerPriceBook(actor: AuthenticatedPrincipal, input: ScopeInput & {
+    planRevisionId: string; priceBookKey: string; strategy: string; currency: string; sourceReference: string;
+    effectiveFrom: Date; effectiveTo?: Date; rules: CustomerRuleInput[];
+  }, correlation: Correlation = {}) {
+    this.requireRatingManage(actor);
+    const scope = this.validateScope(actor, input);
+    assertDateRange(input.effectiveFrom, input.effectiveTo);
+    if (!/^[a-z][a-z0-9-]{1,63}$/.test(input.priceBookKey) || !/^[A-Z]{3}$/.test(input.currency) || !input.sourceReference.trim()) throw new Error("Invalid customer price book provenance");
+    const strategy = input.strategy as OicCustomerRatingStrategy;
+    if (!Object.values(OicCustomerRatingStrategy).includes(strategy) || input.rules.length === 0) throw new Error("A supported strategy and typed rules are required");
+    const plan = await this.db.oicPlanRevision.findUnique({ where: { id: input.planRevisionId }, include: { plan: true } });
+    if (!plan || (scope.applicationId && plan.plan.applicationId !== scope.applicationId)) throw new NotFoundException();
+    if (!scope.applicationId) throw new Error("Customer price books require an application scope");
+    if (strategy === "OIU_RATE" || strategy === "INCLUDED_PLUS_OVERAGE") {
+      if (input.rules.length !== 1 || !input.rules[0]?.pricePerUnit || (strategy === "INCLUDED_PLUS_OVERAGE" && !input.rules[0].includedQuantity)) throw new Error("OIU rating requires a unit price and explicit allowance rule");
+    } else if (strategy === "REQUEST" || strategy === "TASK" || strategy === "FEATURE") {
+      if (input.rules.length !== 1 || input.rules[0]?.fixedAmount === undefined) throw new Error("Fixed event rating requires one explicit fixed amount");
+    } else if (strategy === "RESOURCE_RATE" || strategy === "TIERED") {
+      if (input.rules.length !== 1 || !input.rules[0]?.dimension || !input.rules[0]?.unit) throw new Error("Resource rating requires one typed dimension and unit");
+      if (strategy === "RESOURCE_RATE" && input.rules[0].pricePerUnit === undefined) throw new Error("Resource rating requires a unit price");
+      if (strategy === "TIERED" && (!input.rules[0].tiers || input.rules[0].tiers.length === 0)) throw new Error("Tiered rating requires ordered bands");
+    } else if (strategy === "FIXED_PLUS_VARIABLE") {
+      if (input.rules.length !== 1 || input.rules[0]?.fixedAmount === undefined || !input.rules[0].dimension || !input.rules[0].unit || input.rules[0].pricePerUnit === undefined) throw new Error("Fixed plus variable rating requires a fixed amount and typed variable rate");
+    }
+    const rules = input.rules.map((rule) => {
+      const quantityDivisor = dec(rule.quantityDivisor ?? "1", false);
+      const fixedAmount = rule.fixedAmount === undefined ? null : dec(rule.fixedAmount);
+      const pricePerUnit = rule.pricePerUnit === undefined ? null : dec(rule.pricePerUnit);
+      const includedQuantity = rule.includedQuantity === undefined ? null : dec(rule.includedQuantity);
+      if (rule.dimension && !dimensions.includes(rule.dimension)) throw new Error("Unsupported customer rating dimension");
+      if (rule.dimension && rule.unit !== dimensionUnits[rule.dimension]) throw new Error("Customer rating unit does not match its dimension");
+      let tiers: Prisma.InputJsonValue | undefined;
+      if (rule.tiers) {
+        let previous: Decimal | null = null;
+        const normalized = rule.tiers.map((tier) => {
+          const upTo = tier.upTo === null ? null : dec(tier.upTo, false);
+          const price = dec(tier.pricePerUnit);
+          if (previous && (upTo === null || upTo.lte(previous))) throw new Error("Tier boundaries must be strictly increasing and terminal tier must be last");
+          if (!previous && upTo === null && rule.tiers!.length > 1) throw new Error("Unlimited tier must be last");
+          previous = upTo;
+          return { upTo: upTo?.toFixed() ?? null, pricePerUnit: price.toFixed() };
+        });
+        if (normalized.at(-1)?.upTo !== null) throw new Error("Tiered pricing requires a final unlimited band");
+          tiers = normalized;
+      }
+      return { dimension: rule.dimension ?? null, unit: rule.unit ?? null, quantityDivisor: quantityDivisor.toFixed(), fixedAmount: fixedAmount?.toFixed() ?? null, pricePerUnit: pricePerUnit?.toFixed() ?? null, includedQuantity: includedQuantity?.toFixed() ?? null, ...(tiers ? { tiers } : {}) };
+    });
+    const scopeKey = `${scope.applicationId ?? "global"}:${scope.tenantId ?? "application"}`;
+    const sourceDigest = sha({ scope, planRevisionId: input.planRevisionId, priceBookKey: input.priceBookKey, strategy, currency: input.currency, sourceReference: input.sourceReference, effectiveFrom: input.effectiveFrom.toISOString(), effectiveTo: input.effectiveTo?.toISOString() ?? null, rules });
+    return this.db.$transaction(async (tx) => {
+      const prior = await tx.oicCustomerPriceBookRevision.aggregate({ where: { scopeKey, planRevisionId: input.planRevisionId, priceBookKey: input.priceBookKey }, _max: { revision: true } });
+      const revision = await tx.oicCustomerPriceBookRevision.create({ data: { ...scope, planRevisionId: input.planRevisionId, scopeKey, priceBookKey: input.priceBookKey, revision: (prior._max.revision ?? 0) + 1, strategy, currency: input.currency, sourceReference: input.sourceReference.trim(), sourceDigest, effectiveFrom: input.effectiveFrom, effectiveTo: input.effectiveTo, rules: { create: rules } }, include: { rules: true } });
+      await tx.oicAuditEvent.create({ data: { actorPrincipalId: actor.id, applicationId: scope.applicationId, tenantId: scope.tenantId, action: "economics.customer-price-book.drafted", targetType: "customer-price-book", targetId: revision.id, requestId: correlation.requestId, traceId: correlation.traceId, metadata: { revision: revision.revision, strategy, sourceDigest, sourceReference: input.sourceReference } } });
+      return revision;
+    }, { isolationLevel: Prisma.TransactionIsolationLevel.Serializable });
+  }
+
+  async publishCustomerPriceBook(actor: AuthenticatedPrincipal, id: string, correlation: Correlation = {}) {
+    this.requireRatingManage(actor);
+    const row = await this.db.oicCustomerPriceBookRevision.findUnique({ where: { id }, include: { rules: true } });
+    if (!row) throw new NotFoundException(); this.assertCanManageExisting(actor, row.applicationId, row.tenantId);
+    if (row.status === "PUBLISHED") return row;
+    if (row.status !== "DRAFT" || row.rules.length === 0) throw new ConflictException("Only a configured draft customer price book can be published");
+    return this.db.$transaction(async (tx) => {
+      const active = await tx.oicCustomerPriceBookRevision.findMany({ where: { scopeKey: row.scopeKey, planRevisionId: row.planRevisionId, status: "PUBLISHED", NOT: { id } } });
+      if (active.some((other) => overlap(row.effectiveFrom, row.effectiveTo, other.effectiveFrom, other.effectiveTo))) throw new ConflictException("Published customer price book intervals overlap");
+      const result = await tx.oicCustomerPriceBookRevision.update({ where: { id, status: "DRAFT" }, data: { status: "PUBLISHED", publishedAt: new Date() }, include: { rules: true } });
+      await tx.oicAuditEvent.create({ data: { actorPrincipalId: actor.id, applicationId: row.applicationId, tenantId: row.tenantId, action: "economics.customer-price-book.published", targetType: "customer-price-book", targetId: id, requestId: correlation.requestId, traceId: correlation.traceId, metadata: { revision: row.revision, strategy: row.strategy, sourceDigest: row.sourceDigest } } });
+      return result;
+    }, { isolationLevel: Prisma.TransactionIsolationLevel.Serializable });
+  }
+
+  async rateCustomerUsage(actor: AuthenticatedPrincipal, usageEventId: string, kind: "ORIGINAL" | "REPLAY" = "ORIGINAL", correlation: Correlation = {}) {
+    this.requireRatingManage(actor);
+    const event = await this.db.oicUsageEvent.findUnique({ where: { id: usageEventId }, include: { providerAttempt: { include: { admission: { include: { planRevision: { include: { plan: true } } } } } } } });
+    if (!event) throw new NotFoundException();
+    this.assertCanManageExisting(actor, event.applicationId, event.tenantId);
+    const planRevision = event.providerAttempt.admission?.planRevision;
+    const occurredAt = event.occurredAt;
+    let status: OicRatedUsageStatus = "NOT_RATED";
+    let reasonCode: string | null = !planRevision ? "NO_PLAN" : !occurredAt ? "EVENT_TIME_UNKNOWN" : null;
+    let priceBook: Prisma.OicCustomerPriceBookRevisionGetPayload<{ include: { rules: true } }> | null = null;
+    if (planRevision && occurredAt) {
+      const candidates = await this.db.oicCustomerPriceBookRevision.findMany({ where: { planRevisionId: planRevision.id, status: "PUBLISHED", effectiveFrom: { lte: occurredAt }, AND: [{ OR: [{ effectiveTo: null }, { effectiveTo: { gt: occurredAt } }] }, { OR: [{ applicationId: null }, { applicationId: event.applicationId }] }, { OR: [{ tenantId: null }, { tenantId: event.tenantId }] }] }, include: { rules: true } });
+      const matching = candidates.filter((row) => (row.tenantId === event.tenantId || row.tenantId === null) && (row.applicationId === event.applicationId || row.applicationId === null)).sort((a, b) => Number(!!b.tenantId) - Number(!!a.tenantId) || Number(!!b.applicationId) - Number(!!a.applicationId));
+      if (matching.length > 1 && Number(!!matching[0]?.tenantId) === Number(!!matching[1]?.tenantId) && Number(!!matching[0]?.applicationId) === Number(!!matching[1]?.applicationId)) reasonCode = "PRICE_AMBIGUOUS";
+      else if (matching[0]) priceBook = matching[0];
+      else reasonCode = "NO_PUBLISHED_PRICE";
+    }
+    let amount: Decimal | null = null;
+    let includedOiu: { gross: Decimal; allowance: Decimal; rate: Decimal; assessmentId: string } | null = null;
+    const trace: Record<string, unknown> = { planRevisionId: planRevision?.id ?? null, priceBookRevisionId: priceBook?.id ?? null, strategy: priceBook?.strategy ?? null, nativeCurrency: priceBook?.currency ?? null, lines: [] };
+    if (priceBook && !reasonCode) {
+      const rule = priceBook.rules[0];
+      const normalized = event.normalizedDimensions as Record<string, unknown>;
+      if (!rule) reasonCode = "PRICE_RULE_MISSING";
+      else if (priceBook.strategy === "OIU_RATE" || priceBook.strategy === "INCLUDED_PLUS_OVERAGE") {
+        const oiu = await this.db.oicOiuAssessment.findFirst({ where: { usageEventId, kind: "ORIGINAL", status: "ASSESSED", oiu: { not: null } }, orderBy: { recordedAt: "desc" } });
+        if (!oiu?.oiu || !rule.pricePerUnit) reasonCode = "OIU_EVIDENCE_MISSING";
+        else {
+          const gross = new Decimal(oiu.oiu.toString());
+          if (priceBook.strategy === "INCLUDED_PLUS_OVERAGE") {
+            if (!rule.includedQuantity || !planRevision) reasonCode = "INCLUDED_ALLOWANCE_MISSING";
+            else includedOiu = { gross, allowance: new Decimal(rule.includedQuantity.toString()), rate: new Decimal(rule.pricePerUnit.toString()), assessmentId: oiu.id };
+          } else {
+            amount = gross.mul(rule.pricePerUnit.toString());
+            trace.lines = [{ basis: "OIU", grossOiu: gross.toFixed(6), includedOiu: "0", billableOiu: gross.toFixed(6), pricePerOiu: rule.pricePerUnit.toString(), exactAmount: amount.toFixed(18), oiuAssessmentId: oiu.id }];
+          }
+        }
+      } else if (priceBook.strategy === "REQUEST" || priceBook.strategy === "TASK" || priceBook.strategy === "FEATURE") {
+        const operation = event.providerAttempt.admission?.operation;
+        const admission = event.providerAttempt.admission;
+        const qualified = priceBook.strategy === "REQUEST" || (priceBook.strategy === "TASK" && operation === "task.complete.v1" && admission?.status === "SETTLED" && event.providerAttempt.completedAt !== null);
+        if (!qualified || rule.fixedAmount === null) reasonCode = "QUALIFYING_EVENT_MISSING";
+        else { amount = new Decimal(rule.fixedAmount.toString()); trace.lines = [{ basis: priceBook.strategy, eventOperation: operation ?? null, exactAmount: amount.toFixed(18) }]; }
+      } else if (priceBook.strategy === "RESOURCE_RATE" || priceBook.strategy === "FIXED_PLUS_VARIABLE") {
+        const quantityValue = rule.dimension ? normalized[rule.dimension] : undefined;
+        if ((typeof quantityValue !== "number" && typeof quantityValue !== "string") || !Number.isFinite(Number(quantityValue)) || !rule.pricePerUnit) reasonCode = "DIMENSION_MISSING";
+        else {
+          const quantity = new Decimal(String(quantityValue)).div(rule.quantityDivisor.toString());
+          const variable = quantity.mul(rule.pricePerUnit.toString());
+          const fixed = priceBook.strategy === "FIXED_PLUS_VARIABLE" ? new Decimal(rule.fixedAmount?.toString() ?? "0") : new Decimal(0);
+          amount = fixed.plus(variable);
+          trace.lines = [{ basis: priceBook.strategy, dimension: rule.dimension, unit: rule.unit, quantity: new Decimal(quantityValue).toFixed(), divisor: rule.quantityDivisor.toString(), fixedAmount: fixed.toFixed(18), pricePerUnit: rule.pricePerUnit.toString(), exactAmount: amount.toFixed(18) }];
+        }
+      } else if (priceBook.strategy === "TIERED") {
+        const rawQuantity = rule.dimension ? normalized[rule.dimension] : undefined;
+        const tiers = Array.isArray(rule.tiers) ? rule.tiers as Array<{ upTo: string | null; pricePerUnit: string }> : [];
+        if ((typeof rawQuantity !== "number" && typeof rawQuantity !== "string") || !Number.isFinite(Number(rawQuantity)) || !tiers.length) reasonCode = "DIMENSION_MISSING";
+        else {
+          const quantity = new Decimal(String(rawQuantity)).div(rule.quantityDivisor.toString());
+          let remaining = quantity; let lower = new Decimal(0); let total = new Decimal(0); const lines: Array<Record<string, string | null>> = [];
+          for (const tier of tiers) {
+            const upper = tier.upTo === null ? null : new Decimal(tier.upTo);
+            const capacity = upper ? upper.minus(lower) : remaining;
+            const bandQuantity = Decimal.min(remaining, capacity);
+            const lineAmount = bandQuantity.mul(tier.pricePerUnit);
+            total = total.plus(lineAmount); remaining = remaining.minus(bandQuantity);
+            lines.push({ lower: lower.toFixed(), upper: upper?.toFixed() ?? null, quantity: bandQuantity.toFixed(), pricePerUnit: tier.pricePerUnit, amount: lineAmount.toFixed(18) });
+            if (remaining.isZero()) break;
+            if (upper) lower = upper;
+          }
+          if (!remaining.isZero()) reasonCode = "TIER_COVERAGE_MISSING";
+          else { amount = total; trace.lines = lines; }
+        }
+      }
+    }
+    if (amount) {
+      const fractionDigits = new Intl.NumberFormat("en", { style: "currency", currency: priceBook!.currency }).resolvedOptions().maximumFractionDigits;
+      amount = amount.toDecimalPlaces(fractionDigits ?? 2, Decimal.ROUND_HALF_EVEN);
+      if (amount.gte(new Decimal(10).pow(32))) throw new Error("Rated amount exceeds the supported precision");
+      status = "RATED";
+      if (amount.isZero() && planRevision && ["FREE", "TRIAL"].includes(String((planRevision.entitlements as Record<string, unknown>).commercialModel))) reasonCode = String((planRevision.entitlements as Record<string, unknown>).commercialModel) === "FREE" ? "FREE_PLAN" : "TRIAL_CREDIT";
+    } else status = reasonCode === "UNKNOWN_CONVERSION" ? "UNKNOWN_CONVERSION" : reasonCode?.endsWith("MISSING") ? "PARTIAL" : "NOT_RATED";
+    const eventKey = sha({ usageEventId, priceBookRevisionId: priceBook?.id ?? null, kind });
+    const result = await this.db.$transaction(async (tx) => {
+      const existing = await tx.oicRatedUsageEvent.findUnique({ where: { eventKey } });
+      if (existing) return existing;
+      let finalAmount = amount;
+      let finalStatus = status;
+      let finalReasonCode = reasonCode;
+      const finalTrace: Record<string, unknown> = { ...trace };
+      if (includedOiu && planRevision && priceBook) {
+        const periodStart = planRevision.effectiveFrom;
+        const bucketKey = sha({ applicationId: event.applicationId, tenantId: event.tenantId, planRevisionId: planRevision.id, priceBookRevisionId: priceBook.id, periodStart: periodStart.toISOString() });
+        const bucket = await tx.oicCustomerAllowanceBucket.upsert({ where: { bucketKey }, create: { bucketKey, applicationId: event.applicationId, tenantId: event.tenantId, planRevisionId: planRevision.id, priceBookRevisionId: priceBook.id, allowance: includedOiu.allowance.toFixed(), consumed: "0", periodStart, periodEnd: planRevision.effectiveTo }, update: {} });
+        await tx.$queryRaw`SELECT id FROM "OicCustomerAllowanceBucket" WHERE id = ${bucket.id}::uuid FOR UPDATE`;
+        const locked = await tx.oicCustomerAllowanceBucket.findUniqueOrThrow({ where: { id: bucket.id } });
+        if (!new Decimal(locked.allowance.toString()).eq(includedOiu.allowance)) throw new ConflictException("Published included allowance changed for its pinned bucket");
+        const available = Decimal.max(includedOiu.allowance.minus(locked.consumed.toString()), 0);
+        const included = Decimal.min(includedOiu.gross, available);
+        const overage = includedOiu.gross.minus(included);
+        finalAmount = overage.mul(includedOiu.rate);
+        const sequence = locked.sequence + 1;
+        await tx.oicCustomerAllowanceBucket.update({ where: { id: bucket.id }, data: { consumed: { increment: included.toFixed() }, sequence } });
+        await tx.oicCustomerAllowancePosting.create({ data: { bucketId: bucket.id, sourceKey: eventKey, amount: included.toFixed(), sequence } });
+        finalTrace.lines = [{ basis: "INCLUDED_PLUS_OVERAGE", grossOiu: includedOiu.gross.toFixed(6), includedConsumed: included.toFixed(6), allowanceRemainingBefore: available.toFixed(6), overageOiu: overage.toFixed(6), pricePerOiu: includedOiu.rate.toFixed(), exactAmount: finalAmount.toFixed(18), oiuAssessmentId: includedOiu.assessmentId, allowanceBucketId: bucket.id, allowanceSequence: sequence }];
+        if (finalAmount.isZero()) finalReasonCode = "INCLUDED_ALLOWANCE";
+      }
+      if (finalAmount) {
+        const fractionDigits = new Intl.NumberFormat("en", { style: "currency", currency: priceBook!.currency }).resolvedOptions().maximumFractionDigits;
+        finalAmount = finalAmount.toDecimalPlaces(fractionDigits ?? 2, Decimal.ROUND_HALF_EVEN);
+        if (finalAmount.gte(new Decimal(10).pow(20))) throw new Error("Rated amount exceeds the supported precision");
+        finalStatus = "RATED";
+        const configuredCommercialModel = planRevision?.entitlements && typeof planRevision.entitlements === "object"
+          ? (planRevision.entitlements as Record<string, unknown>).commercialModel
+          : undefined;
+        const commercialModel = typeof configuredCommercialModel === "string" ? configuredCommercialModel : "";
+        if (["FREE", "TRIAL"].includes(commercialModel)) {
+          finalTrace.preWaiverAmount = finalAmount.toFixed();
+          finalAmount = new Decimal(0);
+          finalReasonCode = commercialModel === "FREE" ? "FREE_PLAN" : "TRIAL_CREDIT";
+        } else if (finalAmount.isZero() && finalReasonCode === null) {
+          finalReasonCode = "ZERO_RATED_BY_POLICY";
+        }
+      } else finalStatus = finalReasonCode === "UNKNOWN_CONVERSION" ? "UNKNOWN_CONVERSION" : finalReasonCode?.endsWith("MISSING") ? "PARTIAL" : "NOT_RATED";
+      const sourceDigest = sha({ source: event.sourceDigest, planRevisionId: planRevision?.id ?? null, priceBookSourceDigest: priceBook?.sourceDigest ?? null, trace: finalTrace, amount: finalAmount?.toFixed() ?? null, status: finalStatus, reasonCode: finalReasonCode });
+      const rated = await tx.oicRatedUsageEvent.create({ data: { eventKey, usageEventId, applicationId: event.applicationId, tenantId: event.tenantId, planRevisionId: planRevision?.id ?? null, priceBookRevisionId: priceBook?.id ?? null, kind, status: finalStatus, nativeAmount: finalAmount?.toFixed() ?? null, currency: finalAmount && priceBook ? priceBook.currency : null, reasonCode: finalReasonCode, ratingTrace: toInputJson(finalTrace), sourceDigest, producerVersion: PRODUCER_VERSION } });
+      await tx.oicAuditEvent.create({ data: { actorPrincipalId: actor.id, applicationId: event.applicationId, tenantId: event.tenantId, action: "economics.customer-usage.rated", targetType: "usage-event", targetId: usageEventId, requestId: correlation.requestId, traceId: correlation.traceId, metadata: { eventKey, status: finalStatus, reasonCode: finalReasonCode, planRevisionId: planRevision?.id ?? null, priceBookRevisionId: priceBook?.id ?? null, sourceDigest } } });
+      return rated;
+    }, { isolationLevel: Prisma.TransactionIsolationLevel.Serializable });
+    return result;
+  }
+
+  async listCustomerPriceBooks(actor: AuthenticatedPrincipal) {
+    this.requireRatingRead(actor);
+    return this.db.oicCustomerPriceBookRevision.findMany({ where: hasOicConsoleRead(actor.scopes) ? {} : { applicationId: actor.applicationId, OR: [{ tenantId: null }, { tenantId: { in: actor.tenantIds } }] }, include: { rules: true, planRevision: { include: { plan: { select: { planKey: true, displayName: true } } } }, _count: { select: { ratedUsageEvents: true } } }, orderBy: [{ createdAt: "desc" }, { id: "desc" }], take: 100 });
+  }
+
+  async listRatedUsage(actor: AuthenticatedPrincipal, cursor?: string, limit = 50) {
+    this.requireRatingRead(actor);
+    const where = hasOicConsoleRead(actor.scopes) ? {} : { applicationId: actor.applicationId, OR: [{ tenantId: null }, { tenantId: { in: actor.tenantIds } }] };
+    const rows = await this.db.oicRatedUsageEvent.findMany({ where, include: { usageEvent: { include: { providerAttempt: { select: { providerKey: true, upstreamModelId: true, admissionId: true } } } }, priceBookRevision: { select: { priceBookKey: true, revision: true, strategy: true, sourceDigest: true } }, planRevision: { include: { plan: { select: { planKey: true } } } }, adjustments: true }, orderBy: [{ recordedAt: "desc" }, { id: "desc" }], ...(cursor ? { cursor: { id: cursor }, skip: 1 } : {}), take: limit + 1 });
+    const items = rows.length > limit ? rows.slice(0, limit) : rows;
+    return { items, nextCursor: rows.length > limit ? items.at(-1)?.id ?? null : null };
+  }
+
+  async listFxRateEvidence(actor: AuthenticatedPrincipal, limit = 100) {
+    this.requireRatingRead(actor);
+    return this.db.oicFxRateEvidence.findMany({ orderBy: [{ effectiveAt: "desc" }, { id: "desc" }], take: Math.min(Math.max(limit, 1), 100) });
+  }
+
+  async createRatedAdjustment(actor: AuthenticatedPrincipal, ratedUsageEventId: string, input: { sourceKey: string; kind: "CREDIT" | "REVERSAL"; amount?: string; reason: string }, correlation: Correlation = {}) {
+    this.requireRatingManage(actor);
+    if (!/^[A-Za-z0-9._:-]{1,128}$/.test(input.sourceKey) || !input.reason.trim()) throw new Error("A bounded idempotency key and reason are required");
+    if (input.kind === "REVERSAL" && input.amount !== undefined) throw new Error("A reversal consumes the remaining rated amount; amount must be omitted");
+    if (input.kind === "CREDIT" && input.amount === undefined) throw new Error("A credit requires an explicit amount");
+    const event = await this.db.oicRatedUsageEvent.findUnique({ where: { id: ratedUsageEventId }, include: { adjustments: true } });
+    if (!event || event.status !== "RATED" || event.nativeAmount === null || event.currency === null) throw new ConflictException("Only a rated native-currency event can be adjusted");
+    this.assertCanManageExisting(actor, event.applicationId, event.tenantId);
+    const original = new Decimal(event.nativeAmount.toString());
+    const amountInput = input.kind === "CREDIT" ? dec(input.amount!, false) : null;
+    if (amountInput) {
+      const currencyScale = new Intl.NumberFormat("en", { style: "currency", currency: event.currency }).resolvedOptions().maximumFractionDigits ?? 2;
+      if (!amountInput.eq(amountInput.toDecimalPlaces(currencyScale, Decimal.ROUND_HALF_EVEN))) throw new Error("Adjustment amount exceeds the native currency minor unit");
+    }
+    const requestDigest = sha({ ratedUsageEventId, sourceKey: input.sourceKey, kind: input.kind, amount: amountInput?.toFixed() ?? null, reason: input.reason.trim() });
+    return this.db.$transaction(async (tx) => {
+      const existing = await tx.oicRatedUsageAdjustment.findUnique({ where: { sourceKey: input.sourceKey } });
+      if (existing) {
+        if (existing.requestDigest !== requestDigest) throw new ConflictException("Adjustment idempotency key was reused with different content");
+        return existing;
+      }
+      await tx.$queryRaw`SELECT id FROM "OicRatedUsageEvent" WHERE id = ${event.id}::uuid FOR UPDATE`;
+      const latest = await tx.oicRatedUsageEvent.findUniqueOrThrow({ where: { id: event.id }, include: { adjustments: true } });
+      const committed = latest.adjustments.reduce((total, row) => total.plus(new Decimal(row.amount.toString()).abs()), new Decimal(0));
+      const remaining = original.minus(committed);
+      const positiveAmount = input.kind === "REVERSAL" ? remaining : amountInput!;
+      if (remaining.lte(0) || positiveAmount.gt(remaining)) throw new ConflictException("Commercial adjustments cannot exceed the original rated amount");
+      const amount = positiveAmount.negated();
+      const row = await tx.oicRatedUsageAdjustment.create({ data: { sourceKey: input.sourceKey, requestDigest, ratedUsageEventId: event.id, applicationId: event.applicationId, tenantId: event.tenantId, kind: input.kind, amount: amount.toFixed(18), currency: event.currency!, reason: input.reason.trim(), actorPrincipalId: actor.id } });
+      await tx.oicAuditEvent.create({ data: { actorPrincipalId: actor.id, applicationId: event.applicationId, tenantId: event.tenantId, action: `economics.customer-adjustment.${input.kind.toLowerCase()}`, targetType: "rated-usage-event", targetId: event.id, requestId: correlation.requestId, traceId: correlation.traceId, metadata: { adjustmentId: row.id, sourceKey: input.sourceKey, amount: amount.toFixed(18), currency: event.currency, reason: input.reason.trim() } } });
+      return row;
+    }, { isolationLevel: Prisma.TransactionIsolationLevel.Serializable });
+  }
+
+  async createFxRateEvidence(actor: AuthenticatedPrincipal, input: { baseCurrency: string; quoteCurrency: string; rate: string; source: string; sourceReference: string; policyRevision: string; effectiveAt: Date }, correlation: Correlation = {}) {
+    this.requireRatingManage(actor);
+    const rate = dec(input.rate, false);
+    if (!/^[A-Z]{3}$/.test(input.baseCurrency) || !/^[A-Z]{3}$/.test(input.quoteCurrency) || input.baseCurrency === input.quoteCurrency || !input.source.trim() || !input.sourceReference.trim() || !input.policyRevision.trim() || !Number.isFinite(input.effectiveAt.getTime())) throw new Error("Invalid FX evidence");
+    const evidenceKey = sha(input);
+    const sourceDigest = sha({ ...input, rate: rate.toFixed(), evidenceKey });
+    return this.db.$transaction(async (tx) => {
+      const existing = await tx.oicFxRateEvidence.findUnique({ where: { evidenceKey } });
+      if (existing) return existing;
+      const row = await tx.oicFxRateEvidence.create({ data: { evidenceKey, baseCurrency: input.baseCurrency, quoteCurrency: input.quoteCurrency, rate: rate.toFixed(), source: input.source, sourceReference: input.sourceReference, policyRevision: input.policyRevision, effectiveAt: input.effectiveAt, sourceDigest } });
+      await tx.oicAuditEvent.create({ data: { actorPrincipalId: actor.id, action: "economics.fx-evidence.recorded", targetType: "fx-rate-evidence", targetId: row.id, requestId: correlation.requestId, traceId: correlation.traceId, metadata: { evidenceKey, sourceDigest, baseCurrency: input.baseCurrency, quoteCurrency: input.quoteCurrency } } });
+      return row;
+    }, { isolationLevel: Prisma.TransactionIsolationLevel.Serializable });
+  }
+
+  private requireRatingRead(actor: AuthenticatedPrincipal): void {
+    if (!hasOicConsoleRead(actor.scopes) && !actor.scopes.includes("oic:rating:read")) throw new ForbiddenException();
+  }
+  private requireRatingManage(actor: AuthenticatedPrincipal): void {
+    if (!hasOicConsoleManage(actor.scopes) && !actor.scopes.includes("oic:rating:manage")) throw new ForbiddenException();
   }
 
   async listPolicies(actor: AuthenticatedPrincipal) {

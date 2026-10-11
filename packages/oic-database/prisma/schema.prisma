@@ -187,6 +187,29 @@ enum OicEconomicAssessmentKind {
   REPLAY
 }
 
+enum OicCustomerRatingStrategy {
+  OIU_RATE
+  RESOURCE_RATE
+  REQUEST
+  TASK
+  FEATURE
+  TIERED
+  INCLUDED_PLUS_OVERAGE
+  FIXED_PLUS_VARIABLE
+}
+
+enum OicRatedUsageStatus {
+  RATED
+  NOT_RATED
+  PARTIAL
+  UNKNOWN_CONVERSION
+}
+
+enum OicCommercialAdjustmentKind {
+  CREDIT
+  REVERSAL
+}
+
 enum OicProviderCostEvidenceClass {
   INVOICE_AUTHORITATIVE
   PROVIDER_REPORTED
@@ -291,6 +314,10 @@ model OicApplication {
   budgetPolicies OicBudgetRevision[]
   quotaBuckets OicQuotaBucket[]
   admissions OicAdmission[]
+  customerPriceBooks OicCustomerPriceBookRevision[]
+  ratedUsageEvents OicRatedUsageEvent[]
+  ratedUsageAdjustments OicRatedUsageAdjustment[]
+  customerAllowanceBuckets OicCustomerAllowanceBucket[]
   @@index([status, key])
 }
 
@@ -318,6 +345,10 @@ model OicTenant {
   budgetPolicies OicBudgetRevision[]
   quotaBuckets OicQuotaBucket[]
   admissions OicAdmission[]
+  customerPriceBooks OicCustomerPriceBookRevision[]
+  ratedUsageEvents OicRatedUsageEvent[]
+  ratedUsageAdjustments OicRatedUsageAdjustment[]
+  customerAllowanceBuckets OicCustomerAllowanceBucket[]
   @@unique([id, applicationId])
   @@unique([applicationId, key])
   @@index([applicationId, status, createdAt])
@@ -352,6 +383,7 @@ model OicServicePrincipal {
   adminRecoveryRecords OicAdminRecoveryRecord[]
   providerAttempts OicProviderAttempt[]
   admissions OicAdmission[]
+  ratedUsageAdjustments OicRatedUsageAdjustment[]
   @@unique([id, applicationId])
   @@unique([applicationId, key])
   @@index([applicationId, status])
@@ -725,6 +757,7 @@ model OicUsageEvent {
   providerAttempt       OicProviderAttempt @relation(fields: [providerAttemptId], references: [id], onDelete: Restrict)
   costAssessments       OicProviderCostAssessment[]
   oiuAssessments        OicOiuAssessment[]
+  ratedUsageEvents      OicRatedUsageEvent[]
   @@unique([providerAttemptId, receiptSequence])
   @@index([applicationId, tenantId, occurredAt, id])
   @@index([providerKey, sourceDigest])
@@ -858,6 +891,145 @@ model OicOiuPosting {
   @@index([recordedAt, id])
 }
 
+model OicCustomerPriceBookRevision {
+  id               String                       @id @default(uuid()) @db.Uuid
+  applicationId    String?                      @db.Uuid
+  tenantId         String?                      @db.Uuid
+  planRevisionId   String                       @db.Uuid
+  scopeKey         String                       @db.VarChar(128)
+  priceBookKey     String                       @db.VarChar(64)
+  revision         Int
+  status           OicEconomicRevisionStatus    @default(DRAFT)
+  strategy         OicCustomerRatingStrategy
+  currency         String                       @db.Char(3)
+  sourceReference  String                       @db.VarChar(256)
+  sourceDigest     String                       @db.Char(64)
+  effectiveFrom    DateTime                     @db.Timestamptz(6)
+  effectiveTo      DateTime?                    @db.Timestamptz(6)
+  publishedAt      DateTime?                    @db.Timestamptz(6)
+  createdAt        DateTime                     @default(now()) @db.Timestamptz(6)
+  rules            OicCustomerPriceRule[]
+  application      OicApplication?              @relation(fields: [applicationId], references: [id], onDelete: Restrict)
+  tenant           OicTenant?                   @relation(fields: [tenantId, applicationId], references: [id, applicationId], onDelete: Restrict)
+  planRevision     OicPlanRevision              @relation(fields: [planRevisionId], references: [id], onDelete: Restrict)
+  ratedUsageEvents OicRatedUsageEvent[]
+  allowanceBuckets OicCustomerAllowanceBucket[]
+  @@unique([scopeKey, priceBookKey, revision])
+  @@index([applicationId, tenantId, planRevisionId, status, effectiveFrom])
+}
+
+model OicCustomerPriceRule {
+  id                    String                       @id @default(uuid()) @db.Uuid
+  priceBookRevisionId   String                       @db.Uuid
+  dimension             String?                      @db.VarChar(64)
+  unit                  String?                      @db.VarChar(64)
+  pricePerUnit          Decimal?                     @db.Decimal(38, 18)
+  quantityDivisor       Decimal                      @default(1) @db.Decimal(38, 18)
+  fixedAmount           Decimal?                     @db.Decimal(38, 18)
+  includedQuantity      Decimal?                     @db.Decimal(38, 18)
+  tiers                 Json?                        @db.JsonB
+  createdAt             DateTime                     @default(now()) @db.Timestamptz(6)
+  priceBookRevision     OicCustomerPriceBookRevision @relation(fields: [priceBookRevisionId], references: [id], onDelete: Restrict)
+  @@index([priceBookRevisionId, dimension])
+}
+
+model OicRatedUsageEvent {
+  id                    String                    @id @default(uuid()) @db.Uuid
+  eventKey              String                    @unique @db.VarChar(128)
+  usageEventId          String                    @db.Uuid
+  applicationId         String                    @db.Uuid
+  tenantId              String?                   @db.Uuid
+  planRevisionId        String?                   @db.Uuid
+  priceBookRevisionId   String?                   @db.Uuid
+  kind                  OicEconomicAssessmentKind
+  status                OicRatedUsageStatus
+  nativeAmount          Decimal?                  @db.Decimal(38, 18)
+  currency              String?                   @db.Char(3)
+  reasonCode            String?                   @db.VarChar(64)
+  ratingTrace           Json                      @db.JsonB
+  sourceDigest          String                    @db.Char(64)
+  producerVersion       String                    @db.VarChar(64)
+  recordedAt            DateTime                  @default(now()) @db.Timestamptz(6)
+  usageEvent            OicUsageEvent             @relation(fields: [usageEventId], references: [id], onDelete: Restrict)
+  application           OicApplication            @relation(fields: [applicationId], references: [id], onDelete: Restrict)
+  tenant                OicTenant?                @relation(fields: [tenantId, applicationId], references: [id, applicationId], onDelete: Restrict)
+  planRevision          OicPlanRevision?          @relation(fields: [planRevisionId], references: [id], onDelete: Restrict)
+  priceBookRevision     OicCustomerPriceBookRevision? @relation(fields: [priceBookRevisionId], references: [id], onDelete: Restrict)
+  adjustments           OicRatedUsageAdjustment[]
+  @@unique([usageEventId, priceBookRevisionId, kind])
+  @@index([applicationId, tenantId, recordedAt, id])
+  @@index([status, recordedAt])
+}
+
+model OicRatedUsageAdjustment {
+  id                    String                          @id @default(uuid()) @db.Uuid
+  sourceKey             String                          @unique @db.VarChar(128)
+  requestDigest         String                          @db.Char(64)
+  ratedUsageEventId     String                          @db.Uuid
+  applicationId         String                          @db.Uuid
+  tenantId              String?                         @db.Uuid
+  kind                  OicCommercialAdjustmentKind
+  amount                Decimal                         @db.Decimal(38, 18)
+  currency              String                          @db.Char(3)
+  reason                String                          @db.VarChar(256)
+  actorPrincipalId      String                          @db.Uuid
+  recordedAt            DateTime                        @default(now()) @db.Timestamptz(6)
+  ratedUsageEvent       OicRatedUsageEvent              @relation(fields: [ratedUsageEventId], references: [id], onDelete: Restrict)
+  application           OicApplication                 @relation(fields: [applicationId], references: [id], onDelete: Restrict)
+  tenant                OicTenant?                    @relation(fields: [tenantId, applicationId], references: [id, applicationId], onDelete: Restrict)
+  actor                 OicServicePrincipal            @relation(fields: [actorPrincipalId], references: [id], onDelete: Restrict)
+  @@index([ratedUsageEventId, recordedAt])
+  @@index([applicationId, tenantId, recordedAt])
+}
+
+model OicFxRateEvidence {
+  id                 String    @id @default(uuid()) @db.Uuid
+  evidenceKey        String    @unique @db.VarChar(128)
+  baseCurrency       String    @db.Char(3)
+  quoteCurrency      String    @db.Char(3)
+  rate               Decimal   @db.Decimal(38, 18)
+  source              String    @db.VarChar(128)
+  sourceReference     String    @db.VarChar(256)
+  policyRevision      String    @db.VarChar(64)
+  effectiveAt         DateTime  @db.Timestamptz(6)
+  sourceDigest        String    @db.Char(64)
+  recordedAt          DateTime  @default(now()) @db.Timestamptz(6)
+  @@index([baseCurrency, quoteCurrency, effectiveAt])
+}
+
+model OicCustomerAllowanceBucket {
+  id                   String                         @id @default(uuid()) @db.Uuid
+  bucketKey            String                         @unique @db.VarChar(128)
+  applicationId        String                         @db.Uuid
+  tenantId             String?                        @db.Uuid
+  planRevisionId       String                         @db.Uuid
+  priceBookRevisionId  String                         @db.Uuid
+  allowance            Decimal                        @db.Decimal(38, 18)
+  consumed             Decimal                        @default(0) @db.Decimal(38, 18)
+  sequence             Int                            @default(0)
+  periodStart          DateTime                       @db.Timestamptz(6)
+  periodEnd            DateTime?                      @db.Timestamptz(6)
+  createdAt            DateTime                       @default(now()) @db.Timestamptz(6)
+  application          OicApplication                 @relation(fields: [applicationId], references: [id], onDelete: Restrict)
+  tenant               OicTenant?                     @relation(fields: [tenantId, applicationId], references: [id, applicationId], onDelete: Restrict)
+  planRevision         OicPlanRevision                @relation(fields: [planRevisionId], references: [id], onDelete: Restrict)
+  priceBookRevision    OicCustomerPriceBookRevision   @relation(fields: [priceBookRevisionId], references: [id], onDelete: Restrict)
+  postings             OicCustomerAllowancePosting[]
+  @@index([applicationId, tenantId, planRevisionId, periodStart])
+}
+
+model OicCustomerAllowancePosting {
+  id          String                     @id @default(uuid()) @db.Uuid
+  bucketId    String                     @db.Uuid
+  sourceKey   String                     @unique @db.VarChar(128)
+  amount      Decimal                    @db.Decimal(38, 18)
+  sequence    Int
+  recordedAt  DateTime                   @default(now()) @db.Timestamptz(6)
+  bucket      OicCustomerAllowanceBucket @relation(fields: [bucketId], references: [id], onDelete: Restrict)
+  @@unique([bucketId, sequence])
+  @@index([bucketId, recordedAt])
+}
+
 model OicPlan {
   id            String          @id @default(uuid()) @db.Uuid
   applicationId String          @db.Uuid
@@ -888,6 +1060,9 @@ model OicPlanRevision {
   quotaPolicies         OicQuotaPolicyRevision[]
   budgetPolicies        OicBudgetRevision[]
   admissions            OicAdmission[]
+  customerPriceBooks    OicCustomerPriceBookRevision[]
+  ratedUsageEvents      OicRatedUsageEvent[]
+  customerAllowanceBuckets OicCustomerAllowanceBucket[]
   @@unique([planId, revision])
   @@index([status, effectiveFrom, effectiveTo])
 }

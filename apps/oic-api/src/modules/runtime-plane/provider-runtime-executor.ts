@@ -1,6 +1,6 @@
 import { request as httpsRequest } from "node:https";
 import type { IncomingMessage } from "node:http";
-import { Injectable } from "@nestjs/common";
+import { Inject, Injectable } from "@nestjs/common";
 import { OicDatabaseService } from "@oic/database";
 import type { OicRawUsageEvidence, OicResolvedModel, OicRuntimeContext, OicRuntimeExecutionResult, OicRuntimeExecutor, OicRuntimeExecutionStreamChunk, OicRuntimeRequest } from "@oic/contracts";
 import { decryptProviderCredential } from "../control-plane/provider-credential.crypto";
@@ -130,7 +130,7 @@ function responsesInput(request: OicRuntimeRequest) {
 @Injectable()
 export class ProviderRuntimeExecutor implements OicRuntimeExecutor {
   private testNetwork?: ProviderTestNetwork;
-  constructor(private readonly db: OicDatabaseService, private readonly usageEvidence: UsageEvidenceRecorder) {}
+  constructor(private readonly db: OicDatabaseService, @Inject(UsageEvidenceService) private readonly usageEvidence: UsageEvidenceRecorder) {}
 
   static forTest(db: OicDatabaseService, network: ProviderTestNetwork): ProviderRuntimeExecutor {
     if (!process.env.NODE_TEST_CONTEXT) throw new Error("Test-only provider network injection is unavailable outside Node test execution");

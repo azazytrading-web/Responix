@@ -101,6 +101,22 @@ export async function GET(request: Request) {
       return NextResponse.json({ error: "Plan and quota evidence is unavailable." }, { status: 503, headers: { "Cache-Control": "no-store" } });
     }
   }
+  if (view === "rating") {
+    try {
+      const headers = { Authorization: `Bearer ${controlPlaneCredential()}` };
+      const [priceBooks, rated, fxEvidence] = await Promise.all([
+        fetch(apiUrl("/api/v1/admin/economics/customer-price-books"), { headers, cache: "no-store", signal: AbortSignal.timeout(8000) }),
+        fetch(apiUrl("/api/v1/admin/economics/rated?limit=50"), { headers, cache: "no-store", signal: AbortSignal.timeout(8000) }),
+        fetch(apiUrl("/api/v1/admin/economics/fx-evidence?limit=100"), { headers, cache: "no-store", signal: AbortSignal.timeout(8000) })
+      ]);
+      const readJson = async (response: Response): Promise<unknown> => response.json().catch(() => null);
+      const [bookBody, ratedBody, fxBody] = await Promise.all([priceBooks, rated, fxEvidence].map(readJson));
+      const failed = [priceBooks, rated, fxEvidence].find((response) => !response.ok);
+      return NextResponse.json({ priceBooks: bookBody, rated: ratedBody, fxEvidence: fxBody }, { status: failed?.status ?? 200, headers: { "Cache-Control": "no-store" } });
+    } catch {
+      return NextResponse.json({ error: "Customer rating evidence is unavailable." }, { status: 503, headers: { "Cache-Control": "no-store" } });
+    }
+  }
   const path = view === "snapshot" ? "/api/v1/admin/console/snapshot" : view === "profiles" ? "/api/v1/admin/intelligence/profiles" : view === "profile-detail" && profileId && /^[0-9a-f-]{36}$/i.test(profileId) ? `/api/v1/admin/intelligence/profiles/${profileId}` : view === "engines" ? "/api/v1/admin/intelligence/engines" : null;
   const params = new URL(request.url).searchParams;
   const resource = view === "memory" ? "memory" : view === "knowledge" ? "knowledge" : view === "executions" || view === "traces" ? "executions" : null;

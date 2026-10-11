@@ -17,10 +17,15 @@ void test("OIC-6.1 usage evidence stores allowlisted provider facts with immutab
       update: ({ where, data }: { where: { id: string }; data: Record<string, unknown> }) => {
         attempts.set(where.id, { ...attempts.get(where.id), ...data });
         return Promise.resolve(attempts.get(where.id));
-      }
+      },
+      findFirst: () => Promise.resolve(null)
     },
     $transaction: <T>(operation: (tx: unknown) => Promise<T>) => operation({
       oicProviderAttempt: {
+        create: ({ data }: { data: Record<string, unknown> }) => {
+          attempts.set("attempt-1", data);
+          return Promise.resolve({ id: "attempt-1" });
+        },
         findFirst: ({ where }: { where: { id: string; applicationId: string; tenantId: string | null } }) =>
           Promise.resolve(where.id === "attempt-1" && where.applicationId === "app-a" && where.tenantId === "tenant-a" ? { id: where.id } : null),
         update: ({ where, data }: { where: { id: string }; data: Record<string, unknown> }) => {
@@ -60,9 +65,10 @@ void test("OIC-6.1 usage evidence stores allowlisted provider facts with immutab
 void test("OIC-6.1 unknown usage stays absent and scope or digest conflicts are rejected", async () => {
   let inserted = false;
   const db = {
-    oicProviderAttempt: { create: () => Promise.resolve({ id: "attempt-1" }), update: () => Promise.resolve() },
+    oicProviderAttempt: { create: () => Promise.resolve({ id: "attempt-1" }), update: () => Promise.resolve(), findFirst: () => Promise.resolve(null) },
     $transaction: <T>(operation: (tx: unknown) => Promise<T>) => operation({
       oicProviderAttempt: {
+        create: () => Promise.resolve({ id: "attempt-1" }),
         findFirst: ({ where }: { where: { applicationId: string; tenantId: string | null } }) => Promise.resolve(where.applicationId === "app-a" && where.tenantId === null ? { id: "attempt-1" } : null),
         update: () => Promise.resolve()
       },

@@ -14,6 +14,23 @@ const uuid = (value: unknown): value is string =>
   /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(value);
 const text = (value: unknown, maximum = 160): value is string =>
   typeof value === "string" && value.trim().length > 0 && value.length <= maximum;
+const decimalText = (value: unknown): value is string =>
+  typeof value === "string" && /^(?:0|[1-9]\d*)(?:\.\d{1,18})?$/.test(value) && value.length <= 60;
+const ratingDimension = (value: unknown) => ["inputTokens", "cachedInputTokens", "outputTokens", "reasoningTokens", "internalComputeUnits", "retrievalUnits", "toolUnits", "imageInputUnits", "imageOutputUnits", "audioInputSeconds", "audioOutputSeconds", "videoSeconds", "embeddingTokens", "rerankUnits", "requestUnits", "cacheWriteTokens", "batchTokens", "priorityTokens", "storageByteHours"].includes(String(value));
+const customerRules = (value: unknown): Record<string, unknown>[] | null => {
+  if (!Array.isArray(value) || value.length < 1 || value.length > 64) return null;
+  const result: Record<string, unknown>[] = [];
+  for (const candidate of value) {
+    if (!candidate || typeof candidate !== "object" || Array.isArray(candidate)) return null;
+    const row = candidate as Record<string, unknown>;
+    if (row.dimension !== undefined && !ratingDimension(row.dimension)) return null;
+    if (row.unit !== undefined && (typeof row.unit !== "string" || !/^[A-Z][A-Z0-9_]{1,63}$/.test(row.unit))) return null;
+    for (const field of ["pricePerUnit", "quantityDivisor", "fixedAmount", "includedQuantity"]) if (row[field] !== undefined && !decimalText(row[field])) return null;
+    if (row.tiers !== undefined && (!Array.isArray(row.tiers) || row.tiers.length > 64 || !row.tiers.every((tier) => !!tier && typeof tier === "object" && !Array.isArray(tier) && ((tier as Record<string, unknown>).upTo === null || decimalText((tier as Record<string, unknown>).upTo)) && decimalText((tier as Record<string, unknown>).pricePerUnit)))) return null;
+    result.push(Object.fromEntries(["dimension", "unit", "pricePerUnit", "quantityDivisor", "fixedAmount", "includedQuantity", "tiers"].filter((field) => row[field] !== undefined).map((field) => [field, row[field]])));
+  }
+  return result;
+};
 const knowledgeDependencies = (value: unknown) =>
   value === undefined ||
   (Array.isArray(value) &&
@@ -51,7 +68,9 @@ const supportedScope = (value: unknown) =>
     "oic:economics:read",
     "oic:economics:manage",
     "oic:admission:read",
-    "oic:admission:manage"
+    "oic:admission:manage",
+    "oic:rating:read",
+    "oic:rating:manage"
   ].includes(String(value));
 
 export async function POST(request: Request) {
@@ -427,6 +446,21 @@ export async function POST(request: Request) {
   } else if (!path && action === "admission.reconcile-expired" && (body.limit === undefined || Number.isInteger(body.limit) && Number(body.limit) >= 1 && Number(body.limit) <= 100)) {
     path = "/api/v1/admin/admission/reconcile-expired";
     payload = { limit: body.limit ?? 100 };
+  } else if (
+    !path && action === "rating.price-book.draft" && uuid(body.applicationId) && uuid(body.planRevisionId) && text(body.priceBookKey, 64) && /^[a-z][a-z0-9-]{1,63}$/.test(String(body.priceBookKey)) && ["OIU_RATE", "RESOURCE_RATE", "REQUEST", "TASK", "FEATURE", "TIERED", "INCLUDED_PLUS_OVERAGE", "FIXED_PLUS_VARIABLE"].includes(String(body.strategy)) && typeof body.currency === "string" && /^[A-Z]{3}$/.test(body.currency) && text(body.sourceReference, 256) && typeof body.effectiveFrom === "string" && Number.isFinite(Date.parse(body.effectiveFrom)) && (body.effectiveTo === undefined || typeof body.effectiveTo === "string" && Number.isFinite(Date.parse(body.effectiveTo))) && (body.tenantId === undefined || body.tenantId === null || uuid(body.tenantId)) && customerRules(body.rules) !== null
+  ) {
+    path = "/api/v1/admin/economics/customer-price-books";
+    payload = { applicationId: body.applicationId, ...(body.tenantId ? { tenantId: body.tenantId } : {}), planRevisionId: body.planRevisionId, priceBookKey: String(body.priceBookKey).trim(), strategy: body.strategy, currency: body.currency, sourceReference: String(body.sourceReference).trim(), effectiveFrom: body.effectiveFrom, ...(body.effectiveTo ? { effectiveTo: body.effectiveTo } : {}), rules: customerRules(body.rules) };
+  } else if (!path && action === "rating.price-book.publish" && uuid(body.id)) {
+    path = `/api/v1/admin/economics/customer-price-books/${body.id}/publish`;
+  } else if (!path && action === "rating.usage.rate" && uuid(body.usageEventId) && (body.kind === undefined || body.kind === "ORIGINAL" || body.kind === "REPLAY")) {
+    path = `/api/v1/admin/economics/rated/${body.usageEventId}/rate${body.kind === "REPLAY" ? "?kind=REPLAY" : ""}`;
+  } else if (!path && action === "rating.adjustment.create" && uuid(body.ratedUsageEventId) && text(body.sourceKey, 128) && /^[A-Za-z0-9._:-]{1,128}$/.test(String(body.sourceKey)) && ["CREDIT", "REVERSAL"].includes(String(body.kind)) && text(body.reason, 256) && (body.kind === "CREDIT" ? decimalText(body.amount) : body.amount === undefined)) {
+    path = `/api/v1/admin/economics/rated/${body.ratedUsageEventId}/adjustments`;
+    payload = { sourceKey: body.sourceKey, kind: body.kind, ...(body.amount === undefined ? {} : { amount: body.amount }), reason: String(body.reason).trim() };
+  } else if (!path && action === "rating.fx.create" && typeof body.baseCurrency === "string" && /^[A-Z]{3}$/.test(body.baseCurrency) && typeof body.quoteCurrency === "string" && /^[A-Z]{3}$/.test(body.quoteCurrency) && decimalText(body.rate) && text(body.source, 128) && text(body.sourceReference, 256) && text(body.policyRevision, 64) && typeof body.effectiveAt === "string" && Number.isFinite(Date.parse(body.effectiveAt))) {
+    path = "/api/v1/admin/economics/fx-evidence";
+    payload = { baseCurrency: body.baseCurrency, quoteCurrency: body.quoteCurrency, rate: body.rate, source: body.source, sourceReference: body.sourceReference, policyRevision: body.policyRevision, effectiveAt: body.effectiveAt };
   } else if (
     !path &&
     action === "runtime.invoke" &&

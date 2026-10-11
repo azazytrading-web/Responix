@@ -19,6 +19,9 @@ const oiuPolicy = z.object({
   dimensions: z.array(z.object({ dimension, unit: z.string().regex(/^[A-Z][A-Z0-9_]{1,63}$/), weightNumerator: decimal.optional(), weightDenominator: decimal.optional(), required: z.boolean().optional(), included: z.boolean().optional() }).strict()).min(1).max(32)
 }).strict();
 const reconcileDto = z.object({ cursor: z.string().uuid().optional(), limit: z.number().int().min(1).max(100).default(50) }).strict();
+const customerRule = z.object({ dimension: dimension.optional(), unit: z.string().regex(/^[A-Z][A-Z0-9_]{1,63}$/).optional(), pricePerUnit: decimal.optional(), quantityDivisor: decimal.optional(), fixedAmount: decimal.optional(), includedQuantity: decimal.optional(), tiers: z.array(z.object({ upTo: decimal.nullable(), pricePerUnit: decimal }).strict()).max(64).optional() }).strict();
+const customerBook = z.object({ ...scope, planRevisionId: z.string().uuid(), priceBookKey: z.string().regex(/^[a-z][a-z0-9-]{1,63}$/), strategy: z.enum(["OIU_RATE", "RESOURCE_RATE", "REQUEST", "TASK", "FEATURE", "TIERED", "INCLUDED_PLUS_OVERAGE", "FIXED_PLUS_VARIABLE"]), currency: z.string().regex(/^[A-Z]{3}$/), sourceReference: z.string().trim().min(1).max(256), effectiveFrom: z.coerce.date(), effectiveTo: z.coerce.date().optional(), rules: z.array(customerRule).min(1).max(64) }).strict();
+const fxEvidence = z.object({ baseCurrency: z.string().regex(/^[A-Z]{3}$/), quoteCurrency: z.string().regex(/^[A-Z]{3}$/), rate: decimal, source: z.string().trim().min(1).max(128), sourceReference: z.string().trim().min(1).max(256), policyRevision: z.string().trim().min(1).max(64), effectiveAt: z.coerce.date() }).strict();
 function parse<T>(schema: z.ZodType<T>, value: unknown): T {
   const result = schema.safeParse(value);
   if (!result.success) throw new BadRequestException("Request validation failed");
@@ -46,6 +49,9 @@ export class EconomicsController {
   @Version("1") @Get("rate-books") rateBooks(@CurrentPrincipal() actor: AuthenticatedPrincipal) { return this.economics.listRateBooks(actor); }
   @Version("1") @Get("costs") costs(@CurrentPrincipal() actor: AuthenticatedPrincipal, @Query("cursor") cursor?: string, @Query("limit") rawLimit?: string) { return this.economics.listAssessments(actor, "cost", cursor, limit(rawLimit)); }
   @Version("1") @Get("oiu") oiu(@CurrentPrincipal() actor: AuthenticatedPrincipal, @Query("cursor") cursor?: string, @Query("limit") rawLimit?: string) { return this.economics.listAssessments(actor, "oiu", cursor, limit(rawLimit)); }
+  @Version("1") @Get("customer-price-books") customerPriceBooks(@CurrentPrincipal() actor: AuthenticatedPrincipal) { return this.economics.listCustomerPriceBooks(actor); }
+  @Version("1") @Get("rated") rated(@CurrentPrincipal() actor: AuthenticatedPrincipal, @Query("cursor") cursor?: string, @Query("limit") rawLimit?: string) { return this.economics.listRatedUsage(actor, cursor, limit(rawLimit)); }
+  @Version("1") @Get("fx-evidence") fxEvidence(@CurrentPrincipal() actor: AuthenticatedPrincipal, @Query("limit") rawLimit?: string) { return this.economics.listFxRateEvidence(actor, limit(rawLimit)); }
 
   @Version("1") @Post("rate-books") createRateBook(@CurrentPrincipal() actor: AuthenticatedPrincipal, @Body() body: unknown, @Req() request: RequestWithIds) {
     return this.economics.createProviderRateBook(actor, parse(providerBook, body), correlation(request));
@@ -71,5 +77,22 @@ export class EconomicsController {
   @Version("1") @Post("reconcile") reconcile(@CurrentPrincipal() actor: AuthenticatedPrincipal, @Body() body: unknown, @Req() request: RequestWithIds) {
     const input = parse(reconcileDto, body);
     return this.economics.reconcile(actor, { cursor: input.cursor, limit: input.limit ?? 50 }, correlation(request));
+  }
+  @Version("1") @Post("customer-price-books") createCustomerPriceBook(@CurrentPrincipal() actor: AuthenticatedPrincipal, @Body() body: unknown, @Req() request: RequestWithIds) {
+    return this.economics.createCustomerPriceBook(actor, parse(customerBook, body), correlation(request));
+  }
+  @Version("1") @Post("customer-price-books/:id/publish") publishCustomerPriceBook(@CurrentPrincipal() actor: AuthenticatedPrincipal, @Param("id", ParseUUIDPipe) id: string, @Req() request: RequestWithIds) {
+    return this.economics.publishCustomerPriceBook(actor, id, correlation(request));
+  }
+  @Version("1") @Post("rated/:usageEventId/rate") rateCustomerUsage(@CurrentPrincipal() actor: AuthenticatedPrincipal, @Param("usageEventId", ParseUUIDPipe) id: string, @Query("kind") kind: string | undefined, @Req() request: RequestWithIds) {
+    if (kind !== undefined && kind !== "ORIGINAL" && kind !== "REPLAY") throw new BadRequestException("Invalid rating kind");
+    return this.economics.rateCustomerUsage(actor, id, kind === "REPLAY" ? "REPLAY" : "ORIGINAL", correlation(request));
+  }
+  @Version("1") @Post("rated/:id/adjustments") adjustRatedUsage(@CurrentPrincipal() actor: AuthenticatedPrincipal, @Param("id", ParseUUIDPipe) id: string, @Body() body: unknown, @Req() request: RequestWithIds) {
+    const input = parse(z.object({ sourceKey: z.string().regex(/^[A-Za-z0-9._:-]{1,128}$/), kind: z.enum(["CREDIT", "REVERSAL"]), amount: decimal.optional(), reason: z.string().trim().min(1).max(256) }).strict(), body);
+    return this.economics.createRatedAdjustment(actor, id, input, correlation(request));
+  }
+  @Version("1") @Post("fx-evidence") createFxEvidence(@CurrentPrincipal() actor: AuthenticatedPrincipal, @Body() body: unknown, @Req() request: RequestWithIds) {
+    return this.economics.createFxRateEvidence(actor, parse(fxEvidence, body), correlation(request));
   }
 }

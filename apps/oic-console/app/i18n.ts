@@ -17,7 +17,8 @@ export type View =
   | "audit"
   | "usage"
   | "economics"
-  | "admission";
+  | "admission"
+  | "rating";
 export type NavGroup = "command" | "foundation" | "factory" | "intelligence" | "lab" | "operations";
 export type Messages = typeof messages.en;
 
@@ -44,6 +45,7 @@ export const messages = {
     usage: "Usage evidence",
     economics: "Provider economics",
     admission: "Plans & quotas",
+    rating: "Customer rating",
     subtitle: "Operational view of the Oi intelligence platform.",
     refresh: "Refresh data",
     signOut: "Sign out",
@@ -360,6 +362,7 @@ export const messages = {
     usage: "أدلة الاستخدام",
     economics: "اقتصاديات المزوّد",
     admission: "الخطط والحصص",
+    rating: "تسعير الاستخدام للعملاء",
     subtitle: "عرض تشغيلي لمنصة ذكاء Oi.",
     refresh: "تحديث البيانات",
     signOut: "تسجيل الخروج",
@@ -649,7 +652,8 @@ export const nav: { id: View; group: NavGroup; label?: "access" | "providerFacto
   { id: "audit", group: "operations" },
   { id: "usage", group: "operations" },
   { id: "economics", group: "operations" },
-  { id: "admission", group: "operations" }
+  { id: "admission", group: "operations" },
+  { id: "rating", group: "operations" }
 ];
 
 export const arabicLiterals: Record<string, string> = {

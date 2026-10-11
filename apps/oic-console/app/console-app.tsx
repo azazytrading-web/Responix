@@ -25,6 +25,7 @@ import { HealthView } from "./features/operations/health-view";
 import { UsageEvidenceView } from "./features/operations/usage-evidence-view";
 import { EconomicsView } from "./features/operations/economics-view";
 import { AdmissionView } from "./features/operations/admission-view";
+import { CustomerRatingView } from "./features/operations/customer-rating-view";
 import { IntelligenceCenter } from "./features/intelligence/intelligence-center";
 import { RuntimeWorkspace, TracesWorkspace, WorkbenchWorkspace } from "./features/intelligence/lab-workspaces";
 import type { RuntimeModel } from "./features/intelligence/lab-workspaces";
@@ -1084,6 +1085,7 @@ export default function ConsoleApp({ platformUrl }: { platformUrl: string }) {
           <UsageEvidenceView view={view} locale={locale} />
           <EconomicsView view={view} locale={locale} />
           <AdmissionView view={view} locale={locale} />
+          <CustomerRatingView view={view} locale={locale} />
           <footer className="content-footer">
             <span>OIC · {t.independentPlatform}</span>
             <span>

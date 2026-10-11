@@ -74,9 +74,21 @@ export async function GET(request: Request) {
   const listPath = resource ? `/api/v1/admin/intelligence/${resource}${resource === "executions" ? "?limit=50" : `?${new URLSearchParams({ ...(tenantId ? { tenantId } : {}), ...(q ? { q } : {}), ...(lifecycle ? { lifecycle } : {}), ...(kind && resource === "memory" ? { kind } : {}) }).toString()}`}` : null;
   const traceId = new URL(request.url).searchParams.get("traceId");
   const executionPath = (view === "executions" || view === "traces") && traceId && /^[A-Za-z0-9._:-]{1,128}$/.test(traceId) ? `/api/v1/admin/intelligence/executions/${encodeURIComponent(traceId)}` : null;
+  const usageId = (name: string) => { const value = params.get(name); return value && /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(value) ? value : null; };
+  const usagePath = view === "usage-events" || view === "usage-attempts" ? (() => {
+    const query = new URLSearchParams();
+    const limit = params.get("limit");
+    if (limit && /^[1-9][0-9]?$|^100$/.test(limit)) query.set("limit", limit);
+    const cursor = usageId("cursor"); const applicationId = usageId("applicationId"); const tenantId = usageId("tenantId"); const attemptId = usageId("attemptId");
+    if (cursor) query.set("cursor", cursor);
+    if (applicationId) query.set("applicationId", applicationId);
+    if (tenantId) query.set("tenantId", tenantId);
+    if (attemptId && view === "usage-events") query.set("attemptId", attemptId);
+    return `/api/v1/admin/usage/${view === "usage-events" ? "events" : "attempts"}${query.size ? `?${query.toString()}` : ""}`;
+  })() : null;
   const itemPath = resource === "memory" && params.get("id") && /^[0-9a-f-]{36}$/i.test(params.get("id")!) ? `/api/v1/admin/intelligence/memory/${params.get("id")}` : null;
   const knowledgeItemPath = resource === "knowledge" && params.get("id") && /^[0-9a-f-]{36}$/i.test(params.get("id")!) ? `/api/v1/admin/intelligence/knowledge/${params.get("id")}` : null;
-  const resolvedPath = path ?? executionPath ?? itemPath ?? knowledgeItemPath ?? listPath;
+  const resolvedPath = path ?? executionPath ?? itemPath ?? knowledgeItemPath ?? usagePath ?? listPath;
   if (!resolvedPath) return NextResponse.json({ error: "Unknown console view." }, { status: 404 });
   try {
     const headers: HeadersInit = { Authorization: `Bearer ${controlPlaneCredential()}` };

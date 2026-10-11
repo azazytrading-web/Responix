@@ -157,6 +157,19 @@ enum OicProviderSyncStatus {
   FAILED
 }
 
+enum OicProviderAttemptStatus {
+  DISPATCHED
+  SUCCEEDED
+  FAILED
+  UNCERTAIN
+}
+
+enum OicUsageEvidenceStatus {
+  REPORTED
+  PARTIAL
+  UNKNOWN
+}
+
 model OicApplication {
   id                 String                     @id @default(uuid()) @db.Uuid
   key                String                     @unique @db.VarChar(64)
@@ -174,6 +187,7 @@ model OicApplication {
   intelligenceMemories OicIntelligenceMemory[]
   intelligenceKnowledge OicIntelligenceKnowledge[]
   intelligenceExecutions OicIntelligenceExecution[]
+  providerAttempts OicProviderAttempt[]
   @@index([status, key])
 }
 
@@ -193,6 +207,7 @@ model OicTenant {
   intelligenceMemories OicIntelligenceMemory[]
   intelligenceKnowledge OicIntelligenceKnowledge[]
   intelligenceExecutions OicIntelligenceExecution[]
+  providerAttempts OicProviderAttempt[]
   @@unique([id, applicationId])
   @@unique([applicationId, key])
   @@index([applicationId, status, createdAt])
@@ -225,6 +240,7 @@ model OicServicePrincipal {
   tenantGrants   OicPrincipalTenantGrant[]
   credentials    OicMachineCredential[]
   adminRecoveryRecords OicAdminRecoveryRecord[]
+  providerAttempts OicProviderAttempt[]
   @@unique([id, applicationId])
   @@unique([applicationId, key])
   @@index([applicationId, status])
@@ -364,6 +380,7 @@ model OicProviderConnection {
   upstreamModels       OicUpstreamModel[]
   bindings             OicRuntimeBinding[]
   syncRuns             OicProviderSyncRun[]
+  providerAttempts     OicProviderAttempt[]
   @@index([providerDefinitionId, status, scope])
   @@index([applicationId, tenantId, status])
 }
@@ -543,8 +560,59 @@ model OicRuntimeBinding {
   connection    OicProviderConnection    @relation(fields: [connectionId], references: [id], onDelete: Restrict)
   application   OicApplication?           @relation(fields: [applicationId], references: [id], onDelete: Restrict)
   tenant        OicTenant?                @relation(fields: [tenantId, applicationId], references: [id, applicationId], onDelete: Restrict)
+  providerAttempts OicProviderAttempt[]
   @@index([editionId, environment, scope, status])
   @@index([applicationId, tenantId, environment, status])
+}
+
+model OicProviderAttempt {
+  id                    String                   @id @default(uuid()) @db.Uuid
+  applicationId         String                   @db.Uuid
+  tenantId              String?                  @db.Uuid
+  principalId           String                   @db.Uuid
+  connectionId          String                   @db.Uuid
+  bindingId              String                   @db.Uuid
+  traceId                String                   @db.VarChar(128)
+  requestId              String                   @db.VarChar(128)
+  attemptKey             String                   @unique @db.VarChar(128)
+  providerKey            String                   @db.VarChar(64)
+  upstreamModelId        String                   @db.VarChar(256)
+  transportProfile       String                   @db.VarChar(128)
+  status                 OicProviderAttemptStatus @default(DISPATCHED)
+  usageStatus            OicUsageEvidenceStatus   @default(UNKNOWN)
+  sourceDigest           String?                  @db.Char(64)
+  safeErrorCode          String?                  @db.VarChar(64)
+  startedAt              DateTime                 @default(now()) @db.Timestamptz(6)
+  completedAt            DateTime?                @db.Timestamptz(6)
+  application            OicApplication           @relation(fields: [applicationId], references: [id], onDelete: Restrict)
+  tenant                 OicTenant?               @relation(fields: [tenantId, applicationId], references: [id, applicationId], onDelete: Restrict)
+  principal              OicServicePrincipal      @relation(fields: [principalId, applicationId], references: [id, applicationId], onDelete: Restrict)
+  connection             OicProviderConnection    @relation(fields: [connectionId], references: [id], onDelete: Restrict)
+  binding                OicRuntimeBinding        @relation(fields: [bindingId], references: [id], onDelete: Restrict)
+  usageEvents            OicUsageEvent[]
+  @@index([applicationId, tenantId, startedAt, id])
+  @@index([connectionId, startedAt])
+  @@index([status, startedAt])
+}
+
+model OicUsageEvent {
+  id                    String             @id @default(uuid()) @db.Uuid
+  applicationId         String             @db.Uuid
+  tenantId              String?            @db.Uuid
+  providerAttemptId     String             @db.Uuid
+  receiptSequence       Int                @default(0)
+  sourceDigest          String             @db.Char(64)
+  providerKey           String             @db.VarChar(64)
+  transportProfile      String             @db.VarChar(128)
+  rawDimensions         Json               @db.JsonB
+  normalizedDimensions  Json               @db.JsonB
+  occurredAt            DateTime?          @db.Timestamptz(6)
+  recordedAt            DateTime           @default(now()) @db.Timestamptz(6)
+  providerAttempt       OicProviderAttempt @relation(fields: [providerAttemptId], references: [id], onDelete: Restrict)
+  @@unique([providerAttemptId, receiptSequence])
+  @@index([applicationId, tenantId, occurredAt, id])
+  @@index([providerKey, sourceDigest])
+  @@index([sourceDigest])
 }
 
 model OicApplicationModelVisibility {

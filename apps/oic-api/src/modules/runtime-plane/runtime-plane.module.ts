@@ -14,9 +14,10 @@ import { OicDatabaseService } from "@oic/database";
 import { OicMemoryRepository } from "../intelligence/memory.repository";
 import { IntelligenceWorkbenchController } from "./intelligence-workbench.controller";
 import { IntelligenceWorkbenchService } from "./intelligence-workbench.service";
+import { UsageEvidenceModule } from "../usage-evidence/usage-evidence.module";
 
 @Module({
-  imports: [OicDatabaseModule],
+  imports: [OicDatabaseModule, UsageEvidenceModule],
   controllers: [OicRuntimeController, OpenAICompatibilityController, IntelligenceWorkbenchController],
   providers: [
     OicAuthenticationGuard, OicScopeGuard, RuntimeContextResolver, OicRuntimeService,

@@ -2,13 +2,14 @@ import { request as httpsRequest } from "node:https";
 import type { IncomingMessage } from "node:http";
 import { Injectable } from "@nestjs/common";
 import { OicDatabaseService } from "@oic/database";
-import type { OicResolvedModel, OicRuntimeContext, OicRuntimeExecutionResult, OicRuntimeExecutor, OicRuntimeExecutionStreamChunk, OicRuntimeRequest } from "@oic/contracts";
+import type { OicRawUsageEvidence, OicResolvedModel, OicRuntimeContext, OicRuntimeExecutionResult, OicRuntimeExecutor, OicRuntimeExecutionStreamChunk, OicRuntimeRequest } from "@oic/contracts";
 import { decryptProviderCredential } from "../control-plane/provider-credential.crypto";
 import { resolvePublicHttpsEndpoint } from "../control-plane/provider-endpoint";
 import type { ResolvedProviderEndpoint } from "../control-plane/provider-endpoint";
 import { registeredProvider } from "../control-plane/provider-registry";
 import { isLocalFixtureConnection, LOCAL_PROVIDER_FIXTURE_ENDPOINT, LOCAL_PROVIDER_FIXTURE_KEY, localProviderFixtureEnabled } from "../control-plane/local-provider-fixture";
 import { OicRuntimeException } from "./runtime-errors";
+import { UsageEvidenceService } from "../usage-evidence/usage-evidence.service";
 
 const MAX_RESPONSE_BYTES = 2 * 1024 * 1024;
 const MAX_STREAM_EVENT_BYTES = 256 * 1024;
@@ -20,6 +21,7 @@ type ProviderTestNetwork = {
   request(url: URL, headers: Record<string, string>, body: Buffer, signal: AbortSignal | undefined, timeoutMs: number): Promise<IncomingMessage>;
   timeoutMs?: number;
 };
+type UsageEvidenceRecorder = Pick<UsageEvidenceService, "beginAttempt" | "recordReceipt" | "finishAttempt">;
 type ProviderResponse = { error?: unknown; choices?: Array<{ message?: { content?: string | Array<{ type?: string; text?: string }> }; finish_reason?: string; delta?: { content?: string | null } }>; usage?: { prompt_tokens?: number; completion_tokens?: number; prompt_tokens_details?: { cached_tokens?: number }; completion_tokens_details?: { reasoning_tokens?: number } } };
 type ResponsesProviderResponse = { type?: string; error?: unknown; status?: string; output_text?: string; output?: Array<{ type?: string; content?: Array<{ type?: string; text?: string }> }>; incomplete_details?: { reason?: string }; response?: { usage?: { input_tokens?: number; output_tokens?: number; input_tokens_details?: { cached_tokens?: number }; output_tokens_details?: { reasoning_tokens?: number } } }; usage?: { input_tokens?: number; output_tokens?: number; input_tokens_details?: { cached_tokens?: number }; output_tokens_details?: { reasoning_tokens?: number } }; delta?: string };
 
@@ -54,6 +56,15 @@ function usageOf(usage: ProviderResponse["usage"]) {
     ...(Number.isSafeInteger(usage.prompt_tokens_details?.cached_tokens) && usage.prompt_tokens_details!.cached_tokens! >= 0 ? { cachedInputTokens: usage.prompt_tokens_details!.cached_tokens } : {}),
     ...(Number.isSafeInteger(usage.completion_tokens_details?.reasoning_tokens) && usage.completion_tokens_details!.reasoning_tokens! >= 0 ? { reasoningTokens: usage.completion_tokens_details!.reasoning_tokens } : {})
   };
+}
+function rawChatUsageOf(usage: ProviderResponse["usage"]): Record<string, unknown> {
+  if (!usage) return {};
+  return Object.fromEntries(Object.entries({
+    prompt_tokens: usage.prompt_tokens,
+    completion_tokens: usage.completion_tokens,
+    "prompt_tokens_details.cached_tokens": usage.prompt_tokens_details?.cached_tokens,
+    "completion_tokens_details.reasoning_tokens": usage.completion_tokens_details?.reasoning_tokens
+  }).filter(([, amount]) => Number.isSafeInteger(amount) && amount! >= 0));
 }
 function localFixtureResponse(request: OicRuntimeRequest): string {
   const messages = request.input.map((message) => ({ speaker: message.speaker, text: message.content.map((part) => part.text).join("\n") }));
@@ -98,6 +109,15 @@ function responsesUsageOf(usage: ResponsesProviderResponse["usage"]) {
     ...(Number.isSafeInteger(usage.output_tokens_details?.reasoning_tokens) && usage.output_tokens_details!.reasoning_tokens! >= 0 ? { reasoningTokens: usage.output_tokens_details!.reasoning_tokens } : {})
   };
 }
+function rawResponsesUsageOf(usage: ResponsesProviderResponse["usage"]): Record<string, unknown> {
+  if (!usage) return {};
+  return Object.fromEntries(Object.entries({
+    input_tokens: usage.input_tokens,
+    output_tokens: usage.output_tokens,
+    "input_tokens_details.cached_tokens": usage.input_tokens_details?.cached_tokens,
+    "output_tokens_details.reasoning_tokens": usage.output_tokens_details?.reasoning_tokens
+  }).filter(([, amount]) => Number.isSafeInteger(amount) && amount! >= 0));
+}
 function responsesInput(request: OicRuntimeRequest) {
   return request.input.map((message) => ({
     role: message.speaker === "instruction" ? "developer" : message.speaker === "context" ? "user" : message.speaker,
@@ -110,11 +130,14 @@ function responsesInput(request: OicRuntimeRequest) {
 @Injectable()
 export class ProviderRuntimeExecutor implements OicRuntimeExecutor {
   private testNetwork?: ProviderTestNetwork;
-  constructor(private readonly db: OicDatabaseService) {}
+  constructor(private readonly db: OicDatabaseService, private readonly usageEvidence: UsageEvidenceRecorder) {}
 
   static forTest(db: OicDatabaseService, network: ProviderTestNetwork): ProviderRuntimeExecutor {
     if (!process.env.NODE_TEST_CONTEXT) throw new Error("Test-only provider network injection is unavailable outside Node test execution");
-    const executor = new ProviderRuntimeExecutor(db);
+    const evidence = db.oicProviderAttempt
+      ? new UsageEvidenceService(db)
+      : { beginAttempt: () => Promise.resolve("test-attempt"), recordReceipt: () => Promise.resolve(), finishAttempt: () => Promise.resolve() };
+    const executor = new ProviderRuntimeExecutor(db, evidence);
     executor.testNetwork = network;
     return executor;
   }
@@ -127,22 +150,33 @@ export class ProviderRuntimeExecutor implements OicRuntimeExecutor {
       const outputText = localFixtureResponse(request);
       return { outputText, usage: { inputTokens: Math.max(1, Math.ceil(inputLength / 4)), outputTokens: Math.max(1, Math.ceil(outputText.length / 4)) }, finishReason: "completed", executorVersion: "oic-local-fixture-v1" };
     }
-    if (prepared.transportProfile === "openai-responses-v1") {
-      const data = await this.sendJson(prepared, { model: prepared.upstreamModelId, input: responsesInput(request), stream: false, ...(request.maxOutputUnits ? { max_output_tokens: request.maxOutputUnits } : {}) }, signal) as unknown as ResponsesProviderResponse;
-      if (data.error || (data.type === "response.failed")) throw new OicRuntimeException("PROVIDER_UNAVAILABLE");
-      const outputText = typeof data.output_text === "string" ? data.output_text : data.output?.flatMap((item) => item.content ?? []).filter((item) => item.type === "output_text" && typeof item.text === "string").map((item) => item.text!).join("");
-      if (typeof outputText !== "string") throw new OicRuntimeException("PROVIDER_RESPONSE_INVALID");
-      return { outputText, usage: responsesUsageOf(data.usage ?? data.response?.usage), finishReason: data.status === "incomplete" && data.incomplete_details?.reason === "max_output_tokens" ? "output-limit" : "completed", executorVersion: "openai-responses-v1" };
+    const attemptId = await this.beginAttempt(prepared, context);
+    try {
+      if (prepared.transportProfile === "openai-responses-v1") {
+        const data = await this.sendJson(prepared, { model: prepared.upstreamModelId, input: responsesInput(request), stream: false, ...(request.maxOutputUnits ? { max_output_tokens: request.maxOutputUnits } : {}) }, signal) as unknown as ResponsesProviderResponse;
+        if (data.error || (data.type === "response.failed")) throw new OicRuntimeException("PROVIDER_UNAVAILABLE");
+        const outputText = typeof data.output_text === "string" ? data.output_text : data.output?.flatMap((item) => item.content ?? []).filter((item) => item.type === "output_text" && typeof item.text === "string").map((item) => item.text!).join("");
+        if (typeof outputText !== "string") throw new OicRuntimeException("PROVIDER_RESPONSE_INVALID");
+        const usage = data.usage ?? data.response?.usage;
+        await this.recordReceipt(attemptId, 0, prepared, context, rawResponsesUsageOf(usage), responsesUsageOf(usage));
+        await this.usageEvidence.finishAttempt(attemptId, "SUCCEEDED");
+        return { outputText, usage: responsesUsageOf(usage), finishReason: data.status === "incomplete" && data.incomplete_details?.reason === "max_output_tokens" ? "output-limit" : "completed", executorVersion: "openai-responses-v1" };
+      }
+      const data = await this.sendJson(prepared, {
+        model: prepared.upstreamModelId, messages: toMessages(request), stream: false,
+        ...(request.maxOutputUnits ? { max_tokens: request.maxOutputUnits } : {})
+      }, signal);
+      const choice = data.choices?.[0];
+      const content = choice?.message?.content;
+      const outputText = typeof content === "string" ? content : Array.isArray(content) ? content.filter((item) => item.type === "text" && typeof item.text === "string").map((item) => item.text).join("") : null;
+      if (outputText === null || outputText === undefined) throw new OicRuntimeException("PROVIDER_RESPONSE_INVALID");
+      await this.recordReceipt(attemptId, 0, prepared, context, rawChatUsageOf(data.usage), usageOf(data.usage));
+      await this.usageEvidence.finishAttempt(attemptId, "SUCCEEDED");
+      return { outputText, usage: usageOf(data.usage), finishReason: choice?.finish_reason === "length" ? "output-limit" : "completed", executorVersion: "openai-chat-completions-v1" };
+    } catch (error) {
+      await this.finishFailure(attemptId, error);
+      throw error;
     }
-    const data = await this.sendJson(prepared, {
-      model: prepared.upstreamModelId, messages: toMessages(request), stream: false,
-      ...(request.maxOutputUnits ? { max_tokens: request.maxOutputUnits } : {})
-    }, signal);
-    const choice = data.choices?.[0];
-    const content = choice?.message?.content;
-    const outputText = typeof content === "string" ? content : Array.isArray(content) ? content.filter((item) => item.type === "text" && typeof item.text === "string").map((item) => item.text).join("") : null;
-    if (outputText === null || outputText === undefined) throw new OicRuntimeException("PROVIDER_RESPONSE_INVALID");
-    return { outputText, usage: usageOf(data.usage), finishReason: choice?.finish_reason === "length" ? "output-limit" : "completed", executorVersion: "openai-chat-completions-v1" };
   }
 
   async *stream(model: OicResolvedModel, request: OicRuntimeRequest, context: OicRuntimeContext, signal?: AbortSignal): AsyncIterable<OicRuntimeExecutionStreamChunk> {
@@ -155,7 +189,12 @@ export class ProviderRuntimeExecutor implements OicRuntimeExecutor {
       yield { type: "usage.updated", usage: { inputTokens: Math.max(1, Math.ceil(inputLength / 4)), outputTokens: Math.max(1, Math.ceil(text.length / 4)) } };
       return;
     }
+    const attemptId = await this.beginAttempt(prepared, context);
     const responsesTransport = prepared.transportProfile === "openai-responses-v1";
+    let receiptSequence = 0;
+    let completed = false;
+    let failureRecorded = false;
+    try {
     const response = await this.sendStream(prepared, {
       model: prepared.upstreamModelId,
       ...(responsesTransport ? { input: responsesInput(request) } : { messages: toMessages(request), stream_options: { include_usage: true } }),
@@ -187,7 +226,9 @@ export class ProviderRuntimeExecutor implements OicRuntimeExecutor {
           if (responsesTransport && data.type === "response.output_text.delta" && typeof data.delta === "string" && data.delta) yield { type: "content.delta", text: data.delta };
           if (responsesTransport && data.type === "response.completed") {
             terminalSeen = true;
+            const rawUsage = rawResponsesUsageOf(data.response?.usage);
             const usage = responsesUsageOf(data.response?.usage);
+            await this.recordReceipt(attemptId, receiptSequence++, prepared, context, rawUsage, usage);
             if (usage && Object.keys(usage).length) yield { type: "usage.updated", usage };
             continue;
           }
@@ -195,6 +236,7 @@ export class ProviderRuntimeExecutor implements OicRuntimeExecutor {
           const text = responsesTransport ? undefined : choice?.delta?.content;
           if (typeof text === "string" && text) yield { type: "content.delta", text };
           const usage = responsesTransport ? undefined : usageOf(data.usage);
+          if (!responsesTransport && data.usage) await this.recordReceipt(attemptId, receiptSequence++, prepared, context, rawChatUsageOf(data.usage), usage ?? {});
           if (usage && Object.keys(usage).length) yield { type: "usage.updated", usage };
         }
       }
@@ -204,6 +246,43 @@ export class ProviderRuntimeExecutor implements OicRuntimeExecutor {
       throw new OicRuntimeException("PROVIDER_STREAM_INTERRUPTED");
     }
     if (!terminalSeen) throw new OicRuntimeException(timedOutResponses.has(response) ? "UPSTREAM_TIMEOUT" : "PROVIDER_STREAM_INTERRUPTED");
+    completed = true;
+    } catch (error) {
+      await this.finishFailure(attemptId, error);
+      failureRecorded = true;
+      throw error;
+    } finally {
+      if (completed) await this.usageEvidence.finishAttempt(attemptId, "SUCCEEDED");
+      else if (!failureRecorded) await this.usageEvidence.finishAttempt(attemptId, "UNCERTAIN", signal?.aborted ? "STREAM_CANCELLED" : "STREAM_INCOMPLETE");
+    }
+  }
+
+  private async beginAttempt(prepared: Awaited<ReturnType<ProviderRuntimeExecutor["prepare"]>>, context: OicRuntimeContext): Promise<string> {
+    return this.usageEvidence.beginAttempt(context, {
+      connectionId: prepared.connectionId,
+      bindingId: prepared.bindingId,
+      providerKey: prepared.providerKey,
+      upstreamModelId: prepared.upstreamModelId,
+      transportProfile: prepared.transportProfile
+    });
+  }
+
+  private async recordReceipt(attemptId: string, sequence: number, prepared: Awaited<ReturnType<ProviderRuntimeExecutor["prepare"]>>, context: OicRuntimeContext, rawDimensions: Record<string, unknown>, normalizedDimensions: OicRawUsageEvidence | undefined): Promise<void> {
+    if (!normalizedDimensions || !Object.keys(normalizedDimensions).length) return;
+    await this.usageEvidence.recordReceipt(attemptId, sequence, {
+      applicationId: context.applicationId,
+      tenantId: context.tenantId,
+      providerKey: prepared.providerKey,
+      transportProfile: prepared.transportProfile,
+      rawDimensions,
+      normalizedDimensions
+    });
+  }
+
+  private async finishFailure(attemptId: string, error: unknown): Promise<void> {
+    const code = error instanceof OicRuntimeException ? error.code : undefined;
+    const definitelyRejected = code && ["PROVIDER_REQUEST_REJECTED", "PROVIDER_AUTHENTICATION_FAILED", "PROVIDER_AUTHORIZATION_FAILED", "UPSTREAM_MODEL_UNAVAILABLE", "CAPABILITY_NOT_SUPPORTED"].includes(code);
+    await this.usageEvidence.finishAttempt(attemptId, definitelyRejected ? "FAILED" : "UNCERTAIN", code);
   }
 
   private async prepare(model: OicResolvedModel, request: OicRuntimeRequest, context: OicRuntimeContext) {
@@ -231,7 +310,7 @@ export class ProviderRuntimeExecutor implements OicRuntimeExecutor {
       catch { throw new OicRuntimeException("RUNTIME_UNAVAILABLE"); }
     }
     const route = profile === "openai-responses-v1" ? "responses" : "chat/completions";
-    return { transportProfile: profile, endpoint: new URL(route, endpoint.url.toString().replace(/\/?$/, "/")), address: endpoint.addresses[0]!, upstreamModelId: binding.variant.upstreamModel.upstreamModelId, token, localFixture };
+    return { transportProfile: profile, endpoint: new URL(route, endpoint.url.toString().replace(/\/?$/, "/")), address: endpoint.addresses[0]!, upstreamModelId: binding.variant.upstreamModel.upstreamModelId, token, localFixture, connectionId: binding.connectionId, bindingId: binding.id, providerKey: binding.connection.providerDefinition.key };
   }
 
   private sendJson(prepared: Awaited<ReturnType<ProviderRuntimeExecutor["prepare"]>>, payload: unknown, signal?: AbortSignal): Promise<ProviderResponse> {

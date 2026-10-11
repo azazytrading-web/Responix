@@ -1227,6 +1227,22 @@ void test("Native Runtime and compatibility execute through the DB resolver, pro
       assert.deepEqual(events.map((event) => event.type), ["response.started", "content.delta", "content.delta", "usage.updated", "response.completed"]);
       assert.equal(events.filter((event) => event.type === "content.delta").map((event) => event.text).join(""), "part-1part-2");
       assert.deepEqual(events.find((event) => event.type === "usage.updated")?.usage, { inputTokens: 7, cachedInputTokens: 2, outputTokens: 3 });
+      const persisted = await db.oicProviderAttempt.findMany({
+        where: { applicationId: appId, traceId: identity.traceId },
+        orderBy: { startedAt: "desc" },
+        include: { usageEvents: { orderBy: { receiptSequence: "asc" } } }
+      });
+      assert.ok(persisted.length >= 2, "successful and streaming physical attempts are separately retained");
+      const streamAttempt = persisted[0]!;
+      assert.equal(streamAttempt.status, "SUCCEEDED");
+      assert.equal(streamAttempt.usageStatus, "REPORTED");
+      assert.equal(streamAttempt.applicationId, appId);
+      assert.equal(streamAttempt.tenantId, null);
+      assert.equal(streamAttempt.usageEvents.length, 1);
+      assert.deepEqual(streamAttempt.usageEvents[0]?.normalizedDimensions, { inputTokens: 7, cachedInputTokens: 2, outputTokens: 3 });
+      assert.deepEqual(streamAttempt.usageEvents[0]?.rawDimensions, { prompt_tokens: 7, completion_tokens: 3, "prompt_tokens_details.cached_tokens": 2 });
+      assert.equal(JSON.stringify(streamAttempt).includes("e2e-only-secret"), false);
+      assert.equal(await db.oicProviderAttempt.count({ where: { applicationId: foreignApplicationId } }), 0);
     });
 
     const compatibility = new OpenAICompatibilityController(runtime);
@@ -1262,6 +1278,11 @@ void test("Native Runtime and compatibility execute through the DB resolver, pro
       console.log(JSON.stringify({ acceptance: "OIC5_A_P", records }));
     }
   } finally {
+    const evidenceApplicationIds = [appId, foreignApplicationId, backtrackApplicationId].filter((id): id is string => Boolean(id));
+    if (evidenceApplicationIds.length) {
+      await db.oicUsageEvent.deleteMany({ where: { applicationId: { in: evidenceApplicationIds } } }).catch(() => undefined);
+      await db.oicProviderAttempt.deleteMany({ where: { applicationId: { in: evidenceApplicationIds } } }).catch(() => undefined);
+    }
     if (profileRevisionId) await db.oicIntelligenceProfileRevision.deleteMany({ where: { id: profileRevisionId } }).catch(() => undefined);
     if (profileId) await db.oicIntelligenceProfile.deleteMany({ where: { id: profileId } }).catch(() => undefined);
     if (appId) {

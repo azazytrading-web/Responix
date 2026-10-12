@@ -69,3 +69,28 @@ test("OIC-6 reconstruction keeps scope, dual economics paths, admission effects,
   assert.match(styles, /data-active-history=plans/);
   assert.match(styles, /overflow:visible/);
 });
+
+test("OIC-6 operating workspaces keep long content in document flow without sticky panels or nested vertical scrollers", () => {
+  const styles = source("app/styles.css");
+
+  for (const selector of [
+    ".admission-scope-rail",
+    ".admission-consequence-rail",
+    ".admission-draft-actions",
+    ".rating-scope-panel",
+    ".rating-control-workspace>.admission-form:first-of-type",
+    ".rating-control-workspace>.admission-form:last-of-type",
+  ]) {
+    assert.doesNotMatch(styles, new RegExp(`${selector.replace(/[.*+?^${}()|[\\]\\\\]/g, "\\\\$&")}\\{[^}]*position:sticky`));
+    assert.doesNotMatch(styles, new RegExp(`${selector.replace(/[.*+?^${}()|[\\]\\\\]/g, "\\\\$&")}\\{[^}]*position:fixed`));
+  }
+
+  assert.match(styles, /\.admission-scope-rail\{position:static;top:auto/);
+  assert.match(styles, /\.admission-consequence-rail\{position:static;top:auto/);
+  assert.match(styles, /\.admission-draft-actions\{position:static;bottom:auto/);
+  assert.match(styles, /\.rating-control-workspace>\.admission-form\{max-height:none;overflow:visible;position:static\}/);
+  assert.match(styles, /\.economics-path \.economics-panel \.table-frame\{max-height:none;overflow:visible\}/);
+  assert.match(styles, /\.economics-view \.economics-source-table \.table-frame\{max-height:none;overflow:visible\}/);
+  assert.match(styles, /\.usage-evidence \.table-frame,\.economics-view \.table-frame,\.admission-view \.table-frame,\.customer-rating-view \.table-frame\{max-height:none;overflow:visible\}/);
+  assert.match(styles, /@media\(max-width:900px\)\{\.rating-control-workspace>\.admission-form:first-of-type\{grid-column:1;grid-row:auto\}\.rating-control-workspace>\.admission-form:last-of-type\{grid-column:1;grid-row:auto\}\}/);
+});

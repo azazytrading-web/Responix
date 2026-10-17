@@ -1,0 +1,9 @@
+# Packet 7.5 domain review conflict scope
+
+Packet 7.5 Arabic domain-review items in one prepared batch share a validated pack revision, pack manifest, batch manifest, and source provenance. Their case rows have distinct source digests, rights metadata, exposure tiers, language, task type, and oracle digests; the batch binds two named reviewer roles over the same blinded item set. A batch-level conflict scope is therefore the shared independence boundary, while each declaration remains tied to the individual human identity and role.
+
+The immutable `OicDomainReviewConflictScope` pins application, Packet 7.5 purpose, Arabic domain, batch, pack, manifest digests, aggregate source provenance digest, scope revision, and reviewer role-to-identity assignment. The source content, oracle, prompts, and credentials are never returned in the scope response. Case rights and protected oracle metadata are inspected server-side only for known human-role conflicts.
+
+The declaration uses the existing human review session and `oic:evaluation:review:calibrate` capability. It appends an actor-attributed audit event against the exact scope. `UNKNOWN`, `REQUIRES_ATTESTATION`, `CONFLICTED`, and `CLEARED` are distinct outcomes; missing, malformed, foreign-scope, or digest-invalid evidence cannot clear the gate. Domain assignment open and submission require active session capabilities, the assignment's pinned Arabic qualification, the same published scope, a valid batch state, and `CLEARED` conflict evidence.
+
+For the original eight Reviewer 1 submissions, conflict evidence was discovered to be missing after those immutable rows were recorded. They are not rewritten or backdated. A later truthful declaration is followed by an append-only reconciliation event that records the actual declaration time and preserves the original submission IDs and timestamps. This records evidence of independence, not the false claim that the declaration preceded those submissions.

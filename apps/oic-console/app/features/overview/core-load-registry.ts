@@ -62,6 +62,7 @@ export const coreLoadContributorRegistry: readonly CoreLoadContributor[] = [
 export type CoreLoadContributorReading = CoreLoadContributor & {
   value: number | null;
   state: ShowcaseSignal["state"] | "PLANNED";
+  sourceAvailable: boolean;
 };
 
 export type CoreLoadSummary = {
@@ -69,20 +70,26 @@ export type CoreLoadSummary = {
   band: CoreLoadBand | null;
   value: number | null;
   measured: number;
+  available: number;
   total: number;
   freshness: string;
   contributors: readonly CoreLoadContributorReading[];
 };
 
-export function buildProductionCoreLoad(): CoreLoadSummary {
+export function buildProductionCoreLoad(availableSignalIds: ReadonlySet<string> = new Set()): CoreLoadSummary {
+  const contributors = coreLoadContributorRegistry.map((definition) => {
+    const sourceAvailable = availableSignalIds.has(definition.id);
+    return { ...definition, value: null, state: "UNMEASURED" as const, sourceAvailable };
+  });
   return {
     state: "UNMEASURED",
     band: null,
     value: null,
     measured: 0,
+    available: contributors.filter((item) => item.sourceAvailable).length,
     total: coreLoadContributorRegistry.length,
     freshness: "UNKNOWN · no authoritative composite source or approved weights",
-    contributors: coreLoadContributorRegistry.map((definition) => ({ ...definition, value: null, state: "PLANNED" }))
+    contributors
   };
 }
 
@@ -94,7 +101,7 @@ export function buildDemoCoreLoad(vitals: readonly ShowcaseSignal[], energyDraw:
       ? energyDraw
       : typeof signal?.value === "number" ? signal.value : null;
     const state = value == null ? "UNMEASURED" : signal?.state === "UNAVAILABLE" || signal?.state === "DEGRADED" || signal?.state === "FAULT" ? signal.state : "LIVE";
-    return { ...definition, value, state };
+    return { ...definition, value, state, sourceAvailable: value !== null };
   });
   const measured = contributors.filter((item) => item.value !== null && !["UNMEASURED", "UNAVAILABLE", "STALE"].includes(item.state)).length;
   const totalWeight = contributors.reduce((sum, item) => sum + (item.value !== null && !["UNMEASURED", "UNAVAILABLE", "STALE"].includes(item.state) ? item.demoWeight : 0), 0);
@@ -110,6 +117,7 @@ export function buildDemoCoreLoad(vitals: readonly ShowcaseSignal[], energyDraw:
     band: value === null ? null : coreLoadBand(value),
     value,
     measured,
+    available: contributors.filter((item) => item.sourceAvailable).length,
     total: contributors.length,
     freshness: "DETERMINISTIC DEVELOPMENT FIXTURE · reduced-motion aware",
     contributors

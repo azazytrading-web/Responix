@@ -100,7 +100,7 @@ export function ShowcaseSignalInstrument({ signal, locale, size = "SM", onSelect
   const label = locale === "ar" ? signal.labelAr : signal.label;
   const rangeState = typeof signal.value === "number" ? resolveThresholdZone(signal.value, signal.scale)?.label ?? resolveThresholdZone(signal.value, signal.scale)?.state : undefined;
   const localizedRangeState = locale === "ar" ? ({ NORMAL: "طبيعي", TARGET: "ضمن النطاق", ELEVATED: "مرتفع", WARNING: "تحذير", SEVERE: "شديد", CRITICAL: "حرج" } as Record<string, string>)[rangeState ?? ""] : rangeState;
-  const sourceStateLabel = signal.state === "LIVE" ? (locale === "ar" ? signal.stateLabelAr : signal.stateLabel) : signal.state;
+  const sourceStateLabel = locale === "ar" ? signal.stateLabelAr : signal.stateLabel;
   const fullStateLabel = localizedRangeState && signal.state === "LIVE" ? localizedRangeState : sourceStateLabel;
   const stateLabel = signal.state === "LIVE" ? fullStateLabel : "--";
   const instrumentSize = size === "XS" ? "SM" : size;
@@ -116,7 +116,7 @@ export function ShowcaseSignalInstrument({ signal, locale, size = "SM", onSelect
     : <TelemetryStrip label={label} samples={signal.samples} min={signal.min} max={signal.max} mode="HYBRID" size={instrumentSize} />;
   const className = `fd-showcase-signal fd-showcase-signal-${signal.kind} fd-signal-${signal.state.toLowerCase()}${onSelect ? " interactive" : ""}`;
   const accessible = `${label}: ${signal.value ?? fullStateLabel} / ${fullStateLabel}`;
-  const stateText = signal.state === "UNMEASURED" || signal.state === "UNAVAILABLE" ? (locale === "ar" ? "لا توجد إشارة" : signal.state === "UNMEASURED" ? "UNMEASURED" : "NO FEED") : signal.state === "NOT_CONFIGURED" ? (locale === "ar" ? "غير مهيأ" : "NOT CONFIG.") : fullStateLabel;
+  const stateText = signal.state === "UNMEASURED" || signal.state === "UNAVAILABLE" ? (sourceStateLabel && sourceStateLabel !== signal.state ? sourceStateLabel : locale === "ar" ? "لا توجد إشارة" : signal.state === "UNMEASURED" ? "UNMEASURED" : "NO FEED") : signal.state === "NOT_CONFIGURED" ? (locale === "ar" ? "غير مهيأ" : "NOT CONFIG.") : fullStateLabel;
   const slotState = signal.state !== "LIVE" ? stateText : ["radial", "arc", "status", "rail"].includes(signal.kind) ? fullStateLabel : "";
   const cell = <StableInstrumentCell label={label} state={slotState} className="fd-signal-cell">{visual}</StableInstrumentCell>;
   return onSelect

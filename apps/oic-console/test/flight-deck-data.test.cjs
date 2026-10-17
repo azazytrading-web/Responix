@@ -25,6 +25,7 @@ function loadTs(relativePath) {
 const { buildFlightDeckData, flightDeckMetricRegistry } = loadTs("flight-deck-data.ts");
 const model = (id, lifecycle = "PRODUCTION") => ({ id, publicId: id, editionKey: id, displayName: id, lifecycle, revisions: [{ id: `rev-${id}`, revision: 1, variants: [{ variantKey: "primary", providerDefinitionId: "provider-a", bindings: [{ id: `binding-${id}`, status: "ACTIVE" }] }] }], visibility: [] });
 const snapshot = (families, providers, connections) => ({ generatedAt: "2026-10-03T12:00:00.000Z", applications: [], tenants: [], principals: [], providers, connections, upstreamModels: [], modelFamilies: families, audit: [] });
+const activity = (values = {}) => ({ scope: "OIC_PLATFORM latest bounded execution sample", metrics: Object.fromEntries(Object.entries(values).map(([key, value]) => [key, { value, state: value === null ? "UNAVAILABLE" : "LIVE", sampleSize: 2 }])) });
 
 test("model fleet and provider clusters are discovered from source entities", () => {
   const first = buildFlightDeckData(snapshot([{ id: "family-a", familyKey: "alpha", displayName: "Alpha", lifecycle: "PRODUCTION", editions: [model("alpha-1")] }], [{ id: "provider-a", key: "pa", displayName: "Provider A" }], [{ id: "connection-a", providerDefinitionId: "provider-a", status: "ACTIVE", healthStatus: "UNKNOWN" }]), { status: "ok", checks: { database: "ok" } }, []);
@@ -39,8 +40,59 @@ test("model fleet and provider clusters are discovered from source entities", ()
   assert.equal(changed.providers[1].connectionCount, 0);
 });
 
+test("runtime-eligible edition is shown even when its non-authoritative family container is draft", () => {
+  const edition = { id: "edition-deepseek", publicId: "oi-deepseek-flash", editionKey: "default", displayName: "Default", lifecycle: "PRODUCTION", revisions: [{ id: "revision-1", revision: 1, variants: [{ variantKey: "deepseek-primary", providerDefinitionId: "provider-openai-compatible", upstreamModelId: "upstream-deepseek", bindings: [{ id: "binding-1", status: "ACTIVE" }] }] }], visibility: [] };
+  const data = snapshot([{ id: "family-deepseek", familyKey: "deepseek-live-canary", displayName: "DeepSeek Live Canary", lifecycle: "DRAFT", editions: [edition] }], [{ id: "provider-openai-compatible", key: "openai-compatible", displayName: "OpenAI-compatible API" }], []);
+  data.upstreamModels = [{ id: "upstream-deepseek", upstreamModelId: "deepseek-flash", displayName: "DeepSeek-V4.1-Flash" }];
+  const deck = buildFlightDeckData(data, { status: "ok" }, []);
+  assert.equal(deck.fleet.length, 1);
+  assert.equal(deck.fleet[0].lifecycle, "PRODUCTION");
+  assert.equal(deck.fleet[0].variants[0].providerKey, "DeepSeek");
+  assert.equal(deck.fleet[0].variants[0].upstreamModelName, "deepseek-flash");
+  assert.equal(deck.fleet[0].variants[0].bindings[0].status, "ACTIVE");
+  assert.equal(deck.fleet[0].runtimeState, "DEGRADED");
+});
+
+test("production model runtime state requires an active binding and healthy associated connection", () => {
+  const edition = { ...model("m"), revisions: [{ revision: 1, variants: [{ providerDefinitionId: "provider-a", bindings: [{ status: "ACTIVE", connectionId: "connection-a" }] }] }] };
+  const data = snapshot([{ familyKey: "model", editions: [edition] }], [{ id: "provider-a", key: "provider", displayName: "Provider" }], [{ id: "connection-a", status: "ACTIVE", healthStatus: "HEALTHY" }]);
+  assert.equal(buildFlightDeckData(data, { status: "ok" }, []).fleet[0].runtimeState, "LIVE");
+  data.connections[0].healthStatus = "UNHEALTHY";
+  assert.equal(buildFlightDeckData(data, { status: "ok" }, []).fleet[0].runtimeState, "FAULT");
+  data.connections = [];
+  assert.equal(buildFlightDeckData(data, { status: "ok" }, []).fleet[0].runtimeState, "DEGRADED");
+});
+
+test("Overview provider fault and unknown counters ignore archived connection history", () => {
+  const data = snapshot([], [{ id: "provider-a", key: "provider-a", displayName: "Provider A" }], [
+    { id: "active", providerDefinitionId: "provider-a", status: "ACTIVE", healthStatus: "HEALTHY" },
+    { id: "archived-unknown", providerDefinitionId: "provider-a", status: "ARCHIVED", healthStatus: "UNKNOWN" },
+    { id: "archived-fault", providerDefinitionId: "provider-a", status: "ARCHIVED", healthStatus: "UNHEALTHY" }
+  ]);
+  const deck = buildFlightDeckData(data, { status: "ok" }, []);
+  assert.equal(deck.instances.find((item) => item.metricKey === "operations.provider-unhealthy").value, 0);
+  assert.equal(deck.instances.find((item) => item.metricKey === "operations.provider-unknown").value, 0);
+});
+
+test("Overview health maps the canonical BFF readiness envelope to API and database state", () => {
+  const readyEnvelope = { ready: { sourceState: "AVAILABLE", httpStatus: 200, body: { status: "ok", checks: { database: "ok" } } } };
+  const deck = buildFlightDeckData(snapshot([], [], []), readyEnvelope, []);
+  const metric = (key) => deck.instances.find((item) => item.metricKey === key);
+  assert.equal(metric("system.api.live").value, "LIVE");
+  assert.equal(metric("system.api.live").state, "LIVE");
+  assert.equal(metric("system.database.ready").value, "READY");
+  assert.equal(metric("system.database.ready").state, "LIVE");
+
+  const failedEnvelope = { ready: { sourceState: "AVAILABLE", httpStatus: 503, body: { status: "ok", checks: { database: "ok" } } } };
+  const failed = buildFlightDeckData(snapshot([], [], []), failedEnvelope, []);
+  assert.equal(failed.instances.find((item) => item.metricKey === "system.api.live").value, "UNAVAILABLE");
+  assert.equal(failed.instances.find((item) => item.metricKey === "system.database.ready").value, "UNAVAILABLE");
+});
+
 test("bounded execution aggregates disclose sample size and preserve missing data", () => {
-  const deck = buildFlightDeckData(snapshot([], [], []), { status: "ok", checks: { database: "ok" } }, [{ traceId: "t-1", status: "COMPLETED", providerCallCount: 2, retrievalQueryCount: 1, memoryLookupCount: 3, stageCount: 4 }]);
+  const projection = activity({ providerCalls: 2, retrievalQueries: 1, memoryLookups: 3, stages: 4, toolCalls: 0, verificationRounds: 0, repairRounds: 0, backtracks: 0 });
+  Object.values(projection.metrics).forEach((item) => { item.sampleSize = 1; });
+  const deck = buildFlightDeckData(snapshot([], [], []), { status: "ok", checks: { database: "ok" } }, [{ traceId: "t-1", status: "COMPLETED" }], projection);
   const metric = (key) => deck.instances.find((item) => item.metricKey === key);
   assert.equal(metric("cognitive.execution.provider-calls").value, 2);
   assert.equal(metric("cognitive.execution.provider-calls").sampleSize, 1);
@@ -49,13 +101,47 @@ test("bounded execution aggregates disclose sample size and preserve missing dat
   assert.equal(metric("cognitive.execution.stage-count").value, 4);
   for (const key of ["tools", "verification", "repair", "backtracking"]) {
     const dormant = metric(`cognitive.execution.${key}`);
-    assert.equal(dormant.value, null);
-    assert.equal(dormant.reason, "NO_SOURCE_ADAPTER");
+    assert.equal(dormant.value, 0);
+    assert.equal(dormant.reason, undefined);
   }
 
   const empty = buildFlightDeckData(snapshot([], [], []), null, []);
   assert.equal(empty.instances.find((item) => item.metricKey === "cognitive.execution.provider-calls").value, null);
   assert.equal(empty.instances.find((item) => item.metricKey === "system.applications.count").value, 0);
+});
+
+test("bounded aggregates never coerce absent per-run counters to zero", () => {
+  const partial = buildFlightDeckData(snapshot([], [], []), { status: "ok" }, [{ traceId: "t-1", status: "COMPLETED" }, { traceId: "t-2", status: "COMPLETED" }], activity({ providerCalls: null, retrievalQueries: null, memoryLookups: null, stages: null }));
+  const metric = (key) => partial.instances.find((item) => item.metricKey === key);
+  assert.equal(metric("cognitive.execution.provider-calls").value, null);
+  assert.equal(metric("cognitive.execution.provider-calls").reason, "SOURCE_FIELD_MISSING_IN_BOUNDED_ACTIVITY_PROJECTION");
+  assert.equal(metric("cognitive.execution.retrieval-queries").value, null);
+  assert.equal(metric("cognitive.execution.memory-lookups").value, null);
+  assert.equal(metric("cognitive.execution.stage-count").value, null);
+
+  const explicitZero = buildFlightDeckData(snapshot([], [], []), { status: "ok" }, [{ traceId: "t-1" }], activity({ providerCalls: 0, retrievalQueries: 0, memoryLookups: 0, stages: 0 }));
+  assert.equal(explicitZero.instances.find((item) => item.metricKey === "cognitive.execution.provider-calls").value, 0);
+});
+
+test("Overview queue and active-run gauges use scoped canonical evaluation counts", () => {
+  const queue = { queuedWorkItems: 0, leasedWorkItems: 2, activeRuns: 1, observedAt: "2026-10-17T10:00:00.000Z", scope: "OIC_PLATFORM" };
+  const deck = buildFlightDeckData(snapshot([], [], []), { status: "ok" }, [], null, queue);
+  const pending = deck.instances.find((item) => item.metricKey === "operations.queue-pending");
+  assert.equal(pending.value, 0);
+  assert.equal(pending.state, "LIVE");
+  assert.equal(pending.freshness.observedAt, queue.observedAt);
+  const activeRuns = require("../app/features/overview/core-vital-registry.ts").productionCoreVitalSignals(queue.activeRuns).find((item) => item.id === "vital.active-runs");
+  assert.equal(activeRuns.value, 1);
+  assert.equal(activeRuns.state, "LIVE");
+  const zeroActiveRuns = require("../app/features/overview/core-vital-registry.ts").productionCoreVitalSignals(0, new Set(["vital.queue-pressure", "vital.provider-pressure", "vital.reasoning-pressure", "vital.context-saturation"]));
+  assert.equal(zeroActiveRuns.find((item) => item.id === "vital.active-runs").value, 0);
+  assert.equal(zeroActiveRuns.find((item) => item.id === "vital.active-runs").state, "LIVE", "zero current runs is a measured live value");
+  assert.match(zeroActiveRuns.find((item) => item.id === "vital.queue-pressure").stateLabel, /RAW SOURCE LIVE/);
+  assert.match(zeroActiveRuns.find((item) => item.id === "vital.provider-pressure").stateLabel, /PRESSURE UNMEASURED/);
+  assert.match(zeroActiveRuns.find((item) => item.id === "vital.token-throughput").stateLabel, /RAW TOKENS AVAILABLE/);
+  const unavailable = buildFlightDeckData(snapshot([], [], []), { status: "ok" }, [], null, null).instances.find((item) => item.metricKey === "operations.queue-pending");
+  assert.equal(unavailable.value, null);
+  assert.equal(unavailable.state, "UNAVAILABLE");
 });
 
 test("new registered edition and provider metrics join entity groups automatically", () => {

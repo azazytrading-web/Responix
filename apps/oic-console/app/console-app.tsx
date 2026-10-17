@@ -16,6 +16,7 @@ import {
   LoadingState
 } from "./components/oic-primitives";
 import { PageFrame } from "./components/oic-frames";
+import { Oic7Navigation } from "./components/oic7-navigation";
 import { IdentityViews } from "./features/identity/identity-views";
 import { ActionButton, ArmThenExecute, Inspector } from "./components/interface";
 import { ModelFabricViews } from "./features/model-fabric/model-fabric-views";
@@ -26,6 +27,10 @@ import { UsageEvidenceView } from "./features/operations/usage-evidence-view";
 import { EconomicsView } from "./features/operations/economics-view";
 import { AdmissionView } from "./features/operations/admission-view";
 import { CustomerRatingView } from "./features/operations/customer-rating-view";
+import { EvaluationWorkspace } from "./features/evaluation/evaluation-workspace";
+import { ReviewerWorkspace } from "./features/evaluation/reviewer-workspace";
+import { DomainContentReviewWorkspace } from "./features/evaluation/domain-content-review-workspace";
+import { providerTestFeedback } from "./features/model-fabric/provider-test-feedback.cjs";
 import { IntelligenceCenter } from "./features/intelligence/intelligence-center";
 import { RuntimeWorkspace, TracesWorkspace, WorkbenchWorkspace } from "./features/intelligence/lab-workspaces";
 import type { RuntimeModel } from "./features/intelligence/lab-workspaces";
@@ -274,6 +279,24 @@ export default function ConsoleApp({ platformUrl }: { platformUrl: string }) {
       setExecutionListState("failed");
     }
   }, []);
+  const loadOverviewExecutions = useCallback(async () => {
+    setExecutionListState("loading");
+    try {
+      const response = await fetch("/api/console?view=overview-activity", { cache: "no-store" });
+      const value: unknown = await response.json().catch(() => null);
+      if (!response.ok || !value || typeof value !== "object" || Array.isArray(value)) { setExecutions([]); setExecutionListState("failed"); return; }
+      const history = (value as Row).history;
+      if (!Array.isArray(history)) { setExecutions([]); setExecutionListState("failed"); return; }
+      const safeRows = history.flatMap((item) => item && typeof item === "object" && !Array.isArray(item)
+        ? [item as Row]
+        : []);
+      setExecutions(safeRows);
+      setExecutionListState("available");
+    } catch {
+      setExecutions([]);
+      setExecutionListState("failed");
+    }
+  }, []);
   const loadIntelligenceRecords = useCallback(async (resource: "memory" | "knowledge", filters: { q?: string; tenantId?: string; lifecycle?: string; kind?: string } = {}): Promise<Row[] | null> => {
     setIntelligenceRecordStates((current) => ({ ...current, [resource]: "loading" }));
     try {
@@ -389,8 +412,10 @@ export default function ConsoleApp({ platformUrl }: { platformUrl: string }) {
     if (authenticated) void loadProfiles();
   }, [authenticated, loadProfiles]);
   useEffect(() => {
-    if (authenticated) void loadExecutions();
-  }, [authenticated, loadExecutions]);
+    if (!authenticated) return;
+    if (view === "overview") void loadOverviewExecutions();
+    else if (["traces", "workbench", "runtime", "memory", "knowledge"].includes(view)) void loadExecutions();
+  }, [authenticated, view, loadExecutions, loadOverviewExecutions]);
   useEffect(() => {
     if (authenticated) void loadRuntimeModels();
   }, [authenticated]);
@@ -434,7 +459,8 @@ export default function ConsoleApp({ platformUrl }: { platformUrl: string }) {
         "runtime",
         "health",
         "audit",
-        "usage"
+        "usage",
+        "domain-review"
       ].includes(requestedView)
     )
       setView(requestedView as View);
@@ -564,6 +590,12 @@ export default function ConsoleApp({ platformUrl }: { platformUrl: string }) {
       refreshedSnapshot &&
       (!identityAction || verifyIdentityReadback(action, values, data, refreshedSnapshot));
     if (action.startsWith("intelligence.profile.")) setToast("");
+    else if (action === "connection.test")
+      setToast(providerTestFeedback(data, {
+        healthy: t.connectionTestHealthy,
+        unhealthy: t.connectionTestUnhealthy,
+        unavailable: t.connectionTestUnavailable
+      }));
     else if (action !== "runtime.invoke" && action !== "intelligence.workbench.run")
       setToast(
         identityAction
@@ -849,6 +881,7 @@ export default function ConsoleApp({ platformUrl }: { platformUrl: string }) {
           API <b>{apiConnection === "connected" ? t.online : apiConnectionLabel}</b>
         </div>
         <nav aria-label={locale === "ar" ? "التنقل الرئيسي" : "Primary navigation"}>
+          <Oic7Navigation locale={locale} view={view} onNavigate={selectDestination} />
           {(["command", "foundation", "factory", "intelligence", "lab", "operations"] as const).map(
             (group) => (
               <div className="nav-group" key={group}>
@@ -979,7 +1012,7 @@ export default function ConsoleApp({ platformUrl }: { platformUrl: string }) {
             navigate={setView}
             loading={loading}
             refresh={() => {
-              void Promise.all([loadSnapshot(), loadHealth(), loadExecutions()]);
+              void Promise.all([loadSnapshot(), loadHealth(), view === "overview" ? loadOverviewExecutions() : loadExecutions()]);
             }}
           />
       <IntelligenceCenter
@@ -1086,6 +1119,9 @@ export default function ConsoleApp({ platformUrl }: { platformUrl: string }) {
           <EconomicsView view={view} locale={locale} navigate={navigateTo} />
           <AdmissionView view={view} locale={locale} navigate={navigateTo} />
           <CustomerRatingView view={view} locale={locale} navigate={navigateTo} />
+          {view === "evaluation" && <EvaluationWorkspace locale={locale} navigate={navigateTo} />}
+          {view === "reviewer" && <ReviewerWorkspace locale={locale} />}
+          {view === "domain-review" && <DomainContentReviewWorkspace locale={locale} />}
           <footer className="content-footer">
             <span>OIC · {t.independentPlatform}</span>
             <span>

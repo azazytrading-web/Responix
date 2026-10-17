@@ -1,7 +1,9 @@
 import { NextResponse } from "next/server";
 import { apiUrl, controlPlaneCredential, hasConsoleSession, runtimeCredential } from "@/lib/server-auth";
+import { aggregatePacket76Accounting } from "../../lib/packet76-accounting.cjs";
 
 export const dynamic = "force-dynamic";
+const OIC_PLATFORM_APPLICATION_ID = "7f25c69e-bdbb-4949-ad7b-ef6412119850";
 
 export async function GET(request: Request) {
   if (!(await hasConsoleSession()))
@@ -38,6 +40,193 @@ export async function GET(request: Request) {
     };
     const [live, ready] = await Promise.all([readHealth("/api/v1/health/live"), readHealth("/api/v1/health/ready")]);
     return NextResponse.json({ live, ready }, { headers: { "Cache-Control": "no-store" } });
+  }
+  if (view === "overview-readiness") {
+    try {
+      const headers = { Authorization: `Bearer ${controlPlaneCredential()}` };
+      const scope = `?applicationId=${encodeURIComponent(OIC_PLATFORM_APPLICATION_ID)}`;
+      const [health, overview] = await Promise.all([
+        fetch(apiUrl(`/api/v1/admin/evaluations/health${scope}`), { headers, cache: "no-store", signal: AbortSignal.timeout(8000) }),
+        fetch(apiUrl(`/api/v1/admin/evaluations/overview${scope}`), { headers, cache: "no-store", signal: AbortSignal.timeout(8000) })
+      ]);
+      const healthBody: unknown = await health.json().catch(() => null);
+      const overviewBody: unknown = await overview.json().catch(() => null);
+      if (!health.ok || !overview.ok || !healthBody || typeof healthBody !== "object" || !overviewBody || typeof overviewBody !== "object")
+        return NextResponse.json({ state: "UNAVAILABLE", reason: "EVALUATION_READINESS_SOURCE_UNAVAILABLE" }, { status: 503, headers: { "Cache-Control": "no-store" } });
+      const worker = healthBody as Record<string, unknown>;
+      const registry = overviewBody as Record<string, unknown>;
+      const attestation = worker.workerAttestation && typeof worker.workerAttestation === "object" ? worker.workerAttestation as Record<string, unknown> : {};
+      const queueSource = registry.queue && typeof registry.queue === "object" ? registry.queue as Record<string, unknown> : {};
+      const counts = Object.fromEntries(["packs", "releases", "campaigns", "runs", "reports", "candidates"].map((key) => [key, typeof registry[key] === "number" ? registry[key] : null]));
+      return NextResponse.json({
+        state: "LIVE",
+        qualityScore: null,
+        qualityState: "UNMEASURED",
+        note: typeof registry.note === "string" ? registry.note : "No approved universal quality score is defined.",
+        counts,
+        readiness: {
+          scheduler: typeof worker.scheduler === "string" ? worker.scheduler : "UNKNOWN",
+          worker: typeof worker.worker === "string" ? worker.worker : "UNKNOWN",
+          workerFresh: typeof worker.workerFresh === "boolean" ? worker.workerFresh : null,
+          workerReasonCode: typeof worker.workerReasonCode === "string" ? worker.workerReasonCode : null,
+          runExecution: typeof worker.runExecution === "string" ? worker.runExecution : "UNKNOWN",
+          configuredConcurrency: typeof attestation.configuredConcurrency === "number" ? attestation.configuredConcurrency : null,
+          activeExecutionSlots: typeof attestation.activeExecutionSlots === "number" ? attestation.activeExecutionSlots : null,
+          availableExecutionSlots: typeof attestation.availableExecutionSlots === "number" ? attestation.availableExecutionSlots : null
+        },
+        queue: {
+          queuedWorkItems: typeof queueSource.queuedWorkItems === "number" ? queueSource.queuedWorkItems : null,
+          leasedWorkItems: typeof queueSource.leasedWorkItems === "number" ? queueSource.leasedWorkItems : null,
+          activeRuns: typeof queueSource.activeRuns === "number" ? queueSource.activeRuns : null,
+          observedAt: typeof queueSource.observedAt === "string" ? queueSource.observedAt : null,
+          scope: typeof queueSource.scope === "string" ? queueSource.scope : null
+        }
+      }, { headers: { "Cache-Control": "no-store" } });
+    } catch {
+      return NextResponse.json({ state: "UNAVAILABLE", reason: "EVALUATION_READINESS_SOURCE_UNAVAILABLE" }, { status: 503, headers: { "Cache-Control": "no-store" } });
+    }
+  }
+  if (view === "overview-activity") {
+    try {
+      const response = await fetch(apiUrl("/api/v1/admin/intelligence/overview-activity"), {
+        headers: { Authorization: `Bearer ${controlPlaneCredential()}` },
+        cache: "no-store",
+        signal: AbortSignal.timeout(8000)
+      });
+      const body: unknown = await response.json().catch(() => null);
+      if (!response.ok || !body || typeof body !== "object" || Array.isArray(body))
+        return NextResponse.json({ state: "UNAVAILABLE", reason: "OVERVIEW_ACTIVITY_SOURCE_UNAVAILABLE" }, { status: response.status || 503, headers: { "Cache-Control": "no-store" } });
+      const source = body as Record<string, unknown>;
+      const metricsSource = source.metrics && typeof source.metrics === "object" ? source.metrics as Record<string, unknown> : {};
+      const metricKeys = ["executions", "stages", "providerCalls", "retrievalQueries", "memoryLookups", "toolCalls", "verificationRounds", "repairRounds", "backtracks", "contextTokens", "inputTokens", "outputTokens"];
+      const metrics = Object.fromEntries(metricKeys.map((key) => {
+        const item = metricsSource[key] && typeof metricsSource[key] === "object" ? metricsSource[key] as Record<string, unknown> : {};
+        return [key, { value: typeof item.value === "number" ? item.value : null, state: typeof item.state === "string" ? item.state : "UNAVAILABLE", unit: typeof item.unit === "string" ? item.unit : null, sampleSize: typeof item.sampleSize === "number" ? item.sampleSize : null, scope: typeof item.scope === "string" ? item.scope : null }];
+      }));
+      const modelActivity = Array.isArray(source.modelActivity) ? source.modelActivity.slice(0, 3).map((entry) => {
+        const item = entry && typeof entry === "object" ? entry as Record<string, unknown> : {};
+        return Object.fromEntries(["modelId", "executionCount", "latestStatus", "latestStartedAt", "latestCompletedAt", "providerCalls", "retrievalQueries", "memoryLookups", "inputTokens", "outputTokens"].map((key) => [key, item[key] ?? null]));
+      }) : [];
+      const history = Array.isArray(source.history) ? source.history.slice(0, 50).map((entry) => {
+        const item = entry && typeof entry === "object" ? entry as Record<string, unknown> : {};
+        return Object.fromEntries(["modelId", "status", "contextTokens", "startedAt", "completedAt", "verificationStatus"].map((key) => [key, item[key] ?? null]));
+      }) : [];
+      return NextResponse.json({
+        state: typeof source.state === "string" ? source.state : "UNAVAILABLE",
+        observedAt: typeof source.observedAt === "string" ? source.observedAt : null,
+        scope: typeof source.scope === "string" ? source.scope : null,
+        sampleSize: typeof source.sampleSize === "number" ? source.sampleSize : null,
+        window: source.window && typeof source.window === "object" ? source.window : null,
+        statusCounts: source.statusCounts && typeof source.statusCounts === "object" ? source.statusCounts : {},
+        metrics, modelActivity, history
+      }, { status: response.status, headers: { "Cache-Control": "no-store" } });
+    } catch {
+      return NextResponse.json({ state: "UNAVAILABLE", reason: "OVERVIEW_ACTIVITY_SOURCE_UNAVAILABLE" }, { status: 503, headers: { "Cache-Control": "no-store" } });
+    }
+  }
+  if (view === "evaluation-pack") {
+    const packId = new URL(request.url).searchParams.get("packId");
+    if (!packId || !/^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(packId))
+      return NextResponse.json({ error: "Invalid evaluation pack identity." }, { status: 400, headers: { "Cache-Control": "no-store" } });
+    try {
+      const response = await fetch(apiUrl(`/api/v1/admin/evaluations/packs/${packId}`), {
+        headers: { Authorization: `Bearer ${controlPlaneCredential()}` },
+        cache: "no-store",
+        signal: AbortSignal.timeout(8000)
+      });
+      const body: unknown = await response.json().catch(() => ({ error: "OIC API returned an unreadable response." }));
+      return NextResponse.json(body, { status: response.status, headers: { "Cache-Control": "no-store" } });
+    } catch {
+      return NextResponse.json({ error: "Evaluation pack review is unavailable." }, { status: 503, headers: { "Cache-Control": "no-store" } });
+    }
+  }
+  if (view === "evaluation-report") {
+    const reportId = new URL(request.url).searchParams.get("reportId");
+    if (!reportId || !/^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(reportId))
+      return NextResponse.json({ error: "Invalid evaluation report identity." }, { status: 400, headers: { "Cache-Control": "no-store" } });
+    try {
+      const response = await fetch(apiUrl(`/api/v1/admin/evaluations/reports/${reportId}`), {
+        headers: { Authorization: `Bearer ${controlPlaneCredential()}` },
+        cache: "no-store",
+        signal: AbortSignal.timeout(8000)
+      });
+      const body: unknown = await response.json().catch(() => ({ error: "OIC API returned an unreadable response." }));
+      return NextResponse.json(body, { status: response.status, headers: { "Cache-Control": "no-store" } });
+    } catch {
+      return NextResponse.json({ error: "Evaluation report is unavailable." }, { status: 503, headers: { "Cache-Control": "no-store" } });
+    }
+  }
+  if (view === "evaluation-run") {
+    const runId = new URL(request.url).searchParams.get("runId");
+    if (!runId || !/^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(runId))
+      return NextResponse.json({ error: "Invalid evaluation run identity." }, { status: 400, headers: { "Cache-Control": "no-store" } });
+    try {
+      const response = await fetch(apiUrl(`/api/v1/admin/evaluations/runs/${runId}`), {
+        headers: { Authorization: `Bearer ${controlPlaneCredential()}` },
+        cache: "no-store",
+        signal: AbortSignal.timeout(8000)
+      });
+      const body: unknown = await response.json().catch(() => ({ error: "OIC API returned an unreadable response." }));
+      return NextResponse.json(body, { status: response.status, headers: { "Cache-Control": "no-store" } });
+    } catch {
+      return NextResponse.json({ error: "Evaluation run accounting is unavailable." }, { status: 503, headers: { "Cache-Control": "no-store" } });
+    }
+  }
+  if (view === "packet76-accounting") {
+    try {
+      const headers = { Authorization: `Bearer ${controlPlaneCredential()}` };
+      const applicationQuery = `?applicationId=${encodeURIComponent(OIC_PLATFORM_APPLICATION_ID)}`;
+      const [campaignResponse, runResponse] = await Promise.all([
+        fetch(apiUrl(`/api/v1/admin/evaluations/campaigns${applicationQuery}`), { headers, cache: "no-store", signal: AbortSignal.timeout(8000) }),
+        fetch(apiUrl(`/api/v1/admin/evaluations/runs${applicationQuery}`), { headers, cache: "no-store", signal: AbortSignal.timeout(8000) })
+      ]);
+      if (!campaignResponse.ok || !runResponse.ok) throw new Error("Packet accounting index unavailable.");
+      const campaignBody: unknown = await campaignResponse.json().catch(() => null);
+      const runBody: unknown = await runResponse.json().catch(() => null);
+      const campaigns = Array.isArray(campaignBody) ? campaignBody : [];
+      const runs = Array.isArray(runBody) ? runBody : [];
+      const cohortIds = new Set(campaigns.flatMap((item) => {
+        if (!item || typeof item !== "object" || Array.isArray(item)) return [];
+        const row = item as Record<string, unknown>;
+        return typeof row.campaignKey === "string" && /^oic7-packet76-(?:paired|candidate)-cohort-/.test(row.campaignKey) && typeof row.id === "string" ? [row.id] : [];
+      }));
+      const cohortRuns = runs.filter((item) => item && typeof item === "object" && !Array.isArray(item) && cohortIds.has((item as Record<string, unknown>).campaignId as string));
+      const detailResponses = await Promise.all(cohortRuns.map((item) => {
+        const id = (item as Record<string, unknown>).id;
+        return typeof id === "string" && /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(id)
+          ? fetch(apiUrl(`/api/v1/admin/evaluations/runs/${id}`), { headers, cache: "no-store", signal: AbortSignal.timeout(8000) })
+          : Promise.resolve(null);
+      }));
+      if (detailResponses.some((response) => !response?.ok)) throw new Error("Packet accounting detail unavailable.");
+      const details = await Promise.all(detailResponses.map((response) => response!.json().catch(() => null)));
+      return NextResponse.json(aggregatePacket76Accounting(campaigns, runs, details), { headers: { "Cache-Control": "no-store" } });
+    } catch {
+      return NextResponse.json({ state: "UNAVAILABLE", error: "Packet 7.6 accounting is unavailable." }, { status: 503, headers: { "Cache-Control": "no-store" } });
+    }
+  }
+  if (view === "evaluation") {
+    try {
+      const headers = { Authorization: `Bearer ${controlPlaneCredential()}` };
+      const [overview, packs, releases, metrics, judges, campaigns, runs, reports, comparisons, work, outbox, state] = await Promise.all([
+        fetch(apiUrl("/api/v1/admin/evaluations/overview"), { headers, cache: "no-store", signal: AbortSignal.timeout(8000) }),
+        fetch(apiUrl("/api/v1/admin/evaluations/packs"), { headers, cache: "no-store", signal: AbortSignal.timeout(8000) }),
+        fetch(apiUrl("/api/v1/admin/evaluations/releases"), { headers, cache: "no-store", signal: AbortSignal.timeout(8000) }),
+        fetch(apiUrl("/api/v1/admin/evaluations/metrics"), { headers, cache: "no-store", signal: AbortSignal.timeout(8000) }),
+        fetch(apiUrl("/api/v1/admin/evaluations/judges"), { headers, cache: "no-store", signal: AbortSignal.timeout(8000) }),
+        fetch(apiUrl("/api/v1/admin/evaluations/campaigns"), { headers, cache: "no-store", signal: AbortSignal.timeout(8000) }),
+        fetch(apiUrl("/api/v1/admin/evaluations/runs"), { headers, cache: "no-store", signal: AbortSignal.timeout(8000) }),
+        fetch(apiUrl("/api/v1/admin/evaluations/reports"), { headers, cache: "no-store", signal: AbortSignal.timeout(8000) }),
+        fetch(apiUrl("/api/v1/admin/evaluations/comparisons"), { headers, cache: "no-store", signal: AbortSignal.timeout(8000) }),
+        fetch(apiUrl("/api/v1/admin/evaluations/work"), { headers, cache: "no-store", signal: AbortSignal.timeout(8000) }),
+        fetch(apiUrl("/api/v1/admin/evaluations/outbox"), { headers, cache: "no-store", signal: AbortSignal.timeout(8000) }),
+        fetch(apiUrl("/api/v1/admin/evaluations/health"), { headers, cache: "no-store", signal: AbortSignal.timeout(8000) })
+      ]);
+      const bodies: unknown[] = await Promise.all([overview, packs, releases, metrics, judges, campaigns, runs, reports, comparisons, work, outbox, state].map((response) => response.json().then((body: unknown) => body).catch(() => null)));
+      const failed = [overview, packs, releases, metrics, judges, campaigns, runs, reports, comparisons, work, outbox, state].find((response) => !response.ok);
+      return NextResponse.json({ overview: bodies[0], packs: bodies[1], releases: bodies[2], metrics: bodies[3], judges: bodies[4], campaigns: bodies[5], runs: bodies[6], reports: bodies[7], comparisons: bodies[8], work: bodies[9], outbox: bodies[10], state: bodies[11] }, { status: failed?.status ?? 200, headers: { "Cache-Control": "no-store" } });
+    } catch {
+      return NextResponse.json({ error: "Evaluation evidence is unavailable." }, { status: 503, headers: { "Cache-Control": "no-store" } });
+    }
   }
   if (view === "audit") {
     const applicationId = new URL(request.url).searchParams.get("applicationId");

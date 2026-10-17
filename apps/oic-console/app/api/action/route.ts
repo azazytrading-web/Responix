@@ -70,7 +70,9 @@ const supportedScope = (value: unknown) =>
     "oic:admission:read",
     "oic:admission:manage",
     "oic:rating:read",
-    "oic:rating:manage"
+    "oic:rating:manage",
+    "oic:evaluation:manage",
+    "oic:evaluation:holdout:import"
   ].includes(String(value));
 
 export async function POST(request: Request) {

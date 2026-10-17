@@ -44,6 +44,8 @@ test("Applications, Tenants and Access are isolated production workspaces using 
 
 test("scope picker exactly matches BFF allowlist and never offers console-only scopes", () => {
   assert.deepEqual(scopesFrom(identity), scopesFrom(actionRoute));
+  assert.ok(scopesFrom(identity).includes("oic:evaluation:manage"));
+  assert.ok(scopesFrom(identity).includes("oic:evaluation:holdout:import"));
   assert.doesNotMatch(identity, /oic:console:(?:read|admin)/);
 });
 

@@ -14,13 +14,14 @@ function loadTsx(relativePath, base = "../app/components/instruments", stubs = {
   loaded.filename = filename;
   loaded.paths = Module._nodeModulePaths(path.dirname(filename));
   const originalRequire = loaded.require.bind(loaded);
-  loaded.require = (id) => id === "./scales" ? stubs.scales : originalRequire(id);
+  loaded.require = (id) => id === "./scales" ? stubs.scales : id === "../oiu-value" ? stubs.oiuValue : originalRequire(id);
   loaded._compile(compiled, filename);
   return loaded.exports;
 }
 
 const scales = loadTsx("scales.ts", "../app/components/instruments");
-const { instrumentTone, normalizeInstrumentValue, resolveInstrumentRatio, measuredDnaPolygon, measuredDnaRuns } = loadTsx("index.tsx", "../app/components/instruments", { scales });
+const oiuValue = { OiuValue: () => null, OiuValueGroup: () => null };
+const { instrumentTone, normalizeInstrumentValue, resolveInstrumentRatio, measuredDnaPolygon, measuredDnaRuns } = loadTsx("index.tsx", "../app/components/instruments", { scales, oiuValue });
 const { ARC_SWEEPS, arcSweepDegrees, tickPlan, resolveThresholdZone, semanticTone, semanticGradientStops } = scales;
 
 test("ArcMeter sweep variants and density plans keep stable geometry", () => {

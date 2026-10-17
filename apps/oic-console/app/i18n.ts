@@ -18,8 +18,11 @@ export type View =
   | "usage"
   | "economics"
   | "admission"
-  | "rating";
-export type NavGroup = "command" | "foundation" | "factory" | "intelligence" | "lab" | "operations";
+  | "rating"
+  | "evaluation"
+  | "reviewer"
+  | "domain-review";
+export type NavGroup = "oic7" | "command" | "foundation" | "factory" | "intelligence" | "lab" | "operations";
 export type Messages = typeof messages.en;
 
 export const messages = {
@@ -46,6 +49,9 @@ export const messages = {
     economics: "Economics Observatory",
     admission: "Admission Control Studio",
     rating: "Customer Rating Studio",
+    evaluation: "Evaluation Fabric",
+    reviewer: "Human Review",
+    "domain-review": "Arabic content review",
     subtitle: "Operational view of the Oi intelligence platform.",
     refresh: "Refresh data",
     signOut: "Sign out",
@@ -79,6 +85,7 @@ export const messages = {
     checked: "Last checked",
     generated: "Snapshot generated",
     command: "COMMAND",
+    oic7: "OIC-7",
     foundation: "FOUNDATION",
     factory: "FACTORY",
     intelligence: "INTELLIGENCE",
@@ -265,6 +272,9 @@ export const messages = {
     no: "Not present",
     testConnection: "Test connection",
     testing: "Testing…",
+    connectionTestHealthy: "Connection healthy",
+    connectionTestUnhealthy: "Connection unhealthy",
+    connectionTestUnavailable: "Connection test result unavailable",
     changeStatus: "Change status",
     archive: "Archive",
     modelsCount: "MODEL COUNT",
@@ -329,6 +339,7 @@ export const messages = {
   },
   ar: {
     command: "القيادة",
+    oic7: "OIC-7",
     foundation: "الأساس",
     factory: "المصنع",
     lab: "المختبر",
@@ -363,6 +374,9 @@ export const messages = {
     economics: "مرصد الاقتصاديات",
     admission: "استوديو ضبط القبول",
     rating: "استوديو تسعير العميل",
+    evaluation: "منظومة التقييم",
+    reviewer: "المراجعة البشرية",
+    "domain-review": "مراجعة المحتوى العربي",
     subtitle: "عرض تشغيلي لمنصة ذكاء Oi.",
     refresh: "تحديث البيانات",
     signOut: "تسجيل الخروج",
@@ -571,6 +585,9 @@ export const messages = {
     no: "غير متوفرة",
     testConnection: "اختبار الاتصال",
     testing: "جارٍ الاختبار…",
+    connectionTestHealthy: "الاتصال سليم",
+    connectionTestUnhealthy: "الاتصال غير سليم",
+    connectionTestUnavailable: "نتيجة اختبار الاتصال غير متاحة",
     changeStatus: "تغيير الحالة",
     archive: "أرشفة",
     modelsCount: "عدد النماذج",
@@ -636,6 +653,9 @@ export const messages = {
 
 export const nav: { id: View; group: NavGroup; label?: "access" | "providerFactory" | "modelFactory" }[] = [
   { id: "overview", group: "command" },
+  { id: "evaluation", group: "oic7" },
+  { id: "economics", group: "oic7" },
+  { id: "admission", group: "oic7" },
   { id: "applications", group: "foundation" },
   { id: "tenants", group: "foundation" },
   { id: "principals", group: "foundation", label: "access" },
@@ -648,11 +668,11 @@ export const nav: { id: View; group: NavGroup; label?: "access" | "providerFacto
   { id: "workbench", group: "lab" },
   { id: "runtime", group: "lab" },
   { id: "traces", group: "lab" },
+  { id: "reviewer", group: "lab" },
+  { id: "domain-review", group: "lab" },
   { id: "health", group: "operations" },
   { id: "audit", group: "operations" },
   { id: "usage", group: "operations" },
-  { id: "economics", group: "operations" },
-  { id: "admission", group: "operations" },
   { id: "rating", group: "operations" }
 ];
 

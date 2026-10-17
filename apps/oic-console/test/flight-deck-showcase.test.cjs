@@ -153,12 +153,17 @@ test("active and dormant overview values share fixed instrument hosts and bay st
   assert.match(overview, /<DNARadar/);
   const productionLab = overview.slice(overview.indexOf("function LabRack"), overview.indexOf("function EventList"));
   assert.equal((productionLab.match(/<RadialGauge value=\{undefined\}/g) || []).length, 2, "production Lab keeps dormant Evaluation and Verification gauges mounted");
-  assert.match(productionLab, /Retained telemetry/);
+  assert.match(productionLab, /Context tokens · recent executions/);
+  assert.match(productionLab, /Latest bounded recorded execution sample/);
   assert.match(styles, /\.fd-stable-instrument-cell\{display:grid;grid-template-rows:12px minmax\(0,1fr\) 10px/);
   assert.match(styles, /\.fd-core-rack\{height:auto;min-height:420px;max-height:none;overflow:visible\}/, "the real rack grows to contain dormant instrument geometry");
   assert.match(styles, /\.fd-vitals-secondary\{grid-template-columns:repeat\(4,minmax\(0,1fr\)\);grid-template-rows:repeat\(2,minmax\(0,1fr\)\)/, "eight subsystem pressures occupy a balanced 4-by-2 group");
   assert.match(styles, /\.fd-vitals-secondary\{grid-template-columns:repeat\(2,minmax\(0,1fr\)\);grid-template-rows:repeat\(4,minmax\(0,1fr\)\)\}/, "narrow Core Vitals retain all eight subsystem slots");
-  assert.match(overview, /state === "UNMEASURED" \|\| state === "UNAVAILABLE" \? "--" : signal\.stateLabel/, "dormant numeric instruments use a compact value placeholder and keep state in the slot label");
+  assert.match(overview, /stateLabel=\{signal\.stateLabel\} size="XS"/, "dormant numeric instruments keep their source or missing-requirement reason visible");
+  assert.match(overview, /const activeConnections = connections\.filter/);
+  assert.match(overview, /const healthStates = activeConnections\.map/);
+  assert.match(overview, /!activeConnections\.length \? "NOT_CONFIGURED"/);
+  assert.match(overview, /Pressure percentages remain UNMEASURED/);
   assert.match(styles, /\.fd-model-pod-machine\{display:grid;grid-template-columns:minmax\(68px.*minmax\(54px.*minmax\(94px/s);
   assert.match(styles, /\.fd-factory \.oii-stage-control>span:last-child/);
   assert.match(styles, /\.fd-cognitive>\.fd-sensor-rack,.fd-cognitive>\.fd-cognitive-live\{display:grid;grid-template-columns:repeat\(8,minmax\(0,1fr\)\)/);
@@ -213,6 +218,7 @@ test("Hero Core Load is truthful in production and weighted demo-only in the sho
   const create = loadFixture();
   const nominal = create("NOMINAL");
   const production = buildProductionCoreLoad();
+  const sourceReady = buildProductionCoreLoad(new Set(["vital.inbound-pressure", "vital.reasoning-pressure", "vital.context-saturation", "vital.retrieval-load", "vital.memory-pressure", "vital.verification-load", "vital.tool-execution-load", "vital.provider-pressure", "vital.queue-pressure"]));
   const demo = buildDemoCoreLoad(nominal.overview.vitals, nominal.overview.coreLoadEnergyDraw);
   const dormant = create("DORMANT");
   const dormantLoad = buildDemoCoreLoad(dormant.overview.vitals, dormant.overview.coreLoadEnergyDraw);
@@ -226,8 +232,13 @@ test("Hero Core Load is truthful in production and weighted demo-only in the sho
   assert.equal(production.state, "UNMEASURED");
   assert.equal(production.value, null);
   assert.equal(production.measured, 0);
+  assert.equal(production.available, 0);
   assert.equal(production.total, 12);
-  assert.ok(production.contributors.every((item) => item.value === null && item.state === "PLANNED"));
+  assert.ok(production.contributors.every((item) => item.value === null && item.state === "UNMEASURED" && item.sourceAvailable === false));
+  assert.equal(sourceReady.available, 9);
+  assert.equal(sourceReady.measured, 0, "raw sources do not fabricate pressure measurements");
+  assert.equal(sourceReady.value, null, "available sources do not synthesize a Core Load score");
+  assert.equal(sourceReady.contributors.find((item) => item.id === "vital.queue-pressure").sourceAvailable, true);
   assert.equal(demo.state, "DEMO");
   assert.equal(demo.measured, 12);
   assert.equal(demo.band, "NOMINAL");
@@ -237,6 +248,26 @@ test("Hero Core Load is truthful in production and weighted demo-only in the sho
   assert.equal(dormantLoad.state, "UNMEASURED");
   assert.equal(dormantLoad.value, null);
   assert.equal(dormantLoad.measured, 0);
+});
+
+test("Overview distinguishes available source data from unmeasured derived gauges", () => {
+  const app = path.resolve(__dirname, "../app");
+  const overview = fs.readFileSync(path.join(app, "features/overview/overview-view.tsx"), "utf8");
+  const composition = fs.readFileSync(path.join(app, "features/overview/flight-deck-composition.tsx"), "utf8");
+  const registry = fs.readFileSync(path.join(app, "features/overview/core-vital-registry.ts"), "utf8");
+  const accounting = fs.readFileSync(path.join(app, "features/overview/overview-operational-summary.tsx"), "utf8");
+  assert.match(overview, /Source signals available/);
+  assert.match(overview, /summary\.available/);
+  assert.match(overview, /summary\.measured/);
+  assert.match(overview, /activityValue\("providerCalls"\).*activityValue\("stages"\)/s);
+  assert.match(overview, /QUEUE DEPTH/);
+  assert.match(overview, /pressure method UNMEASURED/);
+  assert.match(overview, /<OiuValue value=\{accountingState \? oiuAmount\(key\) : null\}/);
+  assert.match(overview, /DNA EXISTS, BUT NO ELIGIBLE DNA PROJECTION IS BOUND/);
+  assert.match(composition, /sourceStateLabel && sourceStateLabel !== signal\.state \? sourceStateLabel/);
+  assert.match(registry, /Token throughput rate/);
+  assert.match(registry, /RAW TOKENS AVAILABLE · RATE WINDOW MISSING/);
+  assert.match(accounting, /onAccountingRead/);
 });
 
 test("V9.1 keeps the premium hero outside the motherboard and restores operator inspection", () => {
@@ -251,7 +282,7 @@ test("V9.1 keeps the premium hero outside the motherboard and restores operator 
     assert.ok(overview.includes(`tr("inspect", "Inspect")`), `Inspect control is available for ${bay}`);
   }
   assert.match(overview, /className="fd-entity-hit" aria-label=\{`\$\{model\.title\}.*Inspect model details`\}/);
-  assert.match(overview, /className="fd-entity-hit" aria-label=\{`\$\{provider\.title\}.*Inspect provider`\}/);
+  assert.match(overview, /className="fd-entity-hit" aria-label=\{`\$\{providerTitle\}, active connection health \$\{stateLabel\}.*Inspect provider`\}/);
   assert.match(overview, /import \{ Inspector, ModelPicker \} from "\.\.\/\.\.\/components\/interface"/);
   assert.match(overview, /<Inspector open onClose=\{close\}/, "Overview details use the shared Inspector shell");
   assert.doesNotMatch(overview, /role="dialog"|event\.key !== "Tab"|event\.key === "Escape"/, "Inspector overlay and keyboard behavior stay canonical");

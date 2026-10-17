@@ -99,6 +99,12 @@ export function runtimeCredential(): string {
   return credential;
 }
 
+export function evaluationRunnerCredential(): string {
+  const credential = process.env.OIC7_EVALUATION_RUNNER_CREDENTIAL;
+  if (!credential) throw new Error("OIC-7 evaluation runner credential is not configured");
+  return credential;
+}
+
 export function sameOrigin(request: Request): boolean {
   const origin = request.headers.get("origin");
   if (!origin) return false;

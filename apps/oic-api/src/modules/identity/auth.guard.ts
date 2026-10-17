@@ -2,9 +2,11 @@ import { CanActivate, createParamDecorator, ExecutionContext, Injectable, SetMet
 import { Reflector } from "@nestjs/core";
 import { OicDatabaseService } from "@oic/database";
 import { verifyCredential } from "./credential.crypto";
+import { OIC_FOUNDATION_OPERATOR_PRINCIPAL_KEY, OIC_PLATFORM_ADMIN_PRINCIPAL_KEY } from "./foundation-policy";
 
 export const REQUIRED_SCOPES = "oic:required-scopes";
-export type AuthenticatedPrincipal = { id: string; applicationId: string; scopes: string[]; tenantIds: string[] };
+export const FOUNDATION_OPERATOR_ROUTE = "oic:foundation-operator-route";
+export type AuthenticatedPrincipal = { id: string; key?: string; applicationId: string; scopes: string[]; tenantIds: string[] };
 const rateWindows = new Map<string, { start: number; count: number }>();
 type HttpRequest = { headers: Record<string, string | string[] | undefined>; principal?: AuthenticatedPrincipal; ip?: string };
 export const RequireScopes = (...scopes: string[]) => SetMetadata(REQUIRED_SCOPES, scopes);
@@ -45,9 +47,11 @@ export class OicAuthenticationGuard implements CanActivate {
     }
     if (!credential || credential.status !== "ACTIVE" || credential.revokedAt ||
       credential.principal.status !== "ACTIVE" || credential.principal.application.status !== "ACTIVE" ||
+      credential.principal.key === OIC_PLATFORM_ADMIN_PRINCIPAL_KEY ||
       !(await verifyCredential(secret, credential.verifier))) throw new UnauthorizedException();
     req.principal = {
       id: credential.principal.id,
+      key: credential.principal.key,
       applicationId: credential.principal.applicationId,
       scopes: credential.principal.scopes.map((grant) => grant.scope),
       tenantIds: credential.principal.tenantGrants.map((grant) => grant.tenantId)
@@ -68,6 +72,8 @@ export class OicScopeGuard implements CanActivate {
     const required = this.reflector.getAllAndOverride<string[]>(REQUIRED_SCOPES, [context.getHandler(), context.getClass()]) ?? [];
     const req = context.switchToHttp().getRequest<HttpRequest>();
     const scopes = req.principal?.scopes ?? [];
+    if (req.principal?.key === OIC_FOUNDATION_OPERATOR_PRINCIPAL_KEY &&
+      !this.reflector.getAllAndOverride<boolean>(FOUNDATION_OPERATOR_ROUTE, [context.getHandler(), context.getClass()])) throw new ForbiddenException();
     if (required.every((scope) => scopes.includes(scope))) return true;
     throw new ForbiddenException();
   }

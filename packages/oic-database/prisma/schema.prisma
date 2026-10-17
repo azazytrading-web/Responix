@@ -4,8 +4,8 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("OIC_DATABASE_URL")
+  provider          = "postgresql"
+  url               = env("OIC_DATABASE_URL")
   shadowDatabaseUrl = env("OIC_SHADOW_DATABASE_URL")
 }
 
@@ -289,235 +289,637 @@ enum OicUsagePostingKind {
 }
 
 model OicApplication {
-  id                 String                     @id @default(uuid()) @db.Uuid
-  key                String                     @unique @db.VarChar(64)
-  displayName        String                     @db.VarChar(160)
-  status             OicLifecycleStatus         @default(ACTIVE)
-  createdAt          DateTime                   @default(now()) @db.Timestamptz(6)
-  updatedAt          DateTime                   @updatedAt @db.Timestamptz(6)
-  tenants            OicTenant[]
-  externalReferences OicTenantExternalReference[]
-  principals         OicServicePrincipal[]
-  adminRecoveryRecords OicAdminRecoveryRecord[]
-  providerConnections OicProviderConnection[]
-  runtimeBindings    OicRuntimeBinding[]
-  modelVisibility    OicApplicationModelVisibility[]
-  intelligenceMemories OicIntelligenceMemory[]
-  intelligenceKnowledge OicIntelligenceKnowledge[]
-  intelligenceExecutions OicIntelligenceExecution[]
-  providerAttempts OicProviderAttempt[]
-  providerRateBooks OicProviderRateBookRevision[]
-  oiuPolicies OicOiuPolicyRevision[]
-  plans OicPlan[]
-  planAssignments OicPlanAssignment[]
-  quotaPolicies OicQuotaPolicyRevision[]
-  budgetPolicies OicBudgetRevision[]
-  quotaBuckets OicQuotaBucket[]
-  admissions OicAdmission[]
-  customerPriceBooks OicCustomerPriceBookRevision[]
-  ratedUsageEvents OicRatedUsageEvent[]
-  ratedUsageAdjustments OicRatedUsageAdjustment[]
-  customerAllowanceBuckets OicCustomerAllowanceBucket[]
+  id                          String                                @id @default(uuid()) @db.Uuid
+  key                         String                                @unique @db.VarChar(64)
+  displayName                 String                                @db.VarChar(160)
+  status                      OicLifecycleStatus                    @default(ACTIVE)
+  createdAt                   DateTime                              @default(now()) @db.Timestamptz(6)
+  updatedAt                   DateTime                              @updatedAt @db.Timestamptz(6)
+  tenants                     OicTenant[]
+  externalReferences          OicTenantExternalReference[]
+  principals                  OicServicePrincipal[]
+  humanMemberships            OicHumanApplicationMembership[]
+  reviewerSessions            OicReviewerSession[]
+  reviewerAuthorizations      OicReviewerAuthorization[]
+  reviewAssignments           OicReviewAssignment[]
+  reviewCalibrations          OicReviewerCalibration[]
+  reviewCalibrationPolicies   OicReviewCalibrationPolicy[]
+  reviewAdjudications         OicReviewAdjudication[]
+  reviewerQualifications      OicReviewerQualificationAttestation[]
+  domainReviewBatches         OicDomainReviewBatch[]
+  domainReviewAssignments     OicDomainReviewAssignment[]
+  domainReviewConflictScopes  OicDomainReviewConflictScope[]
+  adminRecoveryRecords        OicAdminRecoveryRecord[]
+  operationalBootstrapRecords OicOperationalAdminBootstrapRecord[]
+  providerConnections         OicProviderConnection[]
+  runtimeBindings             OicRuntimeBinding[]
+  modelVisibility             OicApplicationModelVisibility[]
+  intelligenceMemories        OicIntelligenceMemory[]
+  intelligenceKnowledge       OicIntelligenceKnowledge[]
+  intelligenceExecutions      OicIntelligenceExecution[]
+  providerAttempts            OicProviderAttempt[]
+  providerRateBooks           OicProviderRateBookRevision[]
+  oiuPolicies                 OicOiuPolicyRevision[]
+  plans                       OicPlan[]
+  planAssignments             OicPlanAssignment[]
+  quotaPolicies               OicQuotaPolicyRevision[]
+  budgetPolicies              OicBudgetRevision[]
+  quotaBuckets                OicQuotaBucket[]
+  admissions                  OicAdmission[]
+  customerPriceBooks          OicCustomerPriceBookRevision[]
+  ratedUsageEvents            OicRatedUsageEvent[]
+  ratedUsageAdjustments       OicRatedUsageAdjustment[]
+  customerAllowanceBuckets    OicCustomerAllowanceBucket[]
+  evaluationPacks             OicEvaluationPackRevision[]
+  evaluationValidationJobs    OicEvaluationValidationJob[]
+  evaluationReleases          OicEvaluationRelease[]
+  evaluationManifests         OicEvaluationProtocolManifest[]
+  evaluationCampaigns         OicEvaluationCampaign[]
+  evaluationCapacityExtensions OicEvaluationCapacityExtension[]
+  evaluationRuns              OicEvaluationRun[]
+  evaluationCandidates        OicEvaluationCandidate[]
+  evaluationMetrics           OicEvaluationMetricRevision[]
+  evaluationJudges            OicEvaluationJudgeRevision[]
+  evaluationArtifacts         OicEvaluationArtifact[]
+  evaluationBasisDrafts       OicEvaluationBasisDraft[]
+  evaluationBasisBridges      OicEvaluationBasisBridgeRevision[]
+  evaluationRegradePasses     OicEvaluationRegradePass[]
+  evaluationDatasets          OicEvaluationDatasetRevision[]
+  evaluationEnvironments      OicEvaluationEnvironmentRevision[]
+  evaluationSuites            OicEvaluationSuiteRevision[]
+  evaluationWorkItems         OicEvaluationWorkItem[]
+  evaluationOutbox            OicEvaluationOutbox[]
+
   @@index([status, key])
 }
 
 model OicTenant {
-  id          String                     @id @default(uuid()) @db.Uuid
-  applicationId String                   @db.Uuid
-  key         String?                    @db.VarChar(64)
-  displayName String                    @db.VarChar(160)
-  status      OicLifecycleStatus        @default(ACTIVE)
-  createdAt   DateTime                  @default(now()) @db.Timestamptz(6)
-  updatedAt   DateTime                  @updatedAt @db.Timestamptz(6)
-  application OicApplication            @relation(fields: [applicationId], references: [id], onDelete: Restrict)
-  references  OicTenantExternalReference[]
-  grants      OicPrincipalTenantGrant[]
-  providerConnections OicProviderConnection[]
-  runtimeBindings OicRuntimeBinding[]
-  intelligenceMemories OicIntelligenceMemory[]
-  intelligenceKnowledge OicIntelligenceKnowledge[]
-  intelligenceExecutions OicIntelligenceExecution[]
-  providerAttempts OicProviderAttempt[]
-  providerRateBooks OicProviderRateBookRevision[]
-  oiuPolicies OicOiuPolicyRevision[]
-  planAssignments OicPlanAssignment[]
-  quotaPolicies OicQuotaPolicyRevision[]
-  budgetPolicies OicBudgetRevision[]
-  quotaBuckets OicQuotaBucket[]
-  admissions OicAdmission[]
-  customerPriceBooks OicCustomerPriceBookRevision[]
-  ratedUsageEvents OicRatedUsageEvent[]
-  ratedUsageAdjustments OicRatedUsageAdjustment[]
-  customerAllowanceBuckets OicCustomerAllowanceBucket[]
+  id                        String                             @id @default(uuid()) @db.Uuid
+  applicationId             String                             @db.Uuid
+  key                       String?                            @db.VarChar(64)
+  displayName               String                             @db.VarChar(160)
+  status                    OicLifecycleStatus                 @default(ACTIVE)
+  createdAt                 DateTime                           @default(now()) @db.Timestamptz(6)
+  updatedAt                 DateTime                           @updatedAt @db.Timestamptz(6)
+  application               OicApplication                     @relation(fields: [applicationId], references: [id], onDelete: Restrict)
+  references                OicTenantExternalReference[]
+  grants                    OicPrincipalTenantGrant[]
+  humanMemberships          OicHumanApplicationMembership[]
+  reviewerAuthorizations    OicReviewerAuthorization[]
+  reviewAssignments         OicReviewAssignment[]
+  reviewCalibrationPolicies OicReviewCalibrationPolicy[]
+  reviewCalibrations        OicReviewerCalibration[]
+  reviewAdjudications       OicReviewAdjudication[]
+  providerConnections       OicProviderConnection[]
+  runtimeBindings           OicRuntimeBinding[]
+  intelligenceMemories      OicIntelligenceMemory[]
+  intelligenceKnowledge     OicIntelligenceKnowledge[]
+  intelligenceExecutions    OicIntelligenceExecution[]
+  providerAttempts          OicProviderAttempt[]
+  providerRateBooks         OicProviderRateBookRevision[]
+  oiuPolicies               OicOiuPolicyRevision[]
+  planAssignments           OicPlanAssignment[]
+  quotaPolicies             OicQuotaPolicyRevision[]
+  budgetPolicies            OicBudgetRevision[]
+  quotaBuckets              OicQuotaBucket[]
+  admissions                OicAdmission[]
+  customerPriceBooks        OicCustomerPriceBookRevision[]
+  ratedUsageEvents          OicRatedUsageEvent[]
+  ratedUsageAdjustments     OicRatedUsageAdjustment[]
+  customerAllowanceBuckets  OicCustomerAllowanceBucket[]
+  evaluationPacks           OicEvaluationPackRevision[]
+  evaluationValidationJobs  OicEvaluationValidationJob[]
+  evaluationReleases        OicEvaluationRelease[]
+  evaluationManifests       OicEvaluationProtocolManifest[]
+  evaluationCampaigns       OicEvaluationCampaign[]
+  evaluationCapacityExtensions OicEvaluationCapacityExtension[]
+  evaluationRuns            OicEvaluationRun[]
+  evaluationBasisDrafts     OicEvaluationBasisDraft[]
+  evaluationBasisBridges    OicEvaluationBasisBridgeRevision[]
+  evaluationRegradePasses   OicEvaluationRegradePass[]
+  evaluationCandidates      OicEvaluationCandidate[]
+  evaluationMetrics         OicEvaluationMetricRevision[]
+  evaluationJudges          OicEvaluationJudgeRevision[]
+  evaluationArtifacts       OicEvaluationArtifact[]
+  evaluationDatasets        OicEvaluationDatasetRevision[]
+  evaluationEnvironments    OicEvaluationEnvironmentRevision[]
+  evaluationSuites          OicEvaluationSuiteRevision[]
+  evaluationWorkItems       OicEvaluationWorkItem[]
+  evaluationOutbox          OicEvaluationOutbox[]
+
   @@unique([id, applicationId])
   @@unique([applicationId, key])
   @@index([applicationId, status, createdAt])
 }
 
 model OicTenantExternalReference {
-  id             String        @id @default(uuid()) @db.Uuid
-  applicationId  String        @db.Uuid
-  tenantId       String        @db.Uuid
-  sourceType     String        @db.VarChar(64)
-  externalId     String        @db.VarChar(256)
-  createdAt      DateTime      @default(now()) @db.Timestamptz(6)
-  revokedAt      DateTime?     @db.Timestamptz(6)
-  application    OicApplication @relation(fields: [applicationId], references: [id], onDelete: Restrict)
-  tenant         OicTenant     @relation(fields: [tenantId, applicationId], references: [id, applicationId], onDelete: Restrict)
+  id            String         @id @default(uuid()) @db.Uuid
+  applicationId String         @db.Uuid
+  tenantId      String         @db.Uuid
+  sourceType    String         @db.VarChar(64)
+  externalId    String         @db.VarChar(256)
+  createdAt     DateTime       @default(now()) @db.Timestamptz(6)
+  revokedAt     DateTime?      @db.Timestamptz(6)
+  application   OicApplication @relation(fields: [applicationId], references: [id], onDelete: Restrict)
+  tenant        OicTenant      @relation(fields: [tenantId, applicationId], references: [id, applicationId], onDelete: Restrict)
+
   @@unique([applicationId, sourceType, externalId])
   @@index([tenantId, createdAt])
 }
 
 model OicServicePrincipal {
-  id             String                     @id @default(uuid()) @db.Uuid
-  applicationId  String                     @db.Uuid
-  key            String                     @db.VarChar(64)
-  displayName    String                     @db.VarChar(160)
-  status         OicLifecycleStatus         @default(ACTIVE)
-  createdAt      DateTime                   @default(now()) @db.Timestamptz(6)
-  updatedAt      DateTime                   @updatedAt @db.Timestamptz(6)
-  application    OicApplication             @relation(fields: [applicationId], references: [id], onDelete: Restrict)
-  scopes         OicPrincipalScopeGrant[]
-  tenantGrants   OicPrincipalTenantGrant[]
-  credentials    OicMachineCredential[]
-  adminRecoveryRecords OicAdminRecoveryRecord[]
-  providerAttempts OicProviderAttempt[]
-  admissions OicAdmission[]
-  ratedUsageAdjustments OicRatedUsageAdjustment[]
+  id                          String                               @id @default(uuid()) @db.Uuid
+  applicationId               String                               @db.Uuid
+  key                         String                               @db.VarChar(64)
+  displayName                 String                               @db.VarChar(160)
+  status                      OicLifecycleStatus                   @default(ACTIVE)
+  createdAt                   DateTime                             @default(now()) @db.Timestamptz(6)
+  updatedAt                   DateTime                             @updatedAt @db.Timestamptz(6)
+  application                 OicApplication                       @relation(fields: [applicationId], references: [id], onDelete: Restrict)
+  scopes                      OicPrincipalScopeGrant[]
+  tenantGrants                OicPrincipalTenantGrant[]
+  credentials                 OicMachineCredential[]
+  adminRecoveryRecords        OicAdminRecoveryRecord[]
+  operationalBootstrapRecords OicOperationalAdminBootstrapRecord[]
+  reviewerGrants              OicReviewerAuthorization[]
+  providerAttempts            OicProviderAttempt[]
+  admissions                  OicAdmission[]
+  ratedUsageAdjustments       OicRatedUsageAdjustment[]
+
   @@unique([id, applicationId])
   @@unique([applicationId, key])
   @@index([applicationId, status])
 }
 
 model OicPrincipalScopeGrant {
-  id             String            @id @default(uuid()) @db.Uuid
-  applicationId  String            @db.Uuid
-  principalId    String            @db.Uuid
-  scope          String            @db.VarChar(128)
-  grantedBy      String?           @db.Uuid
-  grantedAt      DateTime          @default(now()) @db.Timestamptz(6)
-  revokedAt      DateTime?         @db.Timestamptz(6)
-  principal      OicServicePrincipal @relation(fields: [principalId, applicationId], references: [id, applicationId], onDelete: Restrict)
+  id            String              @id @default(uuid()) @db.Uuid
+  applicationId String              @db.Uuid
+  principalId   String              @db.Uuid
+  scope         String              @db.VarChar(128)
+  grantedBy     String?             @db.Uuid
+  grantedAt     DateTime            @default(now()) @db.Timestamptz(6)
+  revokedAt     DateTime?           @db.Timestamptz(6)
+  principal     OicServicePrincipal @relation(fields: [principalId, applicationId], references: [id, applicationId], onDelete: Restrict)
+
   @@unique([principalId, scope])
   @@index([applicationId, scope, revokedAt])
 }
 
 model OicPrincipalTenantGrant {
-  id                 String              @id @default(uuid()) @db.Uuid
-  applicationId      String              @db.Uuid
-  principalId        String              @db.Uuid
-  tenantId           String              @db.Uuid
-  grantedBy          String?             @db.Uuid
-  grantedAt          DateTime            @default(now()) @db.Timestamptz(6)
-  revokedAt          DateTime?           @db.Timestamptz(6)
-  principal          OicServicePrincipal @relation(fields: [principalId, applicationId], references: [id, applicationId], onDelete: Restrict)
-  tenant             OicTenant           @relation(fields: [tenantId, applicationId], references: [id, applicationId], onDelete: Restrict)
+  id            String              @id @default(uuid()) @db.Uuid
+  applicationId String              @db.Uuid
+  principalId   String              @db.Uuid
+  tenantId      String              @db.Uuid
+  grantedBy     String?             @db.Uuid
+  grantedAt     DateTime            @default(now()) @db.Timestamptz(6)
+  revokedAt     DateTime?           @db.Timestamptz(6)
+  principal     OicServicePrincipal @relation(fields: [principalId, applicationId], references: [id, applicationId], onDelete: Restrict)
+  tenant        OicTenant           @relation(fields: [tenantId, applicationId], references: [id, applicationId], onDelete: Restrict)
+
   @@unique([principalId, tenantId])
   @@index([applicationId, tenantId, revokedAt])
 }
 
 model OicMachineCredential {
-  id              String                @id @default(uuid()) @db.Uuid
-  principalId     String                @db.Uuid
-  selector        String                @unique @db.VarChar(32)
-  verifier        String                @db.VarChar(256)
-  verifierVersion Int                   @default(1)
-  status          OicCredentialStatus   @default(ACTIVE)
-  createdAt       DateTime              @default(now()) @db.Timestamptz(6)
-  expiresAt       DateTime?             @db.Timestamptz(6)
-  revokedAt       DateTime?             @db.Timestamptz(6)
-  lastUsedAt      DateTime?             @db.Timestamptz(6)
-  replacedById    String?               @unique @db.Uuid
-  principal       OicServicePrincipal   @relation(fields: [principalId], references: [id], onDelete: Restrict)
-  replacedBy      OicMachineCredential? @relation("CredentialReplacement", fields: [replacedById], references: [id], onDelete: Restrict)
-  replaces        OicMachineCredential? @relation("CredentialReplacement")
-  adminRecoveryRecord OicAdminRecoveryRecord?
+  id                         String                              @id @default(uuid()) @db.Uuid
+  principalId                String                              @db.Uuid
+  selector                   String                              @unique @db.VarChar(32)
+  verifier                   String                              @db.VarChar(256)
+  verifierVersion            Int                                 @default(1)
+  status                     OicCredentialStatus                 @default(ACTIVE)
+  createdAt                  DateTime                            @default(now()) @db.Timestamptz(6)
+  expiresAt                  DateTime?                           @db.Timestamptz(6)
+  revokedAt                  DateTime?                           @db.Timestamptz(6)
+  lastUsedAt                 DateTime?                           @db.Timestamptz(6)
+  replacedById               String?                             @unique @db.Uuid
+  principal                  OicServicePrincipal                 @relation(fields: [principalId], references: [id], onDelete: Restrict)
+  replacedBy                 OicMachineCredential?               @relation("CredentialReplacement", fields: [replacedById], references: [id], onDelete: Restrict)
+  replaces                   OicMachineCredential?               @relation("CredentialReplacement")
+  adminRecoveryRecord        OicAdminRecoveryRecord?
+  operationalBootstrapRecord OicOperationalAdminBootstrapRecord?
+
   @@index([principalId, status, expiresAt])
 }
 
 model OicAuditEvent {
-  id             String   @id @default(uuid()) @db.Uuid
-  occurredAt     DateTime @default(now()) @db.Timestamptz(6)
-  actorPrincipalId String? @db.Uuid
-  applicationId  String?  @db.Uuid
-  tenantId       String?  @db.Uuid
-  action         String   @db.VarChar(96)
-  targetType     String   @db.VarChar(64)
-  targetId       String?  @db.VarChar(128)
-  requestId      String?  @db.VarChar(128)
-  traceId        String?  @db.VarChar(128)
-  metadata       Json     @default("{}") @db.JsonB
+  id                   String            @id @default(uuid()) @db.Uuid
+  occurredAt           DateTime          @default(now()) @db.Timestamptz(6)
+  actorPrincipalId     String?           @db.Uuid
+  actorHumanIdentityId String?           @db.Uuid
+  actorType            String?           @db.VarChar(24)
+  applicationId        String?           @db.Uuid
+  tenantId             String?           @db.Uuid
+  action               String            @db.VarChar(96)
+  targetType           String            @db.VarChar(64)
+  targetId             String?           @db.VarChar(128)
+  requestId            String?           @db.VarChar(128)
+  traceId              String?           @db.VarChar(128)
+  metadata             Json              @default("{}") @db.JsonB
+  humanActor           OicHumanIdentity? @relation(fields: [actorHumanIdentityId], references: [id], onDelete: Restrict)
+
   @@index([applicationId, occurredAt])
   @@index([tenantId, occurredAt])
   @@index([actorPrincipalId, occurredAt])
   @@index([targetType, targetId, occurredAt])
 }
 
+// Human reviewer identities are separate from OIC machine principals. Local
+// credentials and sessions are stored as verifiers; only the API can resolve them.
+model OicHumanIdentity {
+  id                      String                                @id @default(uuid()) @db.Uuid
+  displayLabel            String                                @db.VarChar(120)
+  status                  String                                @default("ACTIVE") @db.VarChar(16)
+  createdAt               DateTime                              @default(now()) @db.Timestamptz(6)
+  disabledAt              DateTime?                             @db.Timestamptz(6)
+  authSubjects            OicHumanAuthSubject[]
+  memberships             OicHumanApplicationMembership[]
+  authorizations          OicReviewerAuthorization[]
+  sessions                OicReviewerSession[]
+  assignments             OicReviewAssignment[]
+  calibrations            OicReviewerCalibration[]
+  adjudications           OicReviewAdjudication[]
+  submissions             OicReviewSubmission[]
+  auditEvents             OicAuditEvent[]
+  qualifications          OicReviewerQualificationAttestation[]
+  domainReviewAssignments OicDomainReviewAssignment[]
+  domainReviewSubmissions OicDomainReviewSubmission[]
+
+  @@index([status, createdAt])
+}
+
+model OicHumanAuthSubject {
+  id                String               @id @default(uuid()) @db.Uuid
+  humanIdentityId   String               @db.Uuid
+  kind              String               @default("LOCAL") @db.VarChar(16)
+  loginHandle       String?              @unique @db.VarChar(96)
+  issuer            String?              @db.VarChar(512)
+  subject           String?              @db.VarChar(256)
+  verifier          String?              @db.VarChar(256)
+  verifierVersion   Int                  @default(1)
+  status            String               @default("ACTIVE") @db.VarChar(16)
+  createdAt         DateTime             @default(now()) @db.Timestamptz(6)
+  passwordChangedAt DateTime?            @db.Timestamptz(6)
+  revokedAt         DateTime?            @db.Timestamptz(6)
+  humanIdentity     OicHumanIdentity     @relation(fields: [humanIdentityId], references: [id], onDelete: Restrict)
+  sessions          OicReviewerSession[]
+
+  @@unique([issuer, subject])
+  @@index([humanIdentityId, status])
+}
+
+model OicHumanApplicationMembership {
+  id              String               @id @default(uuid()) @db.Uuid
+  humanIdentityId String               @db.Uuid
+  applicationId   String               @db.Uuid
+  tenantId        String?              @db.Uuid
+  status          String               @default("ACTIVE") @db.VarChar(16)
+  createdAt       DateTime             @default(now()) @db.Timestamptz(6)
+  revokedAt       DateTime?            @db.Timestamptz(6)
+  humanIdentity   OicHumanIdentity     @relation(fields: [humanIdentityId], references: [id], onDelete: Restrict)
+  application     OicApplication       @relation(fields: [applicationId], references: [id], onDelete: Restrict)
+  tenant          OicTenant?           @relation(fields: [tenantId, applicationId], references: [id, applicationId], onDelete: Restrict)
+  sessions        OicReviewerSession[]
+
+  @@unique([humanIdentityId, applicationId, tenantId])
+  @@index([applicationId, tenantId, status])
+}
+
+model OicReviewerAuthorization {
+  id                   String              @id @default(uuid()) @db.Uuid
+  humanIdentityId      String              @db.Uuid
+  applicationId        String              @db.Uuid
+  tenantId             String?             @db.Uuid
+  capability           String              @db.VarChar(64)
+  status               String              @default("ACTIVE") @db.VarChar(16)
+  grantedByPrincipalId String              @db.Uuid
+  grantedAt            DateTime            @default(now()) @db.Timestamptz(6)
+  effectiveAt          DateTime            @default(now()) @db.Timestamptz(6)
+  revokedAt            DateTime?           @db.Timestamptz(6)
+  humanIdentity        OicHumanIdentity    @relation(fields: [humanIdentityId], references: [id], onDelete: Restrict)
+  application          OicApplication      @relation(fields: [applicationId], references: [id], onDelete: Restrict)
+  tenant               OicTenant?          @relation(fields: [tenantId, applicationId], references: [id, applicationId], onDelete: Restrict)
+  grantor              OicServicePrincipal @relation(fields: [grantedByPrincipalId], references: [id], onDelete: Restrict)
+
+  @@unique([humanIdentityId, applicationId, tenantId, capability])
+  @@index([applicationId, tenantId, capability, status])
+}
+
+model OicReviewerSession {
+  id                      String                        @id @default(uuid()) @db.Uuid
+  humanIdentityId         String                        @db.Uuid
+  authSubjectId           String                        @db.Uuid
+  membershipId            String                        @db.Uuid
+  applicationId           String                        @db.Uuid
+  tokenHash               String                        @unique @db.Char(64)
+  createdAt               DateTime                      @default(now()) @db.Timestamptz(6)
+  lastSeenAt              DateTime                      @default(now()) @db.Timestamptz(6)
+  idleExpiresAt           DateTime                      @db.Timestamptz(6)
+  expiresAt               DateTime                      @db.Timestamptz(6)
+  revokedAt               DateTime?                     @db.Timestamptz(6)
+  humanIdentity           OicHumanIdentity              @relation(fields: [humanIdentityId], references: [id], onDelete: Restrict)
+  authSubject             OicHumanAuthSubject           @relation(fields: [authSubjectId], references: [id], onDelete: Restrict)
+  membership              OicHumanApplicationMembership @relation(fields: [membershipId], references: [id], onDelete: Restrict)
+  application             OicApplication                @relation(fields: [applicationId], references: [id], onDelete: Restrict)
+  submissions             OicReviewSubmission[]
+  domainReviewSubmissions OicDomainReviewSubmission[]
+
+  @@index([humanIdentityId, revokedAt, expiresAt])
+}
+
+model OicReviewCalibrationPolicy {
+  id                   String                   @id @default(uuid()) @db.Uuid
+  applicationId        String                   @db.Uuid
+  tenantId             String?                  @db.Uuid
+  judgeRevisionId      String                   @db.Uuid
+  revision             Int
+  calibrationSetDigest String                   @db.Char(64)
+  referenceArtifactId  String                   @db.Uuid
+  minimumAnchors       Int
+  minimumAgreement     Decimal                  @db.Decimal(6, 5)
+  expiresAfterDays     Int
+  status               String                   @default("PUBLISHED") @db.VarChar(16)
+  createdByPrincipalId String                   @db.Uuid
+  createdAt            DateTime                 @default(now()) @db.Timestamptz(6)
+  application          OicApplication           @relation(fields: [applicationId], references: [id], onDelete: Restrict)
+  tenant               OicTenant?               @relation(fields: [tenantId, applicationId], references: [id, applicationId], onDelete: Restrict)
+  referenceArtifact    OicEvaluationArtifact    @relation(fields: [referenceArtifactId], references: [id], onDelete: Restrict)
+  attempts             OicReviewerCalibration[]
+
+  @@unique([applicationId, tenantId, judgeRevisionId, revision], map: "OicReviewCalibrationPolicy_app_tenant_judge_rev_key")
+  @@index([applicationId, tenantId, judgeRevisionId, status], map: "OicReviewCalibrationPolicy_app_tenant_judge_status_idx")
+}
+
+model OicReviewerCalibration {
+  id              String                     @id @default(uuid()) @db.Uuid
+  humanIdentityId String                     @db.Uuid
+  applicationId   String                     @db.Uuid
+  tenantId        String?                    @db.Uuid
+  policyId        String                     @db.Uuid
+  answers         Json                       @db.JsonB
+  abstentions     Json                       @default("[]") @db.JsonB
+  agreement       Decimal?                   @db.Decimal(6, 5)
+  anchorCount     Int
+  eligibility     String                     @db.VarChar(16)
+  expiresAt       DateTime?                  @db.Timestamptz(6)
+  supersedesId    String?                    @db.Uuid
+  evidenceDigest  String                     @db.Char(64)
+  completedAt     DateTime                   @default(now()) @db.Timestamptz(6)
+  humanIdentity   OicHumanIdentity           @relation(fields: [humanIdentityId], references: [id], onDelete: Restrict)
+  application     OicApplication             @relation(fields: [applicationId], references: [id], onDelete: Restrict)
+  tenant          OicTenant?                 @relation(fields: [tenantId, applicationId], references: [id, applicationId], onDelete: Restrict)
+  policy          OicReviewCalibrationPolicy @relation(fields: [policyId], references: [id], onDelete: Restrict)
+  supersedes      OicReviewerCalibration?    @relation("CalibrationSupersession", fields: [supersedesId], references: [id], onDelete: Restrict)
+  supersededBy    OicReviewerCalibration[]   @relation("CalibrationSupersession")
+
+  @@index([humanIdentityId, applicationId, tenantId, completedAt])
+}
+
+// Owner-provided reviewer qualification claims are immutable, scoped records.
+// They establish only the exact language and review-purpose claims recorded.
+model OicReviewerQualificationAttestation {
+  id                    String           @id @default(uuid()) @db.Uuid
+  humanIdentityId       String           @db.Uuid
+  applicationId         String           @db.Uuid
+  qualificationKey      String           @db.VarChar(96)
+  language              String           @db.VarChar(16)
+  proficiency           String           @db.VarChar(24)
+  isPrimaryLanguage     Boolean
+  attestationSource     String           @db.VarChar(32)
+  attestationDigest     String           @db.Char(64)
+  attestedByPrincipalId String           @db.Uuid
+  attestedAt            DateTime         @default(now()) @db.Timestamptz(6)
+  humanIdentity         OicHumanIdentity @relation(fields: [humanIdentityId], references: [id], onDelete: Restrict)
+  application           OicApplication   @relation(fields: [applicationId], references: [id], onDelete: Restrict)
+
+  @@unique([humanIdentityId, applicationId, qualificationKey])
+  @@index([applicationId, qualificationKey, language, proficiency])
+}
+
+model OicReviewAssignment {
+  id                  String                @id @default(uuid()) @db.Uuid
+  humanIdentityId     String                @db.Uuid
+  applicationId       String                @db.Uuid
+  tenantId            String?               @db.Uuid
+  caseExecutionId     String                @db.Uuid
+  protocolRevisionId  String                @db.Uuid
+  judgeRevisionId     String                @db.Uuid
+  metricRevisionId    String                @db.Uuid
+  reviewMode          String                @default("PAIRWISE") @db.VarChar(24)
+  blindedItemId       String                @db.VarChar(128)
+  blindProjection     Json                  @db.JsonB
+  blindMapping        Json                  @db.JsonB
+  randomizedOrder     Json?                 @db.JsonB
+  conflictState       String                @db.VarChar(16)
+  conflictEvidence    Json                  @default("{}") @db.JsonB
+  eligibilitySnapshot Json                  @db.JsonB
+  status              String                @default("ASSIGNED") @db.VarChar(16)
+  assignedAt          DateTime              @default(now()) @db.Timestamptz(6)
+  openedAt            DateTime?             @db.Timestamptz(6)
+  deadlineAt          DateTime?             @db.Timestamptz(6)
+  reassignedAt        DateTime?             @db.Timestamptz(6)
+  humanIdentity       OicHumanIdentity      @relation(fields: [humanIdentityId], references: [id], onDelete: Restrict)
+  application         OicApplication        @relation(fields: [applicationId], references: [id], onDelete: Restrict)
+  tenant              OicTenant?            @relation(fields: [tenantId, applicationId], references: [id, applicationId], onDelete: Restrict)
+  submissions         OicReviewSubmission[]
+
+  @@index([humanIdentityId, applicationId, tenantId, status])
+  @@index([applicationId, tenantId, caseExecutionId])
+}
+
+model OicReviewSubmission {
+  id                  String              @id @default(uuid()) @db.Uuid
+  assignmentId        String              @db.Uuid
+  humanIdentityId     String              @db.Uuid
+  reviewerSessionId   String              @db.Uuid
+  blindedItemId       String              @db.VarChar(128)
+  metricRevisionId    String              @db.Uuid
+  judgeRevisionId     String              @db.Uuid
+  protocolRevisionId  String              @db.Uuid
+  reviewMode          String              @default("PAIRWISE") @db.VarChar(24)
+  value               Json?
+  abstained           Boolean             @default(false)
+  rationale           String?             @db.VarChar(1000)
+  calibrationSnapshot Json                @db.JsonB
+  evidenceDigest      String              @db.Char(64)
+  submittedAt         DateTime            @default(now()) @db.Timestamptz(6)
+  assignment          OicReviewAssignment @relation(fields: [assignmentId], references: [id], onDelete: Restrict)
+  humanIdentity       OicHumanIdentity    @relation(fields: [humanIdentityId], references: [id], onDelete: Restrict)
+  reviewerSession     OicReviewerSession  @relation(fields: [reviewerSessionId], references: [id], onDelete: Restrict)
+
+  @@unique([assignmentId])
+  @@index([humanIdentityId, judgeRevisionId, submittedAt])
+}
+
+model OicReviewFixtureProtocol {
+  id                     String                      @id @default(uuid()) @db.Uuid
+  applicationId          String                      @db.Uuid
+  tenantId               String?                     @db.Uuid
+  protocolKey            String                      @db.VarChar(96)
+  revision               Int
+  status                 String                      @default("DRAFT") @db.VarChar(16)
+  metricRevisionId       String                      @db.Uuid
+  judgeRevisionId        String                      @db.Uuid
+  rubricArtifactId       String                      @db.Uuid
+  rubricDigest           String                      @db.Char(64)
+  definition             Json                        @db.JsonB
+  definitionDigest       String                      @db.Char(64)
+  createdByPrincipalId   String                      @db.Uuid
+  publishedByPrincipalId String?                     @db.Uuid
+  createdAt              DateTime                    @default(now()) @db.Timestamptz(6)
+  publishedAt            DateTime?                   @db.Timestamptz(6)
+  executions             OicReviewFixtureExecution[]
+
+  @@unique([applicationId, tenantId, protocolKey, revision])
+  @@index([applicationId, tenantId, status, publishedAt])
+}
+
+model OicReviewFixtureExecution {
+  id                    String                   @id @default(uuid()) @db.Uuid
+  protocolRevisionId    String                   @db.Uuid
+  applicationId         String                   @db.Uuid
+  tenantId              String?                  @db.Uuid
+  itemKey               String                   @db.VarChar(96)
+  ordinal               Int
+  blindProjection       Json                     @db.JsonB
+  targetClass           String                   @default("STATIC_LOCAL_FIXTURE") @db.VarChar(32)
+  status                String                   @default("QUEUED") @db.VarChar(16)
+  providerDispatchCount Int                      @default(0)
+  executionEvidence     Json?                    @db.JsonB
+  evidenceDigest        String?                  @db.Char(64)
+  createdByPrincipalId  String                   @db.Uuid
+  createdAt             DateTime                 @default(now()) @db.Timestamptz(6)
+  completedAt           DateTime?                @db.Timestamptz(6)
+  protocol              OicReviewFixtureProtocol @relation(fields: [protocolRevisionId], references: [id], onDelete: Restrict)
+
+  @@unique([protocolRevisionId, itemKey])
+  @@unique([id, applicationId, tenantId])
+  @@index([applicationId, tenantId, status, ordinal])
+}
+
+model OicReviewInterRaterEvidence {
+  id                 String   @id @default(uuid()) @db.Uuid
+  applicationId      String   @db.Uuid
+  tenantId           String?  @db.Uuid
+  protocolRevisionId String   @db.Uuid
+  caseExecutionId    String   @db.Uuid
+  submissionIds      Json     @db.JsonB
+  outcome            String   @db.VarChar(24)
+  agreement          Boolean?
+  abstentionCount    Int
+  evidenceDigest     String   @db.Char(64)
+  createdAt          DateTime @default(now()) @db.Timestamptz(6)
+
+  @@unique([protocolRevisionId, caseExecutionId])
+  @@index([applicationId, tenantId, protocolRevisionId])
+}
+
+model OicReviewAdjudication {
+  id                  String           @id @default(uuid()) @db.Uuid
+  humanIdentityId     String           @db.Uuid
+  applicationId       String           @db.Uuid
+  tenantId            String?          @db.Uuid
+  caseExecutionId     String           @db.Uuid
+  blindedItemId       String           @db.VarChar(128)
+  metricRevisionId    String           @db.Uuid
+  judgeRevisionId     String           @db.Uuid
+  protocolRevisionId  String           @db.Uuid
+  sourceSubmissionIds Json             @db.JsonB
+  decision            Json             @db.JsonB
+  rationale           String?          @db.VarChar(1000)
+  evidenceDigest      String           @db.Char(64)
+  createdAt           DateTime         @default(now()) @db.Timestamptz(6)
+  humanIdentity       OicHumanIdentity @relation(fields: [humanIdentityId], references: [id], onDelete: Restrict)
+  application         OicApplication   @relation(fields: [applicationId], references: [id], onDelete: Restrict)
+  tenant              OicTenant?       @relation(fields: [tenantId, applicationId], references: [id, applicationId], onDelete: Restrict)
+
+  @@index([applicationId, tenantId, caseExecutionId, createdAt])
+  @@index([humanIdentityId, createdAt])
+}
+
 model OicIdempotencyRecord {
-  id             String                @id @default(uuid()) @db.Uuid
-  principalId    String                @db.Uuid
-  scope          String                @db.VarChar(128)
-  operation      String                @db.VarChar(128)
-  key            String                @db.VarChar(128)
-  requestHash    String                @db.Char(64)
-  resultRef      String?               @db.VarChar(128)
-  result         Json?                 @db.JsonB
-  status         OicIdempotencyStatus  @default(COMPLETED)
-  createdAt      DateTime              @default(now()) @db.Timestamptz(6)
-  expiresAt      DateTime              @db.Timestamptz(6)
+  id          String               @id @default(uuid()) @db.Uuid
+  principalId String               @db.Uuid
+  scope       String               @db.VarChar(128)
+  operation   String               @db.VarChar(128)
+  key         String               @db.VarChar(128)
+  requestHash String               @db.Char(64)
+  resultRef   String?              @db.VarChar(128)
+  result      Json?                @db.JsonB
+  status      OicIdempotencyStatus @default(COMPLETED)
+  createdAt   DateTime             @default(now()) @db.Timestamptz(6)
+  expiresAt   DateTime             @db.Timestamptz(6)
+
   @@unique([principalId, scope, operation, key])
   @@index([expiresAt])
   @@index([status, createdAt])
 }
+
 model OicAdminRecoveryRecord {
-  id                    String              @id @default(uuid()) @db.Uuid
-  operationId           String              @unique @db.VarChar(128)
-  requestHash           String              @db.Char(64)
-  applicationId         String              @db.Uuid
-  principalId           String              @db.Uuid
-  credentialId          String              @unique @db.Uuid
+  id                     String               @id @default(uuid()) @db.Uuid
+  operationId            String               @unique @db.VarChar(128)
+  requestHash            String               @db.Char(64)
+  applicationId          String               @db.Uuid
+  principalId            String               @db.Uuid
+  credentialId           String               @unique @db.Uuid
   revokedCredentialCount Int
-  createdAt             DateTime            @default(now()) @db.Timestamptz(6)
-  application           OicApplication      @relation(fields: [applicationId], references: [id], onDelete: Restrict)
-  principal             OicServicePrincipal @relation(fields: [principalId, applicationId], references: [id, applicationId], onDelete: Restrict)
-  credential            OicMachineCredential @relation(fields: [credentialId], references: [id], onDelete: Restrict)
+  createdAt              DateTime             @default(now()) @db.Timestamptz(6)
+  application            OicApplication       @relation(fields: [applicationId], references: [id], onDelete: Restrict)
+  principal              OicServicePrincipal  @relation(fields: [principalId, applicationId], references: [id, applicationId], onDelete: Restrict)
+  credential             OicMachineCredential @relation(fields: [credentialId], references: [id], onDelete: Restrict)
+
   @@index([principalId, createdAt])
 }
 
+model OicOperationalAdminBootstrapRecord {
+  id                     String               @id @default(uuid()) @db.Uuid
+  operationId            String               @unique @db.VarChar(128)
+  requestHash            String               @db.Char(64)
+  applicationId          String               @unique @db.Uuid
+  principalId            String               @unique @db.Uuid
+  credentialId           String               @unique @db.Uuid
+  recoveryPrincipalId    String               @db.Uuid
+  revokedCredentialCount Int
+  createdAt              DateTime             @default(now()) @db.Timestamptz(6)
+  application            OicApplication       @relation(fields: [applicationId], references: [id], onDelete: Restrict)
+  principal              OicServicePrincipal  @relation(fields: [principalId, applicationId], references: [id, applicationId], onDelete: Restrict)
+  credential             OicMachineCredential @relation(fields: [credentialId], references: [id], onDelete: Restrict)
+}
+
 model OicProviderDefinition {
-  id                    String                   @id @default(uuid()) @db.Uuid
-  key                   String                   @unique @db.VarChar(64)
-  displayName           String                   @db.VarChar(160)
-  authStrategy          OicProviderAuthStrategy
-  transportProfiles     String[]                 @default([])
-  defaultEndpoint       String?                  @db.VarChar(2048)
-  status                OicLifecycleStatus       @default(ACTIVE)
-  createdAt             DateTime                 @default(now()) @db.Timestamptz(6)
-  updatedAt             DateTime                 @updatedAt @db.Timestamptz(6)
-  connections           OicProviderConnection[]
-  upstreamModels        OicUpstreamModel[]
-  variants              OicModelVariant[]
-  syncRuns              OicProviderSyncRun[]
+  id                String                  @id @default(uuid()) @db.Uuid
+  key               String                  @unique @db.VarChar(64)
+  displayName       String                  @db.VarChar(160)
+  authStrategy      OicProviderAuthStrategy
+  transportProfiles String[]                @default([])
+  defaultEndpoint   String?                 @db.VarChar(2048)
+  status            OicLifecycleStatus      @default(ACTIVE)
+  createdAt         DateTime                @default(now()) @db.Timestamptz(6)
+  updatedAt         DateTime                @updatedAt @db.Timestamptz(6)
+  connections       OicProviderConnection[]
+  upstreamModels    OicUpstreamModel[]
+  variants          OicModelVariant[]
+  syncRuns          OicProviderSyncRun[]
+
   @@index([status, key])
 }
 
 model OicProviderConnection {
-  id                   String                       @id @default(uuid()) @db.Uuid
-  providerDefinitionId String                       @db.Uuid
+  id                   String                        @id @default(uuid()) @db.Uuid
+  providerDefinitionId String                        @db.Uuid
   scope                OicProviderConnectionScope
-  applicationId        String?                      @db.Uuid
-  tenantId             String?                      @db.Uuid
-  displayName          String                       @db.VarChar(160)
-  endpointUrl          String                       @db.VarChar(2048)
-  transportProfile     String                       @db.VarChar(128)
-  status               OicLifecycleStatus           @default(SUSPENDED)
-  healthStatus         OicProviderHealthStatus      @default(UNKNOWN)
-  lastValidatedAt      DateTime?                    @db.Timestamptz(6)
-  createdAt            DateTime                     @default(now()) @db.Timestamptz(6)
-  updatedAt            DateTime                     @updatedAt @db.Timestamptz(6)
-  providerDefinition   OicProviderDefinition        @relation(fields: [providerDefinitionId], references: [id], onDelete: Restrict)
-  application          OicApplication?              @relation(fields: [applicationId], references: [id], onDelete: Restrict)
-  tenant               OicTenant?                   @relation(fields: [tenantId, applicationId], references: [id, applicationId], onDelete: Restrict)
+  applicationId        String?                       @db.Uuid
+  tenantId             String?                       @db.Uuid
+  displayName          String                        @db.VarChar(160)
+  endpointUrl          String                        @db.VarChar(2048)
+  transportProfile     String                        @db.VarChar(128)
+  status               OicLifecycleStatus            @default(SUSPENDED)
+  healthStatus         OicProviderHealthStatus       @default(UNKNOWN)
+  lastValidatedAt      DateTime?                     @db.Timestamptz(6)
+  createdAt            DateTime                      @default(now()) @db.Timestamptz(6)
+  updatedAt            DateTime                      @updatedAt @db.Timestamptz(6)
+  providerDefinition   OicProviderDefinition         @relation(fields: [providerDefinitionId], references: [id], onDelete: Restrict)
+  application          OicApplication?               @relation(fields: [applicationId], references: [id], onDelete: Restrict)
+  tenant               OicTenant?                    @relation(fields: [tenantId, applicationId], references: [id, applicationId], onDelete: Restrict)
   credentials          OicProviderCredential[]
   healthChecks         OicProviderHealthCheck[]
   upstreamModels       OicUpstreamModel[]
@@ -525,239 +927,253 @@ model OicProviderConnection {
   syncRuns             OicProviderSyncRun[]
   providerAttempts     OicProviderAttempt[]
   providerRateBooks    OicProviderRateBookRevision[]
+
   @@index([providerDefinitionId, status, scope])
   @@index([applicationId, tenantId, status])
 }
 
 model OicProviderCredential {
-  id            String             @id @default(uuid()) @db.Uuid
-  connectionId  String             @db.Uuid
-  version       Int
-  status        OicCredentialStatus @default(ACTIVE)
-  ciphertext    String             @db.Text
-  nonce         String             @db.VarChar(32)
-  authTag       String             @db.VarChar(32)
-  keyVersion    Int
-  createdAt     DateTime           @default(now()) @db.Timestamptz(6)
-  revokedAt     DateTime?          @db.Timestamptz(6)
-  connection    OicProviderConnection @relation(fields: [connectionId], references: [id], onDelete: Restrict)
+  id           String                @id @default(uuid()) @db.Uuid
+  connectionId String                @db.Uuid
+  version      Int
+  status       OicCredentialStatus   @default(ACTIVE)
+  ciphertext   String                @db.Text
+  nonce        String                @db.VarChar(32)
+  authTag      String                @db.VarChar(32)
+  keyVersion   Int
+  createdAt    DateTime              @default(now()) @db.Timestamptz(6)
+  revokedAt    DateTime?             @db.Timestamptz(6)
+  connection   OicProviderConnection @relation(fields: [connectionId], references: [id], onDelete: Restrict)
+
   @@unique([connectionId, version])
   @@index([connectionId, status, createdAt])
 }
 
 model OicProviderHealthCheck {
-  id             String                    @id @default(uuid()) @db.Uuid
-  connectionId   String                    @db.Uuid
+  id             String                  @id @default(uuid()) @db.Uuid
+  connectionId   String                  @db.Uuid
   status         OicProviderHealthStatus
-  diagnosticCode String                    @db.VarChar(64)
+  diagnosticCode String                  @db.VarChar(64)
   latencyMs      Int?
-  endpointHost   String?                   @db.VarChar(253)
-  testedAt       DateTime                  @default(now()) @db.Timestamptz(6)
-  connection     OicProviderConnection    @relation(fields: [connectionId], references: [id], onDelete: Restrict)
+  endpointHost   String?                 @db.VarChar(253)
+  testedAt       DateTime                @default(now()) @db.Timestamptz(6)
+  connection     OicProviderConnection   @relation(fields: [connectionId], references: [id], onDelete: Restrict)
+
   @@index([connectionId, testedAt])
 }
 
 model OicProviderSyncRun {
-  id                 String               @id @default(uuid()) @db.Uuid
-  providerDefinitionId String              @db.Uuid
-  connectionId       String?              @db.Uuid
-  status             OicProviderSyncStatus @default(RUNNING)
-  discoveredCount    Int                  @default(0)
-  createdCount       Int                  @default(0)
-  updatedCount       Int                  @default(0)
-  rejectedCount      Int                  @default(0)
-  diagnosticCode     String?              @db.VarChar(64)
-  startedAt          DateTime             @default(now()) @db.Timestamptz(6)
-  completedAt        DateTime?            @db.Timestamptz(6)
-  providerDefinition OicProviderDefinition @relation(fields: [providerDefinitionId], references: [id], onDelete: Restrict)
-  connection         OicProviderConnection? @relation(fields: [connectionId], references: [id], onDelete: Restrict)
+  id                   String                 @id @default(uuid()) @db.Uuid
+  providerDefinitionId String                 @db.Uuid
+  connectionId         String?                @db.Uuid
+  status               OicProviderSyncStatus  @default(RUNNING)
+  discoveredCount      Int                    @default(0)
+  createdCount         Int                    @default(0)
+  updatedCount         Int                    @default(0)
+  rejectedCount        Int                    @default(0)
+  diagnosticCode       String?                @db.VarChar(64)
+  startedAt            DateTime               @default(now()) @db.Timestamptz(6)
+  completedAt          DateTime?              @db.Timestamptz(6)
+  providerDefinition   OicProviderDefinition  @relation(fields: [providerDefinitionId], references: [id], onDelete: Restrict)
+  connection           OicProviderConnection? @relation(fields: [connectionId], references: [id], onDelete: Restrict)
+
   @@index([providerDefinitionId, startedAt])
 }
 
 model OicUpstreamModel {
-  id                   String                     @id @default(uuid()) @db.Uuid
-  providerDefinitionId String                     @db.Uuid
-  connectionId         String                     @db.Uuid
-  upstreamModelId      String                     @db.VarChar(256)
-  displayName          String                     @db.VarChar(160)
-  family               String?                    @db.VarChar(128)
-  source               OicUpstreamModelSource     @default(MANUAL)
-  lifecycle            OicCatalogLifecycle        @default(ACTIVE)
+  id                   String                          @id @default(uuid()) @db.Uuid
+  providerDefinitionId String                          @db.Uuid
+  connectionId         String                          @db.Uuid
+  upstreamModelId      String                          @db.VarChar(256)
+  displayName          String                          @db.VarChar(160)
+  family               String?                         @db.VarChar(128)
+  source               OicUpstreamModelSource          @default(MANUAL)
+  lifecycle            OicCatalogLifecycle             @default(ACTIVE)
   contextLimit         Int?
   outputLimit          Int?
-  lastDiscoveredAt     DateTime?                  @db.Timestamptz(6)
-  createdAt            DateTime                   @default(now()) @db.Timestamptz(6)
-  updatedAt            DateTime                   @updatedAt @db.Timestamptz(6)
-  providerDefinition   OicProviderDefinition      @relation(fields: [providerDefinitionId], references: [id], onDelete: Restrict)
-  connection           OicProviderConnection      @relation(fields: [connectionId], references: [id], onDelete: Restrict)
+  lastDiscoveredAt     DateTime?                       @db.Timestamptz(6)
+  createdAt            DateTime                        @default(now()) @db.Timestamptz(6)
+  updatedAt            DateTime                        @updatedAt @db.Timestamptz(6)
+  providerDefinition   OicProviderDefinition           @relation(fields: [providerDefinitionId], references: [id], onDelete: Restrict)
+  connection           OicProviderConnection           @relation(fields: [connectionId], references: [id], onDelete: Restrict)
   capabilityEvidence   OicUpstreamCapabilityEvidence[]
   pricingEvidence      OicUpstreamPricingEvidence[]
   variants             OicModelVariant[]
+
   @@unique([connectionId, upstreamModelId])
   @@index([providerDefinitionId, connectionId, lifecycle, displayName])
 }
 
 model OicUpstreamCapabilityEvidence {
-  id             String                       @id @default(uuid()) @db.Uuid
+  id              String                      @id @default(uuid()) @db.Uuid
   upstreamModelId String                      @db.Uuid
-  capability     String                       @db.VarChar(64)
-  status         OicCapabilityEvidenceStatus
-  source         OicCapabilityEvidenceSource
-  sourceRef      String?                      @db.VarChar(256)
-  observedAt     DateTime                     @default(now()) @db.Timestamptz(6)
-  upstreamModel  OicUpstreamModel             @relation(fields: [upstreamModelId], references: [id], onDelete: Restrict)
+  capability      String                      @db.VarChar(64)
+  status          OicCapabilityEvidenceStatus
+  source          OicCapabilityEvidenceSource
+  sourceRef       String?                     @db.VarChar(256)
+  observedAt      DateTime                    @default(now()) @db.Timestamptz(6)
+  upstreamModel   OicUpstreamModel            @relation(fields: [upstreamModelId], references: [id], onDelete: Restrict)
+
   @@index([upstreamModelId, capability, observedAt])
 }
 
 model OicUpstreamPricingEvidence {
-  id               String                    @id @default(uuid()) @db.Uuid
-  upstreamModelId  String                    @db.Uuid
-  status           OicPricingEvidenceStatus
-  inputRate        Decimal?                  @db.Decimal(20, 10)
-  outputRate       Decimal?                  @db.Decimal(20, 10)
-  cachedInputRate  Decimal?                  @db.Decimal(20, 10)
-  currency         String?                   @db.VarChar(3)
-  unit             String                    @default("USD_PER_MILLION_TOKENS") @db.VarChar(64)
-  sourceRef        String?                   @db.VarChar(256)
-  effectiveAt      DateTime?                 @db.Timestamptz(6)
-  observedAt       DateTime                  @default(now()) @db.Timestamptz(6)
-  upstreamModel    OicUpstreamModel          @relation(fields: [upstreamModelId], references: [id], onDelete: Restrict)
+  id              String                   @id @default(uuid()) @db.Uuid
+  upstreamModelId String                   @db.Uuid
+  status          OicPricingEvidenceStatus
+  inputRate       Decimal?                 @db.Decimal(20, 10)
+  outputRate      Decimal?                 @db.Decimal(20, 10)
+  cachedInputRate Decimal?                 @db.Decimal(20, 10)
+  currency        String?                  @db.VarChar(3)
+  unit            String                   @default("USD_PER_MILLION_TOKENS") @db.VarChar(64)
+  sourceRef       String?                  @db.VarChar(256)
+  effectiveAt     DateTime?                @db.Timestamptz(6)
+  observedAt      DateTime                 @default(now()) @db.Timestamptz(6)
+  upstreamModel   OicUpstreamModel         @relation(fields: [upstreamModelId], references: [id], onDelete: Restrict)
+
   @@index([upstreamModelId, observedAt])
 }
 
 model OicModelFamily {
-  id          String             @id @default(uuid()) @db.Uuid
-  familyKey   String             @unique @db.VarChar(64)
-  displayName String             @db.VarChar(160)
-  lifecycle   OicModelLifecycle  @default(DRAFT)
-  createdAt   DateTime           @default(now()) @db.Timestamptz(6)
-  updatedAt   DateTime           @updatedAt @db.Timestamptz(6)
+  id          String            @id @default(uuid()) @db.Uuid
+  familyKey   String            @unique @db.VarChar(64)
+  displayName String            @db.VarChar(160)
+  lifecycle   OicModelLifecycle @default(DRAFT)
+  createdAt   DateTime          @default(now()) @db.Timestamptz(6)
+  updatedAt   DateTime          @updatedAt @db.Timestamptz(6)
   editions    OicModelEdition[]
+
   @@index([lifecycle, familyKey])
 }
 
 model OicModelEdition {
-  id          String             @id @default(uuid()) @db.Uuid
-  familyId    String             @db.Uuid
-  publicId    String             @unique @db.VarChar(64)
-  editionKey  String             @db.VarChar(64)
-  displayName String             @db.VarChar(160)
-  domain      String?            @db.VarChar(128)
-  lifecycle   OicModelLifecycle  @default(DRAFT)
-  createdAt   DateTime           @default(now()) @db.Timestamptz(6)
-  updatedAt   DateTime           @updatedAt @db.Timestamptz(6)
-  family      OicModelFamily     @relation(fields: [familyId], references: [id], onDelete: Restrict)
+  id          String                          @id @default(uuid()) @db.Uuid
+  familyId    String                          @db.Uuid
+  publicId    String                          @unique @db.VarChar(64)
+  editionKey  String                          @db.VarChar(64)
+  displayName String                          @db.VarChar(160)
+  domain      String?                         @db.VarChar(128)
+  lifecycle   OicModelLifecycle               @default(DRAFT)
+  createdAt   DateTime                        @default(now()) @db.Timestamptz(6)
+  updatedAt   DateTime                        @updatedAt @db.Timestamptz(6)
+  family      OicModelFamily                  @relation(fields: [familyId], references: [id], onDelete: Restrict)
   revisions   OicModelRevision[]
   visibility  OicApplicationModelVisibility[]
   bindings    OicRuntimeBinding[]
+
   @@unique([familyId, editionKey])
   @@index([familyId, lifecycle])
 }
 
 model OicModelRevision {
-  id             String             @id @default(uuid()) @db.Uuid
-  editionId      String             @db.Uuid
-  revision       Int
-  instructions   String?            @db.Text
-  specification  String?            @db.Text
-  intelligenceProfileRevisionId String? @db.Uuid
-  createdAt      DateTime           @default(now()) @db.Timestamptz(6)
-  edition        OicModelEdition    @relation(fields: [editionId], references: [id], onDelete: Restrict)
-  intelligenceProfileRevision OicIntelligenceProfileRevision? @relation(fields: [intelligenceProfileRevisionId], references: [id], onDelete: Restrict)
-  variants       OicModelVariant[]
+  id                            String                          @id @default(uuid()) @db.Uuid
+  editionId                     String                          @db.Uuid
+  revision                      Int
+  instructions                  String?                         @db.Text
+  specification                 String?                         @db.Text
+  intelligenceProfileRevisionId String?                         @db.Uuid
+  createdAt                     DateTime                        @default(now()) @db.Timestamptz(6)
+  edition                       OicModelEdition                 @relation(fields: [editionId], references: [id], onDelete: Restrict)
+  intelligenceProfileRevision   OicIntelligenceProfileRevision? @relation(fields: [intelligenceProfileRevisionId], references: [id], onDelete: Restrict)
+  variants                      OicModelVariant[]
+
   @@unique([editionId, revision])
   @@index([editionId, revision])
   @@index([intelligenceProfileRevisionId])
 }
 
 model OicModelVariant {
-  id                   String                  @id @default(uuid()) @db.Uuid
-  revisionId           String                  @db.Uuid
-  variantKey           String                  @db.VarChar(64)
+  id                   String                 @id @default(uuid()) @db.Uuid
+  revisionId           String                 @db.Uuid
+  variantKey           String                 @db.VarChar(64)
   kind                 OicModelVariantKind
-  providerDefinitionId String?                 @db.Uuid
-  upstreamModelId      String?                 @db.Uuid
-  transportProfile     String?                 @db.VarChar(128)
-  createdAt            DateTime                @default(now()) @db.Timestamptz(6)
+  providerDefinitionId String?                @db.Uuid
+  upstreamModelId      String?                @db.Uuid
+  transportProfile     String?                @db.VarChar(128)
+  createdAt            DateTime               @default(now()) @db.Timestamptz(6)
   revision             OicModelRevision       @relation(fields: [revisionId], references: [id], onDelete: Restrict)
   providerDefinition   OicProviderDefinition? @relation(fields: [providerDefinitionId], references: [id], onDelete: Restrict)
-  upstreamModel        OicUpstreamModel?       @relation(fields: [upstreamModelId], references: [id], onDelete: Restrict)
+  upstreamModel        OicUpstreamModel?      @relation(fields: [upstreamModelId], references: [id], onDelete: Restrict)
   bindings             OicRuntimeBinding[]
+
   @@unique([revisionId, variantKey])
   @@index([providerDefinitionId, upstreamModelId])
 }
 
 model OicRuntimeBinding {
-  id            String                    @id @default(uuid()) @db.Uuid
-  editionId     String                    @db.Uuid
-  variantId     String                    @db.Uuid
-  connectionId  String                    @db.Uuid
-  scope         OicRuntimeBindingScope
-  applicationId String?                   @db.Uuid
-  tenantId      String?                   @db.Uuid
-  environment   String                    @default("production") @db.VarChar(64)
-  status        OicRuntimeBindingStatus   @default(DRAFT)
-  createdAt     DateTime                  @default(now()) @db.Timestamptz(6)
-  updatedAt     DateTime                  @updatedAt @db.Timestamptz(6)
-  edition       OicModelEdition           @relation(fields: [editionId], references: [id], onDelete: Restrict)
-  variant       OicModelVariant           @relation(fields: [variantId], references: [id], onDelete: Restrict)
-  connection    OicProviderConnection    @relation(fields: [connectionId], references: [id], onDelete: Restrict)
-  application   OicApplication?           @relation(fields: [applicationId], references: [id], onDelete: Restrict)
-  tenant        OicTenant?                @relation(fields: [tenantId, applicationId], references: [id, applicationId], onDelete: Restrict)
+  id               String                  @id @default(uuid()) @db.Uuid
+  editionId        String                  @db.Uuid
+  variantId        String                  @db.Uuid
+  connectionId     String                  @db.Uuid
+  scope            OicRuntimeBindingScope
+  applicationId    String?                 @db.Uuid
+  tenantId         String?                 @db.Uuid
+  environment      String                  @default("production") @db.VarChar(64)
+  status           OicRuntimeBindingStatus @default(DRAFT)
+  createdAt        DateTime                @default(now()) @db.Timestamptz(6)
+  updatedAt        DateTime                @updatedAt @db.Timestamptz(6)
+  edition          OicModelEdition         @relation(fields: [editionId], references: [id], onDelete: Restrict)
+  variant          OicModelVariant         @relation(fields: [variantId], references: [id], onDelete: Restrict)
+  connection       OicProviderConnection   @relation(fields: [connectionId], references: [id], onDelete: Restrict)
+  application      OicApplication?         @relation(fields: [applicationId], references: [id], onDelete: Restrict)
+  tenant           OicTenant?              @relation(fields: [tenantId, applicationId], references: [id, applicationId], onDelete: Restrict)
   providerAttempts OicProviderAttempt[]
+
   @@index([editionId, environment, scope, status])
   @@index([applicationId, tenantId, environment, status])
 }
 
 model OicProviderAttempt {
-  id                    String                   @id @default(uuid()) @db.Uuid
-  applicationId         String                   @db.Uuid
-  tenantId              String?                  @db.Uuid
-  principalId           String                   @db.Uuid
-  connectionId          String                   @db.Uuid
-  bindingId              String                   @db.Uuid
-  traceId                String                   @db.VarChar(128)
-  requestId              String                   @db.VarChar(128)
-  attemptKey             String                   @unique @db.VarChar(128)
-  providerKey            String                   @db.VarChar(64)
-  upstreamModelId        String                   @db.VarChar(256)
-  transportProfile       String                   @db.VarChar(128)
-  status                 OicProviderAttemptStatus @default(DISPATCHED)
-  usageStatus            OicUsageEvidenceStatus   @default(UNKNOWN)
-  sourceDigest           String?                  @db.Char(64)
-  safeErrorCode          String?                  @db.VarChar(64)
-  startedAt              DateTime                 @default(now()) @db.Timestamptz(6)
-  completedAt            DateTime?                @db.Timestamptz(6)
-  application            OicApplication           @relation(fields: [applicationId], references: [id], onDelete: Restrict)
-  tenant                 OicTenant?               @relation(fields: [tenantId, applicationId], references: [id, applicationId], onDelete: Restrict)
-  principal              OicServicePrincipal      @relation(fields: [principalId, applicationId], references: [id, applicationId], onDelete: Restrict)
-  connection             OicProviderConnection    @relation(fields: [connectionId], references: [id], onDelete: Restrict)
-  binding                OicRuntimeBinding        @relation(fields: [bindingId], references: [id], onDelete: Restrict)
-  usageEvents            OicUsageEvent[]
-  admissionId             String?                  @db.Uuid
-  admission               OicAdmission?            @relation(fields: [admissionId], references: [id], onDelete: Restrict)
+  id               String                   @id @default(uuid()) @db.Uuid
+  applicationId    String                   @db.Uuid
+  tenantId         String?                  @db.Uuid
+  principalId      String                   @db.Uuid
+  connectionId     String                   @db.Uuid
+  bindingId        String                   @db.Uuid
+  traceId          String                   @db.VarChar(128)
+  requestId        String                   @db.VarChar(128)
+  attemptKey       String                   @unique @db.VarChar(128)
+  providerKey      String                   @db.VarChar(64)
+  upstreamModelId  String                   @db.VarChar(256)
+  transportProfile String                   @db.VarChar(128)
+  status           OicProviderAttemptStatus @default(DISPATCHED)
+  usageStatus      OicUsageEvidenceStatus   @default(UNKNOWN)
+  sourceDigest     String?                  @db.Char(64)
+  safeErrorCode    String?                  @db.VarChar(64)
+  startedAt        DateTime                 @default(now()) @db.Timestamptz(6)
+  completedAt      DateTime?                @db.Timestamptz(6)
+  application      OicApplication           @relation(fields: [applicationId], references: [id], onDelete: Restrict)
+  tenant           OicTenant?               @relation(fields: [tenantId, applicationId], references: [id, applicationId], onDelete: Restrict)
+  principal        OicServicePrincipal      @relation(fields: [principalId, applicationId], references: [id, applicationId], onDelete: Restrict)
+  connection       OicProviderConnection    @relation(fields: [connectionId], references: [id], onDelete: Restrict)
+  binding          OicRuntimeBinding        @relation(fields: [bindingId], references: [id], onDelete: Restrict)
+  usageEvents      OicUsageEvent[]
+  admissionId      String?                  @db.Uuid
+  admission        OicAdmission?            @relation(fields: [admissionId], references: [id], onDelete: Restrict)
+
   @@index([applicationId, tenantId, startedAt, id])
   @@index([connectionId, startedAt])
   @@index([status, startedAt])
 }
 
 model OicUsageEvent {
-  id                    String             @id @default(uuid()) @db.Uuid
-  applicationId         String             @db.Uuid
-  tenantId              String?            @db.Uuid
-  providerAttemptId     String             @db.Uuid
-  receiptSequence       Int                @default(0)
-  sourceDigest          String             @db.Char(64)
-  providerKey           String             @db.VarChar(64)
-  transportProfile      String             @db.VarChar(128)
-  rawDimensions         Json               @db.JsonB
-  normalizedDimensions  Json               @db.JsonB
-  occurredAt            DateTime?          @db.Timestamptz(6)
-  recordedAt            DateTime           @default(now()) @db.Timestamptz(6)
-  providerAttempt       OicProviderAttempt @relation(fields: [providerAttemptId], references: [id], onDelete: Restrict)
-  costAssessments       OicProviderCostAssessment[]
-  oiuAssessments        OicOiuAssessment[]
-  ratedUsageEvents      OicRatedUsageEvent[]
+  id                   String                      @id @default(uuid()) @db.Uuid
+  applicationId        String                      @db.Uuid
+  tenantId             String?                     @db.Uuid
+  providerAttemptId    String                      @db.Uuid
+  receiptSequence      Int                         @default(0)
+  sourceDigest         String                      @db.Char(64)
+  providerKey          String                      @db.VarChar(64)
+  transportProfile     String                      @db.VarChar(128)
+  rawDimensions        Json                        @db.JsonB
+  normalizedDimensions Json                        @db.JsonB
+  occurredAt           DateTime?                   @db.Timestamptz(6)
+  recordedAt           DateTime                    @default(now()) @db.Timestamptz(6)
+  providerAttempt      OicProviderAttempt          @relation(fields: [providerAttemptId], references: [id], onDelete: Restrict)
+  costAssessments      OicProviderCostAssessment[]
+  oiuAssessments       OicOiuAssessment[]
+  ratedUsageEvents     OicRatedUsageEvent[]
+
   @@unique([providerAttemptId, receiptSequence])
   @@index([applicationId, tenantId, occurredAt, id])
   @@index([providerKey, sourceDigest])
@@ -765,129 +1181,136 @@ model OicUsageEvent {
 }
 
 model OicProviderRateBookRevision {
-  id                 String                    @id @default(uuid()) @db.Uuid
-  applicationId      String?                   @db.Uuid
-  tenantId           String?                   @db.Uuid
-  connectionId       String?                   @db.Uuid
-  revision           Int
-  status             OicEconomicRevisionStatus @default(DRAFT)
-  providerKey        String                    @db.VarChar(64)
-  currency           String                    @db.Char(3)
-  sourceQuality      String                    @db.VarChar(48)
-  sourceReference    String?                   @db.VarChar(256)
-  sourceDigest       String                    @db.Char(64)
-  effectiveFrom      DateTime                  @db.Timestamptz(6)
-  effectiveTo        DateTime?                 @db.Timestamptz(6)
-  publishedAt        DateTime?                 @db.Timestamptz(6)
-  createdAt          DateTime                  @default(now()) @db.Timestamptz(6)
-  rates              OicProviderRate[]
-  costAssessments    OicProviderCostAssessment[]
-  application        OicApplication?           @relation(fields: [applicationId], references: [id], onDelete: Restrict)
-  tenant             OicTenant?                @relation(fields: [tenantId, applicationId], references: [id, applicationId], onDelete: Restrict)
-  connection         OicProviderConnection?    @relation(fields: [connectionId], references: [id], onDelete: Restrict)
+  id              String                      @id @default(uuid()) @db.Uuid
+  applicationId   String?                     @db.Uuid
+  tenantId        String?                     @db.Uuid
+  connectionId    String?                     @db.Uuid
+  revision        Int
+  status          OicEconomicRevisionStatus   @default(DRAFT)
+  providerKey     String                      @db.VarChar(64)
+  currency        String                      @db.Char(3)
+  sourceQuality   String                      @db.VarChar(48)
+  sourceReference String?                     @db.VarChar(256)
+  sourceDigest    String                      @db.Char(64)
+  effectiveFrom   DateTime                    @db.Timestamptz(6)
+  effectiveTo     DateTime?                   @db.Timestamptz(6)
+  publishedAt     DateTime?                   @db.Timestamptz(6)
+  createdAt       DateTime                    @default(now()) @db.Timestamptz(6)
+  rates           OicProviderRate[]
+  costAssessments OicProviderCostAssessment[]
+  application     OicApplication?             @relation(fields: [applicationId], references: [id], onDelete: Restrict)
+  tenant          OicTenant?                  @relation(fields: [tenantId, applicationId], references: [id, applicationId], onDelete: Restrict)
+  connection      OicProviderConnection?      @relation(fields: [connectionId], references: [id], onDelete: Restrict)
+
   @@unique([applicationId, tenantId, connectionId, providerKey, revision])
   @@index([applicationId, tenantId, providerKey, status, effectiveFrom])
   @@index([connectionId, providerKey, status, effectiveFrom])
 }
 
 model OicProviderRate {
-  id                    String                     @id @default(uuid()) @db.Uuid
-  rateBookRevisionId    String                     @db.Uuid
-  upstreamModelId       String?                    @db.VarChar(256)
-  dimension             String                     @db.VarChar(64)
-  unit                  String                     @db.VarChar(64)
-  quantityDivisor       Decimal                    @default(1) @db.Decimal(38, 18)
-  pricePerUnit          Decimal                    @db.Decimal(38, 18)
-  required              Boolean                    @default(true)
-  createdAt             DateTime                   @default(now()) @db.Timestamptz(6)
-  rateBookRevision      OicProviderRateBookRevision @relation(fields: [rateBookRevisionId], references: [id], onDelete: Restrict)
+  id                 String                      @id @default(uuid()) @db.Uuid
+  rateBookRevisionId String                      @db.Uuid
+  upstreamModelId    String?                     @db.VarChar(256)
+  dimension          String                      @db.VarChar(64)
+  unit               String                      @db.VarChar(64)
+  quantityDivisor    Decimal                     @default(1) @db.Decimal(38, 18)
+  pricePerUnit       Decimal                     @db.Decimal(38, 18)
+  required           Boolean                     @default(true)
+  createdAt          DateTime                    @default(now()) @db.Timestamptz(6)
+  rateBookRevision   OicProviderRateBookRevision @relation(fields: [rateBookRevisionId], references: [id], onDelete: Restrict)
+
   @@unique([rateBookRevisionId, upstreamModelId, dimension, unit])
   @@index([dimension, unit, upstreamModelId])
 }
 
 model OicOiuPolicyRevision {
-  id                 String                    @id @default(uuid()) @db.Uuid
-  applicationId      String?                   @db.Uuid
-  tenantId           String?                   @db.Uuid
-  policyKey          String                    @db.VarChar(64)
-  revision           Int
-  status             OicEconomicRevisionStatus @default(DRAFT)
-  missingRule        String                    @default("PARTIAL") @db.VarChar(16)
-  minimumIncrement   Decimal                   @default(0) @db.Decimal(38, 18)
-  roundingMode       String                    @default("HALF_EVEN") @db.VarChar(16)
-  sourceDigest       String                    @db.Char(64)
-  effectiveFrom      DateTime                  @db.Timestamptz(6)
-  effectiveTo        DateTime?                 @db.Timestamptz(6)
-  publishedAt        DateTime?                 @db.Timestamptz(6)
-  createdAt          DateTime                  @default(now()) @db.Timestamptz(6)
-  dimensions         OicOiuDimensionRule[]
-  assessments        OicOiuAssessment[]
-  application        OicApplication?           @relation(fields: [applicationId], references: [id], onDelete: Restrict)
-  tenant             OicTenant?                @relation(fields: [tenantId, applicationId], references: [id, applicationId], onDelete: Restrict)
+  id               String                    @id @default(uuid()) @db.Uuid
+  applicationId    String?                   @db.Uuid
+  tenantId         String?                   @db.Uuid
+  policyKey        String                    @db.VarChar(64)
+  revision         Int
+  status           OicEconomicRevisionStatus @default(DRAFT)
+  missingRule      String                    @default("PARTIAL") @db.VarChar(16)
+  minimumIncrement Decimal                   @default(0) @db.Decimal(38, 18)
+  roundingMode     String                    @default("HALF_EVEN") @db.VarChar(16)
+  sourceDigest     String                    @db.Char(64)
+  effectiveFrom    DateTime                  @db.Timestamptz(6)
+  effectiveTo      DateTime?                 @db.Timestamptz(6)
+  publishedAt      DateTime?                 @db.Timestamptz(6)
+  createdAt        DateTime                  @default(now()) @db.Timestamptz(6)
+  dimensions       OicOiuDimensionRule[]
+  assessments      OicOiuAssessment[]
+  application      OicApplication?           @relation(fields: [applicationId], references: [id], onDelete: Restrict)
+  tenant           OicTenant?                @relation(fields: [tenantId, applicationId], references: [id, applicationId], onDelete: Restrict)
+
   @@unique([applicationId, tenantId, policyKey, revision])
   @@index([applicationId, tenantId, policyKey, status, effectiveFrom])
 }
 
 model OicOiuDimensionRule {
-  id                    String                @id @default(uuid()) @db.Uuid
-  policyRevisionId      String                @db.Uuid
-  dimension             String                @db.VarChar(64)
-  unit                  String                @db.VarChar(64)
-  weightNumerator       Decimal               @db.Decimal(38, 18)
-  weightDenominator     Decimal               @db.Decimal(38, 18)
-  required              Boolean               @default(true)
-  included              Boolean               @default(true)
-  policyRevision        OicOiuPolicyRevision  @relation(fields: [policyRevisionId], references: [id], onDelete: Restrict)
+  id                String               @id @default(uuid()) @db.Uuid
+  policyRevisionId  String               @db.Uuid
+  dimension         String               @db.VarChar(64)
+  unit              String               @db.VarChar(64)
+  weightNumerator   Decimal              @db.Decimal(38, 18)
+  weightDenominator Decimal              @db.Decimal(38, 18)
+  required          Boolean              @default(true)
+  included          Boolean              @default(true)
+  policyRevision    OicOiuPolicyRevision @relation(fields: [policyRevisionId], references: [id], onDelete: Restrict)
+
   @@unique([policyRevisionId, dimension])
 }
 
 model OicProviderCostAssessment {
-  id                    String                      @id @default(uuid()) @db.Uuid
-  assessmentKey         String                      @unique @db.VarChar(128)
-  usageEventId          String                      @db.Uuid
-  rateBookRevisionId    String?                     @db.Uuid
-  kind                  OicEconomicAssessmentKind
-  status                OicEconomicAssessmentStatus
-  evidenceClass         OicProviderCostEvidenceClass
-  nativeAmount          Decimal?                    @db.Decimal(38, 18)
-  currency              String?                     @db.Char(3)
-  dimensionLines        Json                        @db.JsonB
-  sourceDigest          String                      @db.Char(64)
-  producerVersion       String                      @db.VarChar(64)
-  recordedAt            DateTime                    @default(now()) @db.Timestamptz(6)
-  usageEvent            OicUsageEvent               @relation(fields: [usageEventId], references: [id], onDelete: Restrict)
-  rateBookRevision      OicProviderRateBookRevision? @relation(fields: [rateBookRevisionId], references: [id], onDelete: Restrict)
+  id                 String                       @id @default(uuid()) @db.Uuid
+  assessmentKey      String                       @unique @db.VarChar(128)
+  usageEventId       String                       @db.Uuid
+  rateBookRevisionId String?                      @db.Uuid
+  kind               OicEconomicAssessmentKind
+  status             OicEconomicAssessmentStatus
+  evidenceClass      OicProviderCostEvidenceClass
+  nativeAmount       Decimal?                     @db.Decimal(38, 18)
+  currency           String?                      @db.Char(3)
+  dimensionLines     Json                         @db.JsonB
+  sourceDigest       String                       @db.Char(64)
+  producerVersion    String                       @db.VarChar(64)
+  recordedAt         DateTime                     @default(now()) @db.Timestamptz(6)
+  usageEvent         OicUsageEvent                @relation(fields: [usageEventId], references: [id], onDelete: Restrict)
+  rateBookRevision   OicProviderRateBookRevision? @relation(fields: [rateBookRevisionId], references: [id], onDelete: Restrict)
+
   @@unique([usageEventId, rateBookRevisionId, kind])
   @@index([usageEventId, recordedAt])
   @@index([currency, status, recordedAt])
 }
 
 model OicOiuAssessment {
-  id                    String                      @id @default(uuid()) @db.Uuid
-  assessmentKey         String                      @unique @db.VarChar(128)
-  usageEventId          String                      @db.Uuid
-  policyRevisionId      String?                     @db.Uuid
-  kind                  OicEconomicAssessmentKind
-  status                OicEconomicAssessmentStatus
-  inputs                Json                        @db.JsonB
-  oiu                   Decimal?                    @db.Decimal(38, 6)
-  sourceDigest          String                      @db.Char(64)
-  producerVersion       String                      @db.VarChar(64)
-  recordedAt            DateTime                    @default(now()) @db.Timestamptz(6)
-  usageEvent            OicUsageEvent               @relation(fields: [usageEventId], references: [id], onDelete: Restrict)
-  policyRevision        OicOiuPolicyRevision?        @relation(fields: [policyRevisionId], references: [id], onDelete: Restrict)
-  posting               OicOiuPosting?
+  id               String                      @id @default(uuid()) @db.Uuid
+  assessmentKey    String                      @unique @db.VarChar(128)
+  usageEventId     String                      @db.Uuid
+  policyRevisionId String?                     @db.Uuid
+  kind             OicEconomicAssessmentKind
+  status           OicEconomicAssessmentStatus
+  inputs           Json                        @db.JsonB
+  oiu              Decimal?                    @db.Decimal(38, 6)
+  sourceDigest     String                      @db.Char(64)
+  producerVersion  String                      @db.VarChar(64)
+  recordedAt       DateTime                    @default(now()) @db.Timestamptz(6)
+  usageEvent       OicUsageEvent               @relation(fields: [usageEventId], references: [id], onDelete: Restrict)
+  policyRevision   OicOiuPolicyRevision?       @relation(fields: [policyRevisionId], references: [id], onDelete: Restrict)
+  posting          OicOiuPosting?
+
   @@unique([usageEventId, policyRevisionId, kind])
   @@index([policyRevisionId, status, recordedAt])
 }
 
 model OicOiuPosting {
-  id                    String            @id @default(uuid()) @db.Uuid
-  assessmentId          String            @unique @db.Uuid
-  sourceKey             String            @unique @db.VarChar(128)
-  amount                Decimal           @db.Decimal(38, 6)
-  recordedAt            DateTime          @default(now()) @db.Timestamptz(6)
-  assessment            OicOiuAssessment  @relation(fields: [assessmentId], references: [id], onDelete: Restrict)
+  id           String           @id @default(uuid()) @db.Uuid
+  assessmentId String           @unique @db.Uuid
+  sourceKey    String           @unique @db.VarChar(128)
+  amount       Decimal          @db.Decimal(38, 6)
+  recordedAt   DateTime         @default(now()) @db.Timestamptz(6)
+  assessment   OicOiuAssessment @relation(fields: [assessmentId], references: [id], onDelete: Restrict)
+
   @@index([recordedAt, id])
 }
 
@@ -914,333 +1337,354 @@ model OicCustomerPriceBookRevision {
   planRevision     OicPlanRevision              @relation(fields: [planRevisionId], references: [id], onDelete: Restrict)
   ratedUsageEvents OicRatedUsageEvent[]
   allowanceBuckets OicCustomerAllowanceBucket[]
+
   @@unique([scopeKey, priceBookKey, revision])
   @@index([applicationId, tenantId, planRevisionId, status, effectiveFrom])
 }
 
 model OicCustomerPriceRule {
-  id                    String                       @id @default(uuid()) @db.Uuid
-  priceBookRevisionId   String                       @db.Uuid
-  dimension             String?                      @db.VarChar(64)
-  unit                  String?                      @db.VarChar(64)
-  pricePerUnit          Decimal?                     @db.Decimal(38, 18)
-  quantityDivisor       Decimal                      @default(1) @db.Decimal(38, 18)
-  fixedAmount           Decimal?                     @db.Decimal(38, 18)
-  includedQuantity      Decimal?                     @db.Decimal(38, 18)
-  tiers                 Json?                        @db.JsonB
-  createdAt             DateTime                     @default(now()) @db.Timestamptz(6)
-  priceBookRevision     OicCustomerPriceBookRevision @relation(fields: [priceBookRevisionId], references: [id], onDelete: Restrict)
+  id                  String                       @id @default(uuid()) @db.Uuid
+  priceBookRevisionId String                       @db.Uuid
+  dimension           String?                      @db.VarChar(64)
+  unit                String?                      @db.VarChar(64)
+  pricePerUnit        Decimal?                     @db.Decimal(38, 18)
+  quantityDivisor     Decimal                      @default(1) @db.Decimal(38, 18)
+  fixedAmount         Decimal?                     @db.Decimal(38, 18)
+  includedQuantity    Decimal?                     @db.Decimal(38, 18)
+  tiers               Json?                        @db.JsonB
+  createdAt           DateTime                     @default(now()) @db.Timestamptz(6)
+  priceBookRevision   OicCustomerPriceBookRevision @relation(fields: [priceBookRevisionId], references: [id], onDelete: Restrict)
+
   @@index([priceBookRevisionId, dimension])
 }
 
 model OicRatedUsageEvent {
-  id                    String                    @id @default(uuid()) @db.Uuid
-  eventKey              String                    @unique @db.VarChar(128)
-  usageEventId          String                    @db.Uuid
-  applicationId         String                    @db.Uuid
-  tenantId              String?                   @db.Uuid
-  planRevisionId        String?                   @db.Uuid
-  priceBookRevisionId   String?                   @db.Uuid
-  kind                  OicEconomicAssessmentKind
-  status                OicRatedUsageStatus
-  nativeAmount          Decimal?                  @db.Decimal(38, 18)
-  currency              String?                   @db.Char(3)
-  reasonCode            String?                   @db.VarChar(64)
-  ratingTrace           Json                      @db.JsonB
-  sourceDigest          String                    @db.Char(64)
-  producerVersion       String                    @db.VarChar(64)
-  recordedAt            DateTime                  @default(now()) @db.Timestamptz(6)
-  usageEvent            OicUsageEvent             @relation(fields: [usageEventId], references: [id], onDelete: Restrict)
-  application           OicApplication            @relation(fields: [applicationId], references: [id], onDelete: Restrict)
-  tenant                OicTenant?                @relation(fields: [tenantId, applicationId], references: [id, applicationId], onDelete: Restrict)
-  planRevision          OicPlanRevision?          @relation(fields: [planRevisionId], references: [id], onDelete: Restrict)
-  priceBookRevision     OicCustomerPriceBookRevision? @relation(fields: [priceBookRevisionId], references: [id], onDelete: Restrict)
-  adjustments           OicRatedUsageAdjustment[]
+  id                  String                        @id @default(uuid()) @db.Uuid
+  eventKey            String                        @unique @db.VarChar(128)
+  usageEventId        String                        @db.Uuid
+  applicationId       String                        @db.Uuid
+  tenantId            String?                       @db.Uuid
+  planRevisionId      String?                       @db.Uuid
+  priceBookRevisionId String?                       @db.Uuid
+  kind                OicEconomicAssessmentKind
+  status              OicRatedUsageStatus
+  nativeAmount        Decimal?                      @db.Decimal(38, 18)
+  currency            String?                       @db.Char(3)
+  reasonCode          String?                       @db.VarChar(64)
+  ratingTrace         Json                          @db.JsonB
+  sourceDigest        String                        @db.Char(64)
+  producerVersion     String                        @db.VarChar(64)
+  recordedAt          DateTime                      @default(now()) @db.Timestamptz(6)
+  usageEvent          OicUsageEvent                 @relation(fields: [usageEventId], references: [id], onDelete: Restrict)
+  application         OicApplication                @relation(fields: [applicationId], references: [id], onDelete: Restrict)
+  tenant              OicTenant?                    @relation(fields: [tenantId, applicationId], references: [id, applicationId], onDelete: Restrict)
+  planRevision        OicPlanRevision?              @relation(fields: [planRevisionId], references: [id], onDelete: Restrict)
+  priceBookRevision   OicCustomerPriceBookRevision? @relation(fields: [priceBookRevisionId], references: [id], onDelete: Restrict)
+  adjustments         OicRatedUsageAdjustment[]
+
   @@unique([usageEventId, priceBookRevisionId, kind])
   @@index([applicationId, tenantId, recordedAt, id])
   @@index([status, recordedAt])
 }
 
 model OicRatedUsageAdjustment {
-  id                    String                          @id @default(uuid()) @db.Uuid
-  sourceKey             String                          @unique @db.VarChar(128)
-  requestDigest         String                          @db.Char(64)
-  ratedUsageEventId     String                          @db.Uuid
-  applicationId         String                          @db.Uuid
-  tenantId              String?                         @db.Uuid
-  kind                  OicCommercialAdjustmentKind
-  amount                Decimal                         @db.Decimal(38, 18)
-  currency              String                          @db.Char(3)
-  reason                String                          @db.VarChar(256)
-  actorPrincipalId      String                          @db.Uuid
-  recordedAt            DateTime                        @default(now()) @db.Timestamptz(6)
-  ratedUsageEvent       OicRatedUsageEvent              @relation(fields: [ratedUsageEventId], references: [id], onDelete: Restrict)
-  application           OicApplication                 @relation(fields: [applicationId], references: [id], onDelete: Restrict)
-  tenant                OicTenant?                    @relation(fields: [tenantId, applicationId], references: [id, applicationId], onDelete: Restrict)
-  actor                 OicServicePrincipal            @relation(fields: [actorPrincipalId], references: [id], onDelete: Restrict)
+  id                String                      @id @default(uuid()) @db.Uuid
+  sourceKey         String                      @unique @db.VarChar(128)
+  requestDigest     String                      @db.Char(64)
+  ratedUsageEventId String                      @db.Uuid
+  applicationId     String                      @db.Uuid
+  tenantId          String?                     @db.Uuid
+  kind              OicCommercialAdjustmentKind
+  amount            Decimal                     @db.Decimal(38, 18)
+  currency          String                      @db.Char(3)
+  reason            String                      @db.VarChar(256)
+  actorPrincipalId  String                      @db.Uuid
+  recordedAt        DateTime                    @default(now()) @db.Timestamptz(6)
+  ratedUsageEvent   OicRatedUsageEvent          @relation(fields: [ratedUsageEventId], references: [id], onDelete: Restrict)
+  application       OicApplication              @relation(fields: [applicationId], references: [id], onDelete: Restrict)
+  tenant            OicTenant?                  @relation(fields: [tenantId, applicationId], references: [id, applicationId], onDelete: Restrict)
+  actor             OicServicePrincipal         @relation(fields: [actorPrincipalId], references: [id], onDelete: Restrict)
+
   @@index([ratedUsageEventId, recordedAt])
   @@index([applicationId, tenantId, recordedAt])
 }
 
 model OicFxRateEvidence {
-  id                 String    @id @default(uuid()) @db.Uuid
-  evidenceKey        String    @unique @db.VarChar(128)
-  baseCurrency       String    @db.Char(3)
-  quoteCurrency      String    @db.Char(3)
-  rate               Decimal   @db.Decimal(38, 18)
-  source              String    @db.VarChar(128)
-  sourceReference     String    @db.VarChar(256)
-  policyRevision      String    @db.VarChar(64)
-  effectiveAt         DateTime  @db.Timestamptz(6)
-  sourceDigest        String    @db.Char(64)
-  recordedAt          DateTime  @default(now()) @db.Timestamptz(6)
+  id              String   @id @default(uuid()) @db.Uuid
+  evidenceKey     String   @unique @db.VarChar(128)
+  baseCurrency    String   @db.Char(3)
+  quoteCurrency   String   @db.Char(3)
+  rate            Decimal  @db.Decimal(38, 18)
+  source          String   @db.VarChar(128)
+  sourceReference String   @db.VarChar(256)
+  policyRevision  String   @db.VarChar(64)
+  effectiveAt     DateTime @db.Timestamptz(6)
+  sourceDigest    String   @db.Char(64)
+  recordedAt      DateTime @default(now()) @db.Timestamptz(6)
+
   @@index([baseCurrency, quoteCurrency, effectiveAt])
 }
 
 model OicCustomerAllowanceBucket {
-  id                   String                         @id @default(uuid()) @db.Uuid
-  bucketKey            String                         @unique @db.VarChar(128)
-  applicationId        String                         @db.Uuid
-  tenantId             String?                        @db.Uuid
-  planRevisionId       String                         @db.Uuid
-  priceBookRevisionId  String                         @db.Uuid
-  allowance            Decimal                        @db.Decimal(38, 18)
-  consumed             Decimal                        @default(0) @db.Decimal(38, 18)
-  sequence             Int                            @default(0)
-  periodStart          DateTime                       @db.Timestamptz(6)
-  periodEnd            DateTime?                      @db.Timestamptz(6)
-  createdAt            DateTime                       @default(now()) @db.Timestamptz(6)
-  application          OicApplication                 @relation(fields: [applicationId], references: [id], onDelete: Restrict)
-  tenant               OicTenant?                     @relation(fields: [tenantId, applicationId], references: [id, applicationId], onDelete: Restrict)
-  planRevision         OicPlanRevision                @relation(fields: [planRevisionId], references: [id], onDelete: Restrict)
-  priceBookRevision    OicCustomerPriceBookRevision   @relation(fields: [priceBookRevisionId], references: [id], onDelete: Restrict)
-  postings             OicCustomerAllowancePosting[]
+  id                  String                        @id @default(uuid()) @db.Uuid
+  bucketKey           String                        @unique @db.VarChar(128)
+  applicationId       String                        @db.Uuid
+  tenantId            String?                       @db.Uuid
+  planRevisionId      String                        @db.Uuid
+  priceBookRevisionId String                        @db.Uuid
+  allowance           Decimal                       @db.Decimal(38, 18)
+  consumed            Decimal                       @default(0) @db.Decimal(38, 18)
+  sequence            Int                           @default(0)
+  periodStart         DateTime                      @db.Timestamptz(6)
+  periodEnd           DateTime?                     @db.Timestamptz(6)
+  createdAt           DateTime                      @default(now()) @db.Timestamptz(6)
+  application         OicApplication                @relation(fields: [applicationId], references: [id], onDelete: Restrict)
+  tenant              OicTenant?                    @relation(fields: [tenantId, applicationId], references: [id, applicationId], onDelete: Restrict)
+  planRevision        OicPlanRevision               @relation(fields: [planRevisionId], references: [id], onDelete: Restrict)
+  priceBookRevision   OicCustomerPriceBookRevision  @relation(fields: [priceBookRevisionId], references: [id], onDelete: Restrict)
+  postings            OicCustomerAllowancePosting[]
+
   @@index([applicationId, tenantId, planRevisionId, periodStart])
 }
 
 model OicCustomerAllowancePosting {
-  id          String                     @id @default(uuid()) @db.Uuid
-  bucketId    String                     @db.Uuid
-  sourceKey   String                     @unique @db.VarChar(128)
-  amount      Decimal                    @db.Decimal(38, 18)
-  sequence    Int
-  recordedAt  DateTime                   @default(now()) @db.Timestamptz(6)
-  bucket      OicCustomerAllowanceBucket @relation(fields: [bucketId], references: [id], onDelete: Restrict)
+  id         String                     @id @default(uuid()) @db.Uuid
+  bucketId   String                     @db.Uuid
+  sourceKey  String                     @unique @db.VarChar(128)
+  amount     Decimal                    @db.Decimal(38, 18)
+  sequence   Int
+  recordedAt DateTime                   @default(now()) @db.Timestamptz(6)
+  bucket     OicCustomerAllowanceBucket @relation(fields: [bucketId], references: [id], onDelete: Restrict)
+
   @@unique([bucketId, sequence])
   @@index([bucketId, recordedAt])
 }
 
 model OicPlan {
-  id            String          @id @default(uuid()) @db.Uuid
-  applicationId String          @db.Uuid
-  planKey       String          @db.VarChar(64)
-  displayName   String          @db.VarChar(160)
-  createdAt     DateTime        @default(now()) @db.Timestamptz(6)
-  application   OicApplication @relation(fields: [applicationId], references: [id], onDelete: Restrict)
+  id            String            @id @default(uuid()) @db.Uuid
+  applicationId String            @db.Uuid
+  planKey       String            @db.VarChar(64)
+  displayName   String            @db.VarChar(160)
+  createdAt     DateTime          @default(now()) @db.Timestamptz(6)
+  application   OicApplication    @relation(fields: [applicationId], references: [id], onDelete: Restrict)
   revisions     OicPlanRevision[]
+
   @@unique([applicationId, planKey])
   @@index([applicationId, createdAt])
 }
 
 model OicPlanRevision {
-  id                    String                    @id @default(uuid()) @db.Uuid
-  planId                String                    @db.Uuid
-  revision              Int
-  status                OicPolicyRevisionStatus   @default(DRAFT)
-  entitlements          Json                      @db.JsonB
-  maxOutputUnits        Int?
-  maxConcurrency        Int?
-  sourceDigest          String                    @db.Char(64)
-  effectiveFrom         DateTime                  @db.Timestamptz(6)
-  effectiveTo           DateTime?                 @db.Timestamptz(6)
-  publishedAt           DateTime?                 @db.Timestamptz(6)
-  createdAt             DateTime                  @default(now()) @db.Timestamptz(6)
-  plan                  OicPlan                   @relation(fields: [planId], references: [id], onDelete: Restrict)
-  assignments           OicPlanAssignment[]
-  quotaPolicies         OicQuotaPolicyRevision[]
-  budgetPolicies        OicBudgetRevision[]
-  admissions            OicAdmission[]
-  customerPriceBooks    OicCustomerPriceBookRevision[]
-  ratedUsageEvents      OicRatedUsageEvent[]
+  id                       String                         @id @default(uuid()) @db.Uuid
+  planId                   String                         @db.Uuid
+  revision                 Int
+  status                   OicPolicyRevisionStatus        @default(DRAFT)
+  entitlements             Json                           @db.JsonB
+  maxOutputUnits           Int?
+  maxConcurrency           Int?
+  sourceDigest             String                         @db.Char(64)
+  effectiveFrom            DateTime                       @db.Timestamptz(6)
+  effectiveTo              DateTime?                      @db.Timestamptz(6)
+  publishedAt              DateTime?                      @db.Timestamptz(6)
+  createdAt                DateTime                       @default(now()) @db.Timestamptz(6)
+  plan                     OicPlan                        @relation(fields: [planId], references: [id], onDelete: Restrict)
+  assignments              OicPlanAssignment[]
+  quotaPolicies            OicQuotaPolicyRevision[]
+  budgetPolicies           OicBudgetRevision[]
+  admissions               OicAdmission[]
+  customerPriceBooks       OicCustomerPriceBookRevision[]
+  ratedUsageEvents         OicRatedUsageEvent[]
   customerAllowanceBuckets OicCustomerAllowanceBucket[]
+
   @@unique([planId, revision])
   @@index([status, effectiveFrom, effectiveTo])
 }
 
 model OicPlanAssignment {
-  id                String                    @id @default(uuid()) @db.Uuid
-  applicationId     String                    @db.Uuid
-  tenantId          String?                   @db.Uuid
-  subjectKey        String                    @db.VarChar(128)
-  planRevisionId    String                    @db.Uuid
-  status            OicPlanAssignmentStatus   @default(ACTIVE)
-  priority          Int                       @default(0)
-  effectiveFrom     DateTime                  @db.Timestamptz(6)
-  effectiveTo       DateTime?                 @db.Timestamptz(6)
-  createdAt         DateTime                  @default(now()) @db.Timestamptz(6)
-  application       OicApplication             @relation(fields: [applicationId], references: [id], onDelete: Restrict)
-  tenant            OicTenant?                @relation(fields: [tenantId, applicationId], references: [id, applicationId], onDelete: Restrict)
-  planRevision      OicPlanRevision            @relation(fields: [planRevisionId], references: [id], onDelete: Restrict)
+  id             String                  @id @default(uuid()) @db.Uuid
+  applicationId  String                  @db.Uuid
+  tenantId       String?                 @db.Uuid
+  subjectKey     String                  @db.VarChar(128)
+  planRevisionId String                  @db.Uuid
+  status         OicPlanAssignmentStatus @default(ACTIVE)
+  priority       Int                     @default(0)
+  effectiveFrom  DateTime                @db.Timestamptz(6)
+  effectiveTo    DateTime?               @db.Timestamptz(6)
+  createdAt      DateTime                @default(now()) @db.Timestamptz(6)
+  application    OicApplication          @relation(fields: [applicationId], references: [id], onDelete: Restrict)
+  tenant         OicTenant?              @relation(fields: [tenantId, applicationId], references: [id, applicationId], onDelete: Restrict)
+  planRevision   OicPlanRevision         @relation(fields: [planRevisionId], references: [id], onDelete: Restrict)
+
   @@index([applicationId, tenantId, subjectKey, status, effectiveFrom])
   @@index([planRevisionId, status])
 }
 
 model OicQuotaPolicyRevision {
-  id                    String                    @id @default(uuid()) @db.Uuid
-  applicationId         String?                   @db.Uuid
-  tenantId              String?                   @db.Uuid
-  planRevisionId        String?                   @db.Uuid
-  scopeKey              String                    @db.VarChar(128)
-  quotaKey              String                    @db.VarChar(64)
+  id                    String                  @id @default(uuid()) @db.Uuid
+  applicationId         String?                 @db.Uuid
+  tenantId              String?                 @db.Uuid
+  planRevisionId        String?                 @db.Uuid
+  scopeKey              String                  @db.VarChar(128)
+  quotaKey              String                  @db.VarChar(64)
   revision              Int
-  status                OicPolicyRevisionStatus   @default(DRAFT)
+  status                OicPolicyRevisionStatus @default(DRAFT)
   subject               OicQuotaSubject
-  dimension             String                    @db.VarChar(64)
-  unit                  String                    @db.VarChar(64)
+  dimension             String                  @db.VarChar(64)
+  unit                  String                  @db.VarChar(64)
   window                OicQuotaWindow
   windowSeconds         Int?
   enforcement           OicQuotaEnforcement
-  limitValue            Decimal                   @db.Decimal(38, 18)
-  reservationUpperBound Decimal?                  @db.Decimal(38, 18)
-  safetyMargin          Decimal                   @default(0) @db.Decimal(38, 18)
-  unknownLiabilityRule  OicUnknownLiabilityRule   @default(DENY)
-  sourceDigest          String                    @db.Char(64)
-  effectiveFrom         DateTime                  @db.Timestamptz(6)
-  effectiveTo           DateTime?                 @db.Timestamptz(6)
-  publishedAt           DateTime?                 @db.Timestamptz(6)
-  createdAt             DateTime                  @default(now()) @db.Timestamptz(6)
-  application           OicApplication?           @relation(fields: [applicationId], references: [id], onDelete: Restrict)
-  tenant                OicTenant?                @relation(fields: [tenantId, applicationId], references: [id, applicationId], onDelete: Restrict)
-  planRevision          OicPlanRevision?          @relation(fields: [planRevisionId], references: [id], onDelete: Restrict)
+  limitValue            Decimal                 @db.Decimal(38, 18)
+  reservationUpperBound Decimal?                @db.Decimal(38, 18)
+  safetyMargin          Decimal                 @default(0) @db.Decimal(38, 18)
+  unknownLiabilityRule  OicUnknownLiabilityRule @default(DENY)
+  sourceDigest          String                  @db.Char(64)
+  effectiveFrom         DateTime                @db.Timestamptz(6)
+  effectiveTo           DateTime?               @db.Timestamptz(6)
+  publishedAt           DateTime?               @db.Timestamptz(6)
+  createdAt             DateTime                @default(now()) @db.Timestamptz(6)
+  application           OicApplication?         @relation(fields: [applicationId], references: [id], onDelete: Restrict)
+  tenant                OicTenant?              @relation(fields: [tenantId, applicationId], references: [id, applicationId], onDelete: Restrict)
+  planRevision          OicPlanRevision?        @relation(fields: [planRevisionId], references: [id], onDelete: Restrict)
   buckets               OicQuotaBucket[]
   legs                  OicReservationLeg[]
+
   @@unique([scopeKey, quotaKey, revision])
   @@index([applicationId, tenantId, dimension, status, effectiveFrom])
   @@index([planRevisionId, dimension, status])
 }
 
 model OicBudgetRevision {
-  id                String                    @id @default(uuid()) @db.Uuid
-  applicationId     String?                   @db.Uuid
-  tenantId          String?                   @db.Uuid
-  planRevisionId    String?                   @db.Uuid
-  scopeKey          String                    @db.VarChar(128)
-  budgetKey         String                    @db.VarChar(64)
-  revision          Int
-  status            OicPolicyRevisionStatus   @default(DRAFT)
-  unit              OicBudgetUnit
-  currency          String?                   @db.Char(3)
-  enforcement       OicQuotaEnforcement
-  amount            Decimal                   @db.Decimal(38, 18)
-  reservationUpperBound Decimal?               @db.Decimal(38, 18)
-  safetyMargin      Decimal                   @default(0) @db.Decimal(38, 18)
-  purpose           String                    @db.VarChar(128)
-  deadline          DateTime?                 @db.Timestamptz(6)
-  unknownLiabilityRule OicUnknownLiabilityRule @default(DENY)
-  sourceDigest      String                    @db.Char(64)
-  effectiveFrom     DateTime                  @db.Timestamptz(6)
-  effectiveTo       DateTime?                 @db.Timestamptz(6)
-  publishedAt       DateTime?                 @db.Timestamptz(6)
-  createdAt         DateTime                  @default(now()) @db.Timestamptz(6)
-  application       OicApplication?           @relation(fields: [applicationId], references: [id], onDelete: Restrict)
-  tenant            OicTenant?                @relation(fields: [tenantId, applicationId], references: [id, applicationId], onDelete: Restrict)
-  planRevision      OicPlanRevision?          @relation(fields: [planRevisionId], references: [id], onDelete: Restrict)
-  buckets           OicQuotaBucket[]
-  legs              OicReservationLeg[]
+  id                    String                  @id @default(uuid()) @db.Uuid
+  applicationId         String?                 @db.Uuid
+  tenantId              String?                 @db.Uuid
+  planRevisionId        String?                 @db.Uuid
+  scopeKey              String                  @db.VarChar(128)
+  budgetKey             String                  @db.VarChar(64)
+  revision              Int
+  status                OicPolicyRevisionStatus @default(DRAFT)
+  unit                  OicBudgetUnit
+  currency              String?                 @db.Char(3)
+  enforcement           OicQuotaEnforcement
+  amount                Decimal                 @db.Decimal(38, 18)
+  reservationUpperBound Decimal?                @db.Decimal(38, 18)
+  safetyMargin          Decimal                 @default(0) @db.Decimal(38, 18)
+  purpose               String                  @db.VarChar(128)
+  deadline              DateTime?               @db.Timestamptz(6)
+  unknownLiabilityRule  OicUnknownLiabilityRule @default(DENY)
+  sourceDigest          String                  @db.Char(64)
+  effectiveFrom         DateTime                @db.Timestamptz(6)
+  effectiveTo           DateTime?               @db.Timestamptz(6)
+  publishedAt           DateTime?               @db.Timestamptz(6)
+  createdAt             DateTime                @default(now()) @db.Timestamptz(6)
+  application           OicApplication?         @relation(fields: [applicationId], references: [id], onDelete: Restrict)
+  tenant                OicTenant?              @relation(fields: [tenantId, applicationId], references: [id, applicationId], onDelete: Restrict)
+  planRevision          OicPlanRevision?        @relation(fields: [planRevisionId], references: [id], onDelete: Restrict)
+  buckets               OicQuotaBucket[]
+  legs                  OicReservationLeg[]
+  evaluationCampaigns   OicEvaluationCampaign[]
+  baseCapacityExtensions OicEvaluationCapacityExtension[] @relation("CapacityExtensionBaseBudget")
+  supplementalCapacityExtension OicEvaluationCapacityExtension? @relation("CapacityExtensionBudget")
+
   @@unique([scopeKey, budgetKey, revision])
   @@index([applicationId, tenantId, unit, status, effectiveFrom])
   @@index([planRevisionId, unit, status])
 }
 
 model OicQuotaBucket {
-  id                    String                    @id @default(uuid()) @db.Uuid
-  bucketKey             String                    @unique @db.VarChar(128)
-  applicationId         String                    @db.Uuid
-  tenantId              String?                   @db.Uuid
-  quotaPolicyRevisionId String?                   @db.Uuid
-  budgetRevisionId      String?                   @db.Uuid
-  unit                  String                    @db.VarChar(64)
-  currency              String?                   @db.Char(3)
-  limitValue            Decimal                   @db.Decimal(38, 18)
-  consumed              Decimal                   @default(0) @db.Decimal(38, 18)
-  held                  Decimal                   @default(0) @db.Decimal(38, 18)
-  uncertain             Decimal                   @default(0) @db.Decimal(38, 18)
-  sequence              Int                       @default(0)
-  windowStart           DateTime                  @db.Timestamptz(6)
-  windowEnd             DateTime?                 @db.Timestamptz(6)
-  createdAt             DateTime                  @default(now()) @db.Timestamptz(6)
-  updatedAt             DateTime                  @updatedAt @db.Timestamptz(6)
-  application           OicApplication            @relation(fields: [applicationId], references: [id], onDelete: Restrict)
-  tenant                OicTenant?                @relation(fields: [tenantId, applicationId], references: [id, applicationId], onDelete: Restrict)
-  quotaPolicy           OicQuotaPolicyRevision?   @relation(fields: [quotaPolicyRevisionId], references: [id], onDelete: Restrict)
-  budgetPolicy          OicBudgetRevision?        @relation(fields: [budgetRevisionId], references: [id], onDelete: Restrict)
+  id                    String                  @id @default(uuid()) @db.Uuid
+  bucketKey             String                  @unique @db.VarChar(128)
+  applicationId         String                  @db.Uuid
+  tenantId              String?                 @db.Uuid
+  quotaPolicyRevisionId String?                 @db.Uuid
+  budgetRevisionId      String?                 @db.Uuid
+  unit                  String                  @db.VarChar(64)
+  currency              String?                 @db.Char(3)
+  limitValue            Decimal                 @db.Decimal(38, 18)
+  consumed              Decimal                 @default(0) @db.Decimal(38, 18)
+  held                  Decimal                 @default(0) @db.Decimal(38, 18)
+  uncertain             Decimal                 @default(0) @db.Decimal(38, 18)
+  sequence              Int                     @default(0)
+  windowStart           DateTime                @db.Timestamptz(6)
+  windowEnd             DateTime?               @db.Timestamptz(6)
+  createdAt             DateTime                @default(now()) @db.Timestamptz(6)
+  updatedAt             DateTime                @updatedAt @db.Timestamptz(6)
+  application           OicApplication          @relation(fields: [applicationId], references: [id], onDelete: Restrict)
+  tenant                OicTenant?              @relation(fields: [tenantId, applicationId], references: [id, applicationId], onDelete: Restrict)
+  quotaPolicy           OicQuotaPolicyRevision? @relation(fields: [quotaPolicyRevisionId], references: [id], onDelete: Restrict)
+  budgetPolicy          OicBudgetRevision?      @relation(fields: [budgetRevisionId], references: [id], onDelete: Restrict)
   legs                  OicReservationLeg[]
   postings              OicUsagePosting[]
+
   @@index([applicationId, tenantId, windowStart, id])
   @@index([quotaPolicyRevisionId, windowStart])
   @@index([budgetRevisionId, windowStart])
 }
 
 model OicAdmission {
-  id                String                    @id @default(uuid()) @db.Uuid
-  applicationId     String                    @db.Uuid
-  tenantId          String?                   @db.Uuid
-  principalId       String                    @db.Uuid
-  scopeKey          String                    @db.VarChar(128)
-  planRevisionId    String?                   @db.Uuid
-  operation         String                    @db.VarChar(64)
-  idempotencyKey    String                    @db.VarChar(128)
-  requestHash       String                    @db.Char(64)
-  status            OicAdmissionStatus
-  denialCode        String?                   @db.VarChar(64)
-  requestBounds     Json                      @db.JsonB
-  fenceGeneration   Int                       @default(1)
-  dispatchDeadline  DateTime                  @db.Timestamptz(6)
-  createdAt         DateTime                  @default(now()) @db.Timestamptz(6)
-  updatedAt         DateTime                  @updatedAt @db.Timestamptz(6)
-  application       OicApplication            @relation(fields: [applicationId], references: [id], onDelete: Restrict)
-  tenant            OicTenant?                @relation(fields: [tenantId, applicationId], references: [id, applicationId], onDelete: Restrict)
-  principal         OicServicePrincipal       @relation(fields: [principalId, applicationId], references: [id, applicationId], onDelete: Restrict)
-  planRevision      OicPlanRevision?          @relation(fields: [planRevisionId], references: [id], onDelete: Restrict)
-  legs              OicReservationLeg[]
-  attempts          OicProviderAttempt[]
-  postings          OicUsagePosting[]
+  id               String               @id @default(uuid()) @db.Uuid
+  applicationId    String               @db.Uuid
+  tenantId         String?              @db.Uuid
+  principalId      String               @db.Uuid
+  scopeKey         String               @db.VarChar(128)
+  planRevisionId   String?              @db.Uuid
+  operation        String               @db.VarChar(64)
+  idempotencyKey   String               @db.VarChar(128)
+  requestHash      String               @db.Char(64)
+  status           OicAdmissionStatus
+  denialCode       String?              @db.VarChar(64)
+  capacityExtensionId String?            @db.Uuid
+  requestBounds    Json                 @db.JsonB
+  fenceGeneration  Int                  @default(1)
+  dispatchDeadline DateTime             @db.Timestamptz(6)
+  createdAt        DateTime             @default(now()) @db.Timestamptz(6)
+  updatedAt        DateTime             @updatedAt @db.Timestamptz(6)
+  application      OicApplication       @relation(fields: [applicationId], references: [id], onDelete: Restrict)
+  tenant           OicTenant?           @relation(fields: [tenantId, applicationId], references: [id, applicationId], onDelete: Restrict)
+  principal        OicServicePrincipal  @relation(fields: [principalId, applicationId], references: [id, applicationId], onDelete: Restrict)
+  planRevision     OicPlanRevision?     @relation(fields: [planRevisionId], references: [id], onDelete: Restrict)
+  legs             OicReservationLeg[]
+  attempts         OicProviderAttempt[]
+  postings         OicUsagePosting[]
+  capacityExtension OicEvaluationCapacityExtension? @relation(fields: [capacityExtensionId], references: [id], onDelete: Restrict)
+
   @@unique([scopeKey, operation, idempotencyKey])
   @@index([applicationId, tenantId, status, createdAt])
   @@index([principalId, status, createdAt])
 }
 
 model OicReservationLeg {
-  id                    String                    @id @default(uuid()) @db.Uuid
-  admissionId           String                    @db.Uuid
-  bucketId              String                    @db.Uuid
-  quotaPolicyRevisionId String?                   @db.Uuid
-  budgetRevisionId      String?                   @db.Uuid
-  amount                Decimal                   @db.Decimal(38, 18)
-  state                 OicReservationState       @default(HELD)
-  fenceGeneration       Int                       @default(1)
-  expiresAt             DateTime                  @db.Timestamptz(6)
-  createdAt             DateTime                  @default(now()) @db.Timestamptz(6)
-  admission             OicAdmission              @relation(fields: [admissionId], references: [id], onDelete: Restrict)
-  bucket                OicQuotaBucket            @relation(fields: [bucketId], references: [id], onDelete: Restrict)
-  quotaPolicy           OicQuotaPolicyRevision?   @relation(fields: [quotaPolicyRevisionId], references: [id], onDelete: Restrict)
-  budgetPolicy          OicBudgetRevision?        @relation(fields: [budgetRevisionId], references: [id], onDelete: Restrict)
+  id                    String                  @id @default(uuid()) @db.Uuid
+  admissionId           String                  @db.Uuid
+  bucketId              String                  @db.Uuid
+  quotaPolicyRevisionId String?                 @db.Uuid
+  budgetRevisionId      String?                 @db.Uuid
+  amount                Decimal                 @db.Decimal(38, 18)
+  state                 OicReservationState     @default(HELD)
+  fenceGeneration       Int                     @default(1)
+  expiresAt             DateTime                @db.Timestamptz(6)
+  createdAt             DateTime                @default(now()) @db.Timestamptz(6)
+  admission             OicAdmission            @relation(fields: [admissionId], references: [id], onDelete: Restrict)
+  bucket                OicQuotaBucket          @relation(fields: [bucketId], references: [id], onDelete: Restrict)
+  quotaPolicy           OicQuotaPolicyRevision? @relation(fields: [quotaPolicyRevisionId], references: [id], onDelete: Restrict)
+  budgetPolicy          OicBudgetRevision?      @relation(fields: [budgetRevisionId], references: [id], onDelete: Restrict)
+
   @@unique([admissionId, bucketId])
   @@index([bucketId, state, expiresAt])
   @@index([admissionId, state])
 }
 
 model OicUsagePosting {
-  id             String               @id @default(uuid()) @db.Uuid
-  bucketId       String               @db.Uuid
-  admissionId    String?              @db.Uuid
-  sourceKey      String               @db.VarChar(160)
-  kind           OicUsagePostingKind
-  amount         Decimal              @db.Decimal(38, 18)
-  sequence       Int
-  recordedAt     DateTime             @default(now()) @db.Timestamptz(6)
-  bucket         OicQuotaBucket       @relation(fields: [bucketId], references: [id], onDelete: Restrict)
-  admission      OicAdmission?        @relation(fields: [admissionId], references: [id], onDelete: Restrict)
+  id          String              @id @default(uuid()) @db.Uuid
+  bucketId    String              @db.Uuid
+  admissionId String?             @db.Uuid
+  sourceKey   String              @db.VarChar(160)
+  kind        OicUsagePostingKind
+  amount      Decimal             @db.Decimal(38, 18)
+  sequence    Int
+  recordedAt  DateTime            @default(now()) @db.Timestamptz(6)
+  bucket      OicQuotaBucket      @relation(fields: [bucketId], references: [id], onDelete: Restrict)
+  admission   OicAdmission?       @relation(fields: [admissionId], references: [id], onDelete: Restrict)
+
   @@unique([bucketId, sourceKey, kind])
   @@unique([bucketId, sequence])
   @@index([bucketId, recordedAt, id])
@@ -1251,158 +1695,1087 @@ model OicApplicationModelVisibility {
   applicationId String          @db.Uuid
   editionId     String          @db.Uuid
   createdAt     DateTime        @default(now()) @db.Timestamptz(6)
-  application   OicApplication @relation(fields: [applicationId], references: [id], onDelete: Restrict)
+  application   OicApplication  @relation(fields: [applicationId], references: [id], onDelete: Restrict)
   edition       OicModelEdition @relation(fields: [editionId], references: [id], onDelete: Restrict)
+
   @@unique([applicationId, editionId])
   @@index([applicationId, createdAt])
 }
 
 model OicIntelligenceProfile {
-  id          String                          @id @default(uuid()) @db.Uuid
-  profileKey  String                          @unique @db.VarChar(64)
-  displayName String                          @db.VarChar(160)
-  description String                          @default("") @db.VarChar(1000)
-  source      OicIntelligenceProfileSource    @default(CUSTOM)
-  lifecycle   OicIntelligenceProfileLifecycle @default(ACTIVE)
-  createdAt   DateTime                        @default(now()) @db.Timestamptz(6)
-  updatedAt   DateTime                        @updatedAt @db.Timestamptz(6)
+  id          String                           @id @default(uuid()) @db.Uuid
+  profileKey  String                           @unique @db.VarChar(64)
+  displayName String                           @db.VarChar(160)
+  description String                           @default("") @db.VarChar(1000)
+  source      OicIntelligenceProfileSource     @default(CUSTOM)
+  lifecycle   OicIntelligenceProfileLifecycle  @default(ACTIVE)
+  createdAt   DateTime                         @default(now()) @db.Timestamptz(6)
+  updatedAt   DateTime                         @updatedAt @db.Timestamptz(6)
   revisions   OicIntelligenceProfileRevision[]
+
   @@index([lifecycle, source, profileKey])
 }
 
 model OicIntelligenceProfileRevision {
-  id                         String                @id @default(uuid()) @db.Uuid
-  profileId                  String                @db.Uuid
-  revision                   Int
-  contextIntensity           Int                   @default(50)
-  memoryIntensity            Int                   @default(0)
-  retrievalIntensity         Int                   @default(0)
-  reasoningIntensity         Int                   @default(50)
-  toolsIntensity             Int                   @default(0)
-  verificationIntensity      Int                   @default(50)
-  synthesisIntensity         Int                   @default(50)
-  efficiencyIntensity        Int                   @default(50)
-  maxStages                   Int                   @default(8)
-  maxProviderCalls            Int                   @default(3)
-  maxToolCalls                Int                   @default(0)
-  maxRetrievalQueries         Int                   @default(2)
-  maxMemoryItems              Int                   @default(4)
-  maxCandidates               Int                   @default(1)
-  maxVerificationRounds       Int                   @default(1)
-  maxContextTokens            Int                   @default(8192)
-  maxExecutionMs              Int                   @default(60000)
-  allowMemoryWrites           Boolean               @default(false)
-  allowRevision               Boolean               @default(true)
-  requireEvidence             Boolean               @default(false)
-  createdAt                   DateTime              @default(now()) @db.Timestamptz(6)
-  profile                     OicIntelligenceProfile @relation(fields: [profileId], references: [id], onDelete: Restrict)
-  modelRevisions              OicModelRevision[]
+  id                    String                 @id @default(uuid()) @db.Uuid
+  profileId             String                 @db.Uuid
+  revision              Int
+  contextIntensity      Int                    @default(50)
+  memoryIntensity       Int                    @default(0)
+  retrievalIntensity    Int                    @default(0)
+  reasoningIntensity    Int                    @default(50)
+  toolsIntensity        Int                    @default(0)
+  verificationIntensity Int                    @default(50)
+  synthesisIntensity    Int                    @default(50)
+  efficiencyIntensity   Int                    @default(50)
+  maxStages             Int                    @default(8)
+  maxProviderCalls      Int                    @default(3)
+  maxToolCalls          Int                    @default(0)
+  maxRetrievalQueries   Int                    @default(2)
+  maxMemoryItems        Int                    @default(4)
+  maxCandidates         Int                    @default(1)
+  maxVerificationRounds Int                    @default(1)
+  maxContextTokens      Int                    @default(8192)
+  maxExecutionMs        Int                    @default(60000)
+  allowMemoryWrites     Boolean                @default(false)
+  allowRevision         Boolean                @default(true)
+  requireEvidence       Boolean                @default(false)
+  createdAt             DateTime               @default(now()) @db.Timestamptz(6)
+  profile               OicIntelligenceProfile @relation(fields: [profileId], references: [id], onDelete: Restrict)
+  modelRevisions        OicModelRevision[]
+
   @@unique([profileId, revision])
   @@index([profileId, revision])
 }
 
 model OicIntelligenceMemory {
-  id                     String                  @id @default(uuid()) @db.Uuid
-  applicationId          String                  @db.Uuid
-  tenantId               String?                 @db.Uuid
-  actorPrincipalId       String?                 @db.Uuid
-  sessionId              String?                 @db.VarChar(128)
+  id                     String               @id @default(uuid()) @db.Uuid
+  applicationId          String               @db.Uuid
+  tenantId               String?              @db.Uuid
+  actorPrincipalId       String?              @db.Uuid
+  sessionId              String?              @db.VarChar(128)
   kind                   OicMemoryKind
-  lifecycle              OicMemoryLifecycle      @default(UNVERIFIED)
-  sensitivity            OicMemorySensitivity    @default(INTERNAL)
-  title                  String                  @db.VarChar(240)
-  content                String                  @db.Text
-  embedding              Float[]                 @default([])
-  embeddingModel         String                  @default("hashed-token-ngram-v1") @db.VarChar(64)
-  embeddingDimensions    Int                     @default(384)
-  entityKey              String?                 @db.VarChar(160)
-  sourceType             String                  @db.VarChar(64)
-  sourceRef              String?                 @db.VarChar(256)
-  confidence              Int                     @default(50)
-  salience                Int                     @default(50)
-  validUntil              DateTime?               @db.Timestamptz(6)
-  lastConfirmedAt         DateTime?               @db.Timestamptz(6)
-  originatingExecutionId String?                 @db.Uuid
-  createdAt               DateTime                @default(now()) @db.Timestamptz(6)
-  updatedAt               DateTime                @updatedAt @db.Timestamptz(6)
-  archivedAt              DateTime?               @db.Timestamptz(6)
-  application             OicApplication          @relation(fields: [applicationId], references: [id], onDelete: Restrict)
-  tenant                  OicTenant?              @relation(fields: [tenantId, applicationId], references: [id, applicationId], onDelete: Restrict)
+  lifecycle              OicMemoryLifecycle   @default(UNVERIFIED)
+  sensitivity            OicMemorySensitivity @default(INTERNAL)
+  title                  String               @db.VarChar(240)
+  content                String               @db.Text
+  embedding              Float[]              @default([])
+  embeddingModel         String               @default("hashed-token-ngram-v1") @db.VarChar(64)
+  embeddingDimensions    Int                  @default(384)
+  entityKey              String?              @db.VarChar(160)
+  sourceType             String               @db.VarChar(64)
+  sourceRef              String?              @db.VarChar(256)
+  confidence             Int                  @default(50)
+  salience               Int                  @default(50)
+  validUntil             DateTime?            @db.Timestamptz(6)
+  lastConfirmedAt        DateTime?            @db.Timestamptz(6)
+  originatingExecutionId String?              @db.Uuid
+  createdAt              DateTime             @default(now()) @db.Timestamptz(6)
+  updatedAt              DateTime             @updatedAt @db.Timestamptz(6)
+  archivedAt             DateTime?            @db.Timestamptz(6)
+  application            OicApplication       @relation(fields: [applicationId], references: [id], onDelete: Restrict)
+  tenant                 OicTenant?           @relation(fields: [tenantId, applicationId], references: [id, applicationId], onDelete: Restrict)
+
   @@index([applicationId, tenantId, lifecycle, kind])
   @@index([applicationId, sessionId, lifecycle])
   @@index([applicationId, entityKey, lifecycle])
 }
 
 model OicIntelligenceKnowledge {
-  id            String               @id @default(uuid()) @db.Uuid
-  applicationId String               @db.Uuid
-  tenantId      String?              @db.Uuid
-  sourceKey     String               @db.VarChar(128)
-  sourceRef     String               @db.VarChar(512)
-  title         String               @db.VarChar(240)
-  content       String               @db.Text
-  dependsOn     Json                 @default("[]")
-  embedding     Float[]              @default([])
-  embeddingModel String              @default("hashed-token-ngram-v1") @db.VarChar(64)
-  embeddingDimensions Int            @default(384)
-  authority     Int                  @default(50)
-  sourcePriority Int                @default(50)
-  lifecycle     OicKnowledgeLifecycle @default(ACTIVE)
-  publishedAt   DateTime?            @db.Timestamptz(6)
-  createdAt     DateTime             @default(now()) @db.Timestamptz(6)
-  updatedAt     DateTime             @updatedAt @db.Timestamptz(6)
-  archivedAt    DateTime?            @db.Timestamptz(6)
-  application   OicApplication       @relation(fields: [applicationId], references: [id], onDelete: Restrict)
-  tenant        OicTenant?           @relation(fields: [tenantId, applicationId], references: [id, applicationId], onDelete: Restrict)
+  id                  String                @id @default(uuid()) @db.Uuid
+  applicationId       String                @db.Uuid
+  tenantId            String?               @db.Uuid
+  sourceKey           String                @db.VarChar(128)
+  sourceRef           String                @db.VarChar(512)
+  title               String                @db.VarChar(240)
+  content             String                @db.Text
+  dependsOn           Json                  @default("[]")
+  embedding           Float[]               @default([])
+  embeddingModel      String                @default("hashed-token-ngram-v1") @db.VarChar(64)
+  embeddingDimensions Int                   @default(384)
+  authority           Int                   @default(50)
+  sourcePriority      Int                   @default(50)
+  lifecycle           OicKnowledgeLifecycle @default(ACTIVE)
+  publishedAt         DateTime?             @db.Timestamptz(6)
+  createdAt           DateTime              @default(now()) @db.Timestamptz(6)
+  updatedAt           DateTime              @updatedAt @db.Timestamptz(6)
+  archivedAt          DateTime?             @db.Timestamptz(6)
+  application         OicApplication        @relation(fields: [applicationId], references: [id], onDelete: Restrict)
+  tenant              OicTenant?            @relation(fields: [tenantId, applicationId], references: [id, applicationId], onDelete: Restrict)
+
   @@unique([applicationId, tenantId, sourceKey, sourceRef])
   @@index([applicationId, tenantId, lifecycle, updatedAt])
 }
 
 model OicIntelligenceExecution {
-  id                 String            @id @default(uuid()) @db.Uuid
-  traceId            String            @unique @db.VarChar(128)
-  requestId          String            @db.VarChar(128)
-  applicationId      String            @db.Uuid
-  tenantId           String?           @db.Uuid
-  principalId        String             @db.Uuid
-  modelId            String             @db.VarChar(64)
-  modelRevisionId    String?            @db.Uuid
-  profileRevisionId  String?            @db.Uuid
-  status             OicExecutionStatus @default(RUNNING)
-  strategy           String             @db.VarChar(64)
-  taskType           String             @db.VarChar(64)
-  uncertainty        String             @db.VarChar(32)
-  stageCount         Int                @default(0)
-  providerCallCount  Int                @default(0)
-  retrievalQueryCount Int               @default(0)
-  memoryLookupCount  Int                @default(0)
-  contextTokens      Int                @default(0)
-  inputTokens        Int?
-  outputTokens       Int?
-  verificationStatus String             @db.VarChar(32)
-  summary            Json
-  startedAt          DateTime           @default(now()) @db.Timestamptz(6)
-  completedAt        DateTime?          @db.Timestamptz(6)
-  application        OicApplication     @relation(fields: [applicationId], references: [id], onDelete: Restrict)
-  tenant             OicTenant?         @relation(fields: [tenantId, applicationId], references: [id, applicationId], onDelete: Restrict)
-  stages             OicIntelligenceExecutionStage[]
+  id                  String                          @id @default(uuid()) @db.Uuid
+  traceId             String                          @unique @db.VarChar(128)
+  requestId           String                          @db.VarChar(128)
+  applicationId       String                          @db.Uuid
+  tenantId            String?                         @db.Uuid
+  principalId         String                          @db.Uuid
+  modelId             String                          @db.VarChar(64)
+  modelRevisionId     String?                         @db.Uuid
+  profileRevisionId   String?                         @db.Uuid
+  status              OicExecutionStatus              @default(RUNNING)
+  strategy            String                          @db.VarChar(64)
+  taskType            String                          @db.VarChar(64)
+  uncertainty         String                          @db.VarChar(32)
+  stageCount          Int                             @default(0)
+  providerCallCount   Int                             @default(0)
+  retrievalQueryCount Int                             @default(0)
+  memoryLookupCount   Int                             @default(0)
+  contextTokens       Int                             @default(0)
+  inputTokens         Int?
+  outputTokens        Int?
+  verificationStatus  String                          @db.VarChar(32)
+  summary             Json
+  startedAt           DateTime                        @default(now()) @db.Timestamptz(6)
+  completedAt         DateTime?                       @db.Timestamptz(6)
+  application         OicApplication                  @relation(fields: [applicationId], references: [id], onDelete: Restrict)
+  tenant              OicTenant?                      @relation(fields: [tenantId, applicationId], references: [id, applicationId], onDelete: Restrict)
+  stages              OicIntelligenceExecutionStage[]
+
   @@index([applicationId, tenantId, startedAt])
   @@index([traceId, applicationId])
 }
 
 model OicIntelligenceExecutionStage {
-  id           String                   @id @default(uuid()) @db.Uuid
-  executionId  String                   @db.Uuid
-  stageIndex   Int
-  stageType    String                   @db.VarChar(64)
-  status       String                   @db.VarChar(32)
-  strategy     String?                  @db.VarChar(64)
-  durationMs   Int                      @default(0)
-  resourceUse  Json
-  metadata     Json
-  startedAt    DateTime                 @db.Timestamptz(6)
-  completedAt  DateTime?                @db.Timestamptz(6)
-  execution    OicIntelligenceExecution @relation(fields: [executionId], references: [id], onDelete: Restrict)
+  id          String                   @id @default(uuid()) @db.Uuid
+  executionId String                   @db.Uuid
+  stageIndex  Int
+  stageType   String                   @db.VarChar(64)
+  status      String                   @db.VarChar(32)
+  strategy    String?                  @db.VarChar(64)
+  durationMs  Int                      @default(0)
+  resourceUse Json
+  metadata    Json
+  startedAt   DateTime                 @db.Timestamptz(6)
+  completedAt DateTime?                @db.Timestamptz(6)
+  execution   OicIntelligenceExecution @relation(fields: [executionId], references: [id], onDelete: Restrict)
+
   @@unique([executionId, stageIndex])
   @@index([executionId, stageIndex])
+}
+
+// OIC-7 Evaluation Fabric. Published registry inputs and evidence are immutable;
+// mutable status fields only implement the locked lifecycle transitions.
+model OicEvaluationArtifact {
+  id                  String                       @id @db.Uuid
+  applicationId       String                       @db.Uuid
+  tenantId            String?                      @db.Uuid
+  purpose             String                       @db.VarChar(24)
+  exposureTier        String                       @db.VarChar(32)
+  digest              String                       @db.Char(64)
+  ciphertext          Bytes                        @db.ByteA
+  nonce               String                       @db.Char(24)
+  authTag             String                       @db.Char(32)
+  keyVersion          Int
+  status              String                       @default("AVAILABLE") @db.VarChar(24)
+  createdBy           String                       @db.Uuid
+  createdAt           DateTime                     @default(now()) @db.Timestamptz(6)
+  calibrationPolicies OicReviewCalibrationPolicy[]
+  application         OicApplication               @relation(fields: [applicationId], references: [id], onDelete: Restrict)
+  tenant              OicTenant?                   @relation(fields: [tenantId, applicationId], references: [id, applicationId], onDelete: Restrict)
+
+  @@index([applicationId, tenantId, exposureTier, status])
+  @@index([applicationId, tenantId, digest])
+}
+
+model OicEvaluationMetricRevision {
+  id               String         @id @default(uuid()) @db.Uuid
+  applicationId    String         @db.Uuid
+  tenantId         String?        @db.Uuid
+  metricKey        String         @db.VarChar(96)
+  revision         Int
+  definition       Json           @db.JsonB
+  definitionDigest String         @db.Char(64)
+  status           String         @default("PUBLISHED") @db.VarChar(24)
+  createdBy        String         @db.Uuid
+  createdAt        DateTime       @default(now()) @db.Timestamptz(6)
+  publishedAt      DateTime       @default(now()) @db.Timestamptz(6)
+  application      OicApplication @relation(fields: [applicationId], references: [id], onDelete: Restrict)
+  tenant           OicTenant?     @relation(fields: [tenantId, applicationId], references: [id, applicationId], onDelete: Restrict)
+  sourceBasisBridges OicEvaluationBasisBridgeRevision[] @relation("EvaluationBasisBridgeSourceMetric")
+  targetBasisBridges OicEvaluationBasisBridgeRevision[] @relation("EvaluationBasisBridgeTargetMetric")
+
+  @@unique([applicationId, tenantId, metricKey, revision])
+  @@unique([applicationId, tenantId, definitionDigest])
+  @@index([applicationId, tenantId, status, metricKey])
+}
+
+model OicEvaluationJudgeRevision {
+  id               String         @id @default(uuid()) @db.Uuid
+  applicationId    String         @db.Uuid
+  tenantId         String?        @db.Uuid
+  judgeKey         String         @db.VarChar(96)
+  revision         Int
+  judgeType        String         @db.VarChar(16)
+  definition       Json           @db.JsonB
+  definitionDigest String         @db.Char(64)
+  status           String         @default("PUBLISHED") @db.VarChar(24)
+  createdBy        String         @db.Uuid
+  createdAt        DateTime       @default(now()) @db.Timestamptz(6)
+  publishedAt      DateTime       @default(now()) @db.Timestamptz(6)
+  application      OicApplication @relation(fields: [applicationId], references: [id], onDelete: Restrict)
+  tenant           OicTenant?     @relation(fields: [tenantId, applicationId], references: [id, applicationId], onDelete: Restrict)
+
+  @@unique([applicationId, tenantId, judgeKey, revision])
+  @@unique([applicationId, tenantId, definitionDigest])
+  @@index([applicationId, tenantId, status, judgeType])
+}
+
+model OicEvaluationPackRevision {
+  id                       String                             @id @default(uuid()) @db.Uuid
+  applicationId            String                             @db.Uuid
+  tenantId                 String?                            @db.Uuid
+  packKey                  String                             @db.VarChar(96)
+  revision                 Int
+  domain                   String                             @db.VarChar(64)
+  taskTypes                Json                               @default("[]") @db.JsonB
+  targetClasses            Json                               @default("[]") @db.JsonB
+  license                  String                             @db.VarChar(256)
+  securityTier             String                             @db.VarChar(32)
+  manifest                 Json                               @db.JsonB
+  manifestDigest           String                             @db.Char(64)
+  status                   String                             @default("DRAFT") @db.VarChar(24)
+  createdBy                String                             @db.Uuid
+  createdAt                DateTime                           @default(now()) @db.Timestamptz(6)
+  publishedAt              DateTime?                          @db.Timestamptz(6)
+  application              OicApplication                     @relation(fields: [applicationId], references: [id], onDelete: Restrict)
+  tenant                   OicTenant?                         @relation(fields: [tenantId, applicationId], references: [id, applicationId], onDelete: Restrict)
+  cases                    OicEvaluationCaseRevision[]
+  datasets                 OicEvaluationDatasetRevision[]
+  environments             OicEvaluationEnvironmentRevision[]
+  suites                   OicEvaluationSuiteRevision[]
+  releases                 OicEvaluationRelease[]
+  validationJobs           OicEvaluationValidationJob[]
+  contentReviewBatches     OicDomainReviewBatch[]
+  contentReviewAssignments OicDomainReviewAssignment[]
+
+  @@unique([applicationId, tenantId, packKey, revision])
+  @@unique([applicationId, tenantId, manifestDigest])
+  @@unique([id, applicationId])
+  @@unique([id, applicationId, tenantId])
+  @@index([applicationId, tenantId, domain, status])
+}
+
+model OicEvaluationValidationJob {
+  id             String                     @id @default(uuid()) @db.Uuid
+  applicationId  String                     @db.Uuid
+  tenantId       String?                    @db.Uuid
+  packId         String                     @db.Uuid
+  manifestDigest String                     @db.Char(64)
+  status         String                     @default("PENDING") @db.VarChar(24)
+  report         Json                       @db.JsonB
+  createdBy      String                     @db.Uuid
+  createdAt      DateTime                   @default(now()) @db.Timestamptz(6)
+  completedAt    DateTime?                  @db.Timestamptz(6)
+  application    OicApplication             @relation(fields: [applicationId], references: [id], onDelete: Restrict)
+  tenant         OicTenant?                 @relation(fields: [tenantId, applicationId], references: [id, applicationId], onDelete: Restrict)
+  pack           OicEvaluationPackRevision? @relation(fields: [packId, applicationId, tenantId], references: [id, applicationId, tenantId], onDelete: Restrict)
+
+  @@unique([packId, manifestDigest])
+  @@unique([id, applicationId, tenantId])
+  @@index([applicationId, tenantId, status, createdAt])
+}
+
+model OicEvaluationCaseRevision {
+  id                       String                      @id @default(uuid()) @db.Uuid
+  applicationId            String                      @db.Uuid
+  tenantId                 String?                     @db.Uuid
+  packId                   String                      @db.Uuid
+  caseKey                  String                      @db.VarChar(128)
+  revision                 Int
+  taskType                 String                      @db.VarChar(64)
+  language                 String                      @default("und") @db.VarChar(32)
+  slices                   Json                        @default("[]") @db.JsonB
+  inputArtifact            Json                        @db.JsonB
+  oracle                   Json                        @db.JsonB
+  oracleMethod             String?                     @db.VarChar(64)
+  rights                   Json                        @db.JsonB
+  sourceDigest             String                      @db.Char(64)
+  oracleDigest             String                      @db.Char(64)
+  exposureTier             String                      @default("INTERNAL") @db.VarChar(32)
+  status                   String                      @default("DRAFT") @db.VarChar(24)
+  createdAt                DateTime                    @default(now()) @db.Timestamptz(6)
+  pack                     OicEvaluationPackRevision   @relation(fields: [packId, applicationId], references: [id, applicationId], onDelete: Restrict)
+  contentReviewAssignments OicDomainReviewAssignment[]
+
+  @@unique([packId, caseKey, revision])
+  @@unique([id, applicationId])
+  @@unique([id, applicationId, tenantId])
+  @@index([applicationId, tenantId, taskType, language])
+  @@index([sourceDigest])
+}
+
+model OicDomainReviewBatch {
+  id                     String                      @id @default(uuid()) @db.Uuid
+  applicationId          String                      @db.Uuid
+  packId                 String                      @db.Uuid
+  manifestDigest         String                      @db.Char(64)
+  status                 String                      @default("PREPARED") @db.VarChar(32)
+  reconciliationDigest   String?                     @db.Char(64)
+  reconciliationEvidence Json?
+  reconciledAt           DateTime?                   @db.Timestamptz(6)
+  createdByPrincipalId   String                      @db.Uuid
+  createdAt              DateTime                    @default(now()) @db.Timestamptz(6)
+  application            OicApplication              @relation(fields: [applicationId], references: [id], onDelete: Restrict)
+  pack                   OicEvaluationPackRevision   @relation(fields: [packId, applicationId], references: [id, applicationId], onDelete: Restrict)
+  assignments            OicDomainReviewAssignment[]
+  conflictScope          OicDomainReviewConflictScope?
+
+  @@unique([packId, manifestDigest])
+  @@index([applicationId, status, createdAt])
+}
+
+model OicDomainReviewConflictScope {
+  id                     String                @id @default(uuid()) @db.Uuid
+  applicationId          String                @db.Uuid
+  batchId                String                @unique @db.Uuid
+  packId                 String                @db.Uuid
+  scopeKey               String                @db.VarChar(96)
+  revision               Int                   @default(1)
+  reviewPurpose          String                @db.VarChar(96)
+  domain                 String                @db.VarChar(64)
+  packManifestDigest     String                @db.Char(64)
+  batchManifestDigest    String                @db.Char(64)
+  sourceProvenanceDigest String                @db.Char(64)
+  scopeDigest            String                @db.Char(64)
+  status                 String                @default("PUBLISHED") @db.VarChar(16)
+  createdByPrincipalId   String                @db.Uuid
+  createdAt              DateTime              @default(now()) @db.Timestamptz(6)
+  publishedAt            DateTime              @default(now()) @db.Timestamptz(6)
+  application            OicApplication        @relation(fields: [applicationId], references: [id], onDelete: Restrict)
+  batch                  OicDomainReviewBatch  @relation(fields: [batchId], references: [id], onDelete: Restrict)
+
+  @@unique([applicationId, scopeKey, revision, scopeDigest])
+  @@index([applicationId, scopeKey, status, publishedAt])
+}
+
+model OicDomainReviewAssignment {
+  id                  String                      @id @default(uuid()) @db.Uuid
+  batchId             String                      @db.Uuid
+  applicationId       String                      @db.Uuid
+  packId              String                      @db.Uuid
+  caseRevisionId      String                      @db.Uuid
+  humanIdentityId     String                      @db.Uuid
+  reviewerRole        String                      @db.VarChar(24)
+  blindedItemId       String                      @db.VarChar(128)
+  blindProjection     Json                        @db.JsonB
+  eligibilitySnapshot Json                        @db.JsonB
+  status              String                      @default("ASSIGNED") @db.VarChar(16)
+  assignedAt          DateTime                    @default(now()) @db.Timestamptz(6)
+  openedAt            DateTime?                   @db.Timestamptz(6)
+  batch               OicDomainReviewBatch        @relation(fields: [batchId], references: [id], onDelete: Restrict)
+  application         OicApplication              @relation(fields: [applicationId], references: [id], onDelete: Restrict)
+  pack                OicEvaluationPackRevision   @relation(fields: [packId, applicationId], references: [id, applicationId], onDelete: Restrict)
+  caseRevision        OicEvaluationCaseRevision   @relation(fields: [caseRevisionId, applicationId], references: [id, applicationId], onDelete: Restrict)
+  humanIdentity       OicHumanIdentity            @relation(fields: [humanIdentityId], references: [id], onDelete: Restrict)
+  submissions         OicDomainReviewSubmission[]
+
+  @@unique([batchId, caseRevisionId, humanIdentityId])
+  @@index([applicationId, humanIdentityId, status, assignedAt])
+  @@index([batchId, reviewerRole, status])
+}
+
+model OicDomainReviewSubmission {
+  id                String                    @id @default(uuid()) @db.Uuid
+  assignmentId      String                    @db.Uuid
+  humanIdentityId   String                    @db.Uuid
+  reviewerSessionId String                    @db.Uuid
+  decision          String                    @db.VarChar(16)
+  notes             String?                   @db.VarChar(1000)
+  evidenceDigest    String                    @db.Char(64)
+  submittedAt       DateTime                  @default(now()) @db.Timestamptz(6)
+  assignment        OicDomainReviewAssignment @relation(fields: [assignmentId], references: [id], onDelete: Restrict)
+  humanIdentity     OicHumanIdentity          @relation(fields: [humanIdentityId], references: [id], onDelete: Restrict)
+  reviewerSession   OicReviewerSession        @relation(fields: [reviewerSessionId], references: [id], onDelete: Restrict)
+
+  @@unique([assignmentId])
+  @@index([humanIdentityId, submittedAt])
+}
+
+model OicEvaluationDatasetRevision {
+  id             String                       @id @default(uuid()) @db.Uuid
+  applicationId  String                       @db.Uuid
+  tenantId       String?                      @db.Uuid
+  packId         String                       @db.Uuid
+  revision       Int
+  caseManifest   Json                         @db.JsonB
+  manifestDigest String                       @db.Char(64)
+  status         String                       @default("DRAFT") @db.VarChar(24)
+  createdBy      String                       @db.Uuid
+  createdAt      DateTime                     @default(now()) @db.Timestamptz(6)
+  publishedAt    DateTime?                    @db.Timestamptz(6)
+  application    OicApplication               @relation(fields: [applicationId], references: [id], onDelete: Restrict)
+  tenant         OicTenant?                   @relation(fields: [tenantId, applicationId], references: [id, applicationId], onDelete: Restrict)
+  pack           OicEvaluationPackRevision    @relation(fields: [packId, applicationId], references: [id, applicationId], onDelete: Restrict)
+  suites         OicEvaluationSuiteRevision[]
+  releases       OicEvaluationRelease[]
+
+  @@unique([packId, revision])
+  @@unique([applicationId, tenantId, manifestDigest])
+  @@unique([id, applicationId])
+  @@index([applicationId, tenantId, status, createdAt])
+}
+
+model OicEvaluationEnvironmentRevision {
+  id               String                       @id @default(uuid()) @db.Uuid
+  applicationId    String                       @db.Uuid
+  tenantId         String?                      @db.Uuid
+  packId           String                       @db.Uuid
+  revision         Int
+  definition       Json                         @db.JsonB
+  definitionDigest String                       @db.Char(64)
+  status           String                       @default("DRAFT") @db.VarChar(24)
+  createdBy        String                       @db.Uuid
+  createdAt        DateTime                     @default(now()) @db.Timestamptz(6)
+  publishedAt      DateTime?                    @db.Timestamptz(6)
+  application      OicApplication               @relation(fields: [applicationId], references: [id], onDelete: Restrict)
+  tenant           OicTenant?                   @relation(fields: [tenantId, applicationId], references: [id, applicationId], onDelete: Restrict)
+  pack             OicEvaluationPackRevision    @relation(fields: [packId, applicationId], references: [id, applicationId], onDelete: Restrict)
+  suites           OicEvaluationSuiteRevision[]
+  releases         OicEvaluationRelease[]
+
+  @@unique([packId, revision])
+  @@unique([applicationId, tenantId, definitionDigest])
+  @@unique([id, applicationId])
+  @@index([applicationId, tenantId, status, createdAt])
+}
+
+model OicEvaluationSuiteRevision {
+  id            String                           @id @default(uuid()) @db.Uuid
+  applicationId String                           @db.Uuid
+  tenantId      String?                          @db.Uuid
+  packId        String                           @db.Uuid
+  datasetId     String                           @db.Uuid
+  environmentId String                           @db.Uuid
+  revision      Int
+  plan          Json                             @db.JsonB
+  planDigest    String                           @db.Char(64)
+  status        String                           @default("DRAFT") @db.VarChar(24)
+  createdBy     String                           @db.Uuid
+  createdAt     DateTime                         @default(now()) @db.Timestamptz(6)
+  publishedAt   DateTime?                        @db.Timestamptz(6)
+  application   OicApplication                   @relation(fields: [applicationId], references: [id], onDelete: Restrict)
+  tenant        OicTenant?                       @relation(fields: [tenantId, applicationId], references: [id, applicationId], onDelete: Restrict)
+  pack          OicEvaluationPackRevision        @relation(fields: [packId, applicationId], references: [id, applicationId], onDelete: Restrict)
+  dataset       OicEvaluationDatasetRevision     @relation(fields: [datasetId, applicationId], references: [id, applicationId], onDelete: Restrict)
+  environment   OicEvaluationEnvironmentRevision @relation(fields: [environmentId, applicationId], references: [id, applicationId], onDelete: Restrict)
+  releases      OicEvaluationRelease[]
+
+  @@unique([packId, revision])
+  @@unique([applicationId, tenantId, planDigest])
+  @@unique([id, applicationId])
+  @@index([applicationId, tenantId, status, createdAt])
+}
+
+model OicEvaluationRelease {
+  id               String                            @id @default(uuid()) @db.Uuid
+  applicationId    String                            @db.Uuid
+  tenantId         String?                           @db.Uuid
+  packId           String                            @db.Uuid
+  datasetId        String?                           @db.Uuid
+  environmentId    String?                           @db.Uuid
+  suiteId          String?                           @db.Uuid
+  revision         Int
+  releaseTier      String                            @db.VarChar(32)
+  caseManifest     Json                              @db.JsonB
+  protocol         Json                              @db.JsonB
+  manifestDigest   String                            @db.Char(64)
+  status           String                            @default("DRAFT") @db.VarChar(24)
+  verificationTier String                            @default("OIC_EXECUTED_VERIFIED") @db.VarChar(32)
+  changelog        String                            @db.VarChar(1000)
+  createdBy        String                            @db.Uuid
+  createdAt        DateTime                          @default(now()) @db.Timestamptz(6)
+  publishedAt      DateTime?                         @db.Timestamptz(6)
+  compromisedAt    DateTime?                         @db.Timestamptz(6)
+  application      OicApplication                    @relation(fields: [applicationId], references: [id], onDelete: Restrict)
+  tenant           OicTenant?                        @relation(fields: [tenantId, applicationId], references: [id, applicationId], onDelete: Restrict)
+  pack             OicEvaluationPackRevision         @relation(fields: [packId, applicationId], references: [id, applicationId], onDelete: Restrict)
+  dataset          OicEvaluationDatasetRevision?     @relation(fields: [datasetId, applicationId], references: [id, applicationId], onDelete: Restrict)
+  environment      OicEvaluationEnvironmentRevision? @relation(fields: [environmentId, applicationId], references: [id, applicationId], onDelete: Restrict)
+  suite            OicEvaluationSuiteRevision?       @relation(fields: [suiteId, applicationId], references: [id, applicationId], onDelete: Restrict)
+  manifests        OicEvaluationProtocolManifest[]
+  campaigns        OicEvaluationCampaign[]
+
+  @@unique([applicationId, tenantId, packId, revision])
+  @@unique([applicationId, tenantId, manifestDigest])
+  @@unique([id, applicationId])
+  @@unique([id, applicationId, tenantId])
+  @@index([applicationId, tenantId, releaseTier, status])
+}
+
+model OicEvaluationProtocolManifest {
+  id              String               @id @default(uuid()) @db.Uuid
+  applicationId   String               @db.Uuid
+  tenantId        String?              @db.Uuid
+  releaseId       String               @db.Uuid
+  protocolVersion String               @db.VarChar(32)
+  targetClass     String               @db.VarChar(40)
+  payload         Json                 @db.JsonB
+  canonicalDigest String               @db.Char(64)
+  publishedAt     DateTime             @default(now()) @db.Timestamptz(6)
+  createdBy       String               @db.Uuid
+  application     OicApplication       @relation(fields: [applicationId], references: [id], onDelete: Restrict)
+  tenant          OicTenant?           @relation(fields: [tenantId, applicationId], references: [id, applicationId], onDelete: Restrict)
+  release         OicEvaluationRelease @relation(fields: [releaseId, applicationId], references: [id, applicationId], onDelete: Restrict)
+  runs            OicEvaluationRun[]
+  sourceBasisBridges OicEvaluationBasisBridgeRevision[] @relation("EvaluationBasisBridgeSourceManifest")
+  targetBasisBridges OicEvaluationBasisBridgeRevision[] @relation("EvaluationBasisBridgeTargetManifest")
+  sourceRegradePasses OicEvaluationRegradePass[] @relation("EvaluationRegradeSourceManifest")
+  gradingRegradePasses OicEvaluationRegradePass[] @relation("EvaluationRegradeGradingManifest")
+  effectiveReports OicEvaluationReport[] @relation("EvaluationReportEffectiveGradingManifest")
+
+  @@unique([applicationId, tenantId, canonicalDigest])
+  @@unique([id, applicationId])
+  @@unique([id, applicationId, tenantId])
+  @@index([applicationId, tenantId, releaseId, publishedAt])
+}
+
+model OicEvaluationCampaign {
+  id                       String               @id @default(uuid()) @db.Uuid
+  applicationId            String               @db.Uuid
+  tenantId                 String?              @db.Uuid
+  releaseId                String               @db.Uuid
+  campaignKey              String               @db.VarChar(96)
+  status                   String               @default("DRAFT") @db.VarChar(24)
+  createdBy                String               @db.Uuid
+  idempotencyKey           String               @db.VarChar(128)
+  budgetRevisionId         String?              @db.Uuid
+  budgetLimitOiu           Decimal?             @db.Decimal(38, 18)
+  reservationPerAttemptOiu Decimal?             @db.Decimal(38, 18)
+  reservedOiu              Decimal              @default(0) @db.Decimal(38, 18)
+  budgetPolicyDigest       String?              @db.Char(64)
+  createdAt                DateTime             @default(now()) @db.Timestamptz(6)
+  application              OicApplication       @relation(fields: [applicationId], references: [id], onDelete: Restrict)
+  tenant                   OicTenant?           @relation(fields: [tenantId, applicationId], references: [id, applicationId], onDelete: Restrict)
+  release                  OicEvaluationRelease @relation(fields: [releaseId, applicationId], references: [id, applicationId], onDelete: Restrict)
+  budgetRevision           OicBudgetRevision?   @relation(fields: [budgetRevisionId], references: [id], onDelete: Restrict)
+  runs                     OicEvaluationRun[]
+  capacityExtensions       OicEvaluationCapacityExtension[]
+
+  @@unique([id, applicationId, tenantId])
+  @@unique([applicationId, tenantId, idempotencyKey])
+  @@unique([id, applicationId])
+  @@index([applicationId, tenantId, status, createdAt])
+}
+
+model OicEvaluationRun {
+  id                   String                        @id @default(uuid()) @db.Uuid
+  applicationId        String                        @db.Uuid
+  tenantId             String?                       @db.Uuid
+  campaignId           String?                       @db.Uuid
+  manifestId           String                        @db.Uuid
+  targetClass          String                        @db.VarChar(40)
+  targetFingerprint    String                        @db.Char(64)
+  targetIdentity       Json                          @db.JsonB
+  requestHash          String                        @db.Char(64)
+  plannedTrials        Int
+  status               String                        @default("QUEUED") @db.VarChar(24)
+  verificationTier     String                        @default("OIC_EXECUTED_VERIFIED") @db.VarChar(32)
+  plannedDenominator   Int
+  completedAt          DateTime?                     @db.Timestamptz(6)
+  createdBy            String                        @db.Uuid
+  idempotencyKey       String                        @db.VarChar(128)
+  budgetReservationOiu Decimal?                      @db.Decimal(38, 18)
+  budgetReleasedOiu    Decimal                       @default(0) @db.Decimal(38, 18)
+  diagnosticOnly       Boolean                       @default(false)
+  diagnosticSourceRunId String?                      @db.Uuid
+  createdAt            DateTime                      @default(now()) @db.Timestamptz(6)
+  application          OicApplication                @relation(fields: [applicationId], references: [id], onDelete: Restrict)
+  tenant               OicTenant?                    @relation(fields: [tenantId, applicationId], references: [id, applicationId], onDelete: Restrict)
+  campaign             OicEvaluationCampaign?        @relation(fields: [campaignId, applicationId, tenantId], references: [id, applicationId, tenantId], onDelete: Restrict)
+  manifest             OicEvaluationProtocolManifest @relation(fields: [manifestId, applicationId], references: [id, applicationId], onDelete: Restrict)
+  cases                OicEvaluationCaseExecution[]
+  reports              OicEvaluationReport[]
+  workItems            OicEvaluationWorkItem[]
+  outboxEvents         OicEvaluationOutbox[]
+  regradePasses        OicEvaluationRegradePass[]
+  capacityExtensions  OicEvaluationCapacityExtension[]
+
+  @@unique([id, applicationId])
+  @@unique([id, applicationId, tenantId])
+  @@unique([applicationId, tenantId, idempotencyKey])
+  @@index([applicationId, tenantId, status, createdAt])
+  @@index([targetClass, targetFingerprint, createdAt])
+}
+
+model OicEvaluationCaseExecution {
+  id                           String                     @id @default(uuid()) @db.Uuid
+  runId                        String                     @db.Uuid
+  caseRevisionId               String                     @db.Uuid
+  repetitionOrdinal            Int
+  seed                         String                     @db.VarChar(128)
+  status                       String                     @default("QUEUED") @db.VarChar(24)
+  outcome                      Json?                      @db.JsonB
+  leaseGeneration              Int                        @default(0)
+  leaseOwner                   String?                    @db.VarChar(128)
+  leaseUntil                   DateTime?                  @db.Timestamptz(6)
+  completedAt                  DateTime?                  @db.Timestamptz(6)
+  unusedReservationReleasedOiu Decimal                    @default(0) @db.Decimal(38, 18)
+  run                          OicEvaluationRun           @relation(fields: [runId], references: [id], onDelete: Restrict)
+  attempts                     OicEvaluationAttempt[]
+  measurements                 OicEvaluationMeasurement[]
+  regradeSources               OicEvaluationRegradeSource[]
+  regradeMeasurements          OicEvaluationRegradeMeasurement[]
+  workItem                     OicEvaluationWorkItem?
+
+  @@unique([runId, caseRevisionId, repetitionOrdinal])
+  @@index([status, leaseUntil])
+}
+
+model OicEvaluationAttempt {
+  id                 String                     @id @default(uuid()) @db.Uuid
+  caseExecutionId    String                     @db.Uuid
+  physicalKey        String                     @unique @db.VarChar(128)
+  attemptOrdinal     Int
+  status             String                     @default("CREATED") @db.VarChar(24)
+  lifecycleStage     String                     @default("CREATED") @db.VarChar(32)
+  lastDurableStage   String?                    @db.VarChar(32)
+  lifecycleUpdatedAt DateTime                   @default(now()) @db.Timestamptz(6)
+  leaseOwner         String?                    @db.VarChar(128)
+  leaseAcquiredAt    DateTime?                  @db.Timestamptz(6)
+  leaseExpiresAt     DateTime?                  @db.Timestamptz(6)
+  leaseHeartbeatAt   DateTime?                  @db.Timestamptz(6)
+  providerAttemptId  String?                    @db.Uuid
+  providerDispatchStartedAt DateTime?           @db.Timestamptz(6)
+  recoveryGenerationId String?                   @db.Uuid
+  recoveryOrdinal      Int?
+  admissionId        String?                    @db.Uuid
+  startedAt          DateTime                   @default(now()) @db.Timestamptz(6)
+  completedAt        DateTime?                  @db.Timestamptz(6)
+  failureClass       String?                    @db.VarChar(40)
+  failureStage       String?                    @db.VarChar(48)
+  safeErrorCode      String?                    @db.VarChar(64)
+  safeErrorType      String?                    @db.VarChar(64)
+  safeErrorMessage   String?                    @db.VarChar(240)
+  errorFingerprint   String?                    @db.Char(64)
+  failureRecordedAt  DateTime?                  @db.Timestamptz(6)
+  verificationTier   String                     @default("OIC_EXECUTED_PARTIAL") @db.VarChar(32)
+  artifactManifest   Json?                      @db.JsonB
+  evidenceDigest     String?                    @db.Char(64)
+  budgetReconciledAt DateTime?                  @db.Timestamptz(6)
+  budgetReleasedOiu  Decimal                    @default(0) @db.Decimal(38, 18)
+  caseExecution      OicEvaluationCaseExecution @relation(fields: [caseExecutionId], references: [id], onDelete: Restrict)
+  regradeSources     OicEvaluationRegradeSource[]
+  recoveryGeneration OicEvaluationRecoveryGeneration? @relation(fields: [recoveryGenerationId], references: [id], onDelete: Restrict)
+
+  @@unique([caseExecutionId, attemptOrdinal])
+  @@index([status, startedAt])
+}
+
+model OicEvaluationPreflightDiagnostic {
+  id                    String   @id @default(uuid()) @db.Uuid
+  applicationId         String   @db.Uuid
+  tenantId              String?  @db.Uuid
+  runId                 String   @db.Uuid
+  workItemId            String   @db.Uuid
+  caseExecutionId       String   @db.Uuid
+  sourceAttemptId       String   @db.Uuid
+  manifestId            String   @db.Uuid
+  releaseId             String   @db.Uuid
+  cohortKey             String   @db.VarChar(96)
+  pairKey               String   @db.VarChar(96)
+  repetitionOrdinal     Int
+  status                String   @default("RUNNING") @db.VarChar(16)
+  lastCompletedStage    String?  @db.VarChar(48)
+  failingStage          String?  @db.VarChar(48)
+  safeErrorCode         String?  @db.VarChar(64)
+  safeErrorType         String?  @db.VarChar(64)
+  safeErrorMessage      String?  @db.VarChar(240)
+  errorFingerprint      String?  @db.Char(64)
+  result                Json?
+  startedAt             DateTime @default(now()) @db.Timestamptz(6)
+  completedAt           DateTime? @db.Timestamptz(6)
+  initiatedByPrincipalId String  @db.Uuid
+  queueRunId            String?  @db.Uuid
+  queueWorkItemId       String?  @db.Uuid
+  queueCaseExecutionId  String?  @db.Uuid
+  workerAttemptId       String?  @db.Uuid
+  leaseOwner            String?  @db.VarChar(128)
+  claimedAt             DateTime? @db.Timestamptz(6)
+  leaseAcquiredAt       DateTime? @db.Timestamptz(6)
+  leaseHeartbeatCount   Int      @default(0)
+
+  @@index([applicationId, runId, startedAt])
+  @@index([workItemId, startedAt])
+  @@index([status, startedAt])
+}
+
+model OicEvaluationWorkItem {
+  id               String                     @id @default(uuid()) @db.Uuid
+  applicationId    String                     @db.Uuid
+  tenantId         String?                    @db.Uuid
+  runId            String                     @db.Uuid
+  caseExecutionId  String                     @unique @db.Uuid
+  status           String                     @default("PENDING") @db.VarChar(24)
+  priority         Int                        @default(0)
+  availableAt      DateTime                   @default(now()) @db.Timestamptz(6)
+  leaseOwner       String?                    @db.VarChar(128)
+  leaseGeneration  Int                        @default(0)
+  leaseUntil       DateTime?                  @db.Timestamptz(6)
+  leaseAcquiredAt  DateTime?                  @db.Timestamptz(6)
+  leaseHeartbeatAt DateTime?                  @db.Timestamptz(6)
+  leaseHeartbeatCount Int                     @default(0)
+  recoveryGenerations OicEvaluationRecoveryGeneration[]
+  attemptCount     Int                        @default(0)
+  maxAttempts      Int                        @default(3)
+  lastFailureClass String?                    @db.VarChar(40)
+  executionMode    String                     @default("STANDARD") @db.VarChar(16)
+  diagnosticProbeId String?                   @db.Uuid
+  createdAt        DateTime                   @default(now()) @db.Timestamptz(6)
+  updatedAt        DateTime                   @updatedAt @db.Timestamptz(6)
+  completedAt      DateTime?                  @db.Timestamptz(6)
+  application      OicApplication             @relation(fields: [applicationId], references: [id], onDelete: Restrict)
+  tenant           OicTenant?                 @relation(fields: [tenantId, applicationId], references: [id, applicationId], onDelete: Restrict)
+  run              OicEvaluationRun           @relation(fields: [runId, applicationId], references: [id, applicationId], onDelete: Restrict)
+  caseExecution    OicEvaluationCaseExecution @relation(fields: [caseExecutionId], references: [id], onDelete: Restrict)
+
+  @@unique([id, applicationId, tenantId])
+  @@index([status, availableAt, leaseUntil, priority, createdAt])
+  @@index([applicationId, tenantId, status, createdAt])
+}
+
+model OicEvaluationCapacityExtension {
+  id                    String                @id @default(uuid()) @db.Uuid
+  applicationId         String                @db.Uuid
+  tenantId              String?               @db.Uuid
+  campaignId            String                @db.Uuid
+  runId                 String                @db.Uuid
+  baseBudgetRevisionId  String                @db.Uuid
+  budgetRevisionId      String                @unique @db.Uuid
+  cohortKey             String                @db.VarChar(96)
+  authorizedOiu         Decimal               @db.Decimal(38, 18)
+  perAdmissionLimitOiu  Decimal               @db.Decimal(38, 18)
+  status                String                @default("ACTIVE") @db.VarChar(24)
+  authorizationId       String                @db.VarChar(96)
+  reason                String                @db.VarChar(500)
+  createdBy             String                @db.Uuid
+  createdAt             DateTime              @default(now()) @db.Timestamptz(6)
+  expiresAt             DateTime              @db.Timestamptz(6)
+  application           OicApplication        @relation(fields: [applicationId], references: [id], onDelete: Restrict)
+  tenant                OicTenant?            @relation(fields: [tenantId, applicationId], references: [id, applicationId], onDelete: Restrict)
+  campaign              OicEvaluationCampaign @relation(fields: [campaignId, applicationId], references: [id, applicationId], onDelete: Restrict)
+  run                   OicEvaluationRun      @relation(fields: [runId, applicationId], references: [id, applicationId], onDelete: Restrict)
+  baseBudgetRevision    OicBudgetRevision      @relation("CapacityExtensionBaseBudget", fields: [baseBudgetRevisionId], references: [id], onDelete: Restrict)
+  budgetRevision        OicBudgetRevision      @relation("CapacityExtensionBudget", fields: [budgetRevisionId], references: [id], onDelete: Restrict)
+  admissions            OicAdmission[]
+
+  @@unique([campaignId, cohortKey, authorizationId])
+  @@index([applicationId, campaignId, runId, status, expiresAt])
+}
+
+model OicEvaluationRecoveryGeneration {
+  id                  String                @id @default(uuid()) @db.Uuid
+  applicationId       String                @db.Uuid
+  tenantId            String?               @db.Uuid
+  runId               String                @db.Uuid
+  workItemId          String                @db.Uuid
+  cohortKey           String                @db.VarChar(96)
+  pairKey             String                @db.VarChar(96)
+  repetitionOrdinal   Int
+  previousAttemptId   String                @db.Uuid
+  generationOrdinal   Int                   @default(1)
+  maxPhysicalAttempts Int                   @default(3)
+  usedPhysicalAttempts Int                  @default(0)
+  status              String                @default("ACTIVE") @db.VarChar(24)
+  authorizationId     String                @db.VarChar(96)
+  reason              String                @db.VarChar(500)
+  createdBy           String                @db.Uuid
+  createdAt           DateTime              @default(now()) @db.Timestamptz(6)
+  closedAt            DateTime?             @db.Timestamptz(6)
+  workItem            OicEvaluationWorkItem @relation(fields: [workItemId], references: [id], onDelete: Restrict)
+  attempts            OicEvaluationAttempt[]
+
+  @@unique([runId, cohortKey, generationOrdinal])
+  @@index([workItemId, generationOrdinal])
+  @@index([applicationId, runId, status, createdAt])
+}
+
+model OicEvaluationOutbox {
+  id               String            @id @default(uuid()) @db.Uuid
+  applicationId    String            @db.Uuid
+  tenantId         String?           @db.Uuid
+  runId            String?           @db.Uuid
+  eventKey         String            @db.VarChar(128)
+  eventType        String            @db.VarChar(64)
+  payload          Json              @db.JsonB
+  status           String            @default("PENDING") @db.VarChar(24)
+  availableAt      DateTime          @default(now()) @db.Timestamptz(6)
+  leaseOwner       String?           @db.VarChar(128)
+  leaseGeneration  Int               @default(0)
+  leaseUntil       DateTime?         @db.Timestamptz(6)
+  attemptCount     Int               @default(0)
+  lastFailureClass String?           @db.VarChar(40)
+  createdAt        DateTime          @default(now()) @db.Timestamptz(6)
+  publishedAt      DateTime?         @db.Timestamptz(6)
+  application      OicApplication    @relation(fields: [applicationId], references: [id], onDelete: Restrict)
+  tenant           OicTenant?        @relation(fields: [tenantId, applicationId], references: [id, applicationId], onDelete: Restrict)
+  run              OicEvaluationRun? @relation(fields: [runId, applicationId, tenantId], references: [id, applicationId, tenantId], onDelete: Restrict)
+
+  @@unique([applicationId, tenantId, eventKey])
+  @@unique([id, applicationId, tenantId])
+  @@index([status, availableAt, leaseUntil, createdAt])
+  @@index([applicationId, tenantId, status, createdAt])
+}
+
+model OicEvaluationSchedulerCursor {
+  id                 String    @id @default("EVALUATION") @db.VarChar(16)
+  lastScopeKey       String?   @db.VarChar(80)
+  workerInstanceId   String?   @db.VarChar(128)
+  workerGeneration   Int       @default(0)
+  workerState        String?   @db.VarChar(16)
+  workerReasonCode   String?   @db.VarChar(48)
+  workerStartedAt    DateTime? @db.Timestamptz(6)
+  workerHeartbeatAt  DateTime? @db.Timestamptz(6)
+  workerLeaseUntil   DateTime? @db.Timestamptz(6)
+  workerCapabilities Json?     @db.JsonB
+  updatedAt          DateTime  @default(now()) @updatedAt @db.Timestamptz(6)
+}
+
+model OicEvaluationMeasurement {
+  id              String                     @id @default(uuid()) @db.Uuid
+  caseExecutionId String                     @db.Uuid
+  metricKey       String                     @db.VarChar(96)
+  metricRevision  Int
+  judgeType       String                     @db.VarChar(16)
+  valueType       String                     @db.VarChar(16)
+  value           Json?
+  unit            String                     @db.VarChar(64)
+  polarity        String                     @db.VarChar(24)
+  availability    String                     @db.VarChar(24)
+  evidenceDigest  String?                    @db.Char(64)
+  uncertainty     Json?
+  evaluatedAt     DateTime                   @default(now()) @db.Timestamptz(6)
+  caseExecution   OicEvaluationCaseExecution @relation(fields: [caseExecutionId], references: [id], onDelete: Restrict)
+
+  @@unique([caseExecutionId, metricKey, metricRevision, judgeType])
+  @@index([metricKey, metricRevision, availability])
+}
+
+model OicEvaluationReport {
+  id                   String                        @id @default(uuid()) @db.Uuid
+  runId                String                        @db.Uuid
+  analysisRevision     Int
+  status               String                        @db.VarChar(24)
+  resultDigest         String                        @db.Char(64)
+  summary              Json                          @db.JsonB
+  verificationTier     String                        @db.VarChar(32)
+  decisionEligible     Boolean                       @default(false)
+  regradePassId        String?                       @unique @db.Uuid
+  effectiveGradingManifestId String?                 @db.Uuid
+  sourceReportId       String?                       @db.Uuid
+  createdAt            DateTime                      @default(now()) @db.Timestamptz(6)
+  run                  OicEvaluationRun              @relation(fields: [runId], references: [id], onDelete: Restrict)
+  regradePass          OicEvaluationRegradePass?     @relation(fields: [regradePassId], references: [id], onDelete: Restrict)
+  effectiveGradingManifest OicEvaluationProtocolManifest? @relation("EvaluationReportEffectiveGradingManifest", fields: [effectiveGradingManifestId], references: [id], onDelete: Restrict)
+  sourceReport         OicEvaluationReport?          @relation("EvaluationReportRegradeLineage", fields: [sourceReportId], references: [id], onDelete: Restrict)
+  regradedReports      OicEvaluationReport[]         @relation("EvaluationReportRegradeLineage")
+  dnaMeasurements      OicEvaluationDnaMeasurement[]
+  baselineComparisons  OicEvaluationComparison[]     @relation("EvaluationComparisonBaseline")
+  candidateComparisons OicEvaluationComparison[]     @relation("EvaluationComparisonCandidate")
+
+  @@unique([runId, analysisRevision])
+  @@index([status, decisionEligible, createdAt])
+}
+
+model OicEvaluationBasisDraft {
+  id                    String         @id @default(uuid()) @db.Uuid
+  applicationId         String         @db.Uuid
+  tenantId              String?        @db.Uuid
+  kind                  String         @db.VarChar(24)
+  draftKey              String         @db.VarChar(128)
+  payload               Json           @db.JsonB
+  payloadDigest         String         @db.Char(64)
+  status                String         @default("DRAFT") @db.VarChar(16)
+  createdByPrincipalId  String         @db.Uuid
+  publishedByPrincipalId String?       @db.Uuid
+  publishedEntityId     String?        @db.Uuid
+  createdAt             DateTime       @default(now()) @db.Timestamptz(6)
+  publishedAt           DateTime?      @db.Timestamptz(6)
+  application           OicApplication @relation(fields: [applicationId], references: [id], onDelete: Restrict)
+  tenant                OicTenant?     @relation(fields: [tenantId, applicationId], references: [id, applicationId], onDelete: Restrict)
+
+  @@unique([applicationId, tenantId, kind, draftKey])
+  @@unique([applicationId, tenantId, payloadDigest])
+  @@index([applicationId, tenantId, status, createdAt])
+}
+
+model OicEvaluationBasisBridgeRevision {
+  id                       String                       @id @default(uuid()) @db.Uuid
+  applicationId            String                       @db.Uuid
+  tenantId                 String?                      @db.Uuid
+  bridgeKey                String                       @db.VarChar(96)
+  revision                 Int
+  bridgeType               String                       @db.VarChar(32)
+  sourceManifestId         String                       @db.Uuid
+  targetGradingManifestId  String                       @db.Uuid
+  sourceMetricRevisionId   String                       @db.Uuid
+  targetMetricRevisionId   String                       @db.Uuid
+  sourceMethodRevision     String?                      @db.VarChar(128)
+  targetMethodRevision     String                       @db.VarChar(128)
+  validationEvidence       Json                         @db.JsonB
+  validationEvidenceDigest String                       @db.Char(64)
+  bridgeDigest             String                       @db.Char(64)
+  status                   String                       @default("DRAFT") @db.VarChar(16)
+  authorPrincipalId        String                       @db.Uuid
+  publisherPrincipalId     String                       @db.Uuid
+  createdAt                DateTime                     @default(now()) @db.Timestamptz(6)
+  publishedAt              DateTime                     @default(now()) @db.Timestamptz(6)
+  revokedAt                DateTime?                    @db.Timestamptz(6)
+  application              OicApplication               @relation(fields: [applicationId], references: [id], onDelete: Restrict)
+  tenant                   OicTenant?                   @relation(fields: [tenantId, applicationId], references: [id, applicationId], onDelete: Restrict)
+  sourceManifest           OicEvaluationProtocolManifest @relation("EvaluationBasisBridgeSourceManifest", fields: [sourceManifestId], references: [id], onDelete: Restrict)
+  targetGradingManifest    OicEvaluationProtocolManifest @relation("EvaluationBasisBridgeTargetManifest", fields: [targetGradingManifestId], references: [id], onDelete: Restrict)
+  sourceMetricRevision     OicEvaluationMetricRevision   @relation("EvaluationBasisBridgeSourceMetric", fields: [sourceMetricRevisionId], references: [id], onDelete: Restrict)
+  targetMetricRevision     OicEvaluationMetricRevision   @relation("EvaluationBasisBridgeTargetMetric", fields: [targetMetricRevisionId], references: [id], onDelete: Restrict)
+  regradePasses            OicEvaluationRegradePass[]
+
+  @@unique([applicationId, tenantId, bridgeKey, revision], map: "OicEvalBasisBridge_app_tenant_key_rev_uq")
+  @@unique([applicationId, tenantId, bridgeDigest], map: "OicEvalBasisBridge_app_tenant_digest_uq")
+  @@index([applicationId, tenantId, status, publishedAt])
+}
+
+model OicEvaluationRegradePass {
+  id                    String                       @id @default(uuid()) @db.Uuid
+  applicationId         String                       @db.Uuid
+  tenantId              String?                      @db.Uuid
+  sourceRunId           String                       @db.Uuid
+  sourceManifestId      String                       @db.Uuid
+  gradingManifestId     String                       @db.Uuid
+  bridgeRevisionId      String                       @db.Uuid
+  idempotencyKey        String                       @db.VarChar(128)
+  sourceSetDigest       String                       @db.Char(64)
+  status                String                       @default("REQUESTED") @db.VarChar(24)
+  resultDigest          String?                      @db.Char(64)
+  createdByPrincipalId String                       @db.Uuid
+  createdAt             DateTime                     @default(now()) @db.Timestamptz(6)
+  completedAt           DateTime?                    @db.Timestamptz(6)
+  application           OicApplication               @relation(fields: [applicationId], references: [id], onDelete: Restrict)
+  tenant                OicTenant?                   @relation(fields: [tenantId, applicationId], references: [id, applicationId], onDelete: Restrict)
+  sourceRun             OicEvaluationRun             @relation(fields: [sourceRunId], references: [id], onDelete: Restrict)
+  sourceManifest        OicEvaluationProtocolManifest @relation("EvaluationRegradeSourceManifest", fields: [sourceManifestId], references: [id], onDelete: Restrict)
+  gradingManifest       OicEvaluationProtocolManifest @relation("EvaluationRegradeGradingManifest", fields: [gradingManifestId], references: [id], onDelete: Restrict)
+  bridgeRevision        OicEvaluationBasisBridgeRevision @relation(fields: [bridgeRevisionId], references: [id], onDelete: Restrict)
+  sources               OicEvaluationRegradeSource[]
+  measurements          OicEvaluationRegradeMeasurement[]
+  report                OicEvaluationReport?
+
+  @@unique([applicationId, tenantId, idempotencyKey])
+  @@index([applicationId, tenantId, status, createdAt])
+}
+
+model OicEvaluationRegradeSource {
+  id                 String                       @id @default(uuid()) @db.Uuid
+  regradePassId      String                       @db.Uuid
+  caseExecutionId   String                       @db.Uuid
+  attemptId          String                       @db.Uuid
+  outputDigest       String                       @db.Char(64)
+  oracleEvidenceDigest String                     @db.Char(64)
+  createdAt          DateTime                     @default(now()) @db.Timestamptz(6)
+  regradePass        OicEvaluationRegradePass     @relation(fields: [regradePassId], references: [id], onDelete: Restrict)
+  caseExecution      OicEvaluationCaseExecution   @relation(fields: [caseExecutionId], references: [id], onDelete: Restrict)
+  attempt            OicEvaluationAttempt          @relation(fields: [attemptId], references: [id], onDelete: Restrict)
+  measurements       OicEvaluationRegradeMeasurement[]
+
+  @@unique([regradePassId, caseExecutionId])
+  @@index([caseExecutionId, createdAt])
+}
+
+model OicEvaluationRegradeMeasurement {
+  id                 String                         @id @default(uuid()) @db.Uuid
+  regradePassId      String                         @db.Uuid
+  regradeSourceId    String                         @db.Uuid
+  caseExecutionId    String                         @db.Uuid
+  metricKey          String                         @db.VarChar(96)
+  metricRevision     Int
+  judgeType          String                         @db.VarChar(16)
+  valueType          String                         @db.VarChar(16)
+  value              Json?
+  unit               String                         @db.VarChar(64)
+  polarity           String                         @db.VarChar(24)
+  availability       String                         @db.VarChar(24)
+  evidenceDigest     String?                        @db.Char(64)
+  provenance         String                         @default("REGRADE") @db.VarChar(16)
+  createdAt          DateTime                       @default(now()) @db.Timestamptz(6)
+  regradePass        OicEvaluationRegradePass       @relation(fields: [regradePassId], references: [id], onDelete: Restrict)
+  regradeSource      OicEvaluationRegradeSource     @relation(fields: [regradeSourceId], references: [id], onDelete: Restrict)
+  caseExecution      OicEvaluationCaseExecution     @relation(fields: [caseExecutionId], references: [id], onDelete: Restrict)
+
+  @@unique([regradeSourceId, metricKey, metricRevision, judgeType])
+  @@index([regradePassId, metricKey, metricRevision, availability])
+}
+
+model OicEvaluationComparison {
+  id                String              @id @default(uuid()) @db.Uuid
+  projectionRevision Int                 @default(1)
+  baselineReportId  String              @db.Uuid
+  candidateReportId String              @db.Uuid
+  outcome           String              @db.VarChar(40)
+  reasonCodes       Json                @db.JsonB
+  commonCases       Int                 @default(0)
+  coverage          Json                @db.JsonB
+  estimates         Json                @db.JsonB
+  methodRevision    String              @db.VarChar(64)
+  decisionEligible  Boolean             @default(false)
+  createdAt         DateTime            @default(now()) @db.Timestamptz(6)
+  baselineReport    OicEvaluationReport @relation("EvaluationComparisonBaseline", fields: [baselineReportId], references: [id], onDelete: Restrict)
+  candidateReport   OicEvaluationReport @relation("EvaluationComparisonCandidate", fields: [candidateReportId], references: [id], onDelete: Restrict)
+
+  @@unique([baselineReportId, candidateReportId, methodRevision, projectionRevision], map: "OicEvalComparison_pair_method_revision_uq")
+  @@index([outcome, decisionEligible])
+}
+
+model OicEvaluationDnaMeasurement {
+  id                String              @id @default(uuid()) @db.Uuid
+  reportId          String              @db.Uuid
+  targetClass       String              @db.VarChar(40)
+  targetFingerprint String              @db.Char(64)
+  contextKey        String              @db.VarChar(256)
+  traitKey          String              @db.VarChar(64)
+  value             Json?
+  uncertainty       Json?
+  availability      String              @db.VarChar(24)
+  evidenceStrength  String              @db.VarChar(16)
+  sourceDigest      String              @db.Char(64)
+  provenance        Json                @default("{}") @db.JsonB
+  evaluatedAt       DateTime            @default(now()) @db.Timestamptz(6)
+  report            OicEvaluationReport @relation(fields: [reportId], references: [id], onDelete: Restrict)
+
+  @@unique([reportId, targetClass, targetFingerprint, contextKey, traitKey, sourceDigest])
+  @@index([targetClass, targetFingerprint, contextKey, traitKey, evaluatedAt])
+}
+
+model OicEvaluationCandidate {
+  id                String                          @id @default(uuid()) @db.Uuid
+  applicationId     String                          @db.Uuid
+  tenantId          String?                         @db.Uuid
+  candidateKey      String                          @db.VarChar(96)
+  parentIds         Json                            @db.JsonB
+  changeDigest      String                          @db.Char(64)
+  targetClass       String                          @db.VarChar(40)
+  targetFingerprint String                          @db.Char(64)
+  status            String                          @default("DRAFT") @db.VarChar(24)
+  application       OicApplication                  @relation(fields: [applicationId], references: [id], onDelete: Restrict)
+  tenant            OicTenant?                      @relation(fields: [tenantId, applicationId], references: [id, applicationId], onDelete: Restrict)
+  promotion         OicEvaluationPromotionDecision?
+  createdAt         DateTime                        @default(now()) @db.Timestamptz(6)
+
+  @@unique([applicationId, tenantId, candidateKey])
+  @@unique([applicationId, tenantId, changeDigest])
+  @@index([applicationId, tenantId, status, createdAt])
+}
+
+model OicEvaluationPromotionDecision {
+  id                     String                 @id @default(uuid()) @db.Uuid
+  candidateId            String                 @unique @db.Uuid
+  verdict                String                 @db.VarChar(24)
+  verdictDigest          String                 @db.Char(64)
+  expectedBindingVersion Int
+  approvalPrincipalId    String                 @db.Uuid
+  reason                 String                 @db.VarChar(1000)
+  createdAt              DateTime               @default(now()) @db.Timestamptz(6)
+  candidate              OicEvaluationCandidate @relation(fields: [candidateId], references: [id], onDelete: Restrict)
 }

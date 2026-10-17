@@ -10,9 +10,10 @@ import { IntelligenceModule } from "../modules/intelligence/intelligence.module"
 import { RuntimePlaneModule } from "../modules/runtime-plane/runtime-plane.module";
 import { UsageEvidenceModule } from "../modules/usage-evidence/usage-evidence.module";
 import { EconomicsModule } from "../modules/economics/economics.module";
+import { EvaluationModule } from "../modules/evaluation/evaluation.module";
 
 @Module({
-  imports: [OicConfigModule, OicDatabaseModule, ControlPlaneModule, RuntimePlaneModule, IntelligenceModule, IdentityModule, HealthModule, UsageEvidenceModule, EconomicsModule],
+  imports: [OicConfigModule, OicDatabaseModule, ControlPlaneModule, RuntimePlaneModule, IntelligenceModule, IdentityModule, HealthModule, UsageEvidenceModule, EconomicsModule, EvaluationModule],
   providers: [{ provide: APP_FILTER, useClass: OicExceptionFilter }]
 })
 export class AppModule {}

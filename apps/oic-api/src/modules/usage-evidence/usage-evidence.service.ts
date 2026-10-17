@@ -40,9 +40,22 @@ export class UsageEvidenceService {
     upstreamModelId: string; transportProfile: string;
   }): Promise<string> {
     return this.db.$transaction(async (tx) => {
+      let evaluationAdmissionIsFenced = false;
       if (context.admissionId) {
         const admission = await tx.oicAdmission.findFirst({ where: { id: context.admissionId, applicationId: context.applicationId, tenantId: context.tenantId, principalId: context.principalId, status: { in: ["SHADOW", "ADMITTED"] } }, select: { id: true } });
-        if (!admission) throw new Error("Provider attempt has no matching active admission");
+        if (!admission) {
+          const match = /^evaluation-([0-9a-f-]{36})$/i.exec(context.requestId);
+          const linkedAttempt = match ? await tx.oicEvaluationAttempt.findFirst({
+            where: { id: match[1], admissionId: context.admissionId, status: "DISPATCHED" },
+            select: { caseExecution: { select: { run: { select: { applicationId: true, tenantId: true, targetIdentity: true } } } } }
+          }) : null;
+          const run = linkedAttempt?.caseExecution.run;
+          const target = run?.targetIdentity && typeof run.targetIdentity === "object" && !Array.isArray(run.targetIdentity)
+            ? run.targetIdentity as Record<string, unknown>
+            : null;
+          if (!run || run.applicationId !== context.applicationId || run.tenantId !== context.tenantId || target?.runtimePrincipalId !== context.principalId) throw new Error("Provider attempt has no matching active admission or durable evaluation linkage");
+          evaluationAdmissionIsFenced = true;
+        }
       }
       const row = await tx.oicProviderAttempt.create({ data: {
         applicationId: context.applicationId,
@@ -61,7 +74,11 @@ export class UsageEvidenceService {
         usageStatus: "UNKNOWN"
       }, select: { id: true } });
       if (context.admissionId) {
-        await tx.oicAdmission.update({ where: { id: context.admissionId }, data: { status: "DISPATCHED", fenceGeneration: { increment: 1 } } });
+        const transitioned = await tx.oicAdmission.updateMany({
+          where: { id: context.admissionId, status: evaluationAdmissionIsFenced ? "DISPATCHED" : { in: ["SHADOW", "ADMITTED"] } },
+          data: { status: "DISPATCHED", fenceGeneration: { increment: 1 } }
+        });
+        if (transitioned.count !== 1) throw new Error("Provider attempt admission fence changed before dispatch");
         await tx.oicReservationLeg.updateMany({ where: { admissionId: context.admissionId, state: "HELD" }, data: { state: "DISPATCHED", fenceGeneration: { increment: 1 } } });
       }
       return row.id;

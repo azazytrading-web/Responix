@@ -124,7 +124,7 @@ void test("OIC protected administrator recovery acceptance", { skip: !hasTestDat
       const guard = new OicAuthenticationGuard(db);
       const contextFor = (token: string, ip: string) => ({ switchToHttp: () => ({ getRequest: () => ({ headers: { authorization: `Bearer ${token}` }, ip }) }) }) as never;
       await assert.rejects(guard.canActivate(contextFor(issuedOld.token, "192.0.2.41")));
-      assert.equal(await guard.canActivate(contextFor(result.credential, "192.0.2.42")), true);
+      await assert.rejects(guard.canActivate(contextFor(result.credential, "192.0.2.42")));
       issuedOld.token = ""; issuedOld.verifier = "";
     });
 

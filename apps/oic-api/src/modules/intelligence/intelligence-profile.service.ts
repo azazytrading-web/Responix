@@ -3,6 +3,7 @@ import { OicDatabaseService, Prisma } from "@oic/database";
 import type { AuthenticatedPrincipal } from "../identity/auth.guard";
 import { policyFromRevision, policyInputSchema } from "./engines/profile-policy";
 import type { ProfilePolicyInput } from "./engines/profile-policy";
+import { buildOverviewActivity } from "./overview-activity";
 
 export type IntelligenceAuditContext = { requestId?: string; traceId?: string };
 const keySchema = /^[a-z][a-z0-9._-]{1,63}$/;
@@ -102,6 +103,22 @@ export class IntelligenceProfileService {
     if (!actor.scopes.includes("oic:models:read")) throw new NotFoundException();
     const items = await this.db.oicIntelligenceExecution.findMany({ where: { applicationId: actor.applicationId, OR: [{ tenantId: null }, { tenantId: { in: actor.tenantIds } }] }, orderBy: { startedAt: "desc" }, take: Math.max(1, Math.min(100, limit)), select: { id: true, traceId: true, requestId: true, tenantId: true, modelId: true, modelRevisionId: true, profileRevisionId: true, status: true, strategy: true, taskType: true, uncertainty: true, stageCount: true, providerCallCount: true, retrievalQueryCount: true, memoryLookupCount: true, contextTokens: true, inputTokens: true, outputTokens: true, verificationStatus: true, summary: true, startedAt: true, completedAt: true } });
     return items;
+  }
+
+  async overviewActivity(actor: AuthenticatedPrincipal) {
+    if (!actor.scopes.includes("oic:models:read")) throw new NotFoundException();
+    const rows = await this.db.oicIntelligenceExecution.findMany({
+      where: { applicationId: actor.applicationId, OR: [{ tenantId: null }, { tenantId: { in: actor.tenantIds } }] },
+      orderBy: { startedAt: "desc" },
+      take: 50,
+      select: {
+        modelId: true, status: true, stageCount: true, providerCallCount: true,
+        retrievalQueryCount: true, memoryLookupCount: true, contextTokens: true,
+        inputTokens: true, outputTokens: true, verificationStatus: true,
+        startedAt: true, completedAt: true, summary: true
+      }
+    });
+    return buildOverviewActivity(rows);
   }
 
   async getExecution(actor: AuthenticatedPrincipal, traceId: string) {

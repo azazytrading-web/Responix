@@ -20,6 +20,7 @@ import { UnavailableOicModelResolver } from "./model-resolver";
 import { UnavailableOicRuntimeExecutor } from "./runtime-executor";
 import { OicRuntimeService } from "./runtime.service";
 import { OicRuntimeException } from "./runtime-errors";
+import { AdmissionService } from "../admission/admission.service";
 
 function prepareDedicatedDatabase(): boolean {
   const path = resolve(__dirname, "../../../../../.env.oic.local");
@@ -155,6 +156,13 @@ void test("OIC Runtime context, security and kernel acceptance", { skip: !hasDed
       const service = new OicRuntimeService(db, contextResolver, resolver, executor, new BoundedRuntimePolicy());
       const request: OicRuntimeRequest = parseOicRuntimeRequest({ model: "oi-demo", input: [{ speaker: "user", content: [{ type: "text", text: "hello" }] }], tenant: { kind: "id", tenantId: tenantA.id } });
       const identity = { requestId: `same-${suffix}`, traceId: `trace-${suffix}` };
+      const preflightStages: string[] = [];
+      const described = await service.describeEvaluationTarget(actor, request, identity, (stage) => { preflightStages.push(stage); return Promise.resolve(); });
+      assert.deepEqual(preflightStages, ["RUNTIME_CONTEXT", "MODEL_RESOLUTION"]);
+      assert.equal(described.modelId, request.model);
+      assert.equal(executions, 0, "target description resolves the production path without invoking a provider executor");
+      await assert.rejects(service.invokeEvaluationAttempt(actor, request, identity, randomUUID(), () => Promise.resolve()), (error: unknown) => error instanceof OicRuntimeException && error.code === "RUNTIME_UNAVAILABLE");
+      assert.equal(executions, 0, "evaluation cannot dispatch when OIC-6 admission is unavailable");
       const [first, replay] = await Promise.all([
         service.invoke(actor, request, identity, `runtime-${suffix}`),
         service.invoke(actor, request, identity, `runtime-${suffix}`)
@@ -172,6 +180,61 @@ void test("OIC Runtime context, security and kernel acceptance", { skip: !hasDed
       const actorB = await actorForToken((await issueCredentialForPrincipal(db, principalB.id)).token);
       await service.invoke(actorB, request, identity, `runtime-${suffix}`);
       assert.equal(executions, 3);
+
+      const evaluationAttemptId = randomUUID();
+      const evaluationService = new OicRuntimeService(db, contextResolver, resolver, executor, new BoundedRuntimePolicy(), new AdmissionService(db));
+      let persistedAdmissionId: string | undefined;
+      const attemptKey = `evaluation-attempt:${evaluationAttemptId}`;
+      const priorAdmissionMode = process.env.OIC_ADMISSION_MODE;
+      process.env.OIC_ADMISSION_MODE = "SHADOW";
+      try {
+        const evaluationResult = await evaluationService.invokeEvaluationAttempt(actor, request, identity, evaluationAttemptId, async (admissionId) => {
+          persistedAdmissionId = admissionId;
+          assert.equal(executions, 3, "provider execution must wait for the work lease to persist the admission");
+          const pending = await db.oicAdmission.findUnique({ where: { id: admissionId }, select: { status: true, idempotencyKey: true } });
+          assert.equal(pending?.status, "SHADOW");
+          assert.equal(pending?.idempotencyKey, attemptKey);
+        });
+        assert.equal(evaluationResult.response.output[0]?.content[0]?.text, "test-only deterministic result");
+        assert.deepEqual(evaluationResult.target, { modelId: "oi-demo", resolverVersion: "test", runtimeVersion: "1", revisionId: null, variantId: null, bindingId: null, profileId: null, profileRevision: null, providerConnectionId: null, providerDefinitionId: null, providerKey: null, upstreamModelRef: null, transportProfile: null });
+      } finally {
+        if (priorAdmissionMode === undefined) delete process.env.OIC_ADMISSION_MODE;
+        else process.env.OIC_ADMISSION_MODE = priorAdmissionMode;
+      }
+      assert.ok(persistedAdmissionId);
+      assert.equal(executions, 4);
+      const evaluationAdmission = await db.oicAdmission.findUnique({ where: { id: persistedAdmissionId }, select: { status: true } });
+      assert.equal(evaluationAdmission?.status, "SETTLED");
+      assert.equal(await db.oicIdempotencyRecord.count({ where: { key: attemptKey } }), 0, "evaluation output must not be cached in the generic runtime idempotency table");
+      await assert.rejects(
+        evaluationService.invokeEvaluationAttempt(actor, request, identity, evaluationAttemptId, () => Promise.resolve()),
+        (error: unknown) => error instanceof OicRuntimeException && error.code === "RUNTIME_UNAVAILABLE"
+      );
+      assert.equal(executions, 4, "replaying one physical attempt must not dispatch a second provider call");
+
+      const rejectedAttemptId = randomUUID();
+      let rejectedAdmissionId: string | undefined;
+      const rejectedAttemptKey = `evaluation-attempt:${rejectedAttemptId}`;
+      const shadowMode = process.env.OIC_ADMISSION_MODE;
+      process.env.OIC_ADMISSION_MODE = "SHADOW";
+      try {
+        await assert.rejects(
+          evaluationService.invokeEvaluationAttempt(actor, request, identity, rejectedAttemptId, (admissionId) => {
+            rejectedAdmissionId = admissionId;
+            return Promise.reject(new Error("worker fence lost"));
+          }),
+          (error: unknown) => error instanceof OicRuntimeException && error.code === "RUNTIME_UNAVAILABLE"
+        );
+      } finally {
+        if (shadowMode === undefined) delete process.env.OIC_ADMISSION_MODE;
+        else process.env.OIC_ADMISSION_MODE = shadowMode;
+      }
+      assert.equal(executions, 4, "provider dispatch must stop when the worker cannot persist the admission fence");
+      assert.ok(rejectedAdmissionId);
+      const rejectedAdmission = await db.oicAdmission.findUnique({ where: { id: rejectedAdmissionId }, select: { status: true } });
+      assert.equal(rejectedAdmission?.status, "UNCERTAIN");
+      assert.equal(await db.oicIdempotencyRecord.count({ where: { key: rejectedAttemptKey } }), 0);
+
       const available = await service.listVisibleModels(actor, undefined, identity);
       assert.deepEqual(available.models.map((model) => model.id), ["oi-demo"]);
 

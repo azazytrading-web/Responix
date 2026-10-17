@@ -5,9 +5,10 @@ import { resolve } from "node:path";
 import { randomUUID } from "node:crypto";
 import test from "node:test";
 import { ForbiddenException, HttpException, UnauthorizedException } from "@nestjs/common";
+import { Reflector } from "@nestjs/core";
 import type { ExecutionContext } from "@nestjs/common";
 import { OicDatabaseService } from "@oic/database";
-import { OicAuthenticationGuard } from "./auth.guard";
+import { FOUNDATION_OPERATOR_ROUTE, OicAuthenticationGuard, OicScopeGuard } from "./auth.guard";
 import type { AuthenticatedPrincipal } from "./auth.guard";
 import { PrismaFoundationAuditWriter } from "./foundation-audit-writer";
 import type { FoundationAuditWriter } from "./foundation-audit-writer";
@@ -184,6 +185,62 @@ void test("OIC Foundation database acceptance suite", { skip: !hasDedicatedDatab
         if (oldLimit === undefined) delete process.env.OIC_AUTH_REQUESTS_PER_MINUTE;
         else process.env.OIC_AUTH_REQUESTS_PER_MINUTE = oldLimit;
       }
+    });
+
+    await t.test("protected administrators and privilege elevation deny Console credential escalation", async () => {
+      const app = await db.oicApplication.findUniqueOrThrow({ where: { key: appInput.key } });
+      const platform = await db.oicApplication.findUniqueOrThrow({ where: { key: "OIC_PLATFORM" } });
+      const recovery = await db.oicServicePrincipal.findUniqueOrThrow({ where: { applicationId_key: { applicationId: platform.id, key: "platform-admin" } } });
+      const consoleActor: AuthenticatedPrincipal = {
+        id: randomUUID(), applicationId: platform.id,
+        scopes: ["oic:console:manage", "oic:principals:manage", "oic:credentials:rotate", "oic:credentials:revoke"], tenantIds: []
+      };
+      await assert.rejects(service.issueCredential(consoleActor, platform.id, recovery.id, null, null, `recovery-mint-${suffix}`, {}), ForbiddenException);
+      await assert.rejects(service.changeLifecycle(consoleActor, "principal", platform.id, recovery.id, "SUSPENDED", {}), ForbiddenException);
+      await assert.rejects(service.revokeScope(consoleActor, platform.id, recovery.id, "oic:principals:manage", {}), ForbiddenException);
+      await assert.rejects(service.createPrincipal(consoleActor, platform.id, { key: "oic-foundation-operator", displayName: "Reserved" }, `reserved-${suffix}`, {}), ForbiddenException);
+
+      const operator = await db.oicServicePrincipal.create({ data: { applicationId: app.id, key: "oic-foundation-operator", displayName: "Protected test operator" } });
+      await db.oicPrincipalScopeGrant.createMany({ data: [
+        "oic:principals:manage", "oic:credentials:rotate", "oic:credentials:revoke", "oic:evaluation:manage", "oic:evaluation:holdout:import"
+      ].map((scope) => ({ applicationId: app.id, principalId: operator.id, scope })) });
+      const operatorActor: AuthenticatedPrincipal = {
+        id: operator.id, applicationId: app.id,
+        scopes: ["oic:principals:manage", "oic:credentials:rotate", "oic:credentials:revoke", "oic:evaluation:manage", "oic:evaluation:holdout:import"], tenantIds: []
+      };
+      const selfCredential = await service.issueCredential(operatorActor, app.id, operator.id, null, null, `operator-self-${suffix}`, {});
+      assert.ok(selfCredential.credential);
+      await assert.rejects(service.issueCredential(consoleActor, app.id, operator.id, null, null, `operator-mint-${suffix}`, {}), ForbiddenException);
+      await assert.rejects(service.revokeCredential(consoleActor, app.id, selfCredential.id, {}), ForbiddenException);
+      await assert.rejects(service.changeLifecycle(consoleActor, "principal", app.id, operator.id, "ARCHIVED", {}), ForbiddenException);
+      await assert.rejects(service.revokeScope(consoleActor, app.id, operator.id, "oic:principals:manage", {}), ForbiddenException);
+      await assert.rejects(service.changeLifecycle(operatorActor, "principal", app.id, operator.id, "SUSPENDED", {}), ForbiddenException);
+
+      const runner = await db.oicServicePrincipal.create({ data: { applicationId: app.id, key: `runner${suffix}`, displayName: "Pre-issued test runner" } });
+      const premature = await service.issueCredential(consoleActor, app.id, runner.id, null, null, `premature-${suffix}`, {});
+      await service.grantScope(operatorActor, app.id, runner.id, "oic:evaluation:manage", `elevate-${suffix}`, {});
+      assert.equal((await db.oicMachineCredential.findUniqueOrThrow({ where: { id: premature.id } })).status, "REVOKED");
+      await assert.rejects(service.issueCredential(consoleActor, app.id, runner.id, null, null, `runner-mint-${suffix}`, {}), ForbiddenException);
+      const legitimate = await service.issueCredential(operatorActor, app.id, runner.id, null, null, `runner-issue-${suffix}`, {});
+      assert.ok(legitimate.credential);
+      await assert.rejects(service.issueCredential(operatorActor, platform.id, recovery.id, null, null, `cross-app-${suffix}`, {}));
+    });
+
+    await t.test("operational administrator is restricted to Foundation controller routes", () => {
+      class FoundationRoute {}
+      class EvaluationRoute {}
+      Reflect.defineMetadata(FOUNDATION_OPERATOR_ROUTE, true, FoundationRoute);
+      const guard = new OicScopeGuard(new Reflector());
+      const principal: AuthenticatedPrincipal = {
+        id: randomUUID(), key: "oic-foundation-operator", applicationId: randomUUID(),
+        scopes: ["oic:principals:manage", "oic:evaluation:manage"], tenantIds: []
+      };
+      const context = (route: object) => ({
+        getHandler: () => function routeHandler() {}, getClass: () => route,
+        switchToHttp: () => ({ getRequest: () => ({ principal }) })
+      }) as unknown as ExecutionContext;
+      assert.equal(guard.canActivate(context(FoundationRoute)), true);
+      assert.throws(() => guard.canActivate(context(EvaluationRoute)), ForbiddenException);
     });
 
     await t.test("scoped audit and append-only trigger", async () => {

@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import { randomBytes } from "node:crypto";
 import test from "node:test";
 import { decryptProviderCredential, encryptProviderCredential } from "./provider-credential.crypto";
-import { isPublicAddress, resolvePublicHttpsEndpoint } from "./provider-endpoint";
+import { isPublicAddress, pinnedAddressLookup, resolvePublicHttpsEndpoint } from "./provider-endpoint";
 import { registeredProvider } from "./provider-registry";
 
 void test("provider credential encryption is authenticated and connection-bound", () => {
@@ -43,6 +43,21 @@ void test("provider endpoint public address filter denies special and private ra
     assert.equal(isPublicAddress(address), false, `${address} must be denied`);
   }
   for (const address of ["8.8.8.8", "1.1.1.1", "2606:4700:4700::1111"]) assert.equal(isPublicAddress(address), true, `${address} must be public`);
+});
+
+void test("pinned provider lookup supports Node's single-address and all-address callback forms", () => {
+  const pinned = { address: "8.8.8.8", family: 4 as const };
+  const lookup = pinnedAddressLookup(pinned);
+  const results: Array<{ error: NodeJS.ErrnoException | null; address: string | Array<{ address: string; family: number }>; family?: number }> = [];
+  const callback = (error: NodeJS.ErrnoException | null, address: string | Array<{ address: string; family: number }>, family?: number) => {
+    results.push({ error, address, ...(family === undefined ? {} : { family }) });
+  };
+  lookup("provider.example", { all: true }, callback);
+  lookup("provider.example", { all: false }, callback);
+  assert.deepEqual(results, [
+    { error: null, address: [{ address: "8.8.8.8", family: 4 }] },
+    { error: null, address: "8.8.8.8", family: 4 }
+  ]);
 });
 
 void test("provider registry publishes only statically registered transports", () => {

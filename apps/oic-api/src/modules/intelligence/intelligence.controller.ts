@@ -55,6 +55,9 @@ export class IntelligenceController {
   @Version("1") @Get("executions") @RequireScopes("oic:models:read")
   executions(@CurrentPrincipal() actor: AuthenticatedPrincipal, @Query("limit") limit?: string) { return this.profiles.listExecutions(actor, Number(limit) || 50); }
 
+  @Version("1") @Get("overview-activity") @RequireScopes("oic:models:read")
+  overviewActivity(@CurrentPrincipal() actor: AuthenticatedPrincipal) { return this.profiles.overviewActivity(actor); }
+
   @Version("1") @Get("executions/:traceId") @RequireScopes("oic:models:read")
   execution(@CurrentPrincipal() actor: AuthenticatedPrincipal, @Param("traceId") traceId: string) { return this.profiles.getExecution(actor, traceId); }
 

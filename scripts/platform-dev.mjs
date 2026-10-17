@@ -1,35 +1,26 @@
+/* global process, URL, setTimeout, clearTimeout, fetch, AbortSignal */
 import { readFileSync } from "node:fs";
 import { connect as connectTcp } from "node:net";
 import { resolve } from "node:path";
 import { spawn } from "node:child_process";
+import {
+  createChildEnvironment,
+  loadPlatformEnvironments,
+  resolveWorkspaceRoot,
+  selectServicesForTarget
+} from "./platform-env.mjs";
 
 const targetIndex = process.argv.indexOf("--target");
 const target = targetIndex === -1 ? "all" : process.argv[targetIndex + 1];
-if (!["all", "backend", "dashboard"].includes(target)) {
-  throw new Error("--target must be one of: all, backend, dashboard");
+if (!["all", "backend", "dashboard", "oic"].includes(target)) {
+  throw new Error("--target must be one of: all, backend, dashboard, oic");
 }
 
-function localSetting(key, file, fallback) {
-  if (process.env[key]) return process.env[key];
-  try {
-    const line = readFileSync(file, "utf8")
-      .split(/\r?\n/)
-      .find((entry) => entry.trimStart().startsWith(`${key}=`));
-    if (!line) return fallback;
-    return line
-      .slice(line.indexOf("=") + 1)
-      .trim()
-      .replace(
-        /^(?:"(.*)"|'(.*)')$/,
-        (_, doubleQuoted, singleQuoted) => doubleQuoted ?? singleQuoted
-      );
-  } catch {
-    return fallback;
-  }
-}
+const root = resolveWorkspaceRoot(import.meta.url);
+const { sharedEnvironment, oicEnvironment, consoleEnvironment } = loadPlatformEnvironments({ root });
 
-function localPort(key, file, fallback) {
-  const value = localSetting(key, file, fallback);
+function localPort(key, environment, fallback) {
+  const value = environment[key] ?? fallback;
   const port = Number(value);
   if (!Number.isInteger(port) || port < 1 || port > 65535) {
     throw new Error(`${key} must be an integer between 1 and 65535`);
@@ -37,17 +28,16 @@ function localPort(key, file, fallback) {
   return String(port);
 }
 
-const root = process.cwd();
-const apiPort = localPort("API_PORT", ".env", "4000");
-const oicPort = localPort("OIC_PORT", ".env.oic.local", "4100");
-const portalPort = localPort("PORTAL_PORT", ".env", "3000");
-const responixPort = localPort("RESPONIX_PORT", ".env", "3001");
+const apiPort = localPort("API_PORT", sharedEnvironment, "4000");
+const oicPort = localPort("OIC_PORT", oicEnvironment, "4100");
+const portalPort = localPort("PORTAL_PORT", sharedEnvironment, "3000");
+const responixPort = localPort("RESPONIX_PORT", sharedEnvironment, "3001");
 const oicConsolePackage = JSON.parse(readFileSync(resolve(root, "apps/oic-console/package.json"), "utf8"));
 const oicConsolePort = oicConsolePackage.scripts?.start?.match(/--port\s+(\d+)/)?.[1] ?? "3002";
 if (!Number.isInteger(Number(oicConsolePort)) || Number(oicConsolePort) < 1 || Number(oicConsolePort) > 65535) {
   throw new Error("@oic/console start script must define a valid port");
 }
-const configuredConsoleUrl = localSetting("OIC_CONSOLE_URL", ".env", `http://localhost:${oicConsolePort}`);
+const configuredConsoleUrl = oicEnvironment.OIC_CONSOLE_URL ?? `http://localhost:${oicConsolePort}`;
 let parsedConsoleUrl;
 try {
   parsedConsoleUrl = new URL(configuredConsoleUrl);
@@ -71,7 +61,9 @@ if (!Number.isInteger(startupTimeoutMs) || startupTimeoutMs < 5000 || startupTim
 const services = [
   {
     group: "backend",
+    targets: ["oic"],
     label: "OIC API",
+    useOicEnvironment: true,
     cwd: resolve(root, "apps/oic-api"),
     args: [resolve(root, "apps/oic-api/dist/main.js")],
     url: `http://127.0.0.1:${oicPort}`,
@@ -140,7 +132,9 @@ const services = [
   },
   {
     group: "dashboard",
+    targets: ["oic"],
     label: "OIC Console",
+    useConsoleEnvironment: true,
     cwd: root,
     command: process.platform === "win32" ? "pnpm.cmd" : "pnpm",
     shell: process.platform === "win32",
@@ -153,7 +147,7 @@ const services = [
     env: { NODE_ENV: "production" }
   }
 ];
-const selectedServices = services.filter((service) => target === "all" || service.group === target);
+const selectedServices = selectServicesForTarget(target, services);
 const children = [];
 let stopping = false;
 
@@ -208,12 +202,20 @@ process.on("SIGBREAK", () => {
   void stop("SIGTERM");
 });
 
-function start({ label, cwd, url, command = process.execPath, shell = false, env: serviceEnv, args = [] }) {
+function start(service) {
+  const { label, cwd, url, command = process.execPath, shell = false, env: serviceEnv, args = [] } = service;
   let child;
   try {
     child = spawn(command, args, {
       cwd,
-      env: { ...process.env, ...serviceEnv },
+      env: createChildEnvironment({
+        useOicEnvironment: service.useOicEnvironment,
+        useConsoleEnvironment: service.useConsoleEnvironment,
+        sharedEnvironment,
+        oicEnvironment,
+        consoleEnvironment,
+        serviceEnvironment: serviceEnv
+      }),
       shell,
       stdio: ["inherit", "pipe", "pipe"],
       windowsHide: true
@@ -324,6 +326,7 @@ async function main() {
   const builds = [
     {
       group: "backend",
+      targets: ["oic"],
       serviceLabel: "OIC API",
       label: "@oic/api",
       cwd: resolve(root, "apps/oic-api"),
@@ -356,8 +359,10 @@ async function main() {
     },
     {
       group: "dashboard",
+      targets: ["oic"],
       serviceLabel: "OIC Console",
       label: "@oic/console",
+      useConsoleEnvironment: true,
       cwd: root,
       command: process.platform === "win32" ? "pnpm.cmd" : "pnpm",
       shell: process.platform === "win32",
@@ -367,7 +372,7 @@ async function main() {
     }
   ];
   for (const build of builds.filter((entry) =>
-    (target === "all" || entry.group === target) && !readyServices.has(entry.serviceLabel)
+    (target === "all" || entry.group === target || entry.targets?.includes(target)) && !readyServices.has(entry.serviceLabel)
   )) {
     await runBuild(build);
   }
@@ -399,12 +404,12 @@ async function main() {
   );
 }
 
-function runBuild({ label, cwd, args, command = process.execPath, shell = false, nodeOptions, nodeEnv }) {
+function runBuild({ label, cwd, args, command = process.execPath, shell = false, nodeOptions, nodeEnv, useConsoleEnvironment = false }) {
   return new Promise((resolveBuild, rejectBuild) => {
     const child = spawn(command, args, {
       cwd,
       env: {
-        ...process.env,
+        ...(useConsoleEnvironment ? consoleEnvironment : process.env),
         ...(nodeEnv ? { NODE_ENV: nodeEnv } : {}),
         NODE_OPTIONS: nodeOptions ?? process.env.NODE_OPTIONS ?? "--max-old-space-size=4096"
       },

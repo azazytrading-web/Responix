@@ -1,7 +1,7 @@
-import { BadRequestException, Body, Controller, Delete, Get, Headers, Param, ParseUUIDPipe, Patch, Post, Query, Req, UseGuards, Version } from "@nestjs/common";
+import { BadRequestException, Body, Controller, Delete, Get, Headers, Param, ParseUUIDPipe, Patch, Post, Query, Req, SetMetadata, UseGuards, Version } from "@nestjs/common";
 import { ApiBearerAuth, ApiTags } from "@nestjs/swagger";
 import { z } from "zod";
-import { AuthenticatedPrincipal, CurrentPrincipal, OicAuthenticationGuard, OicScopeGuard, RequireScopes } from "./auth.guard";
+import { AuthenticatedPrincipal, CurrentPrincipal, FOUNDATION_OPERATOR_ROUTE, OicAuthenticationGuard, OicScopeGuard, RequireScopes } from "./auth.guard";
 import { AuditContext, FoundationService, OIC_SCOPES } from "./foundation.service";
 
 type RequestWithIds = { requestId?: string; headers: Record<string, string | string[] | undefined> };
@@ -29,6 +29,7 @@ function idempotencyKey(headers: Record<string, string | string[] | undefined>):
 @ApiTags("OIC Foundation Administration")
 @ApiBearerAuth()
 @Controller("admin")
+@SetMetadata(FOUNDATION_OPERATOR_ROUTE, true)
 @UseGuards(OicAuthenticationGuard, OicScopeGuard)
 export class FoundationController {
   constructor(private readonly foundation: FoundationService) {}

@@ -12,7 +12,7 @@ const event = (normalizedDimensions: Record<string, unknown>, occurredAt: Date |
 });
 
 function oiuHarness(source: ReturnType<typeof event>, policy?: Record<string, unknown>) {
-  const captured: { assessment?: Record<string, unknown>; posting?: Record<string, unknown> } = {};
+  const captured: { assessment?: Record<string, unknown>; posting?: Record<string, unknown>; policyEffectiveAt?: Date } = {};
   const tx = {
     oicOiuAssessment: {
       findUnique: () => Promise.resolve(null),
@@ -24,7 +24,7 @@ function oiuHarness(source: ReturnType<typeof event>, policy?: Record<string, un
   };
   const db = {
     oicUsageEvent: { findUnique: () => Promise.resolve(source) },
-    oicOiuPolicyRevision: { findMany: () => Promise.resolve(policy ? [policy] : []) },
+    oicOiuPolicyRevision: { findMany: ({ where }: { where: { effectiveFrom: { lte: Date } } }) => { captured.policyEffectiveAt = where.effectiveFrom.lte; return Promise.resolve(policy ? [policy] : []); } },
     $transaction: <T>(operation: (value: unknown) => Promise<T>) => operation(tx)
   } as never;
   return { service: new EconomicsService(db), captured };
@@ -53,6 +53,19 @@ void test("OIC-6.2 OIU applies cached-input policy and rounds half-even once int
   });
 });
 
+void test("OIC-6.2 usage without provider occurrence time selects OIU policy at durable receipt time", async () => {
+  const source = event({ inputTokens: 94, cachedInputTokens: 0, outputTokens: 8 }, null);
+  const policy = { id: "policy-time-fallback", policyKey: "oic7-deepseek-canary", applicationId: "app-1", tenantId: "tenant-1", sourceDigest: "policy-digest", minimumIncrement: "0", roundingMode: "HALF_EVEN", dimensions: [
+    { dimension: "inputTokens", unit: "TOKENS", weightNumerator: "1", weightDenominator: "1", required: true, included: true },
+    { dimension: "outputTokens", unit: "TOKENS", weightNumerator: "1", weightDenominator: "1", required: true, included: true }
+  ] };
+  const { service, captured } = oiuHarness(source, policy);
+  const result = await service.assessOiu(actor, source.id, "ORIGINAL", {}, "oic7-deepseek-canary");
+  assert.equal(captured.policyEffectiveAt?.toISOString(), source.recordedAt.toISOString());
+  assert.equal(result.status, "ASSESSED");
+  assert.equal(result.oiu, "102.000000");
+});
+
 void test("OIC-6.2 missing policy or required usage yields UNKNOWN/PARTIAL with no OIU posting", async () => {
   const noPolicySource = event({ inputTokens: 0 }, null);
   const noPolicy = oiuHarness(noPolicySource);
@@ -74,7 +87,7 @@ void test("OIC-6.2 missing policy or required usage yields UNKNOWN/PARTIAL with 
 });
 
 void test("OIC-6.2 provider expense keeps currency native, separates cached units, and never invents a missing rate", async () => {
-  const source = event({ inputTokens: 100, cachedInputTokens: 20, outputTokens: 10 });
+  const source = event({ inputTokens: 100, cachedInputTokens: 20, outputTokens: 10, reasoningTokens: 4 });
   const rateBook = {
     id: "ratebook-1", providerKey: "openai", currency: "USD", sourceQuality: "PROVIDER_CONTRACT", sourceDigest: "rate-digest", applicationId: "app-1", tenantId: "tenant-1", connectionId: "connection-1",
     rates: [
@@ -130,6 +143,32 @@ void test("OIC-6.2 provider expense keeps currency native, separates cached unit
   assert.equal(incomplete.status, "PARTIAL");
   assert.equal(incomplete.nativeAmount, null);
   assert.equal(incomplete.currency, null);
+});
+
+void test("OIC-6.2 provider cost uses durable receipt time when upstream occurrence time is absent", async () => {
+  const source = event({ inputTokens: 94, cachedInputTokens: 0, outputTokens: 8 }, null);
+  let assessedAt: Date | undefined;
+  const rateBook = {
+    id: "ratebook-time-fallback", providerKey: "openai", currency: "USD", sourceQuality: "STANDARD_PUBLISHED", sourceDigest: "rate-digest", applicationId: "app-1", tenantId: "tenant-1", connectionId: "connection-1",
+    rates: [
+      { upstreamModelId: "model-1", dimension: "inputTokens", unit: "TOKENS", quantityDivisor: "1", pricePerUnit: "0.01", required: true },
+      { upstreamModelId: "model-1", dimension: "cachedInputTokens", unit: "TOKENS", quantityDivisor: "1", pricePerUnit: "0.005", required: false },
+      { upstreamModelId: "model-1", dimension: "outputTokens", unit: "TOKENS", quantityDivisor: "1", pricePerUnit: "0.02", required: true }
+    ]
+  };
+  const db = {
+    oicUsageEvent: { findUnique: () => Promise.resolve(source) },
+    oicProviderRateBookRevision: { findMany: ({ where }: { where: { effectiveFrom: { lte: Date } } }) => { assessedAt = where.effectiveFrom.lte; return Promise.resolve([rateBook]); } },
+    $transaction: <T>(operation: (tx: unknown) => Promise<T>) => operation({
+      oicProviderCostAssessment: { findUnique: () => Promise.resolve(null), create: ({ data }: { data: Record<string, unknown> }) => Promise.resolve(data) },
+      oicAuditEvent: { create: () => Promise.resolve({ id: "audit-time-fallback" }) }
+    })
+  } as never;
+  const result = await new EconomicsService(db).assessProviderCost(actor, source.id);
+  assert.equal(assessedAt?.toISOString(), source.recordedAt.toISOString());
+  assert.equal(result.status, "ASSESSED");
+  assert.equal(result.currency, "USD");
+  assert.equal(result.nativeAmount, "1.100000000000000000");
 });
 
 void test("OIC-6.2 economic commands require explicit authority and preserve application scope", async () => {

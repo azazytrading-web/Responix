@@ -162,14 +162,15 @@ export class EconomicsService {
     const event = await this.db.oicUsageEvent.findUnique({ where: { id: usageEventId }, include: { providerAttempt: true } });
     if (!event) throw new NotFoundException();
     this.assertCanManageExisting(actor, event.applicationId, event.tenantId);
-    const policies = event.occurredAt ? await this.db.oicOiuPolicyRevision.findMany({ where: {
-      policyKey, status: "PUBLISHED", effectiveFrom: { lte: event.occurredAt },
+    const assessedAt = event.occurredAt ?? event.recordedAt;
+    const policies = await this.db.oicOiuPolicyRevision.findMany({ where: {
+      policyKey, status: "PUBLISHED", effectiveFrom: { lte: assessedAt },
       AND: [
-        { OR: [{ effectiveTo: null }, { effectiveTo: { gt: event.occurredAt } }] },
+        { OR: [{ effectiveTo: null }, { effectiveTo: { gt: assessedAt } }] },
         { OR: [{ applicationId: null }, { applicationId: event.applicationId }] },
         { OR: [{ tenantId: null }, { tenantId: event.tenantId }] }
       ]
-    }, include: { dimensions: true } }) : [];
+    }, include: { dimensions: true } });
     const matching = policies.filter((item) => item.tenantId === event.tenantId || item.tenantId === null).sort((a, b) => Number(!!b.tenantId) - Number(!!a.tenantId) || Number(!!b.applicationId) - Number(!!a.applicationId));
     const policy = matching[0];
     if (matching.length > 1 && Number(!!matching[0]?.tenantId) === Number(!!matching[1]?.tenantId) && Number(!!matching[0]?.applicationId) === Number(!!matching[1]?.applicationId)) throw new ConflictException("OIU policy is ambiguous for this scope and time");
@@ -222,10 +223,11 @@ export class EconomicsService {
     const event = await this.db.oicUsageEvent.findUnique({ where: { id: usageEventId }, include: { providerAttempt: true } });
     if (!event) throw new NotFoundException();
     this.assertCanManageExisting(actor, event.applicationId, event.tenantId);
-    const candidates = event.occurredAt ? await this.db.oicProviderRateBookRevision.findMany({ where: {
-      providerKey: event.providerKey, status: "PUBLISHED", effectiveFrom: { lte: event.occurredAt }, OR: [{ effectiveTo: null }, { effectiveTo: { gt: event.occurredAt } }],
+    const assessedAt = event.occurredAt ?? event.recordedAt;
+    const candidates = await this.db.oicProviderRateBookRevision.findMany({ where: {
+      providerKey: event.providerKey, status: "PUBLISHED", effectiveFrom: { lte: assessedAt }, OR: [{ effectiveTo: null }, { effectiveTo: { gt: assessedAt } }],
       AND: [{ OR: [{ applicationId: null }, { applicationId: event.applicationId }] }, { OR: [{ tenantId: null }, { tenantId: event.tenantId }] }, { OR: [{ connectionId: null }, { connectionId: event.providerAttempt.connectionId }] }]
-    }, include: { rates: true } }) : [];
+    }, include: { rates: true } });
     const rank = (row: typeof candidates[number]) => (row.connectionId ? 8 : 0) + (row.tenantId ? 4 : 0) + (row.applicationId ? 2 : 0);
     const matching = candidates.filter((row) => row.tenantId === event.tenantId || row.tenantId === null).sort((a, b) => rank(b) - rank(a));
     const rateBook = matching[0];
@@ -260,6 +262,8 @@ export class EconomicsService {
         lines.push({ dimension: rate.dimension, unit: rate.unit, quantity: quantity.toFixed(), divisor: rate.quantityDivisor.toString(), pricePerUnit: rate.pricePerUnit.toString(), amount: amount.toFixed(18), state: "PRICED" });
       }
       for (const [dimension, raw] of Object.entries(normalized)) {
+        const coveredByRatedParent = (dimension === "reasoningTokens" && selectedRates.has("outputTokens")) || (dimension === "cachedInputTokens" && selectedRates.has("inputTokens"));
+        if (coveredByRatedParent) continue;
         if (typeof raw === "number" && raw !== 0 && !lines.some((line) => line.dimension === dimension && line.state === "PRICED")) {
           complete = false;
           lines.push({ dimension, unit: null, quantity: String(raw), amount: null, state: "UNPRICED" });

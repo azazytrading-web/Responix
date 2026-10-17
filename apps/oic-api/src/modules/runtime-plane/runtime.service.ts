@@ -10,6 +10,7 @@ import type {
 import type { AuthenticatedPrincipal } from "../identity/auth.guard";
 import { RuntimeContextResolver, RuntimeRequestIdentity } from "./runtime-context";
 import { OIC_MODEL_RESOLVER } from "./model-resolver";
+import { OicModelResolutionOperationError } from "./model-resolver";
 import { OIC_RUNTIME_EXECUTOR } from "./runtime-executor";
 import { OIC_RUNTIME_POLICY } from "./runtime-policy";
 import { OicRuntimeException, runtimeErrorMessage } from "./runtime-errors";
@@ -23,6 +24,21 @@ const MAX_OUTPUT_CHARACTERS = 1_000_000;
 type Prepared = { context: OicRuntimeContext; policy: OicRuntimePolicyDecision; admissionKey?: string };
 type Claim = { kind: "claimed"; id: string } | { kind: "running" } | { kind: "replayed"; response: OicRuntimeResponse };
 type ManagedAbortController = AbortController & { oicTimer?: NodeJS.Timeout; oicParent?: AbortSignal; oicParentListener?: () => void };
+export type EvaluationRuntimeTargetSnapshot = {
+  modelId: string;
+  resolverVersion: string;
+  runtimeVersion: "1";
+  revisionId: string | null;
+  variantId: string | null;
+  bindingId: string | null;
+  profileId: string | null;
+  profileRevision: number | null;
+  providerConnectionId: string | null;
+  providerDefinitionId: string | null;
+  providerKey: string | null;
+  upstreamModelRef: string | null;
+  transportProfile: string | null;
+};
 
 function canonical(value: unknown): string {
   if (Array.isArray(value)) return `[${value.map(canonical).join(",")}]`;
@@ -52,6 +68,18 @@ function abortError(): Error {
   return error;
 }
 
+async function awaitRuntimeStep<T>(operation: Promise<T>, signal?: AbortSignal): Promise<T> {
+  if (!signal) return operation;
+  if (signal.aborted) throw abortError();
+  let onAbort: (() => void) | undefined;
+  const aborted = new Promise<never>((_resolve, reject) => {
+    onAbort = () => reject(abortError());
+    signal.addEventListener("abort", onAbort, { once: true });
+  });
+  try { return await Promise.race([operation, aborted]); }
+  finally { if (onAbort) signal.removeEventListener("abort", onAbort); }
+}
+
 @Injectable()
 export class OicRuntimeService {
   constructor(
@@ -63,6 +91,11 @@ export class OicRuntimeService {
     @Optional() private readonly admissions?: AdmissionService
   ) {}
 
+  /** Static integration readiness; target and provider resolution remain a separate no-dispatch preflight. */
+  evaluationAdmissionAvailable(): boolean {
+    return Boolean(this.admissions);
+  }
+
   async invoke(actor: AuthenticatedPrincipal, request: OicRuntimeRequest, identity: RuntimeRequestIdentity, idempotencyKey?: string, signal?: AbortSignal, operation: RuntimeOperation = OPERATION): Promise<OicRuntimeResponse> {
     const prepared = await this.prepare(actor, request, identity);
     if (idempotencyKey !== undefined && (idempotencyKey.length > 128 || !/^[A-Za-z0-9._:-]{1,128}$/.test(idempotencyKey))) throw new OicRuntimeException("INVALID_REQUEST");
@@ -70,6 +103,56 @@ export class OicRuntimeService {
     if (!idempotencyKey) return this.execute(keyed, request, signal, operation);
     const requestHash = createHash("sha256").update(canonical({ operation, request, applicationId: prepared.context.applicationId, tenantId: prepared.context.tenantId })).digest("hex");
     return this.executeIdempotently(actor, keyed, request, idempotencyKey, requestHash, operation, signal);
+  }
+
+  /** Trusted evaluation path: admission is keyed to the physical attempt and persisted before provider dispatch. */
+  async describeEvaluationTarget(actor: AuthenticatedPrincipal, request: OicRuntimeRequest, identity: RuntimeRequestIdentity, onPreflightStage?: (stage: "RUNTIME_CONTEXT" | "MODEL_RESOLUTION") => Promise<void>): Promise<EvaluationRuntimeTargetSnapshot> {
+    await onPreflightStage?.("RUNTIME_CONTEXT");
+    const prepared = await this.prepare(actor, request, identity);
+    await onPreflightStage?.("MODEL_RESOLUTION");
+    const model = await this.resolveModel(request, prepared.context, "text.generate", true);
+    return this.evaluationTargetSnapshot(model);
+  }
+
+  async invokeEvaluationAttempt(
+    actor: AuthenticatedPrincipal,
+    request: OicRuntimeRequest,
+    identity: RuntimeRequestIdentity,
+    attemptId: string,
+    onAdmitted: (admissionId: string, target: EvaluationRuntimeTargetSnapshot) => Promise<void>,
+    signal?: AbortSignal,
+    onDispatchProgress?: (stage: "PROVIDER_ATTEMPT_CREATED" | "PROVIDER_DISPATCH_STARTED", providerAttemptId: string) => Promise<void>,
+    onPreflightStage?: (stage: "RUNTIME_CONTEXT" | "MODEL_RESOLUTION") => Promise<void>
+  ): Promise<{ response: OicRuntimeResponse; target: EvaluationRuntimeTargetSnapshot }> {
+    if (!/^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(attemptId)) throw new OicRuntimeException("INVALID_REQUEST");
+    if (!this.admissions) throw new OicRuntimeException("RUNTIME_UNAVAILABLE");
+    await onPreflightStage?.("RUNTIME_CONTEXT");
+    const prepared = { ...(await awaitRuntimeStep(this.prepare(actor, request, identity), signal)), admissionKey: `evaluation-attempt:${attemptId}` };
+    await onPreflightStage?.("MODEL_RESOLUTION");
+    const model = await awaitRuntimeStep(this.resolveModel(request, prepared.context, "text.generate", true), signal);
+    if (signal?.aborted) throw new OicRuntimeException("RUNTIME_UNAVAILABLE");
+    const target = this.evaluationTargetSnapshot(model);
+    const response = await this.execute(prepared, request, signal, OPERATION, (admissionId) => onAdmitted(admissionId, target), model, onDispatchProgress);
+    return { response, target };
+  }
+
+  private evaluationTargetSnapshot(model: OicResolvedModel): EvaluationRuntimeTargetSnapshot {
+    const profile = model.intelligenceProfile;
+    return {
+      modelId: model.id,
+      resolverVersion: model.resolverVersion,
+      runtimeVersion: "1",
+      revisionId: model.revisionId ?? null,
+      variantId: (model as OicResolvedModel & { variantId?: string }).variantId ?? null,
+      bindingId: (model as OicResolvedModel & { bindingId?: string }).bindingId ?? null,
+      profileId: profile?.profileId ?? null,
+      profileRevision: profile?.revision ?? null,
+      providerConnectionId: (model as OicResolvedModel & { providerConnectionId?: string }).providerConnectionId ?? null,
+      providerDefinitionId: (model as OicResolvedModel & { providerDefinitionId?: string }).providerDefinitionId ?? null,
+      providerKey: (model as OicResolvedModel & { providerKey?: string }).providerKey ?? null,
+      upstreamModelRef: (model as OicResolvedModel & { upstreamModelRef?: string | null }).upstreamModelRef ?? null,
+      transportProfile: (model as OicResolvedModel & { transportProfile?: string }).transportProfile ?? null
+    };
   }
 
   async stream(actor: AuthenticatedPrincipal, request: OicRuntimeRequest, identity: RuntimeRequestIdentity, idempotencyKey: string | undefined, signal?: AbortSignal): Promise<AsyncIterable<OicRuntimeStreamEvent>> {
@@ -140,11 +223,22 @@ export class OicRuntimeService {
     return { context, policy };
   }
 
-  private async resolveModel(request: OicRuntimeRequest, context: OicRuntimeContext, capability: "text.generate" | "text.stream"): Promise<OicResolvedModel> {
+  private async resolveModel(request: OicRuntimeRequest, context: OicRuntimeContext, capability: "text.generate" | "text.stream", forEvaluation = false): Promise<OicResolvedModel> {
     if (!MODEL_ID.test(request.model)) throw new OicRuntimeException("INVALID_REQUEST");
     let model: OicResolvedModel | null;
-    try { model = await this.resolver.resolve(request.model, context); }
-    catch { throw new OicRuntimeException("RUNTIME_UNAVAILABLE"); }
+    try {
+      const evaluationResolver = this.resolver as OicModelResolver & { resolveForEvaluation?: (modelId: OicRuntimeRequest["model"], context: OicRuntimeContext) => Promise<OicResolvedModel | null> };
+      model = forEvaluation && evaluationResolver.resolveForEvaluation
+        ? await evaluationResolver.resolveForEvaluation(request.model, context)
+        : await this.resolver.resolve(request.model, context);
+    }
+    catch (error) {
+      const unavailable = new OicRuntimeException("RUNTIME_UNAVAILABLE");
+      if (error instanceof OicModelResolutionOperationError) {
+        Object.defineProperty(unavailable, "safeModelResolutionDiagnostic", { value: error.safeDiagnostic, enumerable: false });
+      }
+      throw unavailable;
+    }
     if (!model) throw new OicRuntimeException("MODEL_NOT_AVAILABLE");
     if (!MODEL_ID.test(model.id) || model.id !== request.model) throw new OicRuntimeException("RUNTIME_UNAVAILABLE");
     if (model.tenantRequired && context.tenantId === null) throw new OicRuntimeException("TENANT_NOT_ALLOWED");
@@ -152,14 +246,23 @@ export class OicRuntimeService {
     return model;
   }
 
-  private async execute(prepared: Prepared, request: OicRuntimeRequest, signal?: AbortSignal, operation: RuntimeOperation = OPERATION): Promise<OicRuntimeResponse> {
-    const model = await this.resolveModel(request, prepared.context, "text.generate");
-    const admitted = await this.admit(prepared, request, operation);
+  private async execute(prepared: Prepared, request: OicRuntimeRequest, signal?: AbortSignal, operation: RuntimeOperation = OPERATION, onAdmitted?: (admissionId: string) => Promise<void>, pinnedModel?: OicResolvedModel, onDispatchProgress?: (stage: "PROVIDER_ATTEMPT_CREATED" | "PROVIDER_DISPATCH_STARTED", providerAttemptId: string) => Promise<void>): Promise<OicRuntimeResponse> {
+    const model = pinnedModel ?? await this.resolveModel(request, prepared.context, "text.generate");
+    const admitted = await awaitRuntimeStep(this.admit(prepared, request, operation), signal);
+    if (signal?.aborted) throw new OicRuntimeException("RUNTIME_UNAVAILABLE");
     const controller = this.executionSignal(prepared.policy.maxExecutionMs, signal);
     const startedAt = Date.now();
     try {
+      if (onAdmitted && !admitted.context.admissionId) throw new OicRuntimeException("RUNTIME_UNAVAILABLE");
+      if (admitted.context.admissionId && onAdmitted) {
+        try {
+          await onAdmitted(admitted.context.admissionId);
+          await this.admissions!.markEvaluationDispatchedOnce(admitted.context.admissionId);
+        }
+        catch { if (this.admissions) await this.admissions.uncertain(admitted.context.admissionId).catch(() => undefined); throw new OicRuntimeException("RUNTIME_UNAVAILABLE"); }
+      }
       let result: OicRuntimeExecutionResult;
-      try { result = await this.executor.execute(model, request, admitted.context, controller.signal); }
+      try { result = await this.executor.execute(model, request, admitted.context, controller.signal, onDispatchProgress); }
       catch (error) {
         if (admitted.context.admissionId && this.admissions) await this.admissions.uncertain(admitted.context.admissionId).catch(() => undefined);
         throw safeExecutionError(error);

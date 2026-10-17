@@ -17,6 +17,7 @@
     "format:write": "prettier --write .",
     "typecheck": "turbo run typecheck --concurrency=1",
     "test": "turbo run test --concurrency=1",
+    "test:platform-env": "node --test scripts/platform-env.test.mjs",
     "prisma": "pnpm --dir packages/database exec prisma",
     "db:generate": "pnpm --filter @responix/database db:generate",
     "db:migrate": "pnpm --filter @responix/database db:migrate",

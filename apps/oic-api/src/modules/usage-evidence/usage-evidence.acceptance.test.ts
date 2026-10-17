@@ -87,3 +87,46 @@ void test("OIC-6.1 unknown usage stays absent and scope or digest conflicts are 
   await service.recordReceipt(attemptId, 0, { applicationId: "app-a", tenantId: null, providerKey: "openai", transportProfile: "openai-chat-completions-v1", rawDimensions: { prompt_tokens: 2 }, normalizedDimensions: { inputTokens: 2 } });
   await assert.rejects(service.recordReceipt(attemptId, 0, { applicationId: "app-a", tenantId: null, providerKey: "openai", transportProfile: "openai-chat-completions-v1", rawDimensions: { prompt_tokens: 3 }, normalizedDimensions: { inputTokens: 3 } }), /digest conflict/);
 });
+
+void test("OIC evaluation provider dispatch accepts only a durable physical-attempt admission link", async () => {
+  const attemptId = "c8b49b66-a9a9-4edf-b955-ef5084ea46a4";
+  const admissionId = "c8b49b66-a9a9-4edf-b955-ef5084ea46a5";
+  let created = 0;
+  let transitioned = 0;
+  const db = {
+    $transaction: <T>(operation: (tx: unknown) => Promise<T>) => operation({
+      oicAdmission: {
+        findFirst: () => Promise.resolve(null),
+        updateMany: ({ where }: { where: { id: string; status: string } }) => {
+          assert.equal(where.id, admissionId);
+          assert.equal(where.status, "DISPATCHED");
+          transitioned += 1;
+          return Promise.resolve({ count: 1 });
+        }
+      },
+      oicEvaluationAttempt: {
+        findFirst: ({ where }: { where: { id: string; admissionId: string; status: string } }) => {
+          assert.deepEqual(where, { id: attemptId, admissionId, status: "DISPATCHED" });
+          return Promise.resolve({ caseExecution: { run: { applicationId: "app-a", tenantId: null, targetIdentity: { runtimePrincipalId: "principal-a" } } } });
+        }
+      },
+      oicProviderAttempt: { create: ({ data }: { data: Record<string, unknown> }) => { created += 1; assert.equal(data.admissionId, admissionId); return Promise.resolve({ id: "provider-attempt-a" }); } },
+      oicReservationLeg: { updateMany: () => Promise.resolve({ count: 0 }) }
+    })
+  } as never;
+  const service = new UsageEvidenceService(db);
+  const context: OicRuntimeContext = { requestId: `evaluation-${attemptId}`, traceId: "trace-a", applicationId: "app-a", principalId: "principal-a", tenantId: null, admissionId };
+  assert.equal(await service.beginAttempt(context, { connectionId: "connection-a", bindingId: "binding-a", providerKey: "deepseek", upstreamModelId: "deepseek-flash", transportProfile: "openai-chat-completions-v1" }), "provider-attempt-a");
+  assert.equal(created, 1);
+  assert.equal(transitioned, 1);
+
+  const unlinkedDb = {
+    $transaction: <T>(operation: (tx: unknown) => Promise<T>) => operation({
+      oicAdmission: { findFirst: () => Promise.resolve(null) },
+      oicEvaluationAttempt: { findFirst: () => Promise.resolve(null) },
+      oicProviderAttempt: { create: () => { created += 1; return Promise.resolve({ id: "must-not-create" }); } }
+    })
+  } as never;
+  await assert.rejects(new UsageEvidenceService(unlinkedDb).beginAttempt(context, { connectionId: "connection-a", bindingId: "binding-a", providerKey: "deepseek", upstreamModelId: "deepseek-flash", transportProfile: "openai-chat-completions-v1" }), /durable evaluation linkage/);
+  assert.equal(created, 1);
+});

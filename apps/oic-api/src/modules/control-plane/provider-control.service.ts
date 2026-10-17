@@ -6,7 +6,7 @@ import { request as httpsRequest } from "node:https";
 import type { AuthenticatedPrincipal } from "../identity/auth.guard";
 import { hasOicConsoleManage, hasOicConsoleRead } from "../identity/foundation-policy";
 import { decryptProviderCredential, encryptProviderCredential } from "./provider-credential.crypto";
-import { resolvePublicHttpsEndpoint } from "./provider-endpoint";
+import { pinnedAddressLookup, resolvePublicHttpsEndpoint } from "./provider-endpoint";
 import type { ResolvedProviderEndpoint } from "./provider-endpoint";
 import { registeredProvider } from "./provider-registry";
 import { isLocalFixtureConnection, LOCAL_PROVIDER_FIXTURE_CATALOG, LOCAL_PROVIDER_FIXTURE_ENDPOINT, LOCAL_PROVIDER_FIXTURE_KEY, localProviderFixtureEnabled } from "./local-provider-fixture";
@@ -21,6 +21,21 @@ export type ProviderConnectionInput = {
   transportProfile: string;
 };
 type ProviderProbeResult = { statusCode: number; body: Buffer; contentType: string };
+function providerProbeFailureCode(error: unknown): string {
+  const codes: string[] = [];
+  let current: unknown = error;
+  for (let depth = 0; depth < 4 && current && typeof current === "object"; depth += 1) {
+    if ("code" in current && typeof current.code === "string" && /^[A-Z0-9_]+$/.test(current.code)) codes.push(current.code);
+    current = "cause" in current ? current.cause : undefined;
+  }
+  if (codes.some((code) => ["ETIMEDOUT", "UND_ERR_CONNECT_TIMEOUT", "UND_ERR_HEADERS_TIMEOUT"].includes(code))) return "PROVIDER_TIMEOUT";
+  if (codes.some((code) => ["ENOTFOUND", "EAI_AGAIN", "EAI_FAIL"].includes(code))) return "PROVIDER_DNS_FAILED";
+  if (codes.some((code) => ["ERR_TLS_CERT_ALTNAME_INVALID", "CERT_HAS_EXPIRED", "CERT_NOT_YET_VALID", "DEPTH_ZERO_SELF_SIGNED_CERT", "UNABLE_TO_VERIFY_LEAF_SIGNATURE", "ERR_TLS_CERT_SIGNATURE_ALGORITHM_UNSUPPORTED"].includes(code))) return "PROVIDER_TLS_FAILED";
+  if (codes.includes("ERR_INVALID_IP_ADDRESS")) return "PROVIDER_ADAPTER_INCOMPATIBLE";
+  if (codes.some((code) => ["ECONNREFUSED", "ECONNRESET", "EHOSTUNREACH", "ENETUNREACH", "EPIPE", "ERR_NETWORK", "UND_ERR_SOCKET"].includes(code))) return "PROVIDER_NETWORK_FAILED";
+  if (codes.includes("OIC_PROVIDER_RESPONSE_BOUND_EXCEEDED")) return "PROVIDER_RESPONSE_INVALID";
+  return "PROVIDER_UNAVAILABLE";
+}
 type ProviderControlTestNetwork = {
   resolveEndpoint(input: string): Promise<ResolvedProviderEndpoint>;
   request(url: URL, headers: Record<string, string>, timeoutMs: number): Promise<ProviderProbeResult>;
@@ -232,11 +247,7 @@ export class ProviderControlService {
           : statusCode === 403 ? "PROVIDER_AUTHORIZATION_FAILED"
             : statusCode === 408 ? "PROVIDER_TIMEOUT"
               : statusCode === 429 ? "PROVIDER_RATE_LIMITED" : "PROVIDER_REJECTED";
-    } catch (error) {
-      diagnosticCode = error instanceof Error && /timeout/i.test(error.message) ? "PROVIDER_TIMEOUT"
-        : error instanceof Error && /response bound exceeded/i.test(error.message) ? "PROVIDER_RESPONSE_INVALID"
-          : "PROVIDER_UNAVAILABLE";
-    }
+    } catch (error) { diagnosticCode = providerProbeFailureCode(error); }
     const healthy = diagnosticCode === "CONNECTION_OK";
     const latencyMs = Math.min(Date.now() - started, 2_147_483_647);
     await this.db.$transaction(async (tx) => {
@@ -260,17 +271,17 @@ export class ProviderControlService {
       let size = 0;
       const request = httpsRequest(url, {
         method: "GET", headers, timeout: 5_000, servername: endpoint.hostname,
-        lookup: (_hostname: string, _options: unknown, callback: (error: Error | null, address: string, family: number) => void) => callback(null, endpoint.addresses[0]!.address, endpoint.addresses[0]!.family)
+        lookup: pinnedAddressLookup(endpoint.addresses[0]!)
       }, (response: IncomingMessage) => {
         response.on("data", (chunk: Buffer) => {
           size += chunk.length;
-          if (size > 64 * 1024) { response.destroy(new Error("provider test response bound exceeded")); return; }
+          if (size > 64 * 1024) { response.destroy(Object.assign(new Error("provider test response bound exceeded"), { code: "OIC_PROVIDER_RESPONSE_BOUND_EXCEEDED" })); return; }
           chunks.push(chunk);
         });
         response.on("error", reject);
         response.on("end", () => resolve({ statusCode: response.statusCode ?? 0, body: Buffer.concat(chunks), contentType: response.headers["content-type"] ?? "" }));
       });
-      request.on("timeout", () => request.destroy(new Error("provider test timeout")));
+      request.on("timeout", () => request.destroy(Object.assign(new Error("provider test timeout"), { code: "ETIMEDOUT" })));
       request.on("error", reject);
       request.end();
     });

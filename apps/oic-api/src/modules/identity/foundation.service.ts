@@ -4,11 +4,11 @@ import { createHash } from "node:crypto";
 import { OicDatabaseService } from "@oic/database";
 import { AuthenticatedPrincipal } from "./auth.guard";
 import { issueCredential } from "./credential.crypto";
-import { hasOicConsoleManage, hasOicConsoleRead, OIC_ADMISSION_SCOPES, OIC_CONSOLE_SCOPES, OIC_ECONOMICS_SCOPES, OIC_FOUNDATION_ADMIN_SCOPES, OIC_PROVIDER_MODEL_ADMIN_SCOPES, OIC_RATING_SCOPES, OIC_USAGE_EVIDENCE_SCOPES } from "./foundation-policy";
+import { hasOicConsoleManage, hasOicConsoleRead, OIC_ADMISSION_SCOPES, OIC_CONSOLE_SCOPES, OIC_ECONOMICS_SCOPES, OIC_ELEVATED_SCOPES, OIC_EVALUATION_SCOPES, OIC_FOUNDATION_ADMIN_SCOPES, OIC_FOUNDATION_OPERATOR_PRINCIPAL_KEY, OIC_FOUNDATION_OPERATOR_SCOPES, OIC_PLATFORM_ADMIN_PRINCIPAL_KEY, OIC_PROVIDER_MODEL_ADMIN_SCOPES, OIC_RATING_SCOPES, OIC_USAGE_EVIDENCE_SCOPES } from "./foundation-policy";
 import { OIC_RUNTIME_SCOPES } from "../runtime-plane/runtime-scopes";
 import { FoundationAuditWriter, OIC_FOUNDATION_AUDIT_WRITER } from "./foundation-audit-writer";
 
-export const OIC_SCOPES = [...OIC_FOUNDATION_ADMIN_SCOPES, ...OIC_PROVIDER_MODEL_ADMIN_SCOPES, ...OIC_RUNTIME_SCOPES, ...OIC_CONSOLE_SCOPES, ...OIC_USAGE_EVIDENCE_SCOPES, ...OIC_ECONOMICS_SCOPES, ...OIC_ADMISSION_SCOPES, ...OIC_RATING_SCOPES] as const;
+export const OIC_SCOPES = [...OIC_FOUNDATION_ADMIN_SCOPES, ...OIC_PROVIDER_MODEL_ADMIN_SCOPES, ...OIC_RUNTIME_SCOPES, ...OIC_CONSOLE_SCOPES, ...OIC_USAGE_EVIDENCE_SCOPES, ...OIC_ECONOMICS_SCOPES, ...OIC_ADMISSION_SCOPES, ...OIC_RATING_SCOPES, ...OIC_EVALUATION_SCOPES] as const;
 export type AuditContext = { requestId?: string; traceId?: string };
 type IdempotencyResult<T> = { value: T; replayed: boolean };
 type MakeResult<T> = { value: T; resultRef: string };
@@ -87,6 +87,19 @@ export class FoundationService {
     if ((OIC_CONSOLE_SCOPES as readonly string[]).includes(scope) && !actor.scopes.includes("oic:foundation:admin")) throw new ForbiddenException();
     if (!actor.scopes.includes("oic:foundation:admin") && !actor.scopes.includes(scope)) throw new ForbiddenException();
   }
+  private async lockPrincipal(tx: Prisma.TransactionClient, principalId: string): Promise<void> {
+    await tx.$queryRaw`SELECT "id" FROM "OicServicePrincipal" WHERE "id" = ${principalId}::uuid FOR UPDATE`;
+  }
+  private async assertProtectedTarget(tx: Prisma.TransactionClient, actor: AuthenticatedPrincipal, principal: { id: string; key: string }, action: "credential" | "scope" | "lifecycle"): Promise<void> {
+    if (principal.key === OIC_PLATFORM_ADMIN_PRINCIPAL_KEY) throw new ForbiddenException();
+    const grants = await tx.oicPrincipalScopeGrant.findMany({ where: { principalId: principal.id, revokedAt: null }, select: { scope: true } });
+    const targetScopes = grants.map((grant) => grant.scope);
+    const elevated = principal.key === OIC_FOUNDATION_OPERATOR_PRINCIPAL_KEY || targetScopes.some((scope) => (OIC_ELEVATED_SCOPES as readonly string[]).includes(scope));
+    if (!elevated) return;
+    if (principal.key === OIC_FOUNDATION_OPERATOR_PRINCIPAL_KEY && !OIC_FOUNDATION_OPERATOR_SCOPES.every((scope) => actor.scopes.includes(scope))) throw new ForbiddenException();
+    if (!targetScopes.every((scope) => actor.scopes.includes(scope))) throw new ForbiddenException();
+    if (action !== "credential" && actor.id === principal.id) throw new ForbiddenException();
+  }
 
   async createApplication(actor: AuthenticatedPrincipal, input: { key: string; displayName: string }, key: string, request: AuditContext) {
     if (!actor.scopes.includes("oic:foundation:admin") && (!hasOicConsoleManage(actor.scopes) || !actor.scopes.includes("oic:applications:manage"))) throw new ForbiddenException();
@@ -153,6 +166,7 @@ export class FoundationService {
   }
   async createPrincipal(actor: AuthenticatedPrincipal, applicationId: string, input: { key: string; displayName: string }, key: string, request: AuditContext) {
     this.requireApp(actor, applicationId);
+    if (input.key === OIC_FOUNDATION_OPERATOR_PRINCIPAL_KEY || input.key === OIC_PLATFORM_ADMIN_PRINCIPAL_KEY) throw new ForbiddenException();
     const application = await this.db.oicApplication.findFirst({ where: { id: applicationId, status: "ACTIVE" }, select: { id: true } });
     if (!application) throw new NotFoundException();
     return this.idempotent(actor, "oic:principals:manage", "principal.create", key, { applicationId, ...input },
@@ -165,10 +179,17 @@ export class FoundationService {
   async grantScope(actor: AuthenticatedPrincipal, applicationId: string, principalId: string, scope: string, key: string, request: AuditContext) {
     this.requireApp(actor, applicationId); this.assertGrantAuthority(actor, scope);
     if ((scope === "oic:foundation:admin" || (OIC_CONSOLE_SCOPES as readonly string[]).includes(scope)) && !actor.scopes.includes("oic:foundation:admin")) throw new ForbiddenException();
-    const principal = await this.db.oicServicePrincipal.findFirst({ where: { id: principalId, applicationId }, select: { id: true } });
+    const principal = await this.db.oicServicePrincipal.findFirst({ where: { id: principalId, applicationId }, select: { id: true, key: true } });
     if (!principal) throw new NotFoundException();
     return this.idempotent(actor, "oic:principals:manage", "principal.scope.grant", key, { applicationId, principalId, scope },
       async (tx) => {
+        await this.lockPrincipal(tx, principalId);
+        await this.assertProtectedTarget(tx, actor, principal, "scope");
+        const prior = await tx.oicPrincipalScopeGrant.findUnique({ where: { principalId_scope: { principalId, scope } }, select: { revokedAt: true } });
+        if ((OIC_ELEVATED_SCOPES as readonly string[]).includes(scope) && (!prior || prior.revokedAt)) {
+          const revoked = await tx.oicMachineCredential.updateMany({ where: { principalId, status: "ACTIVE" }, data: { status: "REVOKED", revokedAt: new Date() } });
+          if (revoked.count) await this.audit(tx, actor, "principal.credentials.revoked-on-scope-grant", "service-principal", principalId, applicationId, null, request, { scope, count: revoked.count });
+        }
         const value = await tx.oicPrincipalScopeGrant.upsert({
           where: { principalId_scope: { principalId, scope } },
           create: { applicationId, principalId, scope, grantedBy: actor.id },
@@ -225,6 +246,10 @@ export class FoundationService {
     try {
       const result = await this.idempotent<{ id: string; selector: string; status: string; createdAt: Date; expiresAt: Date | null; credential: string | null }>(actor, "oic:credentials:rotate", "credential.issue", key, { applicationId, principalId, expiresAt: expiresAt?.toISOString() ?? null, replacesId },
         async (tx) => {
+          await this.lockPrincipal(tx, principalId);
+          const lockedPrincipal = await tx.oicServicePrincipal.findFirst({ where: { id: principalId, applicationId, status: "ACTIVE" }, select: { id: true, key: true } });
+          if (!lockedPrincipal) throw new NotFoundException();
+          await this.assertProtectedTarget(tx, actor, lockedPrincipal, "credential");
           if (replacesId) {
             const old = await tx.oicMachineCredential.findFirst({ where: { id: replacesId, principalId, status: "ACTIVE", revokedAt: null } });
             if (!old) throw new NotFoundException();
@@ -243,8 +268,10 @@ export class FoundationService {
   async revokeCredential(actor: AuthenticatedPrincipal, applicationId: string, credentialId: string, request: AuditContext) {
     this.requireApp(actor, applicationId);
     await this.db.$transaction(async (tx) => {
-      const credential = await tx.oicMachineCredential.findFirst({ where: { id: credentialId, principal: { applicationId } }, select: { id: true, status: true } });
+      const credential = await tx.oicMachineCredential.findFirst({ where: { id: credentialId, principal: { applicationId } }, select: { id: true, status: true, principal: { select: { id: true, key: true } } } });
       if (!credential) throw new NotFoundException();
+      await this.lockPrincipal(tx, credential.principal.id);
+      await this.assertProtectedTarget(tx, actor, credential.principal, "credential");
       if (credential.status === "ACTIVE") {
         await tx.oicMachineCredential.update({ where: { id: credential.id }, data: { status: "REVOKED", revokedAt: new Date() } });
         await this.audit(tx, actor, "credential.revoked", "credential", credential.id, applicationId, null, request);
@@ -257,6 +284,10 @@ export class FoundationService {
     this.assertGrantAuthority(actor, scope);
     if ((scope === "oic:foundation:admin" || (OIC_CONSOLE_SCOPES as readonly string[]).includes(scope)) && (!actor.scopes.includes("oic:foundation:admin") || actor.id === principalId)) throw new ForbiddenException();
     return this.db.$transaction(async (tx) => {
+      await this.lockPrincipal(tx, principalId);
+      const target = await tx.oicServicePrincipal.findFirst({ where: { id: principalId, applicationId }, select: { id: true, key: true } });
+      if (!target) throw new NotFoundException();
+      await this.assertProtectedTarget(tx, actor, target, "scope");
       const grant = await tx.oicPrincipalScopeGrant.findFirst({ where: { applicationId, principalId, scope, revokedAt: null } });
       if (!grant) return { revoked: true };
       await tx.oicPrincipalScopeGrant.update({ where: { id: grant.id }, data: { revokedAt: new Date() } });
@@ -333,6 +364,9 @@ export class FoundationService {
       }
       const current = await tx.oicServicePrincipal.findFirst({ where: { id, applicationId }, select: { id: true, status: true } });
       if (!current) throw new NotFoundException();
+      await this.lockPrincipal(tx, id);
+      const target = await tx.oicServicePrincipal.findUniqueOrThrow({ where: { id }, select: { id: true, key: true } });
+      await this.assertProtectedTarget(tx, actor, target, "lifecycle");
       if (current.status === "ARCHIVED" && status !== "ARCHIVED") throw new ConflictException("Archived identity cannot be reactivated");
       const updated = await tx.oicServicePrincipal.update({ where: { id }, data: { status } });
       if (current.status !== status) await this.audit(tx, actor, "principal.status.changed", "service-principal", id, applicationId, null, request, { from: current.status, to: status });

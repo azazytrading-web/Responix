@@ -74,16 +74,49 @@ export class AdmissionService {
             status: "PUBLISHED", effectiveFrom: { lte: now },
             AND: [{ OR: [{ planRevisionId: null }, { planRevisionId: selected.planRevisionId }] }, { OR: [{ effectiveTo: null }, { effectiveTo: { gt: now } }] }, { OR: [{ applicationId: null }, { applicationId: context.applicationId }] }, { OR: [{ tenantId: null }, { tenantId: context.tenantId }] }]
           } })).filter((item) => (item.tenantId === context.tenantId || item.tenantId === null) && (item.applicationId === context.applicationId || item.applicationId === null)) : [];
-          const budgets = selected ? (await tx.oicBudgetRevision.findMany({ where: {
+          const allPublishedBudgets = selected ? (await tx.oicBudgetRevision.findMany({ where: {
             status: "PUBLISHED", effectiveFrom: { lte: now },
             AND: [{ OR: [{ planRevisionId: null }, { planRevisionId: selected.planRevisionId }] }, { OR: [{ effectiveTo: null }, { effectiveTo: { gt: now } }] }, { OR: [{ applicationId: null }, { applicationId: context.applicationId }] }, { OR: [{ tenantId: null }, { tenantId: context.tenantId }] }]
           } })).filter((item) => (item.tenantId === context.tenantId || item.tenantId === null) && (item.applicationId === context.applicationId || item.applicationId === null)) : [];
+          const extensionIds = await tx.oicEvaluationCapacityExtension.findMany({ where: { applicationId: context.applicationId, tenantId: context.tenantId }, select: { id: true, budgetRevisionId: true } });
+          const extensionBudgetIds = new Set(extensionIds.map((item) => item.budgetRevisionId));
+          let capacityExtension: { id: string; budgetRevisionId: string; perAdmissionLimitOiu: Decimal } | null = null;
+          if (context.capacityExtensionId || context.evaluationRunId) {
+            if (!context.capacityExtensionId || !context.evaluationRunId) denialCode ??= "UNKNOWN_BOUND";
+            else {
+              const extension = await tx.oicEvaluationCapacityExtension.findFirst({
+                where: { id: context.capacityExtensionId, applicationId: context.applicationId, tenantId: context.tenantId, runId: context.evaluationRunId, status: "ACTIVE", expiresAt: { gt: now } },
+                select: { id: true, budgetRevisionId: true, perAdmissionLimitOiu: true }
+              });
+              if (!extension) denialCode ??= "UNKNOWN_BOUND";
+              else capacityExtension = extension;
+            }
+          }
+          const budgets = allPublishedBudgets.filter((item) => !extensionBudgetIds.has(item.id));
+          if (capacityExtension) {
+            // A Packet 7.6 extension is bound to its immutable budget revision. A
+            // refreshed plan revision may differ from the plan revision that was
+            // current when the extension was authorized, so resolve that exact
+            // referenced revision separately when it is not in the selected
+            // plan's ordinary budget set.
+            const supplemental = allPublishedBudgets.find((item) => item.id === capacityExtension.budgetRevisionId)
+              ?? await tx.oicBudgetRevision.findFirst({ where: {
+                id: capacityExtension.budgetRevisionId, applicationId: context.applicationId,
+                tenantId: context.tenantId, status: "PUBLISHED", effectiveFrom: { lte: now },
+                AND: [{ OR: [{ effectiveTo: null }, { effectiveTo: { gt: now } }] }]
+              } });
+            if (!supplemental || supplemental.unit !== "OIU" || supplemental.enforcement !== "HARD" || supplemental.unknownLiabilityRule !== "DENY"
+              || !supplemental.reservationUpperBound?.equals(capacityExtension.perAdmissionLimitOiu)
+              || supplemental.reservationUpperBound.gt(capacityExtension.perAdmissionLimitOiu)) denialCode ??= "UNKNOWN_BOUND";
+            else budgets.push(supplemental);
+          }
           if (mode === "ENFORCE" && budgets.some((budget) => budget.enforcement === "HARD" && (budget.reservationUpperBound === null || (budget.unknownLiabilityRule === "HOLD_MAXIMUM" && budget.reservationUpperBound === null)))) denialCode ??= "UNKNOWN_BOUND";
           if (mode === "ENFORCE" && quotaPolicies.some((policy) => policy.enforcement === "HARD" && policy.unknownLiabilityRule === "HOLD_MAXIMUM" && policy.reservationUpperBound === null && bounds[policy.dimension] === undefined)) denialCode ??= "UNKNOWN_BOUND";
 
           const admission = await tx.oicAdmission.create({ data: {
             applicationId: context.applicationId, tenantId: context.tenantId, principalId: context.principalId,
             scopeKey: appScope, planRevisionId: selected?.planRevisionId ?? null, operation, idempotencyKey, requestHash: hash,
+            ...(capacityExtension ? { capacityExtensionId: capacityExtension.id } : {}),
             status: denialCode ? "DENIED" : mode === "SHADOW" ? "SHADOW" : "ADMITTED", denialCode,
             requestBounds: bounds, dispatchDeadline: new Date(now.getTime() + 60_000)
           } });
@@ -111,7 +144,7 @@ export class AdmissionService {
               legs.push({ bucketId: bucket.id, amount, policyId: policy.id, budgetId: null });
             }
             for (const budget of budgets) {
-              const bound = decimal(budget.reservationUpperBound);
+              const bound = decimal(budget.reservationUpperBound?.toString());
               if (!bound) { if (budget.enforcement === "HARD") denialCode = "UNKNOWN_BOUND"; continue; }
               const amount = bound.plus(budget.safetyMargin.toString());
               const window = { start: budget.effectiveFrom, end: budget.effectiveTo };
@@ -152,6 +185,21 @@ export class AdmissionService {
       const admission = await tx.oicAdmission.findUniqueOrThrow({ where: { id: admissionId }, include: { legs: true } });
       if (["SHADOW", "ADMITTED"].includes(admission.status)) await tx.oicAdmission.update({ where: { id: admissionId }, data: { status: "DISPATCHED", fenceGeneration: { increment: 1 } } });
       for (const leg of admission.legs) if (leg.state === "HELD") await tx.oicReservationLeg.update({ where: { id: leg.id, state: "HELD" }, data: { state: "DISPATCHED", fenceGeneration: { increment: 1 } } });
+    });
+  }
+
+  /** Evaluation calls require a fresh transition: replay of the same physical attempt never dispatches twice. */
+  async markEvaluationDispatchedOnce(admissionId: string): Promise<void> {
+    await this.db.$transaction(async (tx) => {
+      const changed = await tx.oicAdmission.updateMany({
+        where: { id: admissionId, status: { in: ["ADMITTED", "SHADOW"] } },
+        data: { status: "DISPATCHED", fenceGeneration: { increment: 1 } }
+      });
+      if (changed.count !== 1) throw new ConflictException("EVALUATION_ADMISSION_ALREADY_DISPATCHED");
+      await tx.oicReservationLeg.updateMany({
+        where: { admissionId, state: "HELD" },
+        data: { state: "DISPATCHED", fenceGeneration: { increment: 1 } }
+      });
     });
   }
 
@@ -251,19 +299,20 @@ export class AdmissionService {
 
   async reconcileExpired(limit = 100): Promise<{ inspected: number; released: number }> {
     const now = new Date();
-    const candidates = await this.db.oicAdmission.findMany({ where: { status: "ADMITTED", dispatchDeadline: { lt: now }, attempts: { none: {} } }, orderBy: [{ dispatchDeadline: "asc" }, { id: "asc" }], take: Math.max(1, Math.min(100, limit)), select: { id: true } });
+    const candidates = await this.db.oicAdmission.findMany({ where: { status: { in: ["ADMITTED", "UNCERTAIN"] }, dispatchDeadline: { lt: now }, attempts: { none: {} } }, orderBy: [{ dispatchDeadline: "asc" }, { id: "asc" }], take: Math.max(1, Math.min(100, limit)), select: { id: true } });
     let released = 0;
     for (const candidate of candidates) {
       const changed = await this.db.$transaction(async (tx) => {
         const admission = await tx.oicAdmission.findUniqueOrThrow({ where: { id: candidate.id }, include: { legs: true } });
-        if (admission.status !== "ADMITTED" || admission.dispatchDeadline >= now || await tx.oicProviderAttempt.count({ where: { admissionId: admission.id } })) return false;
-        for (const leg of admission.legs.filter((item) => item.state === "HELD").sort((a, b) => a.bucketId.localeCompare(b.bucketId))) {
-          const bucket = await tx.oicQuotaBucket.update({ where: { id: leg.bucketId }, data: { held: { decrement: leg.amount.toString() }, sequence: { increment: 1 } } });
+        if (!(["ADMITTED", "UNCERTAIN"] as string[]).includes(admission.status) || admission.dispatchDeadline >= now || await tx.oicProviderAttempt.count({ where: { admissionId: admission.id } })) return false;
+        for (const leg of admission.legs.filter((item) => ["HELD", "DISPATCHED", "UNCERTAIN"].includes(item.state)).sort((a, b) => a.bucketId.localeCompare(b.bucketId))) {
+          const field = leg.state === "UNCERTAIN" ? "uncertain" : "held";
+          const bucket = await tx.oicQuotaBucket.update({ where: { id: leg.bucketId }, data: { [field]: { decrement: leg.amount.toString() }, sequence: { increment: 1 } } });
           await tx.oicUsagePosting.create({ data: { bucketId: bucket.id, admissionId: admission.id, sourceKey: `release-expired:${admission.id}:${bucket.id}`, kind: "RELEASE", amount: leg.amount.toString(), sequence: bucket.sequence } });
-          await tx.oicReservationLeg.update({ where: { id: leg.id, state: "HELD" }, data: { state: "RELEASED" } });
+          await tx.oicReservationLeg.update({ where: { id: leg.id, state: leg.state }, data: { state: "RELEASED" } });
         }
-        await tx.oicAdmission.update({ where: { id: admission.id, status: "ADMITTED" }, data: { status: "RELEASED" } });
-        await tx.oicAuditEvent.create({ data: { applicationId: admission.applicationId, tenantId: admission.tenantId, action: "admission.expired.released", targetType: "admission", targetId: admission.id, metadata: { proof: "dispatch-deadline-passed-with-no-persisted-provider-attempt" } } });
+        await tx.oicAdmission.update({ where: { id: admission.id, status: admission.status }, data: { status: "RELEASED" } });
+        await tx.oicAuditEvent.create({ data: { applicationId: admission.applicationId, tenantId: admission.tenantId, action: "admission.expired.released", targetType: "admission", targetId: admission.id, metadata: { proof: "dispatch-deadline-passed-with-no-persisted-provider-attempt", priorStatus: admission.status } } });
         return true;
       }, { isolationLevel: Prisma.TransactionIsolationLevel.Serializable });
       if (changed) released += 1;

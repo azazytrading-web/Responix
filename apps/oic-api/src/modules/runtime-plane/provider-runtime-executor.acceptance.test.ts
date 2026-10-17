@@ -79,6 +79,32 @@ void test("provider Chat Completions executor exercises actual controlled HTTP r
       assert.equal(JSON.stringify(result).includes("fixture-secret-never-log"), false);
     });
 
+    await t.test("no-provider boundary records the attempt and a dry-run gate stops before HTTP dispatch", async () => {
+      fixture.mode = "success";
+      const before = fixture.captured.length;
+      const stages: string[] = [];
+      await assert.rejects(executor.execute(model, request, context, undefined, (stage, id) => {
+        stages.push(stage);
+        assert.equal(id, "test-attempt");
+        if (stage === "PROVIDER_ATTEMPT_CREATED") return Promise.reject(new Error("dry-run dispatch gate"));
+        return Promise.resolve();
+      }), /dry-run dispatch gate/);
+      assert.deepEqual(stages, ["PROVIDER_ATTEMPT_CREATED"]);
+      assert.equal(fixture.captured.length, before, "the HTTP fixture received no provider request");
+    });
+
+    await t.test("reasoning-only provider response preserves empty visible output without leaking hidden text", async () => {
+      fixture.mode = "reasoning-only";
+      const result = await executor.execute(model, { ...request, maxOutputUnits: 8 }, context);
+      assert.equal(result.outputText, "");
+      assert.equal(result.finishReason, "output-limit");
+      assert.deepEqual(result.usage, { inputTokens: 94, outputTokens: 8, reasoningTokens: 8 });
+      assert.equal(JSON.stringify(result).includes("SECRET_HIDDEN_REASONING_TEXT"), false);
+      assert.equal(JSON.stringify(result).includes("reasoning_content"), false);
+      const sent = JSON.parse(fixture.captured.at(-1)!.body) as { max_tokens: number };
+      assert.equal(sent.max_tokens, 8);
+    });
+
     await t.test("stream translates multiple events and usage to OIC chunks", async () => {
       fixture.mode = "stream";
       const chunks = [];

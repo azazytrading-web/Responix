@@ -5,7 +5,7 @@ import { OicDatabaseService } from "@oic/database";
 import type { AuthenticatedPrincipal } from "../identity/auth.guard";
 import { OicRuntimeException } from "./runtime-errors";
 
-export type RuntimeRequestIdentity = { requestId?: string; traceId?: string; callerRequestId?: string };
+export type RuntimeRequestIdentity = { requestId?: string; traceId?: string; callerRequestId?: string; evaluationRunId?: string; capacityExtensionId?: string };
 
 @Injectable()
 export class RuntimeContextResolver {
@@ -20,7 +20,9 @@ export class RuntimeContextResolver {
       principalId: actor.id,
       tenantId,
       ...(request.sessionId ? { sessionId: request.sessionId } : {}),
-      callerRequestId: identity.callerRequestId
+      callerRequestId: identity.callerRequestId,
+      ...(identity.evaluationRunId ? { evaluationRunId: identity.evaluationRunId } : {}),
+      ...(identity.capacityExtensionId ? { capacityExtensionId: identity.capacityExtensionId } : {})
     };
   }
 

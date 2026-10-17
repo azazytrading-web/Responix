@@ -26,6 +26,7 @@ void test("Provider Connection Test uses a bounded fixture request without activ
   const credential = { connectionId, version: 1, status: "ACTIVE", ...encrypted };
   const audit: Array<Record<string, unknown>> = [];
   const healthChecks: Array<Record<string, unknown>> = [];
+  let requestFailure: Error | null = null;
   const actor: AuthenticatedPrincipal = { id: "internal-admin", applicationId: connection.applicationId, scopes: ["oic:connections:manage"], tenantIds: [] };
   const db = {
     oicProviderConnection: { findUnique: () => Promise.resolve(connection), update: ({ data }: { data: Record<string, unknown> }) => { Object.assign(connection, data); return Promise.resolve(connection); } },
@@ -44,6 +45,7 @@ void test("Provider Connection Test uses a bounded fixture request without activ
       return Promise.resolve({ url, hostname: url.hostname, addresses: [{ address: "127.0.0.1", family: 4 }] });
     },
     request(url, headers, timeoutMs) {
+      if (requestFailure) return Promise.reject(requestFailure);
       return new Promise((resolve, reject) => {
         const chunks: Buffer[] = [];
         let size = 0;
@@ -64,7 +66,7 @@ void test("Provider Connection Test uses a bounded fixture request without activ
           response.on("end", () => resolve({ statusCode: response.statusCode ?? 0, body: Buffer.concat(chunks), contentType: response.headers["content-type"] ?? "" }));
         });
         req.on("timeout", () => {
-          const error = new Error("provider test timeout");
+          const error = Object.assign(new Error("provider test timeout"), { code: "ETIMEDOUT" });
           if (incoming) incoming.destroy(error);
           else req.destroy(error);
         });
@@ -81,6 +83,8 @@ void test("Provider Connection Test uses a bounded fixture request without activ
       assert.equal(result.healthy, true);
       assert.equal(result.diagnosticCode, "CONNECTION_OK");
       assert.equal(connection.status, "SUSPENDED");
+      assert.equal(connection.healthStatus, "HEALTHY");
+      assert.notEqual(connection.lastValidatedAt, null);
       assert.equal(fixture.captured.at(-1)?.authorization, `Bearer ${secret}`);
       assert.equal(JSON.stringify(result).includes(secret), false);
       assert.equal(JSON.stringify(audit).includes(secret), false);
@@ -99,8 +103,50 @@ void test("Provider Connection Test uses a bounded fixture request without activ
         const result = await service.testConnection(actor, connectionId);
         assert.equal(result.healthy, false);
         assert.equal(result.diagnosticCode, code);
+        assert.ok(!["PROVIDER_DNS_FAILED", "PROVIDER_NETWORK_FAILED", "PROVIDER_TLS_FAILED"].includes(result.diagnosticCode));
         assert.equal(connection.status, "SUSPENDED");
+        assert.equal(connection.healthStatus, "UNHEALTHY");
+        assert.equal(connection.lastValidatedAt, null);
       }
+    });
+
+    await t.test("known DNS, network, and TLS failures persist only safe diagnostic codes", async () => {
+      const cases = [
+        ["EAI_AGAIN", "PROVIDER_DNS_FAILED"],
+        ["ECONNRESET", "PROVIDER_NETWORK_FAILED"],
+        ["ERR_TLS_CERT_ALTNAME_INVALID", "PROVIDER_TLS_FAILED"],
+        ["ERR_INVALID_IP_ADDRESS", "PROVIDER_ADAPTER_INCOMPATIBLE"],
+        ["UND_ERR_CONNECT_TIMEOUT", "PROVIDER_TIMEOUT"]
+      ] as const;
+      for (const [code, diagnosticCode] of cases) {
+        const cause = Object.assign(new Error(`Authorization: Bearer ${secret}`), { code });
+        requestFailure = code.startsWith("UND_")
+          ? Object.assign(new Error(`private wrapper detail ${secret}`), { cause })
+          : cause;
+        const result = await service.testConnection(actor, connectionId);
+        assert.equal(result.healthy, false);
+        assert.equal(result.diagnosticCode, diagnosticCode);
+        assert.equal(connection.status, "SUSPENDED");
+        assert.equal(connection.healthStatus, "UNHEALTHY");
+        assert.equal(connection.lastValidatedAt, null);
+        const persistedEvidence = JSON.stringify({ result, audit: audit.at(-1), healthCheck: healthChecks.at(-1) });
+        assert.ok(persistedEvidence.includes(diagnosticCode));
+        assert.equal(persistedEvidence.includes(secret), false);
+        assert.doesNotMatch(persistedEvidence, /authorization|bearer/i);
+      }
+      requestFailure = null;
+    });
+
+    await t.test("unknown transport failures remain generic and redact error details", async () => {
+      requestFailure = Object.assign(new Error(`Authorization: Bearer ${secret}; private socket detail`), { code: "E_PRIVATE_SOCKET" });
+      const result = await service.testConnection(actor, connectionId);
+      assert.equal(result.healthy, false);
+      assert.equal(result.diagnosticCode, "PROVIDER_UNAVAILABLE");
+      const persistedEvidence = JSON.stringify({ result, audit: audit.at(-1), healthCheck: healthChecks.at(-1) });
+      assert.ok(persistedEvidence.includes("PROVIDER_UNAVAILABLE"));
+      assert.equal(persistedEvidence.includes(secret), false);
+      assert.doesNotMatch(persistedEvidence, /authorization|bearer|private socket detail/i);
+      requestFailure = null;
     });
 
     await t.test("cross-Application access is concealed before any fixture request", async () => {

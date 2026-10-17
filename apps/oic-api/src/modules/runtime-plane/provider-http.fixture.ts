@@ -2,7 +2,7 @@ import { createServer } from "node:http";
 import type { AddressInfo } from "node:net";
 import type { Server } from "node:http";
 
-export type ProviderFixtureMode = "success" | "stream" | "400" | "401" | "403" | "404" | "408" | "429" | "500" | "502" | "503" | "malformed" | "truncated" | "oversized" | "close-mid-stream" | "slow-stream" | "stream-provider-error" | "malformed-stream" | "oversized-stream" | "delay" | "redirect" | "unsafe-redirect" | "unexpected-content-type";
+export type ProviderFixtureMode = "success" | "reasoning-only" | "stream" | "400" | "401" | "403" | "404" | "408" | "429" | "500" | "502" | "503" | "malformed" | "truncated" | "oversized" | "close-mid-stream" | "slow-stream" | "stream-provider-error" | "malformed-stream" | "oversized-stream" | "delay" | "redirect" | "unsafe-redirect" | "unexpected-content-type";
 export type CapturedProviderRequest = { authorization?: string; contentType?: string; body: string };
 
 export class LocalProviderHttpFixture {
@@ -33,6 +33,7 @@ export class LocalProviderHttpFixture {
         if (mode === "truncated") { response.writeHead(200, { "content-type": "application/json", "content-length": "100" }); response.write('{"choices":'); response.destroy(); return; }
         if (mode === "oversized") { response.writeHead(200, { "content-type": "application/json" }); response.end(JSON.stringify({ choices: [{ message: { content: "x".repeat(2 * 1024 * 1024 + 1) } }] })); return; }
         if (mode === "unexpected-content-type") { response.writeHead(200, { "content-type": "text/html" }); response.end("<html>no</html>"); return; }
+        if (mode === "reasoning-only") { response.writeHead(200, { "content-type": "application/json" }); response.end(JSON.stringify({ choices: [{ message: { content: "", reasoning_content: "SECRET_HIDDEN_REASONING_TEXT" }, finish_reason: "length" }], usage: { prompt_tokens: 94, completion_tokens: 8, completion_tokens_details: { reasoning_tokens: 8 } } })); return; }
         if (mode === "stream" || mode === "slow-stream" || mode === "close-mid-stream" || mode === "stream-provider-error" || mode === "malformed-stream" || mode === "oversized-stream") {
           response.writeHead(200, { "content-type": "text/event-stream" });
           const responses = request.url?.includes("/responses") ?? false;

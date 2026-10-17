@@ -1,8 +1,24 @@
 import { lookup as dnsLookup } from "node:dns/promises";
+import type { LookupOptions } from "node:dns";
 import { isIP } from "node:net";
 
 export type ResolvedProviderEndpoint = { url: URL; hostname: string; addresses: Array<{ address: string; family: 4 | 6 }> };
 type LookupAll = (hostname: string, options: { all: true; verbatim: true }) => Promise<Array<{ address: string; family: number }>>;
+
+export function pinnedAddressLookup(address: ResolvedProviderEndpoint["addresses"][number]) {
+  return (
+    _hostname: string,
+    options: LookupOptions,
+    callback: (
+      error: NodeJS.ErrnoException | null,
+      address: string | Array<{ address: string; family: number }>,
+      family?: number
+    ) => void
+  ) => {
+    if (options.all) callback(null, [{ address: address.address, family: address.family }]);
+    else callback(null, address.address, address.family);
+  };
+}
 
 function inV4Range(address: string, network: number[], prefix: number): boolean {
   const parts = address.split(".").map(Number);

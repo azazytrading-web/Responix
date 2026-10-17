@@ -53,6 +53,9 @@ export type OicRuntimeContext = {
   sessionId?: string;
   callerRequestId?: string;
   admissionId?: string;
+  /** Trusted evaluation-only admission scope; never populated by public runtime requests. */
+  evaluationRunId?: string;
+  capacityExtensionId?: string;
 };
 
 export type OicRawUsageEvidence = {
@@ -165,7 +168,7 @@ export interface OicModelResolver {
 }
 
 export interface OicRuntimeExecutor {
-  execute(model: OicResolvedModel, request: OicRuntimeRequest, context: OicRuntimeContext, signal?: AbortSignal): Promise<OicRuntimeExecutionResult>;
+  execute(model: OicResolvedModel, request: OicRuntimeRequest, context: OicRuntimeContext, signal?: AbortSignal, onDispatchProgress?: (stage: "PROVIDER_ATTEMPT_CREATED" | "PROVIDER_DISPATCH_STARTED", providerAttemptId: string) => Promise<void>): Promise<OicRuntimeExecutionResult>;
   stream(model: OicResolvedModel, request: OicRuntimeRequest, context: OicRuntimeContext, signal?: AbortSignal): AsyncIterable<OicRuntimeExecutionStreamChunk>;
 }
 

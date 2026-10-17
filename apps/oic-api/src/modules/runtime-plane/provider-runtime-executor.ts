@@ -4,7 +4,7 @@ import { Inject, Injectable } from "@nestjs/common";
 import { OicDatabaseService } from "@oic/database";
 import type { OicRawUsageEvidence, OicResolvedModel, OicRuntimeContext, OicRuntimeExecutionResult, OicRuntimeExecutor, OicRuntimeExecutionStreamChunk, OicRuntimeRequest } from "@oic/contracts";
 import { decryptProviderCredential } from "../control-plane/provider-credential.crypto";
-import { resolvePublicHttpsEndpoint } from "../control-plane/provider-endpoint";
+import { pinnedAddressLookup, resolvePublicHttpsEndpoint } from "../control-plane/provider-endpoint";
 import type { ResolvedProviderEndpoint } from "../control-plane/provider-endpoint";
 import { registeredProvider } from "../control-plane/provider-registry";
 import { isLocalFixtureConnection, LOCAL_PROVIDER_FIXTURE_ENDPOINT, LOCAL_PROVIDER_FIXTURE_KEY, localProviderFixtureEnabled } from "../control-plane/local-provider-fixture";
@@ -142,17 +142,34 @@ export class ProviderRuntimeExecutor implements OicRuntimeExecutor {
     return executor;
   }
 
-  async execute(model: OicResolvedModel, request: OicRuntimeRequest, context: OicRuntimeContext, signal?: AbortSignal): Promise<OicRuntimeExecutionResult> {
-    const prepared = await this.prepare(model, request, context);
+  async execute(model: OicResolvedModel, request: OicRuntimeRequest, context: OicRuntimeContext, signal?: AbortSignal, onDispatchProgress?: (stage: "PROVIDER_ATTEMPT_CREATED" | "PROVIDER_DISPATCH_STARTED", providerAttemptId: string) => Promise<void>): Promise<OicRuntimeExecutionResult> {
+    let prepared: Awaited<ReturnType<ProviderRuntimeExecutor["prepare"]>>;
+    try { prepared = await this.prepare(model, request, context); }
+    catch (error) {
+      const exceptionClass = error instanceof Error ? error.constructor.name : "UnknownError";
+      const errorCode = error instanceof OicRuntimeException ? error.code : undefined;
+      process.stderr.write(`${JSON.stringify({ event: "runtime.provider_setup_failed", stage: "prepare", requestId: /^[A-Za-z0-9._:-]{1,128}$/.test(context.requestId) ? context.requestId : undefined, exceptionClass, errorCode })}\n`);
+      throw error;
+    }
     if (prepared.localFixture) {
       if (signal?.aborted) throw new OicRuntimeException("RUNTIME_UNAVAILABLE");
       const inputLength = request.input.flatMap((message) => message.content.map((part) => part.text)).join(" ").length;
       const outputText = localFixtureResponse(request);
       return { outputText, usage: { inputTokens: Math.max(1, Math.ceil(inputLength / 4)), outputTokens: Math.max(1, Math.ceil(outputText.length / 4)) }, finishReason: "completed", executorVersion: "oic-local-fixture-v1" };
     }
-    const attemptId = await this.beginAttempt(prepared, context);
+    let attemptId: string;
+    try { attemptId = await this.beginAttempt(prepared, context); }
+    catch (error) {
+      const exceptionClass = error instanceof Error ? error.constructor.name : "UnknownError";
+      const errorCode = typeof error === "object" && error !== null && "code" in error && typeof error.code === "string" && /^[A-Z0-9_]{2,32}$/.test(error.code) ? error.code : undefined;
+      process.stderr.write(`${JSON.stringify({ event: "runtime.provider_setup_failed", stage: "persist_provider_attempt", requestId: /^[A-Za-z0-9._:-]{1,128}$/.test(context.requestId) ? context.requestId : undefined, exceptionClass, errorCode })}\n`);
+      throw error;
+    }
     try {
+      await onDispatchProgress?.("PROVIDER_ATTEMPT_CREATED", attemptId);
+      if (signal?.aborted) throw new OicRuntimeException("RUNTIME_UNAVAILABLE");
       if (prepared.transportProfile === "openai-responses-v1") {
+        await onDispatchProgress?.("PROVIDER_DISPATCH_STARTED", attemptId);
         const data = await this.sendJson(prepared, { model: prepared.upstreamModelId, input: responsesInput(request), stream: false, ...(request.maxOutputUnits ? { max_output_tokens: request.maxOutputUnits } : {}) }, signal) as unknown as ResponsesProviderResponse;
         if (data.error || (data.type === "response.failed")) throw new OicRuntimeException("PROVIDER_UNAVAILABLE");
         const outputText = typeof data.output_text === "string" ? data.output_text : data.output?.flatMap((item) => item.content ?? []).filter((item) => item.type === "output_text" && typeof item.text === "string").map((item) => item.text!).join("");
@@ -162,6 +179,7 @@ export class ProviderRuntimeExecutor implements OicRuntimeExecutor {
         await this.usageEvidence.finishAttempt(attemptId, "SUCCEEDED");
         return { outputText, usage: responsesUsageOf(usage), finishReason: data.status === "incomplete" && data.incomplete_details?.reason === "max_output_tokens" ? "output-limit" : "completed", executorVersion: "openai-responses-v1" };
       }
+      await onDispatchProgress?.("PROVIDER_DISPATCH_STARTED", attemptId);
       const data = await this.sendJson(prepared, {
         model: prepared.upstreamModelId, messages: toMessages(request), stream: false,
         ...(request.maxOutputUnits ? { max_tokens: request.maxOutputUnits } : {})
@@ -365,7 +383,7 @@ export class ProviderRuntimeExecutor implements OicRuntimeExecutor {
       const request = httpsRequest(prepared.endpoint, {
         method: "POST", headers, signal, timeout: REQUEST_TIMEOUT_MS,
         servername: prepared.endpoint.hostname,
-        lookup: (_hostname: string, _options: unknown, callback: (error: Error | null, address: string, family: number) => void) => callback(null, prepared.address.address, prepared.address.family)
+        lookup: pinnedAddressLookup(prepared.address)
       }, (response) => { receivedResponse = response; onResponse(response); });
       request.on("timeout", () => {
         const error = new Error("provider request timeout");
